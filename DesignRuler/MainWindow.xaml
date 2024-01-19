@@ -1,0 +1,19 @@
+﻿<Window x:Class="DesignRuler.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DesignRuler"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Canvas Name="mainCanvas" Background="#303030" Width="10000" Height="10000">
+        <Canvas.RenderTransform>
+            <TransformGroup>
+                <ScaleTransform x:Name="CanvasScaleTransform"/>
+                <TranslateTransform x:Name="CanvasTranslateTransform"/>
+            </TransformGroup>
+        </Canvas.RenderTransform>
+        <Image Canvas.Left="500" Canvas.Top="500" Source="H:\Downloads\shinji_crying.png" RenderOptions.BitmapScalingMode="NearestNeighbor"></Image>
+
+    </Canvas>
+</Window>
