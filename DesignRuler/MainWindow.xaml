@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DesignRuler"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Canvas Name="mainCanvas" Background="#303030" Width="10000" Height="10000">
+    <Canvas Name="mainCanvas" Background="#303030" Width="10000" Height="10000" Cursor="Cross">
         <Canvas.RenderTransform>
             <TransformGroup>
                 <ScaleTransform x:Name="CanvasScaleTransform"/>
@@ -14,6 +14,10 @@
             </TransformGroup>
         </Canvas.RenderTransform>
         <Image Canvas.Left="500" Canvas.Top="500" Source="H:\Downloads\shinji_crying.png" RenderOptions.BitmapScalingMode="NearestNeighbor"></Image>
-
+        <local:BoundingBoxLabel Canvas.Left="500" Canvas.Top="500" BoundingBoxHeight="120" BoundingBoxWidth="1023" x:Name="BoundingBoxSize">
+            <local:BoundingBoxLabel.RenderTransform>
+                <ScaleTransform></ScaleTransform>
+            </local:BoundingBoxLabel.RenderTransform>
+        </local:BoundingBoxLabel>
     </Canvas>
 </Window>

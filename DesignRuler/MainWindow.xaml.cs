@@ -16,63 +16,46 @@ using System.Windows.Shapes;
 
 namespace DesignRuler
 {
-    public enum ShapeType
-    {
-        BoundingBox = 0,
-    }
-
-    public class BoundingBox
-    {
-        public Point StartPoint { get; set; }
-        public Point EndPoint { get; set; }
-
-        public Rectangle Shape
-        {
-            get;
-            set;
-        }
-    }
-
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        Rectangle boundingBox;
+        BoundingBox boundingBox;
         bool drawingRectangle;
 
         public MainWindow()
         {
             InitializeComponent();
             this.mainCanvas.MouseWheel += Canvas_MouseWheel;
+
             this.mainCanvas.PreviewMouseRightButtonDown += MainCanvas_MouseRightButtonDown;
             this.mainCanvas.PreviewMouseRightButtonUp += MainCanvas_MouseRightButtonUp;
+
             this.mainCanvas.MouseMove += MainCanvas_MouseMove;
+
             this.mainCanvas.MouseLeftButtonDown += MainCanvas_MouseLeftButtonDown;
             this.mainCanvas.MouseLeftButtonUp += MainCanvas_MouseLeftButtonUp;
         }
 
         private void MainCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            mainCanvas.Cursor = cursorOld;
+            mainCanvas.ReleaseMouseCapture();
             drawingRectangle = false;
         }
+
+        private Cursor cursorOld;
 
         private void MainCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             drawingRectangle = true;
+            cursorOld = mainCanvas.Cursor;
+            mainCanvas.Cursor = Cursors.None;
 
-            boundingBox = new Rectangle();
-            boundingBox.Tag = ShapeType.BoundingBox;
-            boundingBox.Width = 0;
-            boundingBox.Height = 0;
-            boundingBox.Stroke = new SolidColorBrush(Colors.Red);
-            boundingBox.StrokeThickness = this.getBoundingBoxStrokeThickness();
-            this.mainCanvas.Children.Add(boundingBox);
             var roundedPoint = roundToPixel(e.GetPosition(mainCanvas));
-            Canvas.SetLeft(boundingBox, roundedPoint.X);
-            Canvas.SetTop(boundingBox, roundedPoint.Y);
-            Canvas.SetZIndex(boundingBox, 500);
+            boundingBox = new BoundingBox(this.mainCanvas, roundedPoint);
+
         }
 
         private Point roundToPixel(Point mousePos)
@@ -92,7 +75,7 @@ namespace DesignRuler
                 var newPos = System.Windows.Input.Mouse.GetPosition(this);
                 var delta = newPos - lastPos;
                 lastPos = newPos;
-                var tt = TranslateTransform;
+                var tt = this.mainCanvas.GetTranslateTransform();
  
                 totalAmountToMoveX += delta.X;
                 totalAmountToMoveY += delta.Y;
@@ -104,8 +87,7 @@ namespace DesignRuler
             else if (drawingRectangle)
             {
                 var roundedPoint = roundToPixel(e.GetPosition(mainCanvas));
-                boundingBox.Width = Math.Max(roundedPoint.X - Canvas.GetLeft(boundingBox), 0);
-                boundingBox.Height = Math.Max(roundedPoint.Y - Canvas.GetTop(boundingBox), 0);
+                boundingBox.EndPoint = roundedPoint;
             }
         }
 
@@ -122,21 +104,7 @@ namespace DesignRuler
             //tt.X += totalAmountScaled;
         }
 
-        public ScaleTransform ScaleTransform
-        {
-            get
-            {
-                return (mainCanvas.RenderTransform as TransformGroup).Children.First(it => it is ScaleTransform) as ScaleTransform;
-            }
-        }
 
-        public TranslateTransform TranslateTransform
-        {
-            get
-            {
-                return (mainCanvas.RenderTransform as TransformGroup).Children.First(it => it is TranslateTransform) as TranslateTransform;
-            }
-        }
 
 
         double origX;
@@ -151,7 +119,7 @@ namespace DesignRuler
             totalAmountToMoveX = 0;
             totalAmountToMoveY = 0;
 
-            var tt = TranslateTransform;
+            var tt = this.mainCanvas.GetTranslateTransform();
 
             origX = tt.X;
             origY = tt.Y;
@@ -165,7 +133,7 @@ namespace DesignRuler
         private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             var canvas = sender as Canvas;
-            var st = ScaleTransform;
+            var st = this.mainCanvas.GetScaleTransform();
 
             var pointToKeepAtLocation = System.Windows.Input.Mouse.GetPosition(canvas);
 
@@ -191,7 +159,7 @@ namespace DesignRuler
 
             var newScale = st.ScaleX;
 
-            var tt = TranslateTransform;
+            var tt = this.mainCanvas.GetTranslateTransform();
 
             var newX = newScale * pointToKeepAtLocation.X;
             var oldX = oldScale * pointToKeepAtLocation.X;
@@ -205,7 +173,7 @@ namespace DesignRuler
             tt.X -= diffToCorrectX;
             tt.Y -= diffToCorrectY;
 
-            UpdateForZoomChange();
+            UpdateForZoomChange(); // TODO will the event be lagged?
 
             e.Handled = true;
         }
@@ -214,13 +182,10 @@ namespace DesignRuler
         {
             if (boundingBox != null)
             {
-                boundingBox.StrokeThickness = getBoundingBoxStrokeThickness();
+                boundingBox.UpdateForZoomChange();
             }
         }
 
-        private double getBoundingBoxStrokeThickness()
-        {
-            return 1.0 / ScaleTransform.ScaleX;
-        }
+
     }
 }
