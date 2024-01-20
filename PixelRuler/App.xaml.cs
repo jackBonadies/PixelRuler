@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 
 namespace DesignRuler
 {
@@ -19,13 +21,15 @@ namespace DesignRuler
         {
             base.OnStartup(e);
 
-
-
             //void TrayIconOnClick(object? sender, EventArgs e) =>
             //    MessageBox.Show("Tray icon clicked!");
-
             System.Windows.Forms.NotifyIcon icon = new System.Windows.Forms.NotifyIcon();            //icon.Click += new EventHandler(TrayIconOnClick);
-            icon.Icon = new Icon(@"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\c1fdqost.uo1\ItemTemplates\ViewModel\cppwinrt.ico");
+
+
+            Stream iconStream = Application.GetResourceStream(new Uri("pack://application:,,,/PixelRuler;component/PixelRulerIcon.ico")).Stream;
+            icon.Icon = new System.Drawing.Icon(iconStream);
+
+            //            icon.Icon = new Icon(this.Resources.Pix
             icon.Visible = true;
             var contextMenu = new System.Windows.Forms.ContextMenuStrip();
 
@@ -46,6 +50,7 @@ namespace DesignRuler
             icon.ContextMenuStrip = contextMenu;
 
             MainWindow mainWindow = new MainWindow();
+            mainWindow.Icon = new BitmapImage(new Uri("pack://application:,,,/PixelRuler;component/PixelRulerIcon.ico"));
             mainWindow.Show();
 
             this.ShutdownMode = ShutdownMode.OnExplicitShutdown;

@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         WindowState="Maximized"
         Title="PixelRuler" Height="450" Width="800"
-        Cursor="Hand">
+        Cursor="Hand" Icon="/PixelRulerIcon.ico">
     <Grid>
         <local:MainCanvas x:Name="mainCanvas"></local:MainCanvas>
         <TextBlock IsHitTestVisible="False" x:Name="zoomAmount"></TextBlock>
