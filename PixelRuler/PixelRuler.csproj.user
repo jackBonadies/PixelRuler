@@ -10,9 +10,15 @@
     <Compile Update="BoundingBoxSize.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="MainCanvas.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="BoundingBoxSize.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MainCanvas.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">

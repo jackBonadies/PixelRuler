@@ -19,5 +19,12 @@ namespace DesignRuler
         {
             return (canvas.RenderTransform as TransformGroup).Children.First(it => it is TranslateTransform) as TranslateTransform;
         }
+
+        public static double GetDpi(this Visual element)
+        {
+            System.Windows.PresentationSource source = System.Windows.PresentationSource.FromVisual(element);
+            double dpiX = source.CompositionTarget.TransformToDevice.M11;
+            return dpiX;
+        }
     }
 }

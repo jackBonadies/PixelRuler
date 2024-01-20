@@ -23,7 +23,17 @@ namespace DesignRuler
         public BoundingBoxLabel()
         {
             InitializeComponent();
+
+            this.Loaded += BoundingBoxLabel_Loaded;
+            // we need to perform dpi scaling here bc our parent undid dpi scaling
+
             this.DataContext = this;
+        }
+
+        private void BoundingBoxLabel_Loaded(object sender, RoutedEventArgs e)
+        {
+            var dpi = this.GetDpi();
+            this.LayoutTransform = new ScaleTransform(dpi, dpi);
         }
 
         /// <summary>
