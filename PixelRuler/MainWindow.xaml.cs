@@ -64,6 +64,8 @@ namespace DesignRuler
             var image = ConvertToImageSource(CaptureScreen());
             mainCanvas.SetImage(image);
             mainCanvas.ScaleChanged += ScaleChanged;
+
+
         }
 
         [DllImport("User32.dll")]

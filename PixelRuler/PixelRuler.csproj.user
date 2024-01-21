@@ -18,6 +18,9 @@
     <Page Update="BoundingBoxSize.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="generic.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MainCanvas.xaml">
       <SubType>Designer</SubType>
     </Page>
