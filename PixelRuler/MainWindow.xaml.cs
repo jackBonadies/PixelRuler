@@ -22,8 +22,9 @@ using System.Globalization;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Drawing;
+using PixelRuler;
 
-namespace DesignRuler
+namespace PixelRuler
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -65,7 +66,11 @@ namespace DesignRuler
             mainCanvas.SetImage(image);
             mainCanvas.ScaleChanged += ScaleChanged;
 
+            this.DataContext = new PixelRulerViewModel() { Testing = "123444" };
 
+            (this.DataContext as PixelRulerViewModel).Testing = "123";
+
+            testing.DataContext = this.DataContext;
         }
 
         [DllImport("User32.dll")]
@@ -143,6 +148,7 @@ namespace DesignRuler
         private void OnHotKeyPressed()
         {
             // do stuff
+            (this.DataContext) = new PixelRulerViewModel() { Testing = "321" };
         }
 
 
@@ -164,6 +170,8 @@ namespace DesignRuler
 
         public void ScaleChanged(object? sender, double e)
         {
+            (this.DataContext as PixelRulerViewModel).CurrentZoom = (e * 100);
+            (this.DataContext as PixelRulerViewModel).Testing = (e * 100).ToString();
             this.zoomAmount.Text = (e * 100).ToString();
         }
     }

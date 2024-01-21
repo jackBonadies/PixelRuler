@@ -1,7 +1,7 @@
-﻿<Application x:Class="DesignRuler.App"
+﻿<Application x:Class="PixelRuler.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:DesignRuler"
+             xmlns:local="clr-namespace:PixelRuler"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
     <Application.Resources>
         <ResourceDictionary>

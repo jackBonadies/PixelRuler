@@ -10,7 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 
-namespace DesignRuler
+namespace PixelRuler
 {
     public class BoundingBox
     {

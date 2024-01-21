@@ -1,13 +1,14 @@
-﻿<Window x:Class="DesignRuler.MainWindow"
+﻿<Window x:Class="PixelRuler.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DesignRuler"
+        xmlns:local="clr-namespace:PixelRuler"
         mc:Ignorable="d"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         WindowState="Maximized"
         Title="PixelRuler" Height="450" Width="800"
+        d:DataContext="{d:DesignInstance Type=local:PixelRulerViewModel, IsDesignTimeCreatable=True}"
         Icon="/PixelRulerIcon.ico">
 
     <Window.Resources>
@@ -65,18 +66,19 @@
                 <!--<ui:TextBox Width="60"></ui:TextBox>-->
 
                 <TextBlock>W:</TextBlock>
-                <ui:NumberBox PlaceholderText="Width" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"/>
+                <ui:NumberBox PlaceholderText="Width" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding BoundingBoxWidth}"/>
+
                 <TextBlock>H:</TextBlock>
-                <ui:NumberBox PlaceholderText="Height" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"/>
+                <ui:NumberBox PlaceholderText="Height" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding BoundingBoxHeight}"/>
 
                 <TextBlock>C:</TextBlock>
-                <ui:NumberBox PlaceholderText="Color" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"/>
+                <ui:NumberBox x:Name="testing" PlaceholderText="Color" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding Testing}"/>
 
                 <!--<ui:NumberBox PlaceholderText="Height" Icon="NumberSymbolSquare24" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"/>-->
                 <StackPanel Width="10"></StackPanel>
 
                 <!--<ui:Button>ZoomStatus</ui:Button> --><!-- can have dropdown or +/- -->
-                <ComboBox IsEditable="True"/>
+                <ComboBox IsEditable="True" Text="{Binding Testing, Mode=TwoWay}"/>
                 <ui:Button>Settings</ui:Button>
 
             </StackPanel>

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,12 +15,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DesignRuler
+namespace PixelRuler
 {
     /// <summary>
     /// Interaction logic for BoundingBoxLabel.xaml
     /// </summary>
-    public partial class BoundingBoxLabel : UserControl
+    public partial class BoundingBoxLabel : UserControl, INotifyPropertyChanged
     {
         public BoundingBoxLabel()
         {
@@ -45,7 +47,7 @@ namespace DesignRuler
             set
             {
                 SetValue(BoundingBoxWidthProperty, value);
-                //TODO
+                OnPropertyChanged();
             }
         }
 
@@ -64,7 +66,7 @@ namespace DesignRuler
             set
             {
                 SetValue(BoundingBoxHeightProperty, value);
-                //TODO
+                OnPropertyChanged();
             }
         }
 
@@ -74,6 +76,12 @@ namespace DesignRuler
         public static readonly DependencyProperty BoundingBoxHeightProperty =
             DependencyProperty.Register("BoundingBoxHeight", typeof(int), typeof(BoundingBoxLabel), new PropertyMetadata(14));
 
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string? name = null)
+        {
+            PropertyChanged?.Invoke(null, new PropertyChangedEventArgs(name));
+        }
 
     }
     public class IntToStringConverter : IValueConverter

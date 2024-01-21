@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace DesignRuler
+namespace PixelRuler
 {
     /// <summary>
     /// Interaction logic for MainCanvas.xaml
@@ -123,6 +123,7 @@ namespace DesignRuler
 
             boundingBox?.Clear();
             boundingBox = new BoundingBox(this.mainCanvas, roundedPoint);
+            (this.DataContext as PixelRulerViewModel).BoundingBoxLabel = boundingBox.BoundingBoxLabel;
         }
 
         private Cursor cursorOld;

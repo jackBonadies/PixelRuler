@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
-namespace DesignRuler
+namespace PixelRuler
 {
     /// <summary>
     /// Interaction logic for App.xaml
