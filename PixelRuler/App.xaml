@@ -11,6 +11,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <local:PercentFormatStringConverter x:Key="PercentFormatStringConverter" />
+            <local:EnumToBoolCheckedStickyConverter x:Key="EnumToBoolCheckedStickyConverter" />
 
             <SolidColorBrush x:Key="BarColor">#F1F3F9</SolidColorBrush>
             <SolidColorBrush x:Key="IsToggledOnColor">#E8EAF0</SolidColorBrush>
@@ -92,7 +93,9 @@
                 </Setter>
             </Style>
 
+            <Style TargetType="{x:Type local:DropDownButtonCustom}" BasedOn="{StaticResource {x:Type Button}}">
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
-    
 </Application>

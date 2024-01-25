@@ -30,14 +30,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Icons\add_a_photo_FILL0_wght400_GRAD0_opsz24(1).png" />
-    <Resource Include="Icons\add_FILL0_wght400_GRAD0_opsz24.png" />
-    <Resource Include="Icons\colorize_FILL0_wght400_GRAD0_opsz24.png" />
-    <Resource Include="Icons\more_horiz_FILL0_wght400_GRAD0_opsz24.png" />
-    <Resource Include="Icons\photo_camera_FILL0_wght400_GRAD0_opsz24(1).png" />
-    <Resource Include="Icons\remove_FILL0_wght400_GRAD0_opsz24.png" />
-    <Resource Include="Icons\select_FILL0_wght400_GRAD0_opsz24(1).png" />
-    <Resource Include="Icons\transform_FILL0_wght400_GRAD0_opsz24.png" />
+    <Resource Include="Icons\MaterialIcons\add_a_photo_FILL0_wght400_GRAD0_opsz24%281%29.png" />
+    <Resource Include="Icons\MaterialIcons\add_FILL0_wght400_GRAD0_opsz24.png" />
+    <Resource Include="Icons\MaterialIcons\colorize_FILL0_wght400_GRAD0_opsz24.png" />
+    <Resource Include="Icons\MaterialIcons\more_horiz_FILL0_wght400_GRAD0_opsz24.png" />
+    <Resource Include="Icons\MaterialIcons\photo_camera_FILL0_wght400_GRAD0_opsz24%281%29.png" />
+    <Resource Include="Icons\MaterialIcons\remove_FILL0_wght400_GRAD0_opsz24.png" />
+    <Resource Include="Icons\MaterialIcons\select_FILL0_wght400_GRAD0_opsz24%281%29.png" />
+    <Resource Include="Icons\MaterialIcons\transform_FILL0_wght400_GRAD0_opsz24.png" />
     <Resource Include="PixelRulerIcon.ico" />
   </ItemGroup>
 

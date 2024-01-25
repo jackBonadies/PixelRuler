@@ -12,7 +12,7 @@ using System.Windows.Shapes;
 
 namespace PixelRuler
 {
-    public class BoundingBox
+    public class BoundingBoxElement : IZoomCanvasShape
     {
         private const bool marching_ants = true;
         private readonly SolidColorBrush brush1 = new SolidColorBrush(Colors.Black);
@@ -20,7 +20,7 @@ namespace PixelRuler
 
         Canvas owningCanvas;
 
-        public BoundingBox(Canvas owningCanvas, Point startPoint) 
+        public BoundingBoxElement(Canvas owningCanvas, Point startPoint) 
         {
             this.owningCanvas = owningCanvas;
 
@@ -170,7 +170,7 @@ namespace PixelRuler
             st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
         }
 
-        internal void Clear()
+        public void Clear()
         {
             this.owningCanvas.Children.Remove(rect1);
             this.owningCanvas.Children.Remove(rect2);

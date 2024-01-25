@@ -104,7 +104,20 @@ namespace PixelRuler
             }
         }
 
-
+        private Tool selectedTool;
+        public Tool SelectedTool
+        {
+            get
+            {
+                return selectedTool;
+            }
+            set
+            {
+                selectedTool = value;
+                OnPropertyChanged();
+            }
+        }
+        
         public double[] AvailableZooms
         {
             get;
@@ -129,5 +142,11 @@ namespace PixelRuler
         }
 
 
+    }
+
+    public enum Tool
+    {
+        BoundingBox = 0,
+        ColorPicker = 1,
     }
 }

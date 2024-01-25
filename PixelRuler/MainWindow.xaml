@@ -25,8 +25,8 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>-->
-        
-        
+
+
         <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Margin" Value="0,0,4,0"></Setter>
         </Style>
@@ -54,26 +54,51 @@
         <DockPanel Grid.Row="0" Height="40" Background="#EFF4F9">
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                 <StackPanel Width="10"></StackPanel>
-                <Button>
-                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE722;" FontSize="17" />
+                <Button Click="Button_Click">
+                    <wpfui:SymbolIcon Symbol="CameraAdd48" FontSize="17" RenderTransformOrigin="0.5,0.5">
+                        <wpfui:SymbolIcon.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="1.15" ScaleY="1.15"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </wpfui:SymbolIcon.RenderTransform>
+
+                    </wpfui:SymbolIcon>
+                    <!--<TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE722;" FontSize="17" />-->
                 </Button>
                 <StackPanel Width="10"></StackPanel>
                 <Border Width="2" Height="28" SnapsToDevicePixels="True" Background="#e0e0e0"/>
                 <StackPanel Width="10"></StackPanel>
 
-                <ToggleButton>
+                <ToggleButton IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=BoundingBox}">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEF20;" FontSize="17" />
                 </ToggleButton>
-                <ToggleButton>
+                <ToggleButton IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=ColorPicker}">
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEF3C;" FontSize="17" />
                 </ToggleButton>
 
             </StackPanel>
 
-            <!-- Right Aligned Panel -->
+            <!-- Right Panel -->
             <StackPanel DockPanel.Dock="Right"  Orientation="Horizontal">
-                <ComboBox Text="{Binding CurrentZoom, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}" ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}" FontSize="12" />
-                <ui:Button>Settings</ui:Button>
+                <ComboBox 
+                    Text="{Binding CurrentZoom, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}" 
+                    ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}" 
+                    Margin="0,0,6,0"
+                    FontSize="12" Padding="10,6,0,6" MinWidth="80" />
+                <local:DropDownButtonCustom 
+                    Margin="0,0,6,0"
+                    PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
+                    <local:DropDownButtonCustom.Flyout>
+                        <ContextMenu Placement="Bottom" PlacementTarget="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:DropDownButtonCustom}}}">
+                            <MenuItem Header="Settings" />
+                        </ContextMenu>
+                    </local:DropDownButtonCustom.Flyout>
+                    <!--<wpfui:SymbolIcon Symbol="MoreHorizontal48" FontSize="17.5"/>-->
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE712;" FontSize="20" />
+                </local:DropDownButtonCustom>
             </StackPanel>
 
 
@@ -81,13 +106,13 @@
             <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center">
 
                 <TextBlock VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">W:</TextBlock>
-                <ui:NumberBox Width="60" IsReadOnly="True" FontSize="15" PlaceholderText="Width" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding BoundingBoxWidth}" Margin="0, 0, 8, 0"/>
+                <ui:NumberBox Width="56" IsReadOnly="True" FontSize="15" PlaceholderText="Width" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding BoundingBoxWidth}" Padding="6,6,0,6" Margin="0, 0, 8, 0"/>
 
                 <TextBlock VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">H:</TextBlock>
-                <ui:NumberBox Width="60" IsReadOnly="True" FontSize="15" PlaceholderText="Height" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding BoundingBoxHeight}" Margin="0, 0, 8, 0"/>
+                <ui:NumberBox Width="56" IsReadOnly="True" FontSize="15" PlaceholderText="Height" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding BoundingBoxHeight}" Padding="6,6,0,6" Margin="0, 0, 8, 0"/>
 
                 <TextBlock VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">C:</TextBlock>
-                <ui:NumberBox Width="60" IsReadOnly="True" FontSize="15" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding SelectedColor}"/>
+                <ui:NumberBox Width="56" IsReadOnly="True" FontSize="15" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding SelectedColor}" Padding="6,6,0,6" />
 
             </StackPanel>
 

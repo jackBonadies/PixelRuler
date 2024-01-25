@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:PixelRuler"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Canvas Name="mainCanvas" Background="#303030" Width="30000" Height="30000" Cursor="Cross">
+    <Canvas Name="mainCanvas" Background="#303030" Width="30000" Height="30000" Focusable="True">
         <Canvas.RenderTransform>
             <TransformGroup>
                 <ScaleTransform x:Name="CanvasScaleTransform"/>
@@ -15,6 +15,6 @@
         </Canvas.RenderTransform>
         <Rectangle Stroke="Black" Width="100" Height="100" />
         <Rectangle Stroke="White" Width="100" Height="100" StrokeDashArray="2 2" StrokeDashOffset="-1"/>
-        <Image x:Name="mainImage" Canvas.Left="10000" Canvas.Top="10000" RenderOptions.BitmapScalingMode="NearestNeighbor" SnapsToDevicePixels="True"></Image>
+        <Image Focusable="True" x:Name="mainImage" Canvas.Left="10000" Canvas.Top="10000" RenderOptions.BitmapScalingMode="NearestNeighbor" SnapsToDevicePixels="True"></Image>
     </Canvas>
 </UserControl>

@@ -38,12 +38,13 @@ namespace PixelRuler
             InitializeComponent();
 
             this.Loaded += MainWindow_Loaded;
-
-            var image = ConvertToImageSource(CaptureScreen());
-            mainCanvas.SetImage(image);
             mainCanvas.ScaleChanged += ScaleChanged;
 
             this.DataContext = new PixelRulerViewModel();
+
+            var bmp = CaptureScreen();
+            var image = ConvertToImageSource(bmp);
+            mainCanvas.SetImage(image);
         }
 
         public static Drawing.Bitmap CaptureScreen()
@@ -188,6 +189,21 @@ namespace PixelRuler
             this.Hide(); // i.e. so taskbar stays up
             e.Cancel = true;
             base.OnClosing(e);
+        }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Hide();
+            Bitmap bmp = null;
+            await Task.Run(new Action(() =>
+            {
+                bmp = CaptureScreen();
+            })).ConfigureAwait(true);
+            BitmapSource? image = null;
+            image = ConvertToImageSource(bmp);
+            mainCanvas.SetImage(image);
+            this.Show();
+
         }
     }
 }

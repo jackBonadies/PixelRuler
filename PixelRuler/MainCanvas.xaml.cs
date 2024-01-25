@@ -22,7 +22,8 @@ namespace PixelRuler
     /// </summary>
     public partial class MainCanvas : UserControl
     {
-        BoundingBox boundingBox;
+        BoundingBoxElement boundingBox;
+        ColorPickElement colorPickBox;
         bool drawingRectangle;
 
         public EventHandler<double> ScaleChanged;
@@ -38,6 +39,8 @@ namespace PixelRuler
             //this.mainCanvas.PreviewMouseRightButtonDown += MainCanvas_MouseRightButtonDown;
             //this.mainCanvas.PreviewMouseRightButtonUp += MainCanvas_MouseRightButtonUp;
 
+            this.mainCanvas.MouseEnter += MainCanvas_MouseEnter;
+            this.mainCanvas.MouseLeave += MainCanvas_MouseLeave;
             this.mainCanvas.MouseMove += MainCanvas_MouseMove;
             this.mainCanvas.MouseDown += MainCanvas_MouseDown;
             this.mainCanvas.MouseUp += MainCanvas_MouseUp;
@@ -45,6 +48,23 @@ namespace PixelRuler
             //this.mainCanvas.MouseLeftButtonDown += MainCanvas_MouseLeftButtonDown;
             //this.mainCanvas.MouseLeftButtonUp += MainCanvas_MouseLeftButtonUp;
 
+        }
+
+        private void MainCanvas_MouseLeave(object sender, MouseEventArgs e)
+        {
+        }
+
+        private void MainCanvas_MouseEnter(object sender, MouseEventArgs e)
+        {
+            switch(ViewModel.SelectedTool)
+            {
+                case Tool.BoundingBox:
+                    this.Cursor = Cursors.Cross;
+                    break;
+                case Tool.ColorPicker:
+                    this.Cursor = Cursors.Arrow;
+                    break;
+            }
         }
 
         private void MainCanvas_MouseUp(object sender, MouseButtonEventArgs e)
@@ -81,11 +101,26 @@ namespace PixelRuler
             }
         }
 
+        private void ToolDown(MouseButtonEventArgs e)
+        {
+            switch(ViewModel.SelectedTool)
+            {
+                case Tool.BoundingBox:
+                    StartBoundingBox(e);
+                    break;
+                case Tool.ColorPicker:
+                    ColorPickerMouseDown(e);
+                    break;
+            }
+        }
+
         private void MainCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            this.Focus();
+            this.mainImage.Focus();
             if (e.ChangedButton == MouseButton.Left)
             {
-                this.StartBoundingBox(e);
+                this.ToolDown(e);
             }
             else if (e.ChangedButton == MouseButton.Middle || e.ChangedButton == MouseButton.Right)
             {
@@ -111,6 +146,28 @@ namespace PixelRuler
             lastPos = System.Windows.Input.Mouse.GetPosition(this);
         }
 
+        private PixelRulerViewModel ViewModel
+        {
+            get
+            {
+                var prvm = DataContext as PixelRulerViewModel;
+                if (prvm == null)
+                {
+                    throw new Exception("No View Model on Main Canvas");
+                }
+                return prvm;
+            }
+        }
+
+        private void ColorPickerMouseDown(MouseButtonEventArgs e)
+        {
+            var pt = truncate(e.GetPosition(mainImage));
+            (mainImage.Source as BitmapImage).GetValue
+            e.GetPosition(mainImage)
+            mainCanvas.Get
+
+        }
+
         private void StartBoundingBox(MouseButtonEventArgs e)
         {
             mainCanvas.CaptureMouse();
@@ -122,11 +179,18 @@ namespace PixelRuler
             var roundedPoint = roundToPixel(e.GetPosition(mainCanvas));
 
             boundingBox?.Clear();
-            boundingBox = new BoundingBox(this.mainCanvas, roundedPoint);
-            (this.DataContext as PixelRulerViewModel).BoundingBoxLabel = boundingBox.BoundingBoxLabel;
+            boundingBox = new BoundingBoxElement(this.mainCanvas, roundedPoint);
+            ViewModel.BoundingBoxLabel = boundingBox.BoundingBoxLabel;
         }
 
         private Cursor cursorOld;
+
+        private Point truncate(Point mousePos)
+        {
+            var roundX = (int)(mousePos.X);
+            var roundY = (int)(mousePos.Y);
+            return new Point(roundX, roundY);
+        }
 
         private Point roundToPixel(Point mousePos)
         {
@@ -140,6 +204,21 @@ namespace PixelRuler
 
         private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
+
+
+            if (ViewModel.SelectedTool == Tool.ColorPicker)
+            {
+                if(colorPickBox == null)
+                {
+                    colorPickBox = new ColorPickElement(this.mainCanvas);
+                }
+                var truncatedPoint = truncate(e.GetPosition(mainCanvas));
+                colorPickBox.SetPosition(truncatedPoint);
+
+
+            }
+
+
             if (isPanning)
             {
                 var newPos = System.Windows.Input.Mouse.GetPosition(this);
@@ -235,6 +314,15 @@ namespace PixelRuler
 
         private void UpdateForZoomChange()
         {
+            if(colorPickBox != null)
+            {
+                colorPickBox.UpdateForZoomChange();
+            }
+            //var items = this.mainCanvas.Children.OfType<IZoomCanvasShape>();
+            //foreach (IZoomCanvasShape item in items)
+            //{
+            //    item.UpdateForZoomChange();
+            //}
             if (boundingBox != null)
             {
                 boundingBox.UpdateForZoomChange();
