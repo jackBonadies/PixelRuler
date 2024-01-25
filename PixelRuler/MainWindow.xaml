@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         WindowState="Maximized"
+        xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
+        xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
         Title="PixelRuler" Height="450" Width="800"
         d:DataContext="{d:DesignInstance Type=local:PixelRulerViewModel, IsDesignTimeCreatable=True}"
         Icon="/PixelRulerIcon.ico">
@@ -23,10 +25,16 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>-->
-
-
+        
+        
         <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Margin" Value="0,0,4,0"></Setter>
+        </Style>
+        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+            <Setter Property="Margin" Value="0,0,4,0"></Setter>
+        </Style>
+        <Style TargetType="FrameworkElement">
+            <Setter Property="Margin" Value="10"></Setter>
         </Style>
         <!--<Style TargetType="ui:NumberBox" BasedOn="{StaticResource {x:Type NumberBox}}">
             <Setter Property="Margin" Value="0,0,4,0"></Setter>
@@ -43,48 +51,75 @@
 
         <local:MainCanvas x:Name="mainCanvas" Grid.Row="1"></local:MainCanvas>
 
-        <Grid Grid.Row="0" Background="#EEF4F9" Height="40">
-            <StackPanel Orientation="Horizontal">
-                <StackPanel.Resources>
-
-                    <!--<Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type Button}}">
-                        <Setter Property="Margin" Value="0,0,4,0"></Setter>
-                    </Style>-->
-                </StackPanel.Resources>
-                <ui:Button>
-                    Camera
-                </ui:Button>
-
-                <ui:Button>Select Window</ui:Button> <!--or maybe just make snipping mode like snipping tool has-->
-
+        <DockPanel Grid.Row="0" Height="40" Background="#EFF4F9">
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                <StackPanel Width="10"></StackPanel>
+                <Button>
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE722;" FontSize="17" />
+                </Button>
+                <StackPanel Width="10"></StackPanel>
+                <Border Width="2" Height="28" SnapsToDevicePixels="True" Background="#e0e0e0"/>
                 <StackPanel Width="10"></StackPanel>
 
-                <ui:Button Appearance="Primary">Box</ui:Button>
-                <ui:Button>AdjustBox</ui:Button>
-                <ui:Button>Eyedropper</ui:Button>
-                <!--<ui:NumberBox Width="60"></ui:NumberBox>-->
-                <!--<ui:TextBox Width="60"></ui:TextBox>-->
+                <ToggleButton>
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEF20;" FontSize="17" />
+                </ToggleButton>
+                <ToggleButton>
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEF3C;" FontSize="17" />
+                </ToggleButton>
 
-                <TextBlock>W:</TextBlock>
-                <ui:NumberBox PlaceholderText="Width" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding BoundingBoxWidth}"/>
+            </StackPanel>
 
-                <TextBlock>H:</TextBlock>
-                <ui:NumberBox PlaceholderText="Height" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding BoundingBoxHeight}"/>
-
-                <TextBlock>C:</TextBlock>
-                <ui:NumberBox x:Name="testing" PlaceholderText="Color" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding Testing}"/>
-
-                <!--<ui:NumberBox PlaceholderText="Height" Icon="NumberSymbolSquare24" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"/>-->
-                <StackPanel Width="10"></StackPanel>
-
-                <!--<ui:Button>ZoomStatus</ui:Button> --><!-- can have dropdown or +/- -->
-                <ComboBox IsEditable="True" Text="{Binding Testing, Mode=TwoWay}"/>
+            <!-- Right Aligned Panel -->
+            <StackPanel DockPanel.Dock="Right"  Orientation="Horizontal">
+                <ComboBox Text="{Binding CurrentZoom, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}" ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}" FontSize="12" />
                 <ui:Button>Settings</ui:Button>
+            </StackPanel>
+
+
+            <!-- Center Panel -->
+            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center">
+
+                <TextBlock VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">W:</TextBlock>
+                <ui:NumberBox Width="60" IsReadOnly="True" FontSize="15" PlaceholderText="Width" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding BoundingBoxWidth}" Margin="0, 0, 8, 0"/>
+
+                <TextBlock VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">H:</TextBlock>
+                <ui:NumberBox Width="60" IsReadOnly="True" FontSize="15" PlaceholderText="Height" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding BoundingBoxHeight}" Margin="0, 0, 8, 0"/>
+
+                <TextBlock VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">C:</TextBlock>
+                <ui:NumberBox Width="60" IsReadOnly="True" FontSize="15" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding SelectedColor}"/>
 
             </StackPanel>
 
 
-        </Grid>
-        <TextBlock IsHitTestVisible="False" x:Name="zoomAmount" Grid.Row="1"></TextBlock>
+
+
+
+        </DockPanel>
+
+        <tray:NotifyIcon
+        x:Name="notifyIcon"
+                FocusOnLeftClick="True"
+                MenuOnRightClick="True"
+                TooltipText="PixelRuler" >
+            <tray:NotifyIcon.Menu>
+                <ContextMenu>
+                    <wpfui:MenuItem
+                            Click="MenuItemNewScreenshot_Click"
+                            Header="New Screenshot">
+                        <wpfui:MenuItem.Icon>
+                            <wpfui:SymbolIcon Symbol="CameraAdd24" />
+                        </wpfui:MenuItem.Icon>
+                    </wpfui:MenuItem>
+                    <wpfui:MenuItem
+                            Click="MenuItemExit_Click"
+                            Header="Exit">
+                        <wpfui:MenuItem.Icon>
+                            <wpfui:SymbolIcon Symbol="ArrowExit20" />
+                        </wpfui:MenuItem.Icon>
+                    </wpfui:MenuItem>
+                </ContextMenu>
+            </tray:NotifyIcon.Menu>
+        </tray:NotifyIcon>
     </Grid>
 </Window>

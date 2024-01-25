@@ -105,6 +105,12 @@ namespace PixelRuler
         }
 
 
+        public double[] AvailableZooms
+        {
+            get;
+            set;
+        } = App.ZoomSelections;
+
         private double zoom;
         public double CurrentZoom
         {

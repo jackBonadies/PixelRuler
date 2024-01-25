@@ -31,6 +31,21 @@ namespace PixelRuler
     /// </summary>
     public partial class MainWindow : Window
     {
+
+
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            this.Loaded += MainWindow_Loaded;
+
+            var image = ConvertToImageSource(CaptureScreen());
+            mainCanvas.SetImage(image);
+            mainCanvas.ScaleChanged += ScaleChanged;
+
+            this.DataContext = new PixelRulerViewModel();
+        }
+
         public static Drawing.Bitmap CaptureScreen()
         {
             var screenBounds = new Drawing.Size(3840, 2160);//System.Windows.Forms.Screen.PrimaryScreen.Bounds;
@@ -56,22 +71,6 @@ namespace PixelRuler
             base.OnDpiChanged(oldDpi, newDpi);
         }
 
-        public MainWindow()
-        {
-            InitializeComponent();
-
-            this.Loaded += MainWindow_Loaded;
-
-            var image = ConvertToImageSource(CaptureScreen());
-            mainCanvas.SetImage(image);
-            mainCanvas.ScaleChanged += ScaleChanged;
-
-            this.DataContext = new PixelRulerViewModel() { Testing = "123444" };
-
-            (this.DataContext as PixelRulerViewModel).Testing = "123";
-
-            testing.DataContext = this.DataContext;
-        }
 
         [DllImport("User32.dll")]
         private static extern bool RegisterHotKey(
@@ -172,7 +171,23 @@ namespace PixelRuler
         {
             (this.DataContext as PixelRulerViewModel).CurrentZoom = (e * 100);
             (this.DataContext as PixelRulerViewModel).Testing = (e * 100).ToString();
-            this.zoomAmount.Text = (e * 100).ToString();
+        }
+
+        private void MenuItemExit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void MenuItemNewScreenshot_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            this.Hide(); // i.e. so taskbar stays up
+            e.Cancel = true;
+            base.OnClosing(e);
         }
     }
 }
