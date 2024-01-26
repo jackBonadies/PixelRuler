@@ -32,8 +32,10 @@ namespace PixelRuler
         {
             InitializeComponent();
 
+            //this.ViewModel.ImageSourceChanged += imageSourceChanged;
+            this.DataContextChanged += MainCanvas_DataContextChanged;
 
-
+            this.mainImage.SourceUpdated += MainCanvas_SourceUpdated;
             this.mainCanvas.MouseWheel += Canvas_MouseWheel;
 
             //this.mainCanvas.PreviewMouseRightButtonDown += MainCanvas_MouseRightButtonDown;
@@ -48,6 +50,32 @@ namespace PixelRuler
             //this.mainCanvas.MouseLeftButtonDown += MainCanvas_MouseLeftButtonDown;
             //this.mainCanvas.MouseLeftButtonUp += MainCanvas_MouseLeftButtonUp;
 
+        }
+
+        private void MainCanvas_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            this.ViewModel.ImageSourceChanged += ViewModel_ImageSourceChanged;
+        }
+        private static void SetImageLocation(Canvas canvas, Image image)
+        {
+            // image should be center or if larger than screen bounds then topleft.
+            canvas.GetTranslateTransform().X = -Canvas.GetLeft(image);
+            canvas.GetTranslateTransform().Y = -Canvas.GetTop(image);
+        }
+
+        private void ViewModel_ImageSourceChanged(object? sender, EventArgs e)
+        {
+            SetImageLocation(mainCanvas, mainImage);    
+        }
+
+        private void imageSourceChanged(object? sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void MainCanvas_SourceUpdated(object? sender, DataTransferEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void MainCanvas_MouseLeave(object sender, MouseEventArgs e)
@@ -161,11 +189,25 @@ namespace PixelRuler
 
         private void ColorPickerMouseDown(MouseButtonEventArgs e)
         {
-            var pt = truncate(e.GetPosition(mainImage));
-            (mainImage.Source as BitmapImage).GetValue
-            e.GetPosition(mainImage)
-            mainCanvas.Get
+            SetColorUnderMouse(e);
+        }
 
+        private void SetColorUnderMouse(MouseEventArgs e)
+        {
+            var pt = truncate(e.GetPosition(mainImage));
+
+            if (this.ViewModel.Image == null ||
+                this.ViewModel.Image.Width <= pt.X ||
+                this.ViewModel.Image.Height <= pt.Y ||
+                pt.X < 0 ||
+                pt.Y < 0)
+            {
+                return;
+            }
+            else
+            {
+                this.ViewModel.Color = this.ViewModel.Image.GetPixel((int)pt.X, (int)pt.Y);
+            }
         }
 
         private void StartBoundingBox(MouseButtonEventArgs e)
@@ -214,8 +256,10 @@ namespace PixelRuler
                 }
                 var truncatedPoint = truncate(e.GetPosition(mainCanvas));
                 colorPickBox.SetPosition(truncatedPoint);
-
-
+                if(System.Windows.Input.Mouse.LeftButton == MouseButtonState.Pressed)
+                {
+                    SetColorUnderMouse(e);
+                }
             }
 
 
@@ -271,23 +315,14 @@ namespace PixelRuler
             var pointToKeepAtLocation = constrainToImage(mousePos);
 
             bool exp = true;
-            double zoomDelta = e.Delta > 0 ? .02 : -.02;
-            double amountExp = .5;
             double zoomExpDelta = e.Delta > 0 ? 2 : .5;
             var oldScale = st.ScaleX;
-            if (exp)
-            {
-                st.ScaleX *= zoomExpDelta;
-                st.ScaleY *= zoomExpDelta;
-            }
-            else
-            {
-                st.ScaleX += zoomDelta;
-                st.ScaleY += zoomDelta;
-            }
 
-            st.ScaleX = Math.Max(0.5, st.ScaleX);
-            st.ScaleY = Math.Max(0.5, st.ScaleY);
+            st.ScaleX *= zoomExpDelta;
+            st.ScaleY *= zoomExpDelta;
+
+            st.ScaleX = clampScale(st.ScaleX);
+            st.ScaleY = clampScale(st.ScaleY);
 
             var newScale = st.ScaleX;
 
@@ -312,6 +347,11 @@ namespace PixelRuler
             e.Handled = true;
         }
 
+        private double clampScale(double scale)
+        {
+            return Math.Max(Math.Min(scale, App.MaxZoom * .01), App.MinZoom * .01);
+        }
+
         private void UpdateForZoomChange()
         {
             if(colorPickBox != null)
@@ -332,9 +372,17 @@ namespace PixelRuler
         internal void SetImage(BitmapSource img)
         {
             this.mainImage.Source = img;
-            // image should be center or if larger than screen bounds then topleft.
-            this.mainCanvas.GetTranslateTransform().X = -Canvas.GetLeft(this.mainImage);
-            this.mainCanvas.GetTranslateTransform().Y = -Canvas.GetTop(this.mainImage);
+            SetImageLocation(this.mainCanvas, this.mainImage);
+        }
+
+        private void mainImage_SourceUpdated(object sender, DataTransferEventArgs e)
+        {
+
+        }
+
+        private void mainImage_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

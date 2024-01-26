@@ -15,6 +15,9 @@
         </Canvas.RenderTransform>
         <Rectangle Stroke="Black" Width="100" Height="100" />
         <Rectangle Stroke="White" Width="100" Height="100" StrokeDashArray="2 2" StrokeDashOffset="-1"/>
-        <Image Focusable="True" x:Name="mainImage" Canvas.Left="10000" Canvas.Top="10000" RenderOptions.BitmapScalingMode="NearestNeighbor" SnapsToDevicePixels="True"></Image>
+        <Image Focusable="True" x:Name="mainImage" Canvas.Left="10000" Canvas.Top="10000" 
+               RenderOptions.BitmapScalingMode="NearestNeighbor" SnapsToDevicePixels="True"
+               Source="{Binding ImageSource}" SourceUpdated="mainImage_SourceUpdated">
+        </Image>
     </Canvas>
 </UserControl>

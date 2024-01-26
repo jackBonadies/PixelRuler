@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Interop;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace PixelRuler
 {
@@ -15,6 +20,50 @@ namespace PixelRuler
         private void OnPropertyChanged([CallerMemberName] string? name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        private Bitmap? mainImage;
+        public Bitmap? Image
+        {
+            get
+            { 
+                return mainImage; 
+            }
+            set
+            {
+                mainImage = value;
+                ImageSource = ConvertToImageSource(mainImage);
+            }
+        }
+
+        private BitmapSource? imageSource;
+
+        public BitmapSource? ImageSource
+        {
+            get
+            {
+                return imageSource;
+            }
+            set
+            {
+                imageSource = value;
+                ImageSourceChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler<EventArgs>? ImageSourceChanged;
+
+        public static BitmapSource? ConvertToImageSource(Bitmap? bitmap)
+        {
+            if(bitmap == null)
+            {
+                return null;
+            }
+            return Imaging.CreateBitmapSourceFromHBitmap(
+                bitmap.GetHbitmap(),
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions());
         }
 
 
@@ -48,7 +97,7 @@ namespace PixelRuler
                 }
                 else
                 {
-                    return 123;
+                    return 0;
                 }
             }
             set
@@ -61,25 +110,6 @@ namespace PixelRuler
             }
         }
 
-
-        private string testing = "100";
-        public string Testing
-        {
-            get
-            {
-                return testing;
-            }
-            set
-            {
-                if (testing != value)
-                {
-                    testing = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-
         private double boundingBoxHeight;
         public double BoundingBoxHeight
         {
@@ -91,7 +121,7 @@ namespace PixelRuler
                 }
                 else
                 {
-                    return 123;
+                    return 0;
                 }
             }
             set
@@ -124,7 +154,7 @@ namespace PixelRuler
             set;
         } = App.ZoomSelections;
 
-        private double zoom;
+        private double zoom = 100;
         public double CurrentZoom
         {
             get
@@ -141,7 +171,19 @@ namespace PixelRuler
             }
         }
 
-
+        private System.Drawing.Color color;
+        public System.Drawing.Color Color 
+        { 
+            get
+            {
+                return color;
+            }
+            set
+            {
+                color = value;
+                OnPropertyChanged();
+            }
+        }
     }
 
     public enum Tool

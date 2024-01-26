@@ -18,9 +18,6 @@ namespace PixelRuler
     /// </summary>
     public partial class App : Application
     {
-
-
-
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -60,5 +57,9 @@ namespace PixelRuler
             12800,
             25600,
         };
+
+        public static readonly double MinZoom = ZoomSelections[0];
+        public static readonly double MaxZoom = ZoomSelections[ZoomSelections.Length - 1];
+
     }
 }

@@ -42,9 +42,22 @@ namespace PixelRuler
 
             this.DataContext = new PixelRulerViewModel();
 
-            var bmp = CaptureScreen();
-            var image = ConvertToImageSource(bmp);
-            mainCanvas.SetImage(image);
+            var screenshot = CaptureScreen();
+            this.ViewModel.Image = screenshot;
+            mainCanvas.SetImage(this.ViewModel.ImageSource);
+        }
+
+        private PixelRulerViewModel ViewModel
+        {
+            get
+            {
+                var prvm = DataContext as PixelRulerViewModel;
+                if (prvm == null)
+                {
+                    throw new Exception("No View Model on Main Canvas");
+                }
+                return prvm;
+            }
         }
 
         public static Drawing.Bitmap CaptureScreen()
@@ -56,15 +69,6 @@ namespace PixelRuler
                 g.CopyFromScreen(0, 0, 0, 0, screenBounds, Drawing.CopyPixelOperation.SourceCopy);
             }
             return screenshot;
-        }
-
-        public static BitmapSource ConvertToImageSource(Drawing.Bitmap bitmap)
-        {
-            return Imaging.CreateBitmapSourceFromHBitmap(
-                bitmap.GetHbitmap(),
-                IntPtr.Zero,
-                Int32Rect.Empty,
-                BitmapSizeOptions.FromEmptyOptions());  
         }
 
         protected override void OnDpiChanged(DpiScale oldDpi, DpiScale newDpi)
@@ -148,7 +152,6 @@ namespace PixelRuler
         private void OnHotKeyPressed()
         {
             // do stuff
-            (this.DataContext) = new PixelRulerViewModel() { Testing = "321" };
         }
 
 
@@ -170,8 +173,7 @@ namespace PixelRuler
 
         public void ScaleChanged(object? sender, double e)
         {
-            (this.DataContext as PixelRulerViewModel).CurrentZoom = (e * 100);
-            (this.DataContext as PixelRulerViewModel).Testing = (e * 100).ToString();
+            this.ViewModel.CurrentZoom = (e * 100);
         }
 
         private void MenuItemExit_Click(object sender, RoutedEventArgs e)
@@ -200,8 +202,8 @@ namespace PixelRuler
                 bmp = CaptureScreen();
             })).ConfigureAwait(true);
             BitmapSource? image = null;
-            image = ConvertToImageSource(bmp);
-            mainCanvas.SetImage(image);
+            this.ViewModel.Image = bmp;
+            mainCanvas.SetImage(this.ViewModel.ImageSource);
             this.Show();
 
         }

@@ -92,7 +92,7 @@
                     Margin="0,0,6,0"
                     PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
                     <local:DropDownButtonCustom.Flyout>
-                        <ContextMenu Placement="Bottom" PlacementTarget="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:DropDownButtonCustom}}}">
+                        <ContextMenu Placement="Bottom">
                             <MenuItem Header="Settings" />
                         </ContextMenu>
                     </local:DropDownButtonCustom.Flyout>
@@ -111,8 +111,10 @@
                 <TextBlock VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">H:</TextBlock>
                 <ui:NumberBox Width="56" IsReadOnly="True" FontSize="15" PlaceholderText="Height" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding BoundingBoxHeight}" Padding="6,6,0,6" Margin="0, 0, 8, 0"/>
 
-                <TextBlock VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">C:</TextBlock>
-                <ui:NumberBox Width="56" IsReadOnly="True" FontSize="15" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding SelectedColor}" Padding="6,6,0,6" />
+                <TextBlock Visibility="Collapsed" VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">C:</TextBlock>
+                <Border Margin="0, 0, 4, 0" Width="26" Height="26" BorderThickness="1" CornerRadius="5" BorderBrush="#aa303030" Background="{Binding Color, Converter={StaticResource ColorDisplayColorConverter}}">
+                </Border>
+                <ui:NumberBox Width="86" IsReadOnly="True" FontSize="15" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}}" Padding="6,6,0,6" />
 
             </StackPanel>
 

@@ -11,6 +11,8 @@
             </ResourceDictionary.MergedDictionaries>
 
             <local:PercentFormatStringConverter x:Key="PercentFormatStringConverter" />
+            <local:ColorFormatStringConverter x:Key="ColorFormatStringConverter" />
+            <local:ColorDisplayColorConverter x:Key="ColorDisplayColorConverter" />
             <local:EnumToBoolCheckedStickyConverter x:Key="EnumToBoolCheckedStickyConverter" />
 
             <SolidColorBrush x:Key="BarColor">#F1F3F9</SolidColorBrush>
