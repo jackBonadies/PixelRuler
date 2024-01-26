@@ -6,7 +6,12 @@
              xmlns:local="clr-namespace:PixelRuler"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Canvas Name="mainCanvas" Background="#303030" Width="30000" Height="30000" Focusable="True">
+    <Canvas Name="mainCanvas" 
+            Background="#303030" 
+            Width="30000" 
+            Height="30000" 
+            IsManipulationEnabled="True"
+            Focusable="True">
         <Canvas.RenderTransform>
             <TransformGroup>
                 <ScaleTransform x:Name="CanvasScaleTransform"/>

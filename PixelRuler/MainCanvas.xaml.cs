@@ -37,6 +37,7 @@ namespace PixelRuler
 
             this.mainImage.SourceUpdated += MainCanvas_SourceUpdated;
             this.mainCanvas.MouseWheel += Canvas_MouseWheel;
+            this.mainCanvas.TouchDown += MainCanvas_TouchDown;
 
             //this.mainCanvas.PreviewMouseRightButtonDown += MainCanvas_MouseRightButtonDown;
             //this.mainCanvas.PreviewMouseRightButtonUp += MainCanvas_MouseRightButtonUp;
@@ -50,6 +51,26 @@ namespace PixelRuler
             //this.mainCanvas.MouseLeftButtonDown += MainCanvas_MouseLeftButtonDown;
             //this.mainCanvas.MouseLeftButtonUp += MainCanvas_MouseLeftButtonUp;
 
+        }
+
+        Point lastCenterPoint;
+        double lastDistance;
+        private void MainCanvas_TouchDown(object? sender, TouchEventArgs e)
+        {
+            if (e.TouchDevice.GetIntermediateTouchPoints(mainCanvas).Count == 2)
+            {
+                e.Handled = true;
+                var points = e.TouchDevice.GetIntermediateTouchPoints(mainCanvas);
+                lastCenterPoint = new Point(
+                    (points[0].Position.X + points[1].Position.X) / 2,
+                    (points[0].Position.Y + points[1].Position.Y) / 2);
+                lastDistance = GetDistance(points[0].Position, points[1].Position);
+            }
+        }
+
+        private double GetDistance(Point point1, Point point2)
+        {
+            return Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2));
         }
 
         private void MainCanvas_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -306,6 +327,8 @@ namespace PixelRuler
 
         Point lastPos;
 
+        int mouseWheelAmountAccum = 0;
+
         private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             var canvas = sender as Canvas;
@@ -315,7 +338,29 @@ namespace PixelRuler
             var pointToKeepAtLocation = constrainToImage(mousePos);
 
             bool exp = true;
+            if((mouseWheelAmountAccum > 0 && e.Delta < 0) ||
+               (mouseWheelAmountAccum < 0 && e.Delta > 0))
+            {
+                mouseWheelAmountAccum = 0;
+            }
+            mouseWheelAmountAccum += e.Delta;
+
+            int thresholdAmount = 30;
+            if(mouseWheelAmountAccum >= thresholdAmount)
+            {
+                mouseWheelAmountAccum %= thresholdAmount;
+            }
+            else if(mouseWheelAmountAccum <= -thresholdAmount)
+            {
+                mouseWheelAmountAccum %= thresholdAmount;
+            }
+            else
+            {
+                return;
+            }
+
             double zoomExpDelta = e.Delta > 0 ? 2 : .5;
+
             var oldScale = st.ScaleX;
 
             st.ScaleX *= zoomExpDelta;

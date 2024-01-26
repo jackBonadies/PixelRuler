@@ -93,7 +93,7 @@
                     PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
                     <local:DropDownButtonCustom.Flyout>
                         <ContextMenu Placement="Bottom">
-                            <MenuItem Header="Settings" />
+                            <MenuItem Header="Settings" Click="SettingsMenuItem_Click"/>
                         </ContextMenu>
                     </local:DropDownButtonCustom.Flyout>
                     <!--<wpfui:SymbolIcon Symbol="MoreHorizontal48" FontSize="17.5"/>-->
@@ -114,7 +114,7 @@
                 <TextBlock Visibility="Collapsed" VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">C:</TextBlock>
                 <Border Margin="0, 0, 4, 0" Width="26" Height="26" BorderThickness="1" CornerRadius="5" BorderBrush="#aa303030" Background="{Binding Color, Converter={StaticResource ColorDisplayColorConverter}}">
                 </Border>
-                <ui:NumberBox Width="86" IsReadOnly="True" FontSize="15" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}}" Padding="6,6,0,6" />
+                <ui:NumberBox Width="86" IsReadOnly="True" FontSize="15" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}, Mode=OneWay}" Padding="6,6,0,6" />
 
             </StackPanel>
 

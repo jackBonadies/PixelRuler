@@ -35,12 +35,12 @@ namespace PixelRuler
 
         public MainWindow()
         {
+            this.DataContext = new PixelRulerViewModel();
+
             InitializeComponent();
 
             this.Loaded += MainWindow_Loaded;
             mainCanvas.ScaleChanged += ScaleChanged;
-
-            this.DataContext = new PixelRulerViewModel();
 
             var screenshot = CaptureScreen();
             this.ViewModel.Image = screenshot;
@@ -206,6 +206,12 @@ namespace PixelRuler
             mainCanvas.SetImage(this.ViewModel.ImageSource);
             this.Show();
 
+        }
+
+        private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new SettingsWindow();
+            settingsWindow.ShowDialog();
         }
     }
 }
