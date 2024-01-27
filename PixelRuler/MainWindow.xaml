@@ -41,20 +41,41 @@
         </Style>-->
 
     </Window.Resources>
+    
+    <Window.DataContext>
+        <local:PixelRulerViewModel />
+    </Window.DataContext>
+
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding NewScreenshotFullCommand}" Key="{Binding NewScreenshotFullCommand.Key}" Modifiers="{Binding NewScreenshotFullCommand.Modifiers}" />
+        <KeyBinding Command="{Binding BoundsMeasureSelectedCommand}" Key="{Binding BoundsMeasureSelectedCommand.Key}" Modifiers="{Binding BoundsMeasureSelectedCommand.Modifiers}" />
+        <KeyBinding Command="{Binding ColorPickerSelectedCommand}" Key="{Binding ColorPickerSelectedCommand.Key}" Modifiers="{Binding ColorPickerSelectedCommand.Modifiers}" />
+        <KeyBinding Command="{Binding RulerSelectedCommand}" Key="{Binding RulerSelectedCommand.Key}" Modifiers="{Binding RulerSelectedCommand.Modifiers}" />
+        <KeyBinding Command="{Binding ZoomInCommand}" Key="{Binding ZoomInCommand.Key}" Modifiers="{Binding ZoomInCommand.Modifiers}" />
+        <KeyBinding Command="{Binding ZoomInCommand}" Key="Add" Modifiers="{Binding ZoomInCommand.Modifiers}" />
+        <KeyBinding Command="{Binding ZoomOutCommand}" Key="{Binding ZoomOutCommand.Key}" Modifiers="{Binding ZoomOutCommand.Modifiers}" />
+        <KeyBinding Command="{Binding ZoomOutCommand}" Key="Subtract" Modifiers="{Binding ZoomOutCommand.Modifiers}" />
+        <KeyBinding Command="{Binding FitWindowCommand}" Key="{Binding FitWindowCommand.Key}" Modifiers="{Binding FitWindowCommand.Modifiers}" />
+        <KeyBinding Command="{Binding FitWindowCommand}" Key="NumPad0" Modifiers="{Binding FitWindowCommand.Modifiers}" />
+    </Window.InputBindings>
 
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <local:MainCanvas x:Name="mainCanvas" Grid.Row="1"></local:MainCanvas>
 
         <DockPanel Grid.Row="0" Height="40" Background="#EFF4F9">
+
+            <!--Left Panel-->
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                 <StackPanel Width="10"></StackPanel>
-                <Button Click="Button_Click">
+                <Button 
+                    Command="{Binding NewScreenshotFullCommand}"
+                    ToolTipService.ToolTip="{Binding NewScreenshotFullCommand.ToolTipTextFull}">
                     <wpfui:SymbolIcon Symbol="CameraAdd48" FontSize="17" RenderTransformOrigin="0.5,0.5">
                         <wpfui:SymbolIcon.RenderTransform>
                             <TransformGroup>
@@ -72,20 +93,34 @@
                 <Border Width="2" Height="28" SnapsToDevicePixels="True" Background="#e0e0e0"/>
                 <StackPanel Width="10"></StackPanel>
 
-                <ToggleButton IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=BoundingBox}">
+                <ToggleButton IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=BoundingBox}" 
+                              Command="{Binding BoundsMeasureSelectedCommand}" 
+                              ToolTipService.ToolTip="{Binding BoundsMeasureSelectedCommand.ToolTipTextFull}"
+                              >
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEF20;" FontSize="17" />
                 </ToggleButton>
-                <ToggleButton IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=ColorPicker}">
+
+                <ToggleButton IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=Ruler}" 
+                              Command="{Binding RulerSelectedCommand}" 
+                              ToolTipService.ToolTip="{Binding RulerSelectedCommand.ToolTipTextFull}"
+                              >
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xED5E;" FontSize="17" />
+                </ToggleButton>
+
+                <ToggleButton IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=ColorPicker}"
+                              Command="{Binding ColorPickerSelectedCommand}" 
+                              ToolTipService.ToolTip="{Binding ColorPickerSelectedCommand.ToolTipTextFull}" 
+                              >
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEF3C;" FontSize="17" />
                 </ToggleButton>
 
             </StackPanel>
 
-            <!-- Right Panel -->
+            <!--Right Panel-->
             <StackPanel DockPanel.Dock="Right"  Orientation="Horizontal">
                 <ComboBox 
-                    Text="{Binding CurrentZoom, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}" 
                     ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}" 
+                    Text="{Binding CurrentZoomPercent, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}" 
                     Margin="0,0,6,0"
                     FontSize="12" Padding="10,6,0,6" MinWidth="80" />
                 <local:DropDownButtonCustom 
@@ -102,7 +137,7 @@
             </StackPanel>
 
 
-            <!-- Center Panel -->
+            <!--Center Panel-->
             <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center">
 
                 <TextBlock VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">W:</TextBlock>
@@ -132,7 +167,7 @@
             <tray:NotifyIcon.Menu>
                 <ContextMenu>
                     <wpfui:MenuItem
-                            Click="MenuItemNewScreenshot_Click"
+                            Command="{Binding NewScreenshotFullCommand}"
                             Header="New Screenshot">
                         <wpfui:MenuItem.Icon>
                             <wpfui:SymbolIcon Symbol="CameraAdd24" />

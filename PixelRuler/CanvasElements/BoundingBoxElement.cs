@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PixelRuler.CanvasElements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,18 +13,15 @@ using System.Windows.Shapes;
 
 namespace PixelRuler
 {
-    public class BoundingBoxElement : IZoomCanvasShape
+    public class BoundingBoxElement : MeasurementElementZoomCanvasShape
     {
         private const bool marching_ants = true;
         private readonly SolidColorBrush brush1 = new SolidColorBrush(Colors.Black);
         private readonly SolidColorBrush brush2 = new SolidColorBrush(Colors.White);
 
-        Canvas owningCanvas;
 
-        public BoundingBoxElement(Canvas owningCanvas, Point startPoint) 
+        public BoundingBoxElement(Canvas owningCanvas, Point startPoint) : base(owningCanvas)
         {
-            this.owningCanvas = owningCanvas;
-
             rect1 = createRectangle();
             rect1.Stroke = brush1;
 
@@ -58,23 +56,6 @@ namespace PixelRuler
             Canvas.SetZIndex(BoundingBoxLabel, 500);
 
             UpdateForZoomChange();
-        }
-
-        private Rectangle createRectangle()
-        {
-            var rect = new Rectangle();
-            rect.Width = 0;
-            rect.Height = 0;
-            rect.StrokeThickness = 1;
-            rect.SnapsToDevicePixels = true;
-            return rect;
-        }
-
-        private double getBoundingBoxStrokeThickness()
-        {
-            // we need to perform dpi scaling here bc our parent undid dpi scaling
-            var dpi = owningCanvas.GetDpi();
-            return dpi / this.owningCanvas.GetScaleTransform().ScaleX;
         }
 
         private void SetShapeState(Rectangle rect)
@@ -136,6 +117,7 @@ namespace PixelRuler
             BoundingBoxLabel.BoundingBoxWidth = (int)rect1.Width;
             BoundingBoxLabel.BoundingBoxHeight = (int)rect1.Height;
         }
+
         public int Height
         {
             get
@@ -161,20 +143,33 @@ namespace PixelRuler
             set;
         }
 
-        public void UpdateForZoomChange()
+        public override void UpdateForZoomChange()
         {
-            rect1.StrokeThickness = getBoundingBoxStrokeThickness();
-            rect2.StrokeThickness = getBoundingBoxStrokeThickness();
+            rect1.StrokeThickness = getSinglePixelUISize();
+            rect2.StrokeThickness = getSinglePixelUISize();
             var st = BoundingBoxLabel.RenderTransform as ScaleTransform;
             st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
             st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
         }
 
-        public void Clear()
+        public override void Clear()
         {
             this.owningCanvas.Children.Remove(rect1);
             this.owningCanvas.Children.Remove(rect2);
             this.owningCanvas.Children.Remove(BoundingBoxLabel);
+        }
+
+        public override void SetEndPoint(System.Windows.Point roundedPoint)
+        {
+            this.EndPoint = roundedPoint;
+        }
+
+        public override bool IsEmpty
+        {
+            get
+            {
+                return this.Width == 0 && this.Height == 0;
+            }
         }
     }
 }

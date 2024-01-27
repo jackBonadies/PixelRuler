@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace PixelRuler
@@ -115,6 +118,112 @@ namespace PixelRuler
 
             // never "uncheck" i.e. whether true or false we set to this
             return Enum.Parse(targetType, parameterString);
+        }
+    }
+
+    public class RelayCommandFull : RelayCommand
+    {
+        private static readonly Dictionary<ModifierKeys, string> modifierKeysToText = new Dictionary<ModifierKeys, string>()
+            {
+                {ModifierKeys.None, ""},
+                {ModifierKeys.Control, "Ctrl+"},
+                {ModifierKeys.Control|ModifierKeys.Shift, "Ctrl+Shift+"},
+                {ModifierKeys.Control|ModifierKeys.Alt, "Ctrl+Alt+"},
+                {ModifierKeys.Control|ModifierKeys.Shift|ModifierKeys.Alt, "Ctrl+Shift+Alt+"},
+                {ModifierKeys.Windows, "Win+"}
+            };
+
+        public RelayCommandFull(Action<object?> action, Key key, ModifierKeys modifiers, string toolTipText) : base(action)
+        {
+            this.key = key;
+            this.modifiers = modifiers;
+            this.toolTipTextBase = toolTipText;
+        }
+
+        private Key key;
+        public Key Key
+        {
+            get
+            {
+                return this.key;
+            }
+            set
+            {
+                this.key = value;
+                OnPropertyChanged();
+                OnPropertyChanged("ToolTipTextFull");
+            }
+        }
+
+        private ModifierKeys modifiers;
+        public ModifierKeys Modifiers
+        {
+            get
+            {
+                return this.modifiers;
+            }
+            set
+            {
+                this.modifiers = value;
+                OnPropertyChanged();
+                OnPropertyChanged("ToolTipTextFull");
+            }
+        }
+
+        private string toolTipTextBase;
+        public string ToolTipTextBase
+        {
+            get
+            {
+                return this.toolTipTextBase;
+            }
+            set
+            {
+                this.toolTipTextBase = value;
+                OnPropertyChanged();
+                OnPropertyChanged("ToolTipTextFull");
+            }
+        }
+
+        public string ToolTipTextFull
+        {
+            get
+            {
+                if (key != Key.None)
+                {
+                    var modifiersText = modifierKeysToText[modifiers];
+                    return $"{toolTipTextBase} ({modifiersText}{key})";
+                }
+                return toolTipTextBase;
+            }
+        }
+    }
+
+    public class RelayCommand : ICommand
+    {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private Action<object?> action;
+        public RelayCommand(Action<object?> action)
+        {
+            this.action = action;
+        }
+
+        public event EventHandler? CanExecuteChanged;
+
+        public bool CanExecute(object? parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object? parameter)
+        {
+            action.Invoke(parameter);
+        }
+
+        public void OnPropertyChanged([CallerMemberName] string? name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 

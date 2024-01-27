@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PixelRuler.CanvasElements;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -22,11 +23,11 @@ namespace PixelRuler
     /// </summary>
     public partial class MainCanvas : UserControl
     {
-        BoundingBoxElement boundingBox;
-        ColorPickElement colorPickBox;
-        bool drawingRectangle;
+        MeasurementElementZoomCanvasShape? measurementElement;
+        ColorPickElement? colorPickBox;
+        bool drawingShape;
 
-        public EventHandler<double> ScaleChanged;
+        public EventHandler<double> EffectiveZoomChanged;
 
         public MainCanvas()
         {
@@ -36,17 +37,18 @@ namespace PixelRuler
             this.DataContextChanged += MainCanvas_DataContextChanged;
 
             this.mainImage.SourceUpdated += MainCanvas_SourceUpdated;
-            this.mainCanvas.MouseWheel += Canvas_MouseWheel;
-            this.mainCanvas.TouchDown += MainCanvas_TouchDown;
+            this.innerCanvas.MouseWheel += Canvas_MouseWheel;
+            this.innerCanvas.TouchDown += MainCanvas_TouchDown;
 
+            this.EffectiveZoomChanged += OnEffectiveZoomChanged;
             //this.mainCanvas.PreviewMouseRightButtonDown += MainCanvas_MouseRightButtonDown;
             //this.mainCanvas.PreviewMouseRightButtonUp += MainCanvas_MouseRightButtonUp;
 
-            this.mainCanvas.MouseEnter += MainCanvas_MouseEnter;
-            this.mainCanvas.MouseLeave += MainCanvas_MouseLeave;
-            this.mainCanvas.MouseMove += MainCanvas_MouseMove;
-            this.mainCanvas.MouseDown += MainCanvas_MouseDown;
-            this.mainCanvas.MouseUp += MainCanvas_MouseUp;
+            this.innerCanvas.MouseEnter += MainCanvas_MouseEnter;
+            this.innerCanvas.MouseLeave += MainCanvas_MouseLeave;
+            this.innerCanvas.MouseMove += MainCanvas_MouseMove;
+            this.innerCanvas.MouseDown += MainCanvas_MouseDown;
+            this.innerCanvas.MouseUp += MainCanvas_MouseUp;
 
             //this.mainCanvas.MouseLeftButtonDown += MainCanvas_MouseLeftButtonDown;
             //this.mainCanvas.MouseLeftButtonUp += MainCanvas_MouseLeftButtonUp;
@@ -57,10 +59,10 @@ namespace PixelRuler
         double lastDistance;
         private void MainCanvas_TouchDown(object? sender, TouchEventArgs e)
         {
-            if (e.TouchDevice.GetIntermediateTouchPoints(mainCanvas).Count == 2)
+            if (e.TouchDevice.GetIntermediateTouchPoints(innerCanvas).Count == 2)
             {
                 e.Handled = true;
-                var points = e.TouchDevice.GetIntermediateTouchPoints(mainCanvas);
+                var points = e.TouchDevice.GetIntermediateTouchPoints(innerCanvas);
                 lastCenterPoint = new Point(
                     (points[0].Position.X + points[1].Position.X) / 2,
                     (points[0].Position.Y + points[1].Position.Y) / 2);
@@ -76,7 +78,9 @@ namespace PixelRuler
         private void MainCanvas_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             this.ViewModel.ImageSourceChanged += ViewModel_ImageSourceChanged;
+            this.ViewModel.ZoomChanged += SelectedZoomChanged;
         }
+
         private static void SetImageLocation(Canvas canvas, Image image)
         {
             // image should be center or if larger than screen bounds then topleft.
@@ -86,7 +90,64 @@ namespace PixelRuler
 
         private void ViewModel_ImageSourceChanged(object? sender, EventArgs e)
         {
-            SetImageLocation(mainCanvas, mainImage);    
+            SetImageLocation(innerCanvas, mainImage);    
+        }
+
+
+        /// <summary>
+        /// Canvas was updated, update ViewModel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OnEffectiveZoomChanged(object? sender, double e)
+        {
+            this.ViewModel.CurrentZoomPercent = (e * 100);
+        }
+
+
+        /// <summary>
+        /// ViewModel was updated, update canvas.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="keepMousePositionAtLocation"></param>
+        public void SelectedZoomChanged(object? sender, ZoomBehavior zoomBehavior)
+        {
+            bool force = zoomBehavior == ZoomBehavior.ResetWindow;
+            if (this.EffectiveZoom != this.ViewModel.CurrentZoom || force)
+            {
+                var centerPt = getPointToKeepAtLocation(zoomBehavior);
+                this.Zoom(this.EffectiveZoom, this.ViewModel.CurrentZoom, centerPt, zoomBehavior);
+            }
+        }
+
+        private Point getPointToKeepAtLocation(ZoomBehavior zoomBehavior)
+        {
+            bool isWithinBounds = true;
+            bool keepMousePositionAtLocation = zoomBehavior == ZoomBehavior.KeepMousePositionFixed;
+            if (keepMousePositionAtLocation)
+            {
+                var mousePos = Mouse.GetPosition(this);
+                if(mousePos.X < 0 || 
+                   mousePos.Y < 0 || 
+                   mousePos.X >= this.ActualWidth || 
+                   mousePos.Y >= this.ActualHeight)
+                {
+                    isWithinBounds = false;
+                }
+            }
+
+            if(keepMousePositionAtLocation && isWithinBounds)
+            {
+                return Mouse.GetPosition(this.innerCanvas);
+            }
+            else
+            {
+                var startPt = this.innerCanvas.RenderTransform.Inverse.Transform(new System.Windows.Point(0, 0));
+                var endPt = this.innerCanvas.RenderTransform.Inverse.Transform(new System.Windows.Point(this.ActualWidth, this.ActualHeight));
+                var centerPtX = (endPt.X + startPt.X) / 2;
+                var centerPtY = (endPt.Y + startPt.Y) / 2;
+                return new System.Windows.Point(centerPtX, centerPtY);
+            }
         }
 
         private void imageSourceChanged(object? sender, EventArgs e)
@@ -120,7 +181,7 @@ namespace PixelRuler
         {
             if(e.ChangedButton == MouseButton.Left)
             {
-                this.EndBoundingBox(e);
+                this.EndShape(e);
             }
             else if(e.ChangedButton == MouseButton.Middle || e.ChangedButton == MouseButton.Right)
             {
@@ -130,22 +191,22 @@ namespace PixelRuler
 
         private void EndPan(MouseButtonEventArgs e)
         {
-            mainCanvas.ReleaseMouseCapture();
+            innerCanvas.ReleaseMouseCapture();
 
             isPanning = false;
         }
 
-        private void EndBoundingBox(MouseButtonEventArgs e)
+        private void EndShape(MouseButtonEventArgs e)
         {
-            mainCanvas.Cursor = cursorOld;
-            mainCanvas.ReleaseMouseCapture();
-            drawingRectangle = false;
+            innerCanvas.Cursor = cursorOld;
+            innerCanvas.ReleaseMouseCapture();
+            drawingShape = false;
 
-            if(boundingBox != null)
+            if(measurementElement != null)
             {
-                if(boundingBox.Width == 0 && boundingBox.Height == 0)
+                if(measurementElement.IsEmpty)
                 {
-                    boundingBox.Clear();
+                    measurementElement.Clear();
                 }
             }
         }
@@ -155,7 +216,10 @@ namespace PixelRuler
             switch(ViewModel.SelectedTool)
             {
                 case Tool.BoundingBox:
-                    StartBoundingBox(e);
+                    StartMeasureElement(e);
+                    break;
+                case Tool.Ruler:
+                    StartMeasureElement(e);
                     break;
                 case Tool.ColorPicker:
                     ColorPickerMouseDown(e);
@@ -179,12 +243,12 @@ namespace PixelRuler
 
         private void StartPan(MouseButtonEventArgs e)
         {
-            mainCanvas.CaptureMouse();
+            innerCanvas.CaptureMouse();
 
             totalAmountToMoveX = 0;
             totalAmountToMoveY = 0;
 
-            var tt = this.mainCanvas.GetTranslateTransform();
+            var tt = this.innerCanvas.GetTranslateTransform();
 
             origX = tt.X;
             origY = tt.Y;
@@ -231,22 +295,33 @@ namespace PixelRuler
             }
         }
 
-        private void StartBoundingBox(MouseButtonEventArgs e)
+
+        private void StartMeasureElement(MouseButtonEventArgs e)
         {
-            mainCanvas.CaptureMouse();
+            innerCanvas.CaptureMouse();
 
-            drawingRectangle = true;
-            cursorOld = mainCanvas.Cursor;
-            mainCanvas.Cursor = Cursors.None;
+            drawingShape = true;
+            cursorOld = innerCanvas.Cursor;
+            //innerCanvas.Cursor = Cursors.None;
 
-            var roundedPoint = roundToPixel(e.GetPosition(mainCanvas));
+            var roundedPoint = roundToPixel(e.GetPosition(innerCanvas));
 
-            boundingBox?.Clear();
-            boundingBox = new BoundingBoxElement(this.mainCanvas, roundedPoint);
-            ViewModel.BoundingBoxLabel = boundingBox.BoundingBoxLabel;
+            measurementElement?.Clear();
+            if(ViewModel.SelectedTool == Tool.BoundingBox)
+            {
+                measurementElement = new BoundingBoxElement(this.innerCanvas, roundedPoint);
+                if(measurementElement is BoundingBoxElement b)
+                {
+                    ViewModel.BoundingBoxLabel = b.BoundingBoxLabel;
+                }
+            }
+            else
+            {
+                measurementElement = new RulerElement(this.innerCanvas, roundedPoint);
+            }
         }
 
-        private Cursor cursorOld;
+        private Cursor? cursorOld;
 
         private Point truncate(Point mousePos)
         {
@@ -267,15 +342,13 @@ namespace PixelRuler
 
         private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-
-
             if (ViewModel.SelectedTool == Tool.ColorPicker)
             {
                 if(colorPickBox == null)
                 {
-                    colorPickBox = new ColorPickElement(this.mainCanvas);
+                    colorPickBox = new ColorPickElement(this.innerCanvas);
                 }
-                var truncatedPoint = truncate(e.GetPosition(mainCanvas));
+                var truncatedPoint = truncate(e.GetPosition(innerCanvas));
                 colorPickBox.SetPosition(truncatedPoint);
                 if(System.Windows.Input.Mouse.LeftButton == MouseButtonState.Pressed)
                 {
@@ -289,7 +362,7 @@ namespace PixelRuler
                 var newPos = System.Windows.Input.Mouse.GetPosition(this);
                 var delta = newPos - lastPos;
                 lastPos = newPos;
-                var tt = this.mainCanvas.GetTranslateTransform();
+                var tt = this.innerCanvas.GetTranslateTransform();
 
                 totalAmountToMoveX += delta.X;
                 totalAmountToMoveY += delta.Y;
@@ -298,10 +371,10 @@ namespace PixelRuler
                 tt.Y = Math.Round((origY + totalAmountToMoveY));
                 //tt.Y += delta.Y * ScaleTransform.ScaleY;
             }
-            else if (drawingRectangle)
+            else if (drawingShape)
             {
-                var roundedPoint = roundToPixel(e.GetPosition(mainCanvas));
-                boundingBox.EndPoint = roundedPoint;
+                var roundedPoint = roundToPixel(e.GetPosition(innerCanvas));
+                measurementElement.SetEndPoint(roundedPoint);
             }
         }
 
@@ -332,12 +405,11 @@ namespace PixelRuler
         private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             var canvas = sender as Canvas;
-            var st = this.mainCanvas.GetScaleTransform();
+            var st = this.innerCanvas.GetScaleTransform();
 
             var mousePos = System.Windows.Input.Mouse.GetPosition(canvas);
             var pointToKeepAtLocation = constrainToImage(mousePos);
 
-            bool exp = true;
             if((mouseWheelAmountAccum > 0 && e.Delta < 0) ||
                (mouseWheelAmountAccum < 0 && e.Delta > 0))
             {
@@ -362,39 +434,67 @@ namespace PixelRuler
             double zoomExpDelta = e.Delta > 0 ? 2 : .5;
 
             var oldScale = st.ScaleX;
+            var newScale = zoomExpDelta * oldScale;
 
-            st.ScaleX *= zoomExpDelta;
-            st.ScaleY *= zoomExpDelta;
-
-            st.ScaleX = clampScale(st.ScaleX);
-            st.ScaleY = clampScale(st.ScaleY);
-
-            var newScale = st.ScaleX;
-
-            var tt = this.mainCanvas.GetTranslateTransform();
-
-            var newX = newScale * pointToKeepAtLocation.X;
-            var oldX = oldScale * pointToKeepAtLocation.X;
-
-            var newY = newScale * pointToKeepAtLocation.Y;
-            var oldY = oldScale * pointToKeepAtLocation.Y;
-
-            var diffToCorrectX = newX - oldX;
-            var diffToCorrectY = newY - oldY;
-
-            tt.X -= diffToCorrectX;
-            tt.Y -= diffToCorrectY;
-
-
-            ScaleChanged?.Invoke(this, st.ScaleX);
-            UpdateForZoomChange(); // TODO will the event be lagged?
+            Zoom(oldScale, newScale, pointToKeepAtLocation);
 
             e.Handled = true;
         }
 
+        public void Zoom(double oldScale, double newScale, Point pointToKeepAtLocation, ZoomBehavior zoomBehavior = ZoomBehavior.KeepMousePositionFixed)
+        {
+            var st = this.innerCanvas.GetScaleTransform();
+
+            newScale = clampScale(newScale);
+
+            st.ScaleX = newScale;
+            st.ScaleY = newScale;
+
+            if(zoomBehavior == ZoomBehavior.ResetWindow)
+            {
+                SetImageLocation(this.innerCanvas, this.mainImage);
+            }
+            else
+            {
+                var tt = this.innerCanvas.GetTranslateTransform();
+
+                var newX = newScale * pointToKeepAtLocation.X;
+                var oldX = oldScale * pointToKeepAtLocation.X;
+
+                var newY = newScale * pointToKeepAtLocation.Y;
+                var oldY = oldScale * pointToKeepAtLocation.Y;
+
+                var diffToCorrectX = newX - oldX;
+                var diffToCorrectY = newY - oldY;
+
+                tt.X -= diffToCorrectX;
+                tt.Y -= diffToCorrectY;
+            }
+
+            EffectiveZoomChanged?.Invoke(this, st.ScaleX);
+            UpdateForZoomChange(); // TODO will the event be lagged?
+        }
+
+        public double EffectiveZoomPercent
+        {
+            get
+            {
+                return EffectiveZoom * 100;
+            }
+        }
+
+        public double EffectiveZoom
+        {
+            get
+            {
+                var st = this.innerCanvas.GetScaleTransform();
+                return st.ScaleX;
+            }
+        }
+
         private double clampScale(double scale)
         {
-            return Math.Max(Math.Min(scale, App.MaxZoom * .01), App.MinZoom * .01);
+            return Math.Max(Math.Min(scale, App.MaxZoomPercent * .01), App.MinZoomPercent * .01);
         }
 
         private void UpdateForZoomChange()
@@ -408,16 +508,17 @@ namespace PixelRuler
             //{
             //    item.UpdateForZoomChange();
             //}
-            if (boundingBox != null)
+            if (measurementElement != null)
             {
-                boundingBox.UpdateForZoomChange();
+                measurementElement.UpdateForZoomChange();
             }
         }
 
         internal void SetImage(BitmapSource img)
         {
+            this.ViewModel.CurrentZoomPercent = 100;
             this.mainImage.Source = img;
-            SetImageLocation(this.mainCanvas, this.mainImage);
+            SetImageLocation(this.innerCanvas, this.mainImage);
         }
 
         private void mainImage_SourceUpdated(object sender, DataTransferEventArgs e)

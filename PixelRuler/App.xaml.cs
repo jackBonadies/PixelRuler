@@ -58,8 +58,8 @@ namespace PixelRuler
             25600,
         };
 
-        public static readonly double MinZoom = ZoomSelections[0];
-        public static readonly double MaxZoom = ZoomSelections[ZoomSelections.Length - 1];
+        public static readonly double MinZoomPercent = ZoomSelections[0];
+        public static readonly double MaxZoomPercent = ZoomSelections[ZoomSelections.Length - 1];
 
     }
 }

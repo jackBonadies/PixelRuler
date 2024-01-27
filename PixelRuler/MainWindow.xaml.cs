@@ -35,15 +35,14 @@ namespace PixelRuler
 
         public MainWindow()
         {
-            this.DataContext = new PixelRulerViewModel();
-
             InitializeComponent();
 
             this.Loaded += MainWindow_Loaded;
-            mainCanvas.ScaleChanged += ScaleChanged;
 
             var screenshot = CaptureScreen();
+            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewFullScreenshot(); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
             this.ViewModel.Image = screenshot;
+
             mainCanvas.SetImage(this.ViewModel.ImageSource);
         }
 
@@ -171,19 +170,10 @@ namespace PixelRuler
             mainCanvas.LayoutTransform = new ScaleTransform(1 / dpi, 1 / dpi);
         }
 
-        public void ScaleChanged(object? sender, double e)
-        {
-            this.ViewModel.CurrentZoom = (e * 100);
-        }
 
         private void MenuItemExit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
-        }
-
-        private void MenuItemNewScreenshot_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -193,7 +183,7 @@ namespace PixelRuler
             base.OnClosing(e);
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void NewFullScreenshot()
         {
             this.Hide();
             Bitmap bmp = null;
@@ -205,7 +195,6 @@ namespace PixelRuler
             this.ViewModel.Image = bmp;
             mainCanvas.SetImage(this.ViewModel.ImageSource);
             this.Show();
-
         }
 
         private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)

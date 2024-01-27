@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PixelRuler.CanvasElements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,50 +11,31 @@ using System.Windows.Shapes;
 
 namespace PixelRuler
 {
-    class ColorPickElement : IZoomCanvasShape
+    class ColorPickElement : AbstractZoomCanvasShape 
     {
         Rectangle rect;
 
-        public ColorPickElement(Canvas canvas) 
+        public ColorPickElement(Canvas canvas)  : base(canvas)
         {
-            this.owningCanvas = canvas;
             this.rect = createRectangle();
             this.rect.Stroke = new SolidColorBrush(Colors.Red);
             owningCanvas.Children.Add(rect);
             Canvas.SetZIndex(rect, 503);
         }
 
-        private double getBoundingBoxStrokeThickness()
-        {
-            // we need to perform dpi scaling here bc our parent undid dpi scaling
-            var dpi = owningCanvas.GetDpi();
-            return dpi / this.owningCanvas.GetScaleTransform().ScaleX;
-        }
 
-        private Rectangle createRectangle()
+        public override void UpdateForZoomChange()
         {
-            var rect = new Rectangle();
-            rect.Width = 1;
-            rect.Height = 1;
-            rect.StrokeThickness = 1;
-            rect.SnapsToDevicePixels = true;
-            return rect;
-        }
-
-        Canvas owningCanvas;
-
-        public void UpdateForZoomChange()
-        {
-            rect.Width = 1 + 1 * getBoundingBoxStrokeThickness();
-            rect.Height = 1 + 1 * getBoundingBoxStrokeThickness();
+            rect.Width = 1 + 1 * getSinglePixelUISize();
+            rect.Height = 1 + 1 * getSinglePixelUISize();
             //rect.LayoutTransform = new TranslateTransform(-.5 * getBoundingBoxStrokeThickness(), -.5 * getBoundingBoxStrokeThickness());
-            rect.StrokeThickness = getBoundingBoxStrokeThickness();
+            rect.StrokeThickness = getSinglePixelUISize();
             //var st = BoundingBoxLabel.RenderTransform as ScaleTransform;
             //st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
             //st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
         }
 
-        public void Clear()
+        public override void Clear()
         {
             this.owningCanvas.Children.Remove(rect);
             //this.owningCanvas.Children.Remove(BoundingBoxLabel);

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:PixelRuler"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Canvas Name="mainCanvas" 
+    <Canvas Name="innerCanvas" 
             Background="#303030" 
             Width="30000" 
             Height="30000" 
