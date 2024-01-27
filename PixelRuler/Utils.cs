@@ -88,6 +88,31 @@ namespace PixelRuler
         }
     }
 
+    public class BoolToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool bVal)
+            {
+                if(bVal)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Collapsed;
+                }
+            }
+            throw new Exception("Unexpected type in BoolToVisibilityConverter");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new Exception("One way converter");
+        }
+    }
+
+
     public class EnumToBoolCheckedStickyConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -127,6 +152,7 @@ namespace PixelRuler
             {
                 {ModifierKeys.None, ""},
                 {ModifierKeys.Control, "Ctrl+"},
+                {ModifierKeys.Shift, "Shift+"},
                 {ModifierKeys.Control|ModifierKeys.Shift, "Ctrl+Shift+"},
                 {ModifierKeys.Control|ModifierKeys.Alt, "Ctrl+Alt+"},
                 {ModifierKeys.Control|ModifierKeys.Shift|ModifierKeys.Alt, "Ctrl+Shift+Alt+"},
@@ -213,7 +239,18 @@ namespace PixelRuler
 
         public bool CanExecute(object? parameter)
         {
-            return true;
+            return canExecute;
+        }
+
+        private bool canExecute = true;
+
+        public void SetCanExecute(bool value)
+        {
+            if (canExecute != value)
+            {
+                canExecute = value;
+                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public void Execute(object? parameter)

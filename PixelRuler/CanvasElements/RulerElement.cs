@@ -17,7 +17,7 @@ namespace PixelRuler.CanvasElements
         Line line1;
         Line lineBeginCap;
         Line lineEndCap;
-        RulerLengthLabel rulerLengthLabel;
+        LengthLabel rulerLengthLabel;
 
         public RulerElement(Canvas canvas, Point startPoint) : base(canvas) 
         {
@@ -41,7 +41,7 @@ namespace PixelRuler.CanvasElements
 
             StartPoint = startPoint;
 
-            rulerLengthLabel = new RulerLengthLabel();
+            rulerLengthLabel = new LengthLabel();
             rulerLengthLabel.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
 
             this.owningCanvas.Children.Add(rulerLengthLabel);
@@ -134,7 +134,7 @@ namespace PixelRuler.CanvasElements
                 Canvas.SetLeft(rulerLengthLabel, line1.X1 +  2 * getSinglePixelUISize());
                 Canvas.SetTop(rulerLengthLabel, (line1.Y1 + line1.Y2) / 2.0 - rulerLengthLabel.ActualHeight * getSinglePixelUISize() / 2.0  );// - BoundingBoxLabel.ActualWidth * 1.5);
             }
-            rulerLengthLabel.Extent = (int)Extent;
+            rulerLengthLabel.Dim1 = (int)Extent;
         }
 
         private double getEndCapsSize()

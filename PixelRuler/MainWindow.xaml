@@ -36,6 +36,15 @@
         <Style TargetType="FrameworkElement">
             <Setter Property="Margin" Value="10"></Setter>
         </Style>
+
+        <Style TargetType="Border" x:Key="SeperatorStyle">
+            <Setter Property="Margin" Value="10, 0, 10, 0" />
+            <Setter Property="Width" Value="2" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Background" Value="#e0e0e0" />
+        </Style>
+
         <!--<Style TargetType="ui:NumberBox" BasedOn="{StaticResource {x:Type NumberBox}}">
             <Setter Property="Margin" Value="0,0,4,0"></Setter>
         </Style>-->
@@ -51,6 +60,7 @@
         <KeyBinding Command="{Binding BoundsMeasureSelectedCommand}" Key="{Binding BoundsMeasureSelectedCommand.Key}" Modifiers="{Binding BoundsMeasureSelectedCommand.Modifiers}" />
         <KeyBinding Command="{Binding ColorPickerSelectedCommand}" Key="{Binding ColorPickerSelectedCommand.Key}" Modifiers="{Binding ColorPickerSelectedCommand.Modifiers}" />
         <KeyBinding Command="{Binding RulerSelectedCommand}" Key="{Binding RulerSelectedCommand.Key}" Modifiers="{Binding RulerSelectedCommand.Modifiers}" />
+        <KeyBinding Command="{Binding ClearAllMeasureElementsCommand}" Key="{Binding ClearAllMeasureElementsCommand.Key}" Modifiers="{Binding ClearAllMeasureElementsCommand.Modifiers}" />
         <KeyBinding Command="{Binding ZoomInCommand}" Key="{Binding ZoomInCommand.Key}" Modifiers="{Binding ZoomInCommand.Modifiers}" />
         <KeyBinding Command="{Binding ZoomInCommand}" Key="Add" Modifiers="{Binding ZoomInCommand.Modifiers}" />
         <KeyBinding Command="{Binding ZoomOutCommand}" Key="{Binding ZoomOutCommand.Key}" Modifiers="{Binding ZoomOutCommand.Modifiers}" />
@@ -89,9 +99,8 @@
                     </wpfui:SymbolIcon>
                     <!--<TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE722;" FontSize="17" />-->
                 </Button>
-                <StackPanel Width="10"></StackPanel>
-                <Border Width="2" Height="28" SnapsToDevicePixels="True" Background="#e0e0e0"/>
-                <StackPanel Width="10"></StackPanel>
+
+                <Border Style="{StaticResource SeperatorStyle}"/>
 
                 <ToggleButton IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=BoundingBox}" 
                               Command="{Binding BoundsMeasureSelectedCommand}" 
@@ -113,6 +122,26 @@
                               >
                     <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEF3C;" FontSize="17" />
                 </ToggleButton>
+
+                <Border Style="{StaticResource SeperatorStyle}"/>
+
+                <Button 
+                    Command="{Binding ClearAllMeasureElementsCommand}"
+                    ToolTipService.ToolTip="{Binding ClearAllMeasureElementsCommand.ToolTipTextFull}">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xED62;" FontSize="17" >
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Opacity" Value="1"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="False">
+                                        <Setter Property="Opacity" Value="0.5"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <!--<TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE722;" FontSize="17" />-->
+                </Button>
 
             </StackPanel>
 

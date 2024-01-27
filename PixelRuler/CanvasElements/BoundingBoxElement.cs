@@ -15,7 +15,7 @@ namespace PixelRuler
 {
     public class BoundingBoxElement : MeasurementElementZoomCanvasShape
     {
-        private const bool marching_ants = true;
+        private const bool marching_ants = false;
         private readonly SolidColorBrush brush1 = new SolidColorBrush(Colors.Black);
         private readonly SolidColorBrush brush2 = new SolidColorBrush(Colors.White);
 
@@ -23,29 +23,32 @@ namespace PixelRuler
         public BoundingBoxElement(Canvas owningCanvas, Point startPoint) : base(owningCanvas)
         {
             rect1 = createRectangle();
-            rect1.Stroke = brush1;
+            rect1.Stroke = marching_ants ? brush1 : new SolidColorBrush(Colors.Red);
 
             this.owningCanvas.Children.Add(rect1);
             Canvas.SetZIndex(rect1, 500);
 
-            rect2 = createRectangle();
-            rect2.Stroke = brush2;
-
-            var dashArray = new double[] { 4, 4 };
-            rect2.StrokeDashArray = new DoubleCollection(dashArray);
-
-            DoubleAnimation animation = new DoubleAnimation
+            if (marching_ants)
             {
-                From = 0,
-                To = -dashArray.Sum() * 6,
-                Duration = TimeSpan.FromSeconds(2),
-                RepeatBehavior = RepeatBehavior.Forever
-            };
+                rect2 = createRectangle();
+                rect2.Stroke = brush2;
 
-            rect2.BeginAnimation(Shape.StrokeDashOffsetProperty, animation);
+                var dashArray = new double[] { 4, 4 };
+                rect2.StrokeDashArray = new DoubleCollection(dashArray);
 
-            this.owningCanvas.Children.Add(rect2);
-            Canvas.SetZIndex(rect2, 501);
+                DoubleAnimation animation = new DoubleAnimation
+                {
+                    From = 0,
+                    To = -dashArray.Sum() * 6,
+                    Duration = TimeSpan.FromSeconds(2),
+                    RepeatBehavior = RepeatBehavior.Forever
+                };
+
+                rect2.BeginAnimation(Shape.StrokeDashOffsetProperty, animation);
+
+                this.owningCanvas.Children.Add(rect2);
+                Canvas.SetZIndex(rect2, 501);
+            }
 
             StartPoint = startPoint;
 
@@ -58,8 +61,13 @@ namespace PixelRuler
             UpdateForZoomChange();
         }
 
-        private void SetShapeState(Rectangle rect)
+        private void SetShapeState(Rectangle? rect)
         {
+            if(rect == null)
+            {
+                return;
+            }
+
             if (StartPoint.X <= EndPoint.X)
             {
                 Canvas.SetLeft(rect, StartPoint.X);
@@ -135,7 +143,7 @@ namespace PixelRuler
         }
 
         private Rectangle rect1;
-        private Rectangle rect2;
+        private Rectangle? rect2;
 
         public BoundingBoxLabel BoundingBoxLabel
         {
@@ -146,7 +154,10 @@ namespace PixelRuler
         public override void UpdateForZoomChange()
         {
             rect1.StrokeThickness = getSinglePixelUISize();
-            rect2.StrokeThickness = getSinglePixelUISize();
+            if(rect2 != null)
+            {
+                rect2.StrokeThickness = getSinglePixelUISize();
+            }
             var st = BoundingBoxLabel.RenderTransform as ScaleTransform;
             st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
             st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;

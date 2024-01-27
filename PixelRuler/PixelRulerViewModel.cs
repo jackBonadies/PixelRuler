@@ -24,6 +24,7 @@ namespace PixelRuler
             ZoomInCommand = new RelayCommandFull((object? o) => zoomIn(), System.Windows.Input.Key.OemPlus, System.Windows.Input.ModifierKeys.Control, "Zoom In");
             ZoomOutCommand = new RelayCommandFull((object? o) => zoomOut(), System.Windows.Input.Key.OemMinus, System.Windows.Input.ModifierKeys.Control, "Zoom Out");
             FitWindowCommand = new RelayCommandFull((object? o) => fitWindow(), System.Windows.Input.Key.D0, System.Windows.Input.ModifierKeys.Control, "Fit Window");
+            ClearAllMeasureElementsCommand = new RelayCommandFull((object? o) => clearAllMeasureElements(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Shift, "Clear All");
         }
 
         private void zoomIn()
@@ -49,6 +50,11 @@ namespace PixelRuler
         private void fitWindow()
         {
             SetZoomSpecial(100, ZoomBehavior.ResetWindow);
+        }
+
+        private void clearAllMeasureElements()
+        {
+            ClearAllMeasureElements?.Invoke(this, EventArgs.Empty);
         }
 
         private void SetZoomSpecial(double newZoomPercent, ZoomBehavior zoomBehavior)
@@ -195,6 +201,11 @@ namespace PixelRuler
             }
         }
 
+        public RelayCommandFull ClearAllMeasureElementsCommand
+        {
+            get; set;
+        }
+
         private RelayCommandFull zoomInCommand;
         public RelayCommandFull ZoomInCommand
         {
@@ -323,6 +334,7 @@ namespace PixelRuler
         }
 
         public EventHandler<ZoomBehavior>? ZoomChanged;
+        public EventHandler<EventArgs>? ClearAllMeasureElements;
     }
 
     public enum ZoomBehavior

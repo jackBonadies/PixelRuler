@@ -23,7 +23,8 @@ namespace PixelRuler
     /// </summary>
     public partial class MainCanvas : UserControl
     {
-        MeasurementElementZoomCanvasShape? measurementElement;
+        MeasurementElementZoomCanvasShape? currentMeasurementElement;
+        List<MeasurementElementZoomCanvasShape> measurementElements = new List<MeasurementElementZoomCanvasShape>();
         ColorPickElement? colorPickBox;
         bool drawingShape;
 
@@ -79,6 +80,32 @@ namespace PixelRuler
         {
             this.ViewModel.ImageSourceChanged += ViewModel_ImageSourceChanged;
             this.ViewModel.ZoomChanged += SelectedZoomChanged;
+            this.ViewModel.ClearAllMeasureElements += ClearAllMeasureElements;
+            SetClearAllMeasurementsEnabledState();
+        }
+
+        private void ClearAllMeasureElements(object? sender, EventArgs e)
+        {
+            foreach(var measEl in measurementElements)
+            {
+                measEl.Clear();
+            }
+            measurementElements.Clear();
+            SetClearAllMeasurementsEnabledState();
+        }
+
+        private void SetClearAllMeasurementsEnabledState()
+        {
+            bool anyNonEmpty = false;
+            foreach (var measEl in measurementElements)
+            {
+                if(!measEl.IsEmpty)
+                {
+                    anyNonEmpty = true;
+                    break;
+                }
+            }
+            this.ViewModel.ClearAllMeasureElementsCommand.SetCanExecute(anyNonEmpty);
         }
 
         private static void SetImageLocation(Canvas canvas, Image image)
@@ -202,13 +229,15 @@ namespace PixelRuler
             innerCanvas.ReleaseMouseCapture();
             drawingShape = false;
 
-            if(measurementElement != null)
+            if(currentMeasurementElement != null)
             {
-                if(measurementElement.IsEmpty)
+                if(currentMeasurementElement.IsEmpty)
                 {
-                    measurementElement.Clear();
+                    currentMeasurementElement.Clear();
+                    measurementElements.Remove(currentMeasurementElement);
                 }
             }
+            SetClearAllMeasurementsEnabledState();
         }
 
         private void ToolDown(MouseButtonEventArgs e)
@@ -295,6 +324,8 @@ namespace PixelRuler
             }
         }
 
+        private bool isSticky = true;
+
 
         private void StartMeasureElement(MouseButtonEventArgs e)
         {
@@ -306,18 +337,24 @@ namespace PixelRuler
 
             var roundedPoint = roundToPixel(e.GetPosition(innerCanvas));
 
-            measurementElement?.Clear();
+            if(!isSticky)
+            {
+                currentMeasurementElement?.Clear();
+            }
+
             if(ViewModel.SelectedTool == Tool.BoundingBox)
             {
-                measurementElement = new BoundingBoxElement(this.innerCanvas, roundedPoint);
-                if(measurementElement is BoundingBoxElement b)
+                currentMeasurementElement = new BoundingBoxElement(this.innerCanvas, roundedPoint);
+                measurementElements.Add(currentMeasurementElement);
+                if(currentMeasurementElement is BoundingBoxElement b)
                 {
                     ViewModel.BoundingBoxLabel = b.BoundingBoxLabel;
                 }
             }
             else
             {
-                measurementElement = new RulerElement(this.innerCanvas, roundedPoint);
+                currentMeasurementElement = new RulerElement(this.innerCanvas, roundedPoint);
+                measurementElements.Add(currentMeasurementElement);
             }
         }
 
@@ -374,7 +411,7 @@ namespace PixelRuler
             else if (drawingShape)
             {
                 var roundedPoint = roundToPixel(e.GetPosition(innerCanvas));
-                measurementElement.SetEndPoint(roundedPoint);
+                currentMeasurementElement.SetEndPoint(roundedPoint);
             }
         }
 
@@ -503,14 +540,10 @@ namespace PixelRuler
             {
                 colorPickBox.UpdateForZoomChange();
             }
-            //var items = this.mainCanvas.Children.OfType<IZoomCanvasShape>();
-            //foreach (IZoomCanvasShape item in items)
-            //{
-            //    item.UpdateForZoomChange();
-            //}
-            if (measurementElement != null)
+
+            foreach(var measEl in measurementElements)
             {
-                measurementElement.UpdateForZoomChange();
+                measEl.UpdateForZoomChange();
             }
         }
 
