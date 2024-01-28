@@ -15,11 +15,14 @@
             <local:ColorDisplayColorConverter x:Key="ColorDisplayColorConverter" />
             <local:EnumToBoolCheckedStickyConverter x:Key="EnumToBoolCheckedStickyConverter" />
             <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <local:EnumToOptionConverter x:Key="EnumToOptionConverter" />
+            <local:EnumToOptionsCollectionConverter x:Key="EnumToOptionsCollectionConverter" />
 
             <SolidColorBrush x:Key="BarColor">#F1F3F9</SolidColorBrush>
             <SolidColorBrush x:Key="IsToggledOnColor">#E8EAF0</SolidColorBrush>
             <SolidColorBrush x:Key="IsPressedColor">#EFEFF6</SolidColorBrush>
             <SolidColorBrush x:Key="ToggledHighlightColor">#80B9EE</SolidColorBrush>
+            <SolidColorBrush x:Key="AnnotationColor">#EE4B2B</SolidColorBrush>
 
             <Style x:Key="ToggleButtonSoft" TargetType="ToggleButton">
                 <Setter Property="Template">
@@ -101,4 +104,13 @@
 
         </ResourceDictionary>
     </Application.Resources>
+    <JumpList.JumpList>
+        <JumpList>
+            <JumpTask Title="New Fullscreen Screenshot" 
+                    />
+
+            <JumpTask Title="New Windowed Screenshot" 
+                    />
+        </JumpList>
+    </JumpList.JumpList>
 </Application>

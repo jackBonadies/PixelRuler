@@ -146,6 +146,49 @@ namespace PixelRuler
         }
     }
 
+    public class EnumToOptionsCollectionConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            List<string> enumDisplayLabels = new List<string>();
+            foreach (var item in Enum.GetValues(value.GetType()))
+            {
+                enumDisplayLabels.Add(((Enum)item).GetDisplayLabel());
+
+            }
+            return enumDisplayLabels;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new Exception("One way converter");
+        }
+    }
+
+    public class EnumToOptionConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return ((Enum)value).GetDisplayLabel();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if(value is string displayName)
+            {
+                foreach (var item in Enum.GetValues(targetType))
+                {
+                    if (((Enum)item).GetDisplayLabel() == displayName)
+                    {
+                        return item;
+                    }
+                }
+                throw new Exception("Enum not found");
+            }
+            throw new Exception("Unexpected Type");
+        }
+    }
+
     public class RelayCommandFull : RelayCommand
     {
         private static readonly Dictionary<ModifierKeys, string> modifierKeysToText = new Dictionary<ModifierKeys, string>()
@@ -261,6 +304,19 @@ namespace PixelRuler
         public void OnPropertyChanged([CallerMemberName] string? name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+    }
+
+    public class KeyUtil
+    {
+        public static bool IsShiftDown()
+        {
+            return (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
+        }
+
+        public static bool IsCtrlDown()
+        {
+            return (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
         }
     }
 

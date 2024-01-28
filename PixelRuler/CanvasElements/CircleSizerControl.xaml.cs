@@ -10,18 +10,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PixelRuler
+namespace PixelRuler.CanvasElements
 {
     /// <summary>
-    /// Interaction logic for SettingsWindow.xaml
+    /// Interaction logic for CircleSizerControl.xaml
     /// </summary>
-    public partial class SettingsWindow : Window
+    public partial class CircleSizerControl : UserControl
     {
-        public SettingsWindow(PixelRulerViewModel viewModel)
+        public CircleSizerControl()
         {
-            this.DataContext = viewModel.Settings;
             InitializeComponent();
         }
     }

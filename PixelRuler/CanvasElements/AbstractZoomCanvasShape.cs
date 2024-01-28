@@ -16,7 +16,7 @@ namespace PixelRuler.CanvasElements
             this.owningCanvas = owningCanvas;
         }
 
-        protected double getSinglePixelUISize()
+        protected double getUIUnit()
         {
             // we need to perform dpi scaling here bc our parent undid dpi scaling
             var dpi = owningCanvas.GetDpi();

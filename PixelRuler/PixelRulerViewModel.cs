@@ -25,6 +25,7 @@ namespace PixelRuler
             ZoomOutCommand = new RelayCommandFull((object? o) => zoomOut(), System.Windows.Input.Key.OemMinus, System.Windows.Input.ModifierKeys.Control, "Zoom Out");
             FitWindowCommand = new RelayCommandFull((object? o) => fitWindow(), System.Windows.Input.Key.D0, System.Windows.Input.ModifierKeys.Control, "Fit Window");
             ClearAllMeasureElementsCommand = new RelayCommandFull((object? o) => clearAllMeasureElements(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Shift, "Clear All");
+            DeleteAllSelectedCommand = new RelayCommandFull((object? o) => deleteAllSelectedElements(), System.Windows.Input.Key.Delete, System.Windows.Input.ModifierKeys.None, "Delete All Selected");
         }
 
         private void zoomIn()
@@ -55,6 +56,11 @@ namespace PixelRuler
         private void clearAllMeasureElements()
         {
             ClearAllMeasureElements?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void deleteAllSelectedElements()
+        {
+            DeleteAllSelectedElements?.Invoke(this, EventArgs.Empty);
         }
 
         private void SetZoomSpecial(double newZoomPercent, ZoomBehavior zoomBehavior)
@@ -201,6 +207,24 @@ namespace PixelRuler
             }
         }
 
+        private RelayCommandFull deleteAllSelectedCommand;
+        public RelayCommandFull DeleteAllSelectedCommand
+        {
+            get
+            {
+                return deleteAllSelectedCommand;
+            }
+            set
+            {
+                if (deleteAllSelectedCommand != value)
+                {
+                    deleteAllSelectedCommand = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+
         public RelayCommandFull ClearAllMeasureElementsCommand
         {
             get; set;
@@ -333,8 +357,11 @@ namespace PixelRuler
             }
         }
 
+        public SettingsViewModel Settings { get; set; }
+
         public EventHandler<ZoomBehavior>? ZoomChanged;
         public EventHandler<EventArgs>? ClearAllMeasureElements;
+        public EventHandler<EventArgs>? DeleteAllSelectedElements;
     }
 
     public enum ZoomBehavior
@@ -342,12 +369,5 @@ namespace PixelRuler
         KeepMousePositionFixed = 0,
         KeepCenterFixed = 1,
         ResetWindow = 2,
-    }
-
-    public enum Tool
-    {
-        BoundingBox = 0,
-        ColorPicker = 1,
-        Ruler = 2,
     }
 }

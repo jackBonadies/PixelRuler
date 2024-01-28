@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using Wpf.Ui.Tray.Controls;
 
 namespace PixelRuler
 {
@@ -18,15 +19,33 @@ namespace PixelRuler
     /// </summary>
     public partial class App : Application
     {
+        private const string backgroundCmdLineArg = "background";
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            bool backgroundOnly = false;
 
-            MainWindow mainWindow = new MainWindow();
+            if(e.Args.Length > 0)
+            {
+                var cmdLineArg = e.Args[0];
+                if(cmdLineArg.Replace("-", "").ToLower() == backgroundCmdLineArg)
+                {
+                    backgroundOnly = true;
+                }
+            }
+
+            var mainViewModel = new PixelRulerViewModel();
+            var settingsViewModel = new SettingsViewModel();
+            mainViewModel.Settings = settingsViewModel;
+
+            MainWindow mainWindow = new MainWindow(mainViewModel);
             mainWindow.Icon = new BitmapImage(new Uri("pack://application:,,,/PixelRuler;component/PixelRulerIcon.ico"));
+            mainWindow.NewFullScreenshot(false);
             mainWindow.Show();
 
-            this.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            settingsViewModel.SetState();
+
         }
 
         private void Screenshot_Click(object? sender, EventArgs e)

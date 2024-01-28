@@ -26,10 +26,10 @@ namespace PixelRuler
 
         public override void UpdateForZoomChange()
         {
-            rect.Width = 1 + 1 * getSinglePixelUISize();
-            rect.Height = 1 + 1 * getSinglePixelUISize();
+            rect.Width = 1 + 1 * getUIUnit();
+            rect.Height = 1 + 1 * getUIUnit();
             //rect.LayoutTransform = new TranslateTransform(-.5 * getBoundingBoxStrokeThickness(), -.5 * getBoundingBoxStrokeThickness());
-            rect.StrokeThickness = getSinglePixelUISize();
+            rect.StrokeThickness = getUIUnit();
             //var st = BoundingBoxLabel.RenderTransform as ScaleTransform;
             //st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
             //st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;

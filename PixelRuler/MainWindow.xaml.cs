@@ -33,17 +33,16 @@ namespace PixelRuler
     {
 
 
-        public MainWindow()
+        public MainWindow(PixelRulerViewModel prvm)
         {
+            this.DataContext = prvm;
+
             InitializeComponent();
 
             this.Loaded += MainWindow_Loaded;
 
-            var screenshot = CaptureScreen();
-            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewFullScreenshot(); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
-            this.ViewModel.Image = screenshot;
+            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewFullScreenshot(true); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
 
-            mainCanvas.SetImage(this.ViewModel.ImageSource);
         }
 
         private PixelRulerViewModel ViewModel
@@ -97,6 +96,7 @@ namespace PixelRuler
             var helper = new WindowInteropHelper(this);
             _source = HwndSource.FromHwnd(helper.Handle);
             _source.AddHook(HwndHook);
+
             RegisterHotKey();
 
 
@@ -115,12 +115,17 @@ namespace PixelRuler
 
         private void RegisterHotKey()
         {
-            var helper = new WindowInteropHelper(this);
-            const uint VK_F10 = 0x79;
-            const uint MOD_CTRL = 0x0002;
-            if (!RegisterHotKey(helper.Handle, HOTKEY_ID, MOD_CTRL, VK_F10))
+            if(this.ViewModel.Settings.GlobalShortcutsEnabled)
             {
-                // handle error
+                var helper = new WindowInteropHelper(this);
+                uint key = (uint)KeyInterop.VirtualKeyFromKey(this.ViewModel.Settings.GlobalStartupKey);
+                //const uint MOD_CTRL = 0x0002;
+                //const uint MOD_SHIFT = 0x0004;
+                uint mods = (uint)this.ViewModel.Settings.GlobalStartupModifiers;
+                if (!RegisterHotKey(helper.Handle, HOTKEY_ID, mods, key))
+                {
+                    // handle error
+                }
             }
         }
 
@@ -150,12 +155,8 @@ namespace PixelRuler
 
         private void OnHotKeyPressed()
         {
-            // do stuff
+            this.NewFullScreenshot(true);
         }
-
-
-
-
 
         private void Hotkey_Pressed(object? sender, HandledEventArgs e)
         {
@@ -178,29 +179,58 @@ namespace PixelRuler
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            this.Hide(); // i.e. so taskbar stays up
-            e.Cancel = true;
+            if(Properties.Settings.Default.CloseToTray)
+            {
+                this.Hide(); // i.e. so taskbar stays up
+                e.Cancel = true;
+            }
             base.OnClosing(e);
         }
 
-        private async void NewFullScreenshot()
+        public async void NewFullScreenshot(bool alreadyRunning)
         {
-            this.Hide();
             Bitmap bmp = null;
-            await Task.Run(new Action(() =>
+            if (alreadyRunning)
+            {
+                this.Hide();
+                await Task.Delay(200);
+                await Task.Run(new Action(async () =>
+                {
+                //    await Task.Delay(1000);
+                    bmp = CaptureScreen();
+                })).ConfigureAwait(true);
+            }
+            else
             {
                 bmp = CaptureScreen();
-            })).ConfigureAwait(true);
+            }
             BitmapSource? image = null;
             this.ViewModel.Image = bmp;
             mainCanvas.SetImage(this.ViewModel.ImageSource);
             this.Show();
+            this.Activate();
+            if (this.WindowState == WindowState.Minimized)
+            {
+                this.WindowState = WindowState.Normal;
+                // it will also preserve any Maximized windows
+            }
         }
 
         private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var settingsWindow = new SettingsWindow();
+            var settingsWindow = new SettingsWindow(this.ViewModel);
+            settingsWindow.Owner = this;
             settingsWindow.ShowDialog();
+        }
+
+        private void notifyIcon_Initialized(object sender, EventArgs e)
+        {
+
+        }
+
+        private void notifyIcon_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using PixelRuler.CanvasElements;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Windows.Devices.PointOfService;
 
 namespace PixelRuler
 {
@@ -24,7 +26,7 @@ namespace PixelRuler
     public partial class MainCanvas : UserControl
     {
         MeasurementElementZoomCanvasShape? currentMeasurementElement;
-        List<MeasurementElementZoomCanvasShape> measurementElements = new List<MeasurementElementZoomCanvasShape>();
+        ObservableCollection<MeasurementElementZoomCanvasShape> measurementElements = new ObservableCollection<MeasurementElementZoomCanvasShape>();
         ColorPickElement? colorPickBox;
         bool drawingShape;
 
@@ -53,7 +55,13 @@ namespace PixelRuler
 
             //this.mainCanvas.MouseLeftButtonDown += MainCanvas_MouseLeftButtonDown;
             //this.mainCanvas.MouseLeftButtonUp += MainCanvas_MouseLeftButtonUp;
+            measurementElements.CollectionChanged += MeasurementElements_CollectionChanged;
 
+        }
+
+        private void MeasurementElements_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            SetClearAllMeasurementsEnabledState();
         }
 
         Point lastCenterPoint;
@@ -81,6 +89,7 @@ namespace PixelRuler
             this.ViewModel.ImageSourceChanged += ViewModel_ImageSourceChanged;
             this.ViewModel.ZoomChanged += SelectedZoomChanged;
             this.ViewModel.ClearAllMeasureElements += ClearAllMeasureElements;
+            this.ViewModel.DeleteAllSelectedElements += DeleteAllSelectedMeasureElements;
             SetClearAllMeasurementsEnabledState();
         }
 
@@ -91,7 +100,16 @@ namespace PixelRuler
                 measEl.Clear();
             }
             measurementElements.Clear();
-            SetClearAllMeasurementsEnabledState();
+        }
+
+        private void DeleteAllSelectedMeasureElements(object? sender, EventArgs e)
+        {
+            var selectedItems = measurementElements.Where(it => it.Selected).ToList();
+            foreach (var measEl in selectedItems)
+            {
+                measEl.Clear();
+                measurementElements.Remove(measEl);
+            }
         }
 
         private void SetClearAllMeasurementsEnabledState()
@@ -99,7 +117,7 @@ namespace PixelRuler
             bool anyNonEmpty = false;
             foreach (var measEl in measurementElements)
             {
-                if(!measEl.IsEmpty)
+                if(!measEl.IsEmpty && measEl.FinishedDrawing)
                 {
                     anyNonEmpty = true;
                     break;
@@ -231,6 +249,7 @@ namespace PixelRuler
 
             if(currentMeasurementElement != null)
             {
+                currentMeasurementElement.FinishedDrawing = true;
                 if(currentMeasurementElement.IsEmpty)
                 {
                     currentMeasurementElement.Clear();
@@ -245,8 +264,6 @@ namespace PixelRuler
             switch(ViewModel.SelectedTool)
             {
                 case Tool.BoundingBox:
-                    StartMeasureElement(e);
-                    break;
                 case Tool.Ruler:
                     StartMeasureElement(e);
                     break;
@@ -326,9 +343,18 @@ namespace PixelRuler
 
         private bool isSticky = true;
 
+        private void UnselectAll()
+        {
+            foreach(var measEl in measurementElements)
+            {
+                measEl.Selected = false;
+            }
+        }
+
 
         private void StartMeasureElement(MouseButtonEventArgs e)
         {
+            UnselectAll();
             innerCanvas.CaptureMouse();
 
             drawingShape = true;
@@ -345,7 +371,6 @@ namespace PixelRuler
             if(ViewModel.SelectedTool == Tool.BoundingBox)
             {
                 currentMeasurementElement = new BoundingBoxElement(this.innerCanvas, roundedPoint);
-                measurementElements.Add(currentMeasurementElement);
                 if(currentMeasurementElement is BoundingBoxElement b)
                 {
                     ViewModel.BoundingBoxLabel = b.BoundingBoxLabel;
@@ -354,7 +379,32 @@ namespace PixelRuler
             else
             {
                 currentMeasurementElement = new RulerElement(this.innerCanvas, roundedPoint);
-                measurementElements.Add(currentMeasurementElement);
+            }
+
+            measurementElements.Add(currentMeasurementElement);
+            currentMeasurementElement.SelectedChanged += CurrentMeasurementElement_SelectedChanged;
+        }
+
+        private void CurrentMeasurementElement_SelectedChanged(object? sender, EventArgs e)
+        {
+            if(sender is MeasurementElementZoomCanvasShape measEl)
+            {
+                if(measEl.Selected)
+                {
+                    if(KeyUtil.IsCtrlDown() || KeyUtil.IsShiftDown())
+                    {
+                        return;
+                    }
+                    var toDeselect = measurementElements.Where(it => it != measEl && it.Selected);
+                    foreach(var measElToDeselect in toDeselect)
+                    {
+                        measElToDeselect.Selected = false;
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("Unexpected type - Selected Changed");
             }
         }
 

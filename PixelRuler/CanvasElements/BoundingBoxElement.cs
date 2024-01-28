@@ -153,10 +153,10 @@ namespace PixelRuler
 
         public override void UpdateForZoomChange()
         {
-            rect1.StrokeThickness = getSinglePixelUISize();
+            rect1.StrokeThickness = getUIUnit();
             if(rect2 != null)
             {
-                rect2.StrokeThickness = getSinglePixelUISize();
+                rect2.StrokeThickness = getUIUnit();
             }
             var st = BoundingBoxLabel.RenderTransform as ScaleTransform;
             st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
@@ -173,6 +173,11 @@ namespace PixelRuler
         public override void SetEndPoint(System.Windows.Point roundedPoint)
         {
             this.EndPoint = roundedPoint;
+        }
+
+        public override void SetSelectedState()
+        {
+            
         }
 
         public override bool IsEmpty
