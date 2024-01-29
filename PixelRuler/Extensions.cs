@@ -53,6 +53,15 @@ namespace PixelRuler
             return System.Drawing.Color.FromArgb(255, r, g, b);
         }
     }
+
+    public static class PointEx
+    {
+        public static System.Windows.Point Add(this System.Windows.Point pt, System.Windows.Point toAdd)
+        {
+            return new System.Windows.Point(pt.X + toAdd.X, pt.Y + toAdd.Y);
+        }
+    }
+
     public static class LinqEx
     {
         public static void ForEachExt<TSource>(this IEnumerable<TSource> source, Action<TSource> action)

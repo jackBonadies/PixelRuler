@@ -37,6 +37,13 @@ namespace PixelRuler.CanvasElements
 
         public abstract void SetSelectedState();
 
+        public void OnMoving(System.Windows.Point pt)
+        {
+            Moving?.Invoke(this, pt);
+        }
+
+        public event EventHandler<System.Windows.Point> Moving;
+
         public virtual void Move(int v1, int v2)
         {
             //this.SetEndPoint();

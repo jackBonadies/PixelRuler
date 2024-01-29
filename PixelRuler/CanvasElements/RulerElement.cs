@@ -52,6 +52,7 @@ namespace PixelRuler.CanvasElements
             hitBoxManipulate.MouseLeftButtonDown += HitBoxManipulate_MouseDown;
             hitBoxManipulate.MouseMove += HitBoxManipulate_MouseMove;
             hitBoxManipulate.MouseLeftButtonUp += HitBoxManipulate_MouseUp;
+            hitBoxManipulate.FocusVisualStyle = null;
 
 
 
@@ -158,8 +159,12 @@ namespace PixelRuler.CanvasElements
             int xMove = -(int)delta.X;
             int yMove = -(int)delta.Y;
 
-            this.StartPoint = new Point(MoveStartInfo.shapeStart.X + xMove, MoveStartInfo.shapeStart.Y + yMove);
-            this.EndPoint = new Point(MoveStartInfo.shapeEnd.X + xMove, MoveStartInfo.shapeEnd.Y + yMove);
+            MoveStartInfo.mouseStart = MoveStartInfo.mouseStart.Add(new Point(xMove, yMove));
+
+            OnMoving(new Point(xMove, yMove));
+
+            //this.StartPoint = new Point(MoveStartInfo.shapeStart.X + xMove, MoveStartInfo.shapeStart.Y + yMove);
+            //this.EndPoint = new Point(MoveStartInfo.shapeEnd.X + xMove, MoveStartInfo.shapeEnd.Y + yMove);
         }
 
 

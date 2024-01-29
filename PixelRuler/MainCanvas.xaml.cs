@@ -438,6 +438,15 @@ namespace PixelRuler
 
             measurementElements.Add(currentMeasurementElement);
             currentMeasurementElement.SelectedChanged += CurrentMeasurementElement_SelectedChanged;
+            currentMeasurementElement.Moving += CurrentMeasurementElement_Moving;
+        }
+
+        private void CurrentMeasurementElement_Moving(object? sender, Point e)
+        {
+            this.SelectedMeasureElements
+                .Append(sender as MeasurementElementZoomCanvasShape)
+                .Distinct()
+                .ForEachExt(it => it.Move((int)e.X, (int)e.Y));
         }
 
         private void CurrentMeasurementElement_SelectedChanged(object? sender, EventArgs e)
