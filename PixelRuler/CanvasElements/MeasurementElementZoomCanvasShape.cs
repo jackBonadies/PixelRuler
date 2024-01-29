@@ -36,5 +36,10 @@ namespace PixelRuler.CanvasElements
         }
 
         public abstract void SetSelectedState();
+
+        public virtual void Move(int v1, int v2)
+        {
+            //this.SetEndPoint();
+        }
     }
 }

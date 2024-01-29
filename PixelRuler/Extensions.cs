@@ -53,6 +53,16 @@ namespace PixelRuler
             return System.Drawing.Color.FromArgb(255, r, g, b);
         }
     }
+    public static class LinqEx
+    {
+        public static void ForEachExt<TSource>(this IEnumerable<TSource> source, Action<TSource> action)
+        {
+            foreach (TSource item in source)
+            {
+                action(item);
+            }
+        }
+    }
 
     public static class WpfColorExtensions
     {

@@ -52,10 +52,48 @@ namespace PixelRuler
             this.innerCanvas.MouseDown += MainCanvas_MouseDown;
             this.innerCanvas.MouseUp += MainCanvas_MouseUp;
 
+            this.KeyDown += MainCanvas_KeyDown;
+
             //this.mainCanvas.MouseLeftButtonDown += MainCanvas_MouseLeftButtonDown;
             //this.mainCanvas.MouseLeftButtonUp += MainCanvas_MouseLeftButtonUp;
             measurementElements.CollectionChanged += MeasurementElements_CollectionChanged;
 
+        }
+
+        private void MainCanvas_KeyDown(object sender, KeyEventArgs e)
+        {
+            int moveX = 0;
+            int moveY = 0;
+            if (e.Key == Key.Right)
+            {
+                moveX = 1;
+            }
+            else if (e.Key == Key.Left)
+            {
+                moveX = -1;
+            }
+            else if (e.Key == Key.Up)
+            {
+                moveY = -1;
+            }
+            else if (e.Key == Key.Down)
+            {
+                moveY = 1;
+            }
+
+            if (moveX != 0 || moveY != 0)
+            {
+                SelectedMeasureElements.ForEachExt(it => it.Move(moveX, moveY));
+                e.Handled = true;
+            }
+        }
+
+        private IEnumerable<MeasurementElementZoomCanvasShape> SelectedMeasureElements
+        {
+            get
+            {
+                return this.measurementElements.Where(it => it.Selected);
+            }
         }
 
         private void MeasurementElements_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

@@ -167,13 +167,23 @@
             Text="About" />
         <StackPanel Orientation="Vertical">
                 <ui:TextBlock
-            Margin="0,0,0,8"
+            Margin="8,0,0,4"
             FontTypography="Body"
             >
                     <Run Text="PixelRuler "></Run>
                     <Run Text="{Binding VersionDisplayName, Mode=OneWay}"/>
                 </ui:TextBlock>
-
+                <ui:HyperlinkButton
+                Margin="4,0,0,0"
+                Padding="4"
+                NavigateUri="https://github.com/jackBonadies/PixelRuler"
+                ToolTip="https://github.com/jackBonadies/PixelRuler" >
+                    <ui:TextBlock
+                    FontSize="14"
+            FontTypography="Body"
+            >Source Code
+                    </ui:TextBlock>
+                </ui:HyperlinkButton>
             </StackPanel>
  
         

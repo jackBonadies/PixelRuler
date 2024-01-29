@@ -166,7 +166,6 @@
                 </local:DropDownButtonCustom>
             </StackPanel>
 
-
             <!--Center Panel-->
             <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center">
 
@@ -182,10 +181,6 @@
                 <ui:NumberBox Width="86" IsReadOnly="True" FontSize="15" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}, Mode=OneWay}" Padding="6,6,0,6" />
 
             </StackPanel>
-
-
-
-
 
         </DockPanel>
 

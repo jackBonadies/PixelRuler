@@ -178,6 +178,15 @@ namespace PixelRuler.CanvasElements
             e.Handled = true;
         }
 
+        public override void Move(int v1, int v2)
+        {
+            this.StartPoint = new Point(this.StartPoint.X + v1, this.StartPoint.Y + v2);
+            this.endPoint = new Point(this.EndPoint.X + v1, this.EndPoint.Y + v2);
+            this.SetShapeState();
+            this.SetLabelState();
+            //this.SetEndPoint();
+        }
+
         public Point StartPoint { get; private set; }
 
 

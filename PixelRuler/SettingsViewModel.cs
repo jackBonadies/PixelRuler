@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows;
@@ -41,7 +42,8 @@ namespace PixelRuler
             RegistryKey runSubKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
             if (Properties.Settings.Default.StartAtWindowsStartup)
             {
-                var exeLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                //var exeLocation = System.Reflection.Assembly.GetExecutingAssembly().Location; // gives .dll
+                var exeLocation = Process.GetCurrentProcess().MainModule.FileName;
                 var cmdLineOption = "--background";
                 runSubKey.SetValue(PixelRulerStartup, $"{exeLocation} {cmdLineOption}");
             }
