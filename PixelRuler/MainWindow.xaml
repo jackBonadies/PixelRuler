@@ -176,9 +176,8 @@
                 <ui:NumberBox Width="56" IsReadOnly="True" FontSize="15" PlaceholderText="Height" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding BoundingBoxHeight, Mode=OneWay}" Padding="6,6,0,6" Margin="0, 0, 8, 0"/>
 
                 <TextBlock Visibility="Collapsed" VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">C:</TextBlock>
-                <Border Margin="0, 0, 4, 0" Width="26" Height="26" BorderThickness="1" CornerRadius="5" BorderBrush="#aa303030" Background="{Binding Color, Converter={StaticResource ColorDisplayColorConverter}, Mode=OneWay}">
-                </Border>
-                <ui:NumberBox Width="86" IsReadOnly="True" FontSize="15" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}, Mode=OneWay}" Padding="6,6,0,6" />
+                <Border Margin="0, 0, 4, 0" Width="26" Height="26" BorderThickness="1" CornerRadius="5" BorderBrush="#aa303030" Background="{Binding Color, Converter={StaticResource ColorDisplayColorConverter}, Mode=OneWay}" />
+                <ui:NumberBox Width="86" IsReadOnly="True" FontSize="15" PlaceholderText="Color" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}, Mode=OneWay}" Padding="6,6,0,6" />
 
             </StackPanel>
 

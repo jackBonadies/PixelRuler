@@ -55,6 +55,38 @@ namespace PixelRuler
 
             return attributes.Length > 0 ? attributes[0].Order : -1;
         }
+
+        public static bool IsLeft(this SizerEnum sizerEnum)
+        {
+            return sizerEnum == SizerEnum.TopLeft || sizerEnum == SizerEnum.BottomLeft || sizerEnum == SizerEnum.CenterLeft;
+        }
+
+        public static bool IsRight(this SizerEnum sizerEnum)
+        {
+            return sizerEnum == SizerEnum.TopRight || sizerEnum == SizerEnum.BottomRight || sizerEnum == SizerEnum.CenterRight;
+        }
+
+        public static bool IsBottom(this SizerEnum sizerEnum)
+        {
+            return sizerEnum == SizerEnum.BottomLeft || sizerEnum == SizerEnum.BottomRight || sizerEnum == SizerEnum.BottomCenter;
+        }
+
+        public static bool IsTop(this SizerEnum sizerEnum)
+        {
+            return sizerEnum == SizerEnum.TopLeft || sizerEnum == SizerEnum.TopRight || sizerEnum == SizerEnum.TopCenter;
+        }
+    }
+
+    public enum SizerEnum
+    {
+        TopLeft = 0,
+        TopRight = 1,
+        BottomLeft = 2,
+        BottomRight = 3,
+        CenterLeft = 4,
+        CenterRight = 5,
+        TopCenter = 6,
+        BottomCenter = 7,
     }
 
     [AttributeUsage(AttributeTargets.Field)]
