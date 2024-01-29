@@ -20,7 +20,7 @@ namespace PixelRuler
         {
             if (value is System.Drawing.Color color)
             {
-                return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(255, color.R, color.G, color.B));
+                return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B));
             }
             else
             {

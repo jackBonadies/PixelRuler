@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Transactions;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace PixelRuler.CanvasElements
@@ -13,7 +15,7 @@ namespace PixelRuler.CanvasElements
 
         public abstract bool IsEmpty { get; }
 
-        public bool FinishedDrawing { get; set; } = false;
+        public abstract bool FinishedDrawing { get; set; }
 
         public event EventHandler<EventArgs>? SelectedChanged;
 
@@ -35,6 +37,31 @@ namespace PixelRuler.CanvasElements
             }
         }
 
+        public Point StartPoint { get; protected set; }
+        public Point EndPoint { get; protected set; } = new Point(double.NaN, double.NaN);
+
+        public abstract void SetState();
+
+        public void Move(int deltaX, int deltaY)
+        {
+            // this can just be the base method and non virtual TODO
+            this.StartPoint = new Point(this.StartPoint.X + deltaX, this.StartPoint.Y + deltaY);
+            this.EndPoint = new Point(this.EndPoint.X + deltaX, this.EndPoint.Y + deltaY);
+            this.SetState();
+        }
+
+        public void MoveStartPoint(int deltaX, int deltaY)
+        {
+            this.StartPoint = new Point(this.StartPoint.X + deltaX, this.StartPoint.Y + deltaY);
+            this.SetState();
+        }
+
+        public void MoveEndPoint(int deltaX, int deltaY)
+        {
+            this.EndPoint = new Point(this.EndPoint.X + deltaX, this.EndPoint.Y + deltaY);
+            this.SetState();
+        }
+
         public abstract void SetSelectedState();
 
         public void OnMoving(System.Windows.Point pt)
@@ -44,9 +71,5 @@ namespace PixelRuler.CanvasElements
 
         public event EventHandler<System.Windows.Point> Moving;
 
-        public virtual void Move(int v1, int v2)
-        {
-            //this.SetEndPoint();
-        }
     }
 }

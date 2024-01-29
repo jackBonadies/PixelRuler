@@ -26,7 +26,7 @@ namespace PixelRuler
             rect1.Stroke = marching_ants ? brush1 : new SolidColorBrush(Colors.Red);
 
             this.owningCanvas.Children.Add(rect1);
-            Canvas.SetZIndex(rect1, 500);
+            Canvas.SetZIndex(rect1, App.SHAPE_INDEX);
 
             if (marching_ants)
             {
@@ -47,7 +47,7 @@ namespace PixelRuler
                 rect2.BeginAnimation(Shape.StrokeDashOffsetProperty, animation);
 
                 this.owningCanvas.Children.Add(rect2);
-                Canvas.SetZIndex(rect2, 501);
+                Canvas.SetZIndex(rect2, App.SHAPE_INDEX + 1);
             }
 
             StartPoint = startPoint;
@@ -56,9 +56,15 @@ namespace PixelRuler
             BoundingBoxLabel.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
 
             this.owningCanvas.Children.Add(BoundingBoxLabel);
-            Canvas.SetZIndex(BoundingBoxLabel, 500);
+            Canvas.SetZIndex(BoundingBoxLabel, App.LABEL_INDEX);
 
             UpdateForZoomChange();
+        }
+
+        public override void SetState()
+        {
+            SetShapeState();
+            SetLabelState();
         }
 
         private void SetShapeState(Rectangle? rect)
@@ -91,32 +97,32 @@ namespace PixelRuler
             }
         }
 
-        private void SetShapeState()
+        public void SetShapeState()
         {
             SetShapeState(rect1);
             SetShapeState(rect2);
 
         }
 
-        public Point StartPoint
-        {
-            get; private set;
-        }
+        //public Point StartPoint
+        //{
+        //    get; private set;
+        //}
 
-        private Point endPoint;
-        public Point EndPoint 
-        { 
-            get
-            {
-                return endPoint;
-            }
-            set
-            {
-                endPoint = value;
-                SetShapeState();
-                SetLabelState();
-            }
-        }
+        //private Point endPoint;
+        //public Point EndPoint 
+        //{ 
+        //    get
+        //    {
+        //        return endPoint;
+        //    }
+        //    set
+        //    {
+        //        endPoint = value;
+        //        SetShapeState();
+        //        SetLabelState();
+        //    }
+        //}
 
         private void SetLabelState()
         {
@@ -173,6 +179,7 @@ namespace PixelRuler
         public override void SetEndPoint(System.Windows.Point roundedPoint)
         {
             this.EndPoint = roundedPoint;
+            this.SetState();
         }
 
         public override void SetSelectedState()
@@ -180,11 +187,28 @@ namespace PixelRuler
             
         }
 
+
         public override bool IsEmpty
         {
             get
             {
                 return this.Width == 0 && this.Height == 0;
+            }
+        }
+
+        private bool finishedDrawing;
+        public override bool FinishedDrawing
+        {
+            get
+            {
+                return finishedDrawing;
+            }
+            set
+            {
+                if (finishedDrawing != value)
+                {
+                    finishedDrawing = value;
+                }
             }
         }
     }

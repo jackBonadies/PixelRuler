@@ -20,7 +20,7 @@ namespace PixelRuler
             this.rect = createRectangle();
             this.rect.Stroke = new SolidColorBrush(Colors.Red);
             owningCanvas.Children.Add(rect);
-            Canvas.SetZIndex(rect, 503);
+            Canvas.SetZIndex(rect, App.COLOR_PICKER_INDEX);
         }
 
 

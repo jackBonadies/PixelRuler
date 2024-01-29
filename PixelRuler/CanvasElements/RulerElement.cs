@@ -29,19 +29,19 @@ namespace PixelRuler.CanvasElements
             line1.Stroke = new SolidColorBrush(Colors.Red);
 
             this.owningCanvas.Children.Add(line1);
-            Canvas.SetZIndex(line1, 500);
+            Canvas.SetZIndex(line1, App.SHAPE_INDEX);
 
             lineBeginCap = createLine();
             lineBeginCap.Stroke = new SolidColorBrush(Colors.Red);
 
             this.owningCanvas.Children.Add(lineBeginCap);
-            Canvas.SetZIndex(lineBeginCap, 500);
+            Canvas.SetZIndex(lineBeginCap, App.SHAPE_INDEX);
 
             lineEndCap = createLine();
             lineEndCap.Stroke = new SolidColorBrush(Colors.Red);
 
             this.owningCanvas.Children.Add(lineEndCap);
-            Canvas.SetZIndex(lineEndCap, 500);
+            Canvas.SetZIndex(lineEndCap, App.SHAPE_INDEX);
 
             hitBoxManipulate = new Canvas();
             hitBoxManipulate.GotFocus += HitBoxManipulate_GotFocus;
@@ -64,9 +64,16 @@ namespace PixelRuler.CanvasElements
             startResizeCircle.MouseLeftButtonDown += StartResizeCircle_MouseLeftButtonDown;
             startResizeCircle.MouseMove += StartResizeCircle_MouseMove;
             startResizeCircle.MouseLeftButtonUp += StartResizeCircle_MouseLeftButtonUp;
+            Canvas.SetZIndex(startResizeCircle, App.RESIZE_INDEX);
+
+            endResizeCircle.MouseLeftButtonDown += StartResizeCircle_MouseLeftButtonDown;
+            endResizeCircle.MouseMove += StartResizeCircle_MouseMove;
+            endResizeCircle.MouseLeftButtonUp += StartResizeCircle_MouseLeftButtonUp;
+            Canvas.SetZIndex(endResizeCircle, App.RESIZE_INDEX);
+
 
             this.owningCanvas.Children.Add(hitBoxManipulate);
-            Canvas.SetZIndex(hitBoxManipulate, 500);
+            Canvas.SetZIndex(hitBoxManipulate, App.MANIPULATE_HITBOX_INDEX);
 
             StartPoint = startPoint;
 
@@ -74,7 +81,7 @@ namespace PixelRuler.CanvasElements
             rulerLengthLabel.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
 
             this.owningCanvas.Children.Add(rulerLengthLabel);
-            Canvas.SetZIndex(rulerLengthLabel, 500);
+            Canvas.SetZIndex(rulerLengthLabel, App.MANIPULATE_HITBOX_INDEX);
 
             UpdateForZoomChange();
             SetSelectedState();
@@ -90,12 +97,37 @@ namespace PixelRuler.CanvasElements
         {
         }
 
+        private void CleanUpStartEndPoints()
+        {
+            if (isHorizontal())
+            {
+                EndPoint = new Point(EndPoint.X, StartPoint.Y);
+                if (StartPoint.X > EndPoint.X)
+                {
+                    var temp = StartPoint;
+                    StartPoint = EndPoint;
+                    EndPoint = temp;
+                }
+            }
+            else
+            {
+                EndPoint = new Point(StartPoint.X, EndPoint.Y);
+                if (StartPoint.Y > EndPoint.Y) // if start point is lower
+                {
+                    var temp = StartPoint;
+                    StartPoint = EndPoint;
+                    EndPoint = temp;
+                }
+            }
+        }
+
 
 
         private void StartResizeCircle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             isManipulating = false;
             (sender as UIElement).ReleaseMouseCapture();
+            CleanUpStartEndPoints();
         }
 
         private void StartResizeCircle_MouseMove(object sender, MouseEventArgs e)
@@ -111,12 +143,56 @@ namespace PixelRuler.CanvasElements
             int xMove = -(int)delta.X;
             int yMove = -(int)delta.Y;
 
-            this.StartPoint = new Point(MoveStartInfo.shapeStart.X + xMove, MoveStartInfo.shapeStart.Y);
+            if (isHorizontal())
+            {
+                if (isStartPointManipulating)
+                {
+                    this.StartPoint = new Point(MoveStartInfo.shapeStart.X + xMove, MoveStartInfo.shapeStart.Y);
+                }
+                else
+                {
+                    this.EndPoint = new Point(MoveStartInfo.shapeEnd.X + xMove, MoveStartInfo.shapeEnd.Y);
+                }
+            }
+            else
+            {
+                if (isStartPointManipulating)
+                {
+                    this.StartPoint = new Point(MoveStartInfo.shapeStart.X, MoveStartInfo.shapeStart.Y + yMove);
+                }
+                else
+                {
+                    this.EndPoint = new Point(MoveStartInfo.shapeEnd.X, MoveStartInfo.shapeEnd.Y + yMove);
+                }
+            }
+
             SetShapeState();
             SetLabelState();
             e.Handled = true;
             //this.EndPoint = new Point(MoveStartInfo.shapeEnd.X + xMove, MoveStartInfo.shapeEnd.Y + yMove);
         }
+
+        private bool isStartPointCircleResizer(CircleSizerControl circleSizerControl)
+        {
+            bool nominalStart = circleSizerControl == startResizeCircle;
+            if (isHorizontal())
+            {
+                if (Canvas.GetLeft(startResizeCircle) > Canvas.GetLeft(endResizeCircle))
+                {
+                    nominalStart = !nominalStart;
+                }
+            }
+            else
+            {
+                if (Canvas.GetTop(startResizeCircle) > Canvas.GetTop(endResizeCircle))
+                {
+                    nominalStart = !nominalStart;
+                }
+            }
+            return nominalStart;
+        }
+
+        bool isStartPointManipulating = false;
 
         private void StartResizeCircle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -124,6 +200,8 @@ namespace PixelRuler.CanvasElements
             {
                 return;
             }
+
+            isStartPointManipulating = isStartPointCircleResizer(sender as CircleSizerControl);
 
             this.Selected = true;
 
@@ -183,37 +261,19 @@ namespace PixelRuler.CanvasElements
             e.Handled = true;
         }
 
-        public override void Move(int v1, int v2)
-        {
-            this.StartPoint = new Point(this.StartPoint.X + v1, this.StartPoint.Y + v2);
-            this.endPoint = new Point(this.EndPoint.X + v1, this.EndPoint.Y + v2);
-            this.SetShapeState();
-            this.SetLabelState();
-            //this.SetEndPoint();
-        }
-
-        public Point StartPoint { get; private set; }
-
-
-        private Point endPoint = new Point(double.NaN, double.NaN);
-        public Point EndPoint
-        {
-            get
-            {
-                return endPoint;
-            }
-            set
-            {
-                endPoint = value;
-                SetShapeState();
-                SetLabelState();
-            }
-        }
+        //public override void Move(int deltaX, int deltaY)
+        //{
+        //    // this can just be the base method and non virtual TODO
+        //    this.StartPoint = new Point(this.StartPoint.X + deltaX, this.StartPoint.Y + deltaY);
+        //    this.endPoint = new Point(this.EndPoint.X + deltaX, this.EndPoint.Y + deltaY);
+        //    this.SetShapeState();
+        //    this.SetLabelState();
+        //}
 
         private bool isHorizontal()
         {
-            var xDist = Math.Abs(endPoint.X - StartPoint.X);
-            var yDist = Math.Abs(endPoint.Y - StartPoint.Y);
+            var xDist = Math.Abs(EndPoint.X - StartPoint.X);
+            var yDist = Math.Abs(EndPoint.Y - StartPoint.Y);
 
             if(xDist > yDist)
             {
@@ -225,7 +285,7 @@ namespace PixelRuler.CanvasElements
 
         private void SetShapeState()
         {
-            if(double.IsNaN(endPoint.X))
+            if(double.IsNaN(EndPoint.X))
             {
                 return;
             }
@@ -236,7 +296,7 @@ namespace PixelRuler.CanvasElements
 
             if(isHorizontal())
             {
-                line1.X2 = endPoint.X;
+                line1.X2 = EndPoint.X;
                 line1.Y2 = line1.Y1;
 
                 lineBeginCap.X1 = lineBeginCap.X2 = line1.X1;
@@ -248,7 +308,7 @@ namespace PixelRuler.CanvasElements
             else
             {
                 line1.X2 = line1.X1;
-                line1.Y2 = endPoint.Y;
+                line1.Y2 = EndPoint.Y;
 
                 lineBeginCap.Y1 = lineBeginCap.Y2 = line1.Y1;
                 lineEndCap.Y1 = lineEndCap.Y2 = line1.Y2;
@@ -269,18 +329,30 @@ namespace PixelRuler.CanvasElements
             Canvas.SetTop(hitBoxManipulate, minY - padding);
             hitBoxManipulate.Height = maxY - minY + padding * 2;
 
-            //hitBoxManipulate.Background = new SolidColorBrush(Colors.Green);
+            hitBoxManipulate.Background = new SolidColorBrush(Color.FromArgb(40, 244, 244, 244));
 
-            Canvas.SetTop(startResizeCircle, hitBoxManipulate.ActualHeight / 2 - startResizeCircle.ActualHeight / 2 * getUIUnit() / owningCanvas.GetDpi());
-            Canvas.SetTop(endResizeCircle, hitBoxManipulate.ActualHeight / 2 - startResizeCircle.ActualHeight / 2 * getUIUnit() / owningCanvas.GetDpi());
-            Canvas.SetLeft(startResizeCircle, padding - startResizeCircle.ActualWidth / 2 * getUIUnit() / owningCanvas.GetDpi());
-            Canvas.SetLeft(endResizeCircle, hitBoxManipulate.ActualWidth -  padding - startResizeCircle.ActualWidth / 2 * getUIUnit() / owningCanvas.GetDpi());
+            if(isHorizontal())
+            {
+                Canvas.SetTop(startResizeCircle, hitBoxManipulate.Height / 2 - startResizeCircle.ActualHeight / 2 * getUIUnit() / owningCanvas.GetDpi());
+                Canvas.SetTop(endResizeCircle, hitBoxManipulate.Height / 2 - startResizeCircle.ActualHeight / 2 * getUIUnit() / owningCanvas.GetDpi());
+                Canvas.SetLeft(startResizeCircle, padding - startResizeCircle.ActualWidth / 2 * getUIUnit() / owningCanvas.GetDpi());
+                Canvas.SetLeft(endResizeCircle, double.NaN); // clear left, otherwise it can override
+                Canvas.SetRight(endResizeCircle, -endResizeCircle.ActualWidth / 2 * getUIUnit() / owningCanvas.GetDpi() + padding);
+            }
+            else
+            {
+                Canvas.SetLeft(startResizeCircle, hitBoxManipulate.Width / 2 - startResizeCircle.ActualWidth / 2 * getUIUnit() / owningCanvas.GetDpi());
+                Canvas.SetLeft(endResizeCircle, hitBoxManipulate.Width / 2 - startResizeCircle.ActualWidth / 2 * getUIUnit() / owningCanvas.GetDpi());
+                Canvas.SetTop(startResizeCircle, padding - startResizeCircle.ActualHeight / 2 * getUIUnit() / owningCanvas.GetDpi());
+                Canvas.SetTop(endResizeCircle, double.NaN);
+                Canvas.SetBottom(endResizeCircle, -endResizeCircle.ActualHeight / 2 * getUIUnit() / owningCanvas.GetDpi() + padding);
+            }
         }
 
 
         private void SetLabelState()
         {
-            if (double.IsNaN(endPoint.X))
+            if (double.IsNaN(EndPoint.X))
             {
                 return;
             }
@@ -346,6 +418,7 @@ namespace PixelRuler.CanvasElements
         public override void SetEndPoint(Point roundedPoint)
         {
             this.EndPoint = roundedPoint;
+            this.SetState();
         }
 
         public override void SetSelectedState()
@@ -362,6 +435,12 @@ namespace PixelRuler.CanvasElements
             }
         }
 
+        public override void SetState()
+        {
+            SetShapeState();
+            SetLabelState();
+        }
+
         public double Extent
         {
             get
@@ -375,6 +454,23 @@ namespace PixelRuler.CanvasElements
             get
             {
                 return this.Extent == 0;
+            }
+        }
+
+        private bool finishedDrawing;
+        public override bool FinishedDrawing
+        {
+            get
+            {
+                return finishedDrawing;
+            }
+            set
+            {
+                if(finishedDrawing != value)
+                {
+                    finishedDrawing = value;
+                    CleanUpStartEndPoints();
+                }
             }
         }
     }

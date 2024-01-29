@@ -81,5 +81,11 @@ namespace PixelRuler
         public static readonly double MinZoomPercent = ZoomSelections[0];
         public static readonly double MaxZoomPercent = ZoomSelections[ZoomSelections.Length - 1];
 
+        public const int SHAPE_INDEX = 500;
+        public const int COLOR_PICKER_INDEX = 500;
+        public const int LABEL_INDEX = 505;
+        public const int MANIPULATE_HITBOX_INDEX = 510;
+        public const int RESIZE_INDEX = 515;
+
     }
 }
