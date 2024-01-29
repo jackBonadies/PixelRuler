@@ -196,6 +196,22 @@ namespace PixelRuler
             }
         }
 
+        public string VersionDisplayName
+        {
+            get
+            {
+                try
+                {
+                    return Windows.ApplicationModel.Package.Current.Id.Version.ToString();
+                }
+                catch(Exception)
+                {
+                    return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                }
+            }
+        }
+
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private void OnPropertyChanged([CallerMemberName] string? name = null)

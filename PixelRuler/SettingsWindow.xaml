@@ -6,11 +6,13 @@
         xmlns:local="clr-namespace:PixelRuler"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         mc:Ignorable="d"
+        Padding="0,0,0,0"
         d:DataContext="{d:DesignInstance Type=local:SettingsViewModel, IsDesignTimeCreatable=True}"
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize"
         Title="Settings" >
-    <StackPanel Margin="24,24,24,24">
+    <ui:PassiveScrollViewer Padding="24,24,24,24">
+    <StackPanel>
         <ui:TextBlock
             Margin="0,0,0,8"
             FontTypography="BodyStrong"
@@ -164,16 +166,20 @@
             FontTypography="BodyStrong"
             Text="About" />
         <StackPanel Orientation="Vertical">
-            <ui:TextBlock
+                <ui:TextBlock
             Margin="0,0,0,8"
             FontTypography="Body"
-            Text="PixelRuler 1.0.1" />
+            >
+                    <Run Text="PixelRuler "></Run>
+                    <Run Text="{Binding VersionDisplayName, Mode=OneWay}"/>
+                </ui:TextBlock>
 
-        </StackPanel>
+            </StackPanel>
  
         
         <!--UI element size-->
         <!--close to system tray-->
         <!--global shortcut-->
     </StackPanel>
+    </ui:PassiveScrollViewer>
 </Window>

@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Windows.ApplicationModel;
 
 namespace PixelRuler
 {
@@ -21,7 +22,11 @@ namespace PixelRuler
     {
         public SettingsWindow(PixelRulerViewModel viewModel)
         {
+            var workArea = SystemParameters.WorkArea;
+            this.MaxHeight = workArea.Height - 30;
+
             this.DataContext = viewModel.Settings;
+
             InitializeComponent();
         }
     }

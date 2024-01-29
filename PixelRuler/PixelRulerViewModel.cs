@@ -16,7 +16,7 @@ namespace PixelRuler
 {
     public class PixelRulerViewModel : INotifyPropertyChanged
     {
-        public PixelRulerViewModel()
+        public PixelRulerViewModel(SettingsViewModel settingsViewModel = null)
         {
             BoundsMeasureSelectedCommand = new RelayCommandFull((object? o) => SelectedTool = Tool.BoundingBox, System.Windows.Input.Key.B, System.Windows.Input.ModifierKeys.None, "Bounds Measure");
             ColorPickerSelectedCommand = new RelayCommandFull((object? o) => SelectedTool = Tool.ColorPicker, System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.None, "Color Picker");
@@ -26,6 +26,13 @@ namespace PixelRuler
             FitWindowCommand = new RelayCommandFull((object? o) => fitWindow(), System.Windows.Input.Key.D0, System.Windows.Input.ModifierKeys.Control, "Fit Window");
             ClearAllMeasureElementsCommand = new RelayCommandFull((object? o) => clearAllMeasureElements(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Shift, "Clear All");
             DeleteAllSelectedCommand = new RelayCommandFull((object? o) => deleteAllSelectedElements(), System.Windows.Input.Key.Delete, System.Windows.Input.ModifierKeys.None, "Delete All Selected");
+            SelectAllElementsCommand = new RelayCommandFull((object? o) => selectAllElements(), System.Windows.Input.Key.A, System.Windows.Input.ModifierKeys.Control, "Select All Elements");
+
+            if(settingsViewModel != null)
+            {
+                this.Settings = settingsViewModel;
+                this.SelectedTool = settingsViewModel.DefaultTool;
+            }
         }
 
         private void zoomIn()
@@ -56,6 +63,11 @@ namespace PixelRuler
         private void clearAllMeasureElements()
         {
             ClearAllMeasureElements?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void selectAllElements()
+        {
+            AllElementsSelected?.Invoke(this, EventArgs.Empty);
         }
 
         private void deleteAllSelectedElements()
@@ -202,6 +214,23 @@ namespace PixelRuler
                 if (newScreenshotFullCommand != value)
                 {
                     newScreenshotFullCommand = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private RelayCommandFull selectAllElementsCommand;
+        public RelayCommandFull SelectAllElementsCommand
+        {
+            get
+            {
+                return selectAllElementsCommand;
+            }
+            set
+            {
+                if (selectAllElementsCommand != value)
+                {
+                    selectAllElementsCommand = value;
                     OnPropertyChanged();
                 }
             }
@@ -362,6 +391,7 @@ namespace PixelRuler
         public EventHandler<ZoomBehavior>? ZoomChanged;
         public EventHandler<EventArgs>? ClearAllMeasureElements;
         public EventHandler<EventArgs>? DeleteAllSelectedElements;
+        public EventHandler<EventArgs>? AllElementsSelected;
     }
 
     public enum ZoomBehavior

@@ -35,9 +35,10 @@ namespace PixelRuler
                 }
             }
 
-            var mainViewModel = new PixelRulerViewModel();
+
+
             var settingsViewModel = new SettingsViewModel();
-            mainViewModel.Settings = settingsViewModel;
+            var mainViewModel = new PixelRulerViewModel(settingsViewModel);
 
             MainWindow mainWindow = new MainWindow(mainViewModel);
             mainWindow.Icon = new BitmapImage(new Uri("pack://application:,,,/PixelRuler;component/PixelRulerIcon.ico"));

@@ -60,7 +60,16 @@ namespace PixelRuler
 
         public static Drawing.Bitmap CaptureScreen()
         {
-            var screenBounds = new Drawing.Size(3840, 2160);//System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+
+            var primaryScreen = System.Windows.Forms.Screen.PrimaryScreen;
+            if(primaryScreen == null)
+            {
+                throw new Exception("Primary Screen is null");
+            }
+            int pixelWidth = primaryScreen.Bounds.Width; 
+            int pixelHeight = primaryScreen.Bounds.Height; 
+
+            var screenBounds = new Drawing.Size(pixelWidth, pixelHeight);//System.Windows.Forms.Screen.PrimaryScreen.Bounds;
             var screenshot = new Drawing.Bitmap(screenBounds.Width, screenBounds.Height);// PixelFormat.Format32bppArgb);
             using (Drawing.Graphics g = Drawing.Graphics.FromImage(screenshot))
             {

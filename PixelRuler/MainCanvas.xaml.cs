@@ -41,7 +41,6 @@ namespace PixelRuler
 
             this.mainImage.SourceUpdated += MainCanvas_SourceUpdated;
             this.innerCanvas.MouseWheel += Canvas_MouseWheel;
-            this.innerCanvas.TouchDown += MainCanvas_TouchDown;
 
             this.EffectiveZoomChanged += OnEffectiveZoomChanged;
             //this.mainCanvas.PreviewMouseRightButtonDown += MainCanvas_MouseRightButtonDown;
@@ -68,15 +67,15 @@ namespace PixelRuler
         double lastDistance;
         private void MainCanvas_TouchDown(object? sender, TouchEventArgs e)
         {
-            if (e.TouchDevice.GetIntermediateTouchPoints(innerCanvas).Count == 2)
-            {
-                e.Handled = true;
-                var points = e.TouchDevice.GetIntermediateTouchPoints(innerCanvas);
-                lastCenterPoint = new Point(
-                    (points[0].Position.X + points[1].Position.X) / 2,
-                    (points[0].Position.Y + points[1].Position.Y) / 2);
-                lastDistance = GetDistance(points[0].Position, points[1].Position);
-            }
+            //if (e.TouchDevice.GetIntermediateTouchPoints(innerCanvas).Count == 2)
+            //{
+            //    e.Handled = true;
+            //    var points = e.TouchDevice.GetIntermediateTouchPoints(innerCanvas);
+            //    lastCenterPoint = new Point(
+            //        (points[0].Position.X + points[1].Position.X) / 2,
+            //        (points[0].Position.Y + points[1].Position.Y) / 2);
+            //    lastDistance = GetDistance(points[0].Position, points[1].Position);
+            //}
         }
 
         private double GetDistance(Point point1, Point point2)
@@ -90,7 +89,25 @@ namespace PixelRuler
             this.ViewModel.ZoomChanged += SelectedZoomChanged;
             this.ViewModel.ClearAllMeasureElements += ClearAllMeasureElements;
             this.ViewModel.DeleteAllSelectedElements += DeleteAllSelectedMeasureElements;
+            this.ViewModel.AllElementsSelected += AllElementsSelected;
             SetClearAllMeasurementsEnabledState();
+        }
+
+        bool selectAll = false;
+        private void AllElementsSelected(object? sender, EventArgs e)
+        {
+            try
+            {
+                selectAll = true;
+                foreach(var measEl in measurementElements)
+                {
+                    measEl.Selected = true;
+                }
+            }
+            finally
+            {
+                selectAll = false;
+            }
         }
 
         private void ClearAllMeasureElements(object? sender, EventArgs e)
@@ -391,7 +408,7 @@ namespace PixelRuler
             {
                 if(measEl.Selected)
                 {
-                    if(KeyUtil.IsCtrlDown() || KeyUtil.IsShiftDown())
+                    if(KeyUtil.IsCtrlDown() || KeyUtil.IsShiftDown() || selectAll)
                     {
                         return;
                     }
@@ -612,6 +629,23 @@ namespace PixelRuler
         private void mainImage_Loaded(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void innerCanvas_ManipulationStarting(object sender, ManipulationStartingEventArgs e)
+        {
+            e.ManipulationContainer = this;
+            e.Handled = true;
+        }
+
+        private void innerCanvas_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
+        {
+            var exp = e.DeltaManipulation.Expansion;
+            var trans = e.DeltaManipulation.Translation;
+            var rot = e.DeltaManipulation.Rotation;
+            var scale = e.DeltaManipulation.Scale;
+
+
+            e.Handled = true;
         }
     }
 }

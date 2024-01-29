@@ -8,12 +8,14 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.InputBindings>
         <KeyBinding Command="{Binding DeleteAllSelectedCommand}" Key="{Binding DeleteAllSelectedCommand.Key}" Modifiers="{Binding DeleteAllSelectedCommand.Modifiers}" />
+        <KeyBinding Command="{Binding SelectAllElementsCommand}" Key="{Binding SelectAllElementsCommand.Key}" Modifiers="{Binding SelectAllElementsCommand.Modifiers}" />
     </UserControl.InputBindings>
     <Canvas Name="innerCanvas" 
+            ManipulationStarting="innerCanvas_ManipulationStarting"
+            ManipulationDelta="innerCanvas_ManipulationDelta"
             Background="#303030" 
             Width="30000" 
-            Height="30000" 
-            IsManipulationEnabled="True"
+            Height="30000"
             Focusable="True">
         <Canvas.RenderTransform>
             <TransformGroup>
