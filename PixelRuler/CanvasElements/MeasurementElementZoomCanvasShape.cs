@@ -153,7 +153,7 @@ namespace PixelRuler.CanvasElements
             OnPropertyChanged("ShapeHeight");
         }
         
-        public double ShapeWidth
+        public virtual double ShapeWidth
         {
             get
             {
@@ -161,7 +161,7 @@ namespace PixelRuler.CanvasElements
             }
         }
         
-        public double ShapeHeight
+        public virtual double ShapeHeight
         {
             get
             {

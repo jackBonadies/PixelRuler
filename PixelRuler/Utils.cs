@@ -82,9 +82,13 @@ namespace PixelRuler
         {
             if (value is double doubleVal)
             {
-                return doubleVal < 0;
+                if (doubleVal < 0)
+                {
+                    // if -1 then show placeholder
+                    return parameter.ToString();
+                }
             }
-            return false;
+            return string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

@@ -171,15 +171,15 @@
 
                 <TextBlock VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">W:</TextBlock>
                 <ui:NumberBox Width="56" IsReadOnly="True" FontSize="15" 
-                              PlaceholderText="Width" SpinButtonPlacementMode="Hidden" 
-                              PlaceholderEnabled="{Binding ShapeHeight, Converter={StaticResource DoubleShouldShowPlaceholderConverter}, Mode=OneWay}"
+                              PlaceholderText="{Binding ShapeWidth, Converter={StaticResource DoubleShouldShowPlaceholderConverter}, ConverterParameter='Width', Mode=OneWay}" 
+                              SpinButtonPlacementMode="Hidden" 
                               ClearButtonEnabled="False" 
                               Text="{Binding ShapeWidth, Converter={StaticResource DoubleNaNZeroBlankConverter}, Mode=OneWay}" 
                               Padding="6,6,0,6" Margin="0, 0, 8, 0"/>
 
                 <TextBlock VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">H:</TextBlock>
                 <ui:NumberBox Width="56" IsReadOnly="True" FontSize="15" 
-                              PlaceholderText="Height" 
+                              PlaceholderText="{Binding ShapeHeight, Converter={StaticResource DoubleShouldShowPlaceholderConverter}, ConverterParameter='Height', Mode=OneWay}" 
                               SpinButtonPlacementMode="Hidden" 
                               PlaceholderEnabled="False"
                               ClearButtonEnabled="False" 

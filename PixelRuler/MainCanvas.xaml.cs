@@ -430,15 +430,13 @@ namespace PixelRuler
             if(ViewModel.SelectedTool == Tool.BoundingBox)
             {
                 currentMeasurementElement = new BoundingBoxElement(this.innerCanvas, roundedPoint);
-                if(currentMeasurementElement is BoundingBoxElement b)
-                {
-                    ViewModel.ActiveMeasureElement = currentMeasurementElement;
-                }
             }
             else
             {
                 currentMeasurementElement = new RulerElement(this.innerCanvas, roundedPoint);
             }
+
+            ViewModel.ActiveMeasureElement = currentMeasurementElement;
 
             measurementElements.Add(currentMeasurementElement);
             currentMeasurementElement.SelectedChanged += CurrentMeasurementElement_SelectedChanged;

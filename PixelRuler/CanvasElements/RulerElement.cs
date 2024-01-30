@@ -238,6 +238,30 @@ namespace PixelRuler.CanvasElements
 
         }
 
+        public override double ShapeWidth
+        {
+            get
+            {
+                if(!isHorizontal())
+                {
+                    return double.NaN;
+                }
+                return base.ShapeWidth;
+            }
+        }
+
+        public override double ShapeHeight
+        {
+            get
+            {
+                if(isHorizontal())
+                {
+                    return double.NaN;
+                }
+                return base.ShapeHeight;
+            }
+        }
+
         private void SetShapeState()
         {
             if(double.IsNaN(EndPoint.X))
