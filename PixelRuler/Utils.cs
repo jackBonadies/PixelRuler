@@ -59,6 +59,40 @@ namespace PixelRuler
         }
     }
 
+    public class DoubleNaNZeroBlankConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is double.NaN || value is 0.0)
+            {
+                return string.Empty;
+            }
+            return value.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new Exception("One way");
+        }
+    }
+
+    public class DoubleShouldShowPlaceholderConverter: IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is double doubleVal)
+            {
+                return doubleVal < 0;
+            }
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new Exception("One way");
+        }
+    }
+
     public class PercentFormatStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

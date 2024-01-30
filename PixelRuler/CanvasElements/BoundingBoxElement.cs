@@ -61,7 +61,7 @@ namespace PixelRuler
             BoundingBoxLabel.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
 
             var sizerEnumValues = Enum.GetValues(typeof(SizerEnum));
-            foreach(var sizerEnumValue in sizerEnumValues)
+            foreach (var sizerEnumValue in sizerEnumValues)
             {
                 var circleSizer = new CircleSizerControl();
                 circleSizer.Tag = sizerEnumValue;
@@ -89,7 +89,7 @@ namespace PixelRuler
         {
             isManipulating = false;
             (sender as UIElement).ReleaseMouseCapture();
-            //CleanUpStartEndPoints();
+            CleanUpStartEndPoints();
         }
 
         private void StartResizeCircle_MouseMove(object sender, MouseEventArgs e)
@@ -112,11 +112,11 @@ namespace PixelRuler
             int moveXEnd = 0;
             int moveYEnd = 0;
 
-            if(sizerManipulating.IsBottom())
+            if (sizerManipulating.IsBottom())
             {
                 moveYEnd = yMove;
             }
-            else if(sizerManipulating.IsTop())
+            else if (sizerManipulating.IsTop())
             {
                 moveYStart = yMove;
             }
@@ -224,7 +224,7 @@ namespace PixelRuler
 
         private void SetShapeState(Rectangle? rect)
         {
-            if(rect == null)
+            if (rect == null)
             {
                 return;
             }
@@ -274,7 +274,7 @@ namespace PixelRuler
             Canvas.SetTop(hitBoxManipulate, minY - padding);
             hitBoxManipulate.Height = maxY - minY + padding * 2;
 
-            foreach(var sizer in circleSizerControls)
+            foreach (var sizer in circleSizerControls)
             {
                 var sizerEnum = (SizerEnum)sizer.Tag;
 
@@ -363,7 +363,7 @@ namespace PixelRuler
         public override void UpdateForZoomChange()
         {
             rect1.StrokeThickness = getUIUnit();
-            if(rect2 != null)
+            if (rect2 != null)
             {
                 rect2.StrokeThickness = getUIUnit();
             }
@@ -408,8 +408,23 @@ namespace PixelRuler
                 if (finishedDrawing != value)
                 {
                     finishedDrawing = value;
+                    CleanUpStartEndPoints();
+
                 }
             }
+        }
+
+        /// <summary>
+        /// Cleanup so Start is at top left, End is at bottom right
+        /// </summary>
+        private void CleanUpStartEndPoints()
+        {
+            var x1 = this.StartPoint.X;
+            var y1 = this.StartPoint.Y;
+            var x2 = this.EndPoint.X;
+            var y2 = this.EndPoint.Y;
+            this.StartPoint = new Point(Math.Min(x1, x2), Math.Min(y1, y2));
+            this.EndPoint = new Point(Math.Max(x1, x2), Math.Max(y1, y2));
         }
     }
 }

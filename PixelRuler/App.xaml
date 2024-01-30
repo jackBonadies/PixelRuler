@@ -17,6 +17,8 @@
             <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <local:EnumToOptionConverter x:Key="EnumToOptionConverter" />
             <local:EnumToOptionsCollectionConverter x:Key="EnumToOptionsCollectionConverter" />
+            <local:DoubleNaNZeroBlankConverter x:Key="DoubleNaNZeroBlankConverter" />
+            <local:DoubleShouldShowPlaceholderConverter x:Key="DoubleShouldShowPlaceholderConverter" />
 
             <SolidColorBrush x:Key="BarColor">#F1F3F9</SolidColorBrush>
             <SolidColorBrush x:Key="IsToggledOnColor">#E8EAF0</SolidColorBrush>

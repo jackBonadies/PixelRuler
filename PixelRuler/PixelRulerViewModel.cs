@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Input;
+using PixelRuler.CanvasElements;
 
 namespace PixelRuler
 {
@@ -135,37 +136,45 @@ namespace PixelRuler
         }
 
 
-        BoundingBoxLabel? boundingBoxLabel = null;
-        public BoundingBoxLabel? BoundingBoxLabel
+        MeasurementElementZoomCanvasShape? activeMeasureElement = null;
+        public MeasurementElementZoomCanvasShape? ActiveMeasureElement
         {
             get
             {
-                return boundingBoxLabel;
+                return activeMeasureElement;
             }
             set
             {
-                boundingBoxLabel = value;
-                boundingBoxLabel.PropertyChanged += BoundingBoxLabel_PropertyChanged;
+                if (activeMeasureElement != value)
+                {
+                    activeMeasureElement = value;
+                    if(activeMeasureElement != null)
+                    {
+                        activeMeasureElement.PropertyChanged += ActiveMeasureElement_PropertyChanged;
+                    }
+                    OnPropertyChanged(nameof(ShapeWidth));
+                    OnPropertyChanged(nameof(ShapeHeight));
+                }
             }
         }
 
-        private void BoundingBoxLabel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private void ActiveMeasureElement_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(e.PropertyName));
         }
 
         private double boundingBoxWidth;
-        public double BoundingBoxWidth
+        public double ShapeWidth
         {
             get
             {
-                if(boundingBoxLabel != null)
+                if(activeMeasureElement != null)
                 {
-                    return boundingBoxLabel.BoundingBoxWidth;
+                    return activeMeasureElement.ShapeWidth;
                 }
                 else
                 {
-                    return 0;
+                    return -1;
                 }
             }
             set
@@ -178,25 +187,25 @@ namespace PixelRuler
             }
         }
 
-        private double boundingBoxHeight;
-        public double BoundingBoxHeight
+        private double shapeHeight;
+        public double ShapeHeight
         {
             get
             {
-                if (boundingBoxLabel != null)
+                if (activeMeasureElement != null)
                 {
-                    return boundingBoxLabel.BoundingBoxHeight;
+                    return activeMeasureElement.ShapeHeight;
                 }
                 else
                 {
-                    return 0;
+                    return -1;
                 }
             }
             set
             {
-                if (boundingBoxHeight != value)
+                if (shapeHeight != value)
                 {
-                    boundingBoxHeight = value;
+                    shapeHeight = value;
                     OnPropertyChanged();
                 }
             }

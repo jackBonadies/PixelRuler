@@ -160,6 +160,10 @@ namespace PixelRuler
         private void DeleteAllSelectedMeasureElements(object? sender, EventArgs e)
         {
             var selectedItems = measurementElements.Where(it => it.Selected).ToList();
+            if(selectedItems.Contains(ViewModel.ActiveMeasureElement))
+            {
+                ViewModel.ActiveMeasureElement = null;
+            }
             foreach (var measEl in selectedItems)
             {
                 measEl.Clear();
@@ -428,7 +432,7 @@ namespace PixelRuler
                 currentMeasurementElement = new BoundingBoxElement(this.innerCanvas, roundedPoint);
                 if(currentMeasurementElement is BoundingBoxElement b)
                 {
-                    ViewModel.BoundingBoxLabel = b.BoundingBoxLabel;
+                    ViewModel.ActiveMeasureElement = currentMeasurementElement;
                 }
             }
             else
@@ -455,6 +459,7 @@ namespace PixelRuler
             {
                 if(measEl.Selected)
                 {
+                    ViewModel.ActiveMeasureElement = measEl;
                     if(KeyUtil.IsCtrlDown() || KeyUtil.IsShiftDown() || selectAll)
                     {
                         return;

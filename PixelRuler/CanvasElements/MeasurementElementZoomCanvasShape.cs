@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Transactions;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,7 +9,7 @@ using System.Windows.Media;
 
 namespace PixelRuler.CanvasElements
 {
-    public abstract class MeasurementElementZoomCanvasShape : AbstractZoomCanvasShape
+    public abstract class MeasurementElementZoomCanvasShape : AbstractZoomCanvasShape, INotifyPropertyChanged
     {
         protected System.Collections.Generic.List<CircleSizerControl> circleSizerControls = new System.Collections.Generic.List<CircleSizerControl>();
 
@@ -111,8 +113,61 @@ namespace PixelRuler.CanvasElements
             }
         }
 
-        public Point StartPoint { get; protected set; }
-        public Point EndPoint { get; protected set; } = new Point(double.NaN, double.NaN);
+        private Point startPoint;
+        public Point StartPoint
+        {
+            get
+            {
+                return startPoint;
+            }
+            protected set
+            {
+                if (startPoint != value)
+                {
+                    startPoint = value;
+                    ShapeSizeChanged();
+                }
+            }
+        }
+
+        private Point endPoint = new Point(double.NaN, double.NaN);
+        public Point EndPoint
+        {
+            get
+            {
+                return endPoint;
+            }
+            protected set
+            {
+                if(endPoint != value)
+                {
+                    endPoint = value;
+                    ShapeSizeChanged();
+                }
+            }
+        }
+
+        public void ShapeSizeChanged()
+        {
+            OnPropertyChanged("ShapeWidth");
+            OnPropertyChanged("ShapeHeight");
+        }
+        
+        public double ShapeWidth
+        {
+            get
+            {
+                return Math.Abs(this.endPoint.X - this.startPoint.X);
+            }
+        }
+        
+        public double ShapeHeight
+        {
+            get
+            {
+                return Math.Abs(this.endPoint.Y - this.startPoint.Y);
+            }
+        }
 
         public abstract void SetState();
 
@@ -162,5 +217,10 @@ namespace PixelRuler.CanvasElements
 
         public event EventHandler<System.Windows.Point> Moving;
 
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }
