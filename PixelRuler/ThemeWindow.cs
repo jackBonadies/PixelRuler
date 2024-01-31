@@ -15,6 +15,28 @@ namespace PixelRuler
         public static void UpdateForThemeChanged(DayNightMode effectiveMode)
         {
             ThemeChanged?.Invoke(null, effectiveMode);
+            UpdateResourceDictionaries(effectiveMode);
+        }
+
+        private static void UpdateResourceDictionaries(DayNightMode effectiveMode)
+        {
+            Wpf.Ui.Appearance.ApplicationTheme wpfUiTheme = Wpf.Ui.Appearance.ApplicationTheme.Light;
+            if (effectiveMode == DayNightMode.ForceNight)
+            {
+                wpfUiTheme = Wpf.Ui.Appearance.ApplicationTheme.Dark;
+            }
+
+            var resourceDictionaries1 = App.Current.Resources.MergedDictionaries.OfType<Wpf.Ui.Markup.ThemesDictionary>();
+            foreach(var resource in resourceDictionaries1)
+            {
+                resource.Theme = wpfUiTheme;
+            }
+
+            var resourceDictionaries2 = App.Current.Resources.MergedDictionaries.OfType<ThemesDictionary>();
+            foreach (var resource in resourceDictionaries2)
+            {
+                resource.Theme = wpfUiTheme;
+            }
         }
 
         [DllImport("dwmapi.dll")]

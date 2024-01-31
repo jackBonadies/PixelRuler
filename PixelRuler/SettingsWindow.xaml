@@ -10,10 +10,19 @@
         d:DataContext="{d:DesignInstance Type=local:SettingsViewModel, IsDesignTimeCreatable=True}"
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize"
+        Background="{DynamicResource ApplicationBackgroundBrush}"
         Title="Settings" >
+    <local:ThemeWindow.Resources>
+
+        <Style TargetType="ui:TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"></Setter>
+        </Style>
+
+    </local:ThemeWindow.Resources>
     <ui:PassiveScrollViewer Padding="24,24,24,24">
     <StackPanel>
         <ui:TextBlock
+        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
             Margin="0,0,0,8"
             FontTypography="BodyStrong"
             Text="Appearance &amp; behavior" />
@@ -162,6 +171,7 @@
         </ui:CardControl>
 
         <ui:TextBlock
+        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
             Margin="0,24,0,8"
             FontTypography="BodyStrong"
             Text="About" />

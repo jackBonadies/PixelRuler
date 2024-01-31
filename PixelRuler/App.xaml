@@ -6,7 +6,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:ThemesDictionary Theme="Light" />
+                <ui:ThemesDictionary Theme="Dark" />
+                <local:ThemesDictionary Theme="Dark" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
 
@@ -26,6 +27,14 @@
             <SolidColorBrush x:Key="ToggledHighlightColor">#80B9EE</SolidColorBrush>
             <SolidColorBrush x:Key="AnnotationColor">#EE4B2B</SolidColorBrush>
 
+            <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"></Setter>
+            </Style>
+
+            <Style TargetType="ui:TextBlock">
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"></Setter>
+            </Style>
+            
             <Style x:Key="ToggleButtonSoft" TargetType="ToggleButton">
                 <Setter Property="Template">
                     <Setter.Value>
