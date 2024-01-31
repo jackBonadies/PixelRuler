@@ -95,6 +95,7 @@ namespace PixelRuler
             {
                 if (Properties.Settings.Default.DayNightMode != (int)value)
                 {
+                    ThemeManager.UpdateForThemeChanged(value);
                     Properties.Settings.Default.DayNightMode = (int)value;
                     OnPropertyChanged();
                 }
