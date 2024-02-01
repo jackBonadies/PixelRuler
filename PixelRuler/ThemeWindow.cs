@@ -130,13 +130,6 @@ namespace PixelRuler
             RedrawTitleBar();
         }
 
-        public static class NativeMethods
-        {
-            public const int WM_NCPAINT = 0x0085;
-
-            [DllImport("user32.dll")]
-            public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
-        }
 
         public void RedrawTitleBar()
         {
