@@ -42,14 +42,26 @@ namespace PixelRuler
             this.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
             this.PreviewMouseMove += WindowSelectionWindow_PreviewMouseMove;
             this.KeyDown += WindowSelectionWindow_KeyDown;
+            this.MouseUp += WindowSelectionWindow_MouseUp;
 
             blurRect.Rect = new Rect(0, 0, this.Width, this.Height);
+        }
+
+        public Rect SelectedRect { get; set; }
+
+        private void WindowSelectionWindow_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            SelectedRect = SelectWindowUnderCursor();
+
+            this.DialogResult = true;
+            this.Close();
         }
 
         private void WindowSelectionWindow_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {
+                this.DialogResult = false;
                 this.Close();
             }
         }
@@ -59,7 +71,7 @@ namespace PixelRuler
             SelectWindowUnderCursor();
         }
 
-        private void SelectWindowUnderCursor()
+        private Rect SelectWindowUnderCursor()
         {
             var windowUnderCursorHwnd = NativeHelpers.GetWindowUnderPointExcludingOwn(new WindowInteropHelper(this).Handle);
             
@@ -76,7 +88,10 @@ namespace PixelRuler
             Canvas.SetTop(this.rect, rect12.Top - this.Top);
             rect.Width = rect12.Right - rect12.Left;
             rect.Height = rect12.Bottom - rect12.Top;
-            innerRect.Rect = new Rect(rect12.Left - this.Left, rect12.Top - this.Top, rect12.Right - rect12.Left, rect12.Bottom - rect12.Top);
+            var wpfRect = new Rect(rect12.Left - this.Left, rect12.Top - this.Top, rect12.Right - rect12.Left, rect12.Bottom - rect12.Top);
+            innerRect.Rect = wpfRect;
+
+            return wpfRect;
         }
 
         private void MainWindow_PreviewMouseDown(object sender, MouseButtonEventArgs e)

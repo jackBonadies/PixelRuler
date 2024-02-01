@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Drawing;
 using PixelRuler;
+using System.Reflection;
 
 namespace PixelRuler
 {
@@ -43,7 +44,7 @@ namespace PixelRuler
             this.Loaded += MainWindow_Loaded;
 
             this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
-            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewFullScreenshot(true); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
+            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
 
         }
 
@@ -60,22 +61,27 @@ namespace PixelRuler
             }
         }
 
-        public static Drawing.Bitmap CaptureScreen()
+        public static Drawing.Bitmap CaptureScreen(Rect? bounds = null)
         {
-
-            var primaryScreen = System.Windows.Forms.Screen.PrimaryScreen;
-            if(primaryScreen == null)
+            if(bounds == null)
             {
-                throw new Exception("Primary Screen is null");
+                var primaryScreen = System.Windows.Forms.Screen.PrimaryScreen;
+                if (primaryScreen == null)
+                {
+                    throw new Exception("Primary Screen is null");
+                }
+                int pixelWidth = primaryScreen.Bounds.Width;
+                int pixelHeight = primaryScreen.Bounds.Height;
+                bounds = new Rect(0, 0, pixelWidth, pixelHeight);
             }
-            int pixelWidth = primaryScreen.Bounds.Width; 
-            int pixelHeight = primaryScreen.Bounds.Height; 
 
-            var screenBounds = new Drawing.Size(pixelWidth, pixelHeight);//System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+            var boundsVal = bounds.Value;
+
+            var screenBounds = new Drawing.Size((int)boundsVal.Width, (int)boundsVal.Height);//System.Windows.Forms.Screen.PrimaryScreen.Bounds;
             var screenshot = new Drawing.Bitmap(screenBounds.Width, screenBounds.Height);// PixelFormat.Format32bppArgb);
             using (Drawing.Graphics g = Drawing.Graphics.FromImage(screenshot))
             {
-                g.CopyFromScreen(0, 0, 0, 0, screenBounds, Drawing.CopyPixelOperation.SourceCopy);
+                g.CopyFromScreen((int)boundsVal.X, (int)boundsVal.Y, 0, 0, screenBounds, Drawing.CopyPixelOperation.SourceCopy);
             }
             return screenshot;
         }
@@ -198,6 +204,27 @@ namespace PixelRuler
             base.OnClosing(e);
         }
 
+        public async void NewWindowedScreenshot()
+        {
+            this.Hide();
+            var wsw = new WindowSelectionWindow();
+            var res = wsw.ShowDialog();
+            Bitmap bmp = null;
+            if(res is true)
+            {
+                bmp = CaptureScreen(wsw.SelectedRect);
+                this.ViewModel.Image = bmp;
+                mainCanvas.SetImage(this.ViewModel.ImageSource);
+            }
+
+            this.Show();
+            this.Activate();
+            if (this.WindowState == WindowState.Minimized)
+            {
+                this.WindowState = WindowState.Normal;
+            }
+        }
+
         public async void NewFullScreenshot(bool alreadyRunning)
         {
             Bitmap bmp = null;
@@ -215,7 +242,6 @@ namespace PixelRuler
             {
                 bmp = CaptureScreen();
             }
-            BitmapSource? image = null;
             this.ViewModel.Image = bmp;
             mainCanvas.SetImage(this.ViewModel.ImageSource);
             this.Show();
