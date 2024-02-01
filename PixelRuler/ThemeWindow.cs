@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
+using Wpf.Ui.Appearance;
 
 namespace PixelRuler
 {
@@ -14,6 +16,18 @@ namespace PixelRuler
         public static event EventHandler<DayNightMode>? ThemeChanged;
         public static void UpdateForThemeChanged(DayNightMode effectiveMode)
         {
+            if (effectiveMode == DayNightMode.FollowSystem)
+            {
+                var sysTheme = SystemThemeManager.GetCachedSystemTheme();
+                if(sysTheme == SystemTheme.Dark)
+                {
+                    effectiveMode = DayNightMode.ForceNight;
+                }
+                else
+                {
+                    effectiveMode = DayNightMode.ForceDay;
+                }
+            }
             ThemeChanged?.Invoke(null, effectiveMode);
             UpdateResourceDictionaries(effectiveMode);
         }
@@ -74,6 +88,33 @@ namespace PixelRuler
         public ThemeWindow()
         {
             ThemeManager.ThemeChanged += OnThemeChanged;
+            this.DataContextChanged += ThemeWindow_DataContextChanged;
+            this.Loaded += ThemeWindow_Loaded;
+        }
+
+        private void ThemeWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            SetThemeFromDataContext();
+            //var hwnd = new WindowInteropHelper(this).Handle;
+            //ThemeManager.UseImmersiveDarkMode(hwnd, true);
+        }
+
+        private void SetThemeFromDataContext()
+        {
+            switch (this.DataContext)
+            {
+                case PixelRulerViewModel prvm:
+                    OnThemeChanged(this, prvm.Settings.DayNightMode);
+                    break;
+                case SettingsViewModel svm:
+                    OnThemeChanged(this, svm.DayNightMode);
+                    break;
+            }
+        }
+
+        private void ThemeWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            //SetThemeFromDataContext();
         }
 
         protected override void OnClosed(EventArgs e)
@@ -86,6 +127,21 @@ namespace PixelRuler
         {
             var hwnd = new WindowInteropHelper(this).Handle;
             ThemeManager.UseImmersiveDarkMode(hwnd, e == DayNightMode.ForceNight);
+            RedrawTitleBar();
+        }
+
+        public static class NativeMethods
+        {
+            public const int WM_NCPAINT = 0x0085;
+
+            [DllImport("user32.dll")]
+            public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+        }
+
+        public void RedrawTitleBar()
+        {
+            var windowInteropHelper = new WindowInteropHelper(this);
+            NativeMethods.SendMessage(windowInteropHelper.Handle, NativeMethods.WM_NCPAINT, IntPtr.Zero, IntPtr.Zero);
         }
     }
 }

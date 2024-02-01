@@ -211,6 +211,23 @@ namespace PixelRuler
             }
         }
 
+        private RelayCommandFull closeWindowCommand;
+        public RelayCommandFull CloseWindowCommand
+        {
+            get
+            {
+                return closeWindowCommand;
+            }
+            set
+            {
+                if (closeWindowCommand != value)
+                {
+                    closeWindowCommand = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private RelayCommandFull newScreenshotFullCommand;
         public RelayCommandFull NewScreenshotFullCommand
         {

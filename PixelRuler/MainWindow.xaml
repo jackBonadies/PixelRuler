@@ -67,6 +67,7 @@
         <KeyBinding Command="{Binding ZoomOutCommand}" Key="Subtract" Modifiers="{Binding ZoomOutCommand.Modifiers}" />
         <KeyBinding Command="{Binding FitWindowCommand}" Key="{Binding FitWindowCommand.Key}" Modifiers="{Binding FitWindowCommand.Modifiers}" />
         <KeyBinding Command="{Binding FitWindowCommand}" Key="NumPad0" Modifiers="{Binding FitWindowCommand.Modifiers}" />
+        <KeyBinding Command="{Binding CloseWindowCommand}" Key="{Binding CloseWindowCommand.Key}" Modifiers="{Binding CloseWindowCommand.Modifiers}" />
     </Window.InputBindings>
 
 

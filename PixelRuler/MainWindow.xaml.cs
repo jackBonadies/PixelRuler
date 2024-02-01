@@ -35,12 +35,14 @@ namespace PixelRuler
 
         public MainWindow(PixelRulerViewModel prvm)
         {
+
             this.DataContext = prvm;
 
             InitializeComponent();
 
             this.Loaded += MainWindow_Loaded;
 
+            this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
             this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewFullScreenshot(true); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
 
         }

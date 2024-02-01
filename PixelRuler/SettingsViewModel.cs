@@ -232,6 +232,7 @@ namespace PixelRuler
             {
                 //brush.Color = Properties.Settings.Default.AnnotationColor.ConvertToWpfColor();
             }
+            ThemeManager.UpdateForThemeChanged(this.DayNightMode);
             this.UpdateCloseToTrayChanged();
 
         }
