@@ -1,24 +1,59 @@
-﻿<UserControl x:Class="PixelRuler.LengthLabel"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:PixelRuler"
-             mc:Ignorable="d" 
-             >
+﻿<UserControl
+    x:Class="PixelRuler.LengthLabel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PixelRuler"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="FontFamily" Value="Calibri" />
             <Setter Property="FontSize" Value="18" />
         </Style>
     </UserControl.Resources>
-    <Border Background="#EE4B2B" CornerRadius="4" Margin="0, 0, 0, 0"  Padding="1,1,1,1" SnapsToDevicePixels="True" > <!--TODO: transparency-->
-    <Border Background="#ffffffff" CornerRadius="3" Padding="1, 0, 1, 0" >
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal" >
-                <TextBlock HorizontalAlignment="Center" d:Text="1234" Margin="0,-1,0,-1" Padding="0,0,0,0" Text="{Binding Dim1, Mode=OneWay}" Foreground="#EE4B2B" FontSize="15"/>
-                <TextBlock Foreground="#c0EE4B2B" Margin="0,-1,0,-1" Padding="1,0,1,0" FontSize="11" VerticalAlignment="Center" Visibility="{Binding Has2Dim, Converter={StaticResource BoolToVisibilityConverter}}">×</TextBlock>
-                <TextBlock HorizontalAlignment="Center" d:Text="1234" Margin="0,-1,0,-1" Padding="0,0,0,0" Text="{Binding Dim2, Mode=OneWay}" Foreground="#EE4B2B" FontSize="15"  Visibility="{Binding Has2Dim, Converter={StaticResource BoolToVisibilityConverter}}"/>
-        </StackPanel>
-    </Border>
+    <Border
+        Margin="0,0,0,0"
+        Padding="1,1,1,1"
+        Background="{DynamicResource AnnotationColor}"
+        CornerRadius="4"
+        SnapsToDevicePixels="True">
+        <!--  TODO: transparency  -->
+        <Border
+            Padding="1,0,1,0"
+            Background="#ffffffff"
+            CornerRadius="3">
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <TextBlock
+                    Margin="0,-1,0,-1"
+                    Padding="0,0,0,0"
+                    HorizontalAlignment="Center"
+                    d:Text="1234"
+                    FontSize="15"
+                    Foreground="{DynamicResource AnnotationColorText}"
+                    Text="{Binding Dim1, Mode=OneWay}" />
+                <TextBlock
+                    Margin="0,-1,0,-1"
+                    Padding="1,0,1,0"
+                    VerticalAlignment="Center"
+                    FontSize="11"
+                    Foreground="{DynamicResource AnnotationColor}"
+                    Visibility="{Binding Has2Dim, Converter={StaticResource BoolToVisibilityConverter}}">
+                    ×
+                </TextBlock>
+                <TextBlock
+                    Margin="0,-1,0,-1"
+                    Padding="0,0,0,0"
+                    HorizontalAlignment="Center"
+                    d:Text="1234"
+                    FontSize="15"
+                    Foreground="{DynamicResource AnnotationColorText}"
+                    Text="{Binding Dim2, Mode=OneWay}"
+                    Visibility="{Binding Has2Dim, Converter={StaticResource BoolToVisibilityConverter}}" />
+            </StackPanel>
+        </Border>
     </Border>
 </UserControl>

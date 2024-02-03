@@ -25,19 +25,19 @@ namespace PixelRuler.CanvasElements
         public RulerElement(Canvas canvas, Point startPoint) : base(canvas) 
         {
             line1 = createLine();
-            line1.Stroke = new SolidColorBrush(Colors.Red);
+            line1.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
 
             this.owningCanvas.Children.Add(line1);
             Canvas.SetZIndex(line1, App.SHAPE_INDEX);
 
             lineBeginCap = createLine();
-            lineBeginCap.Stroke = new SolidColorBrush(Colors.Red);
+            lineBeginCap.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
 
             this.owningCanvas.Children.Add(lineBeginCap);
             Canvas.SetZIndex(lineBeginCap, App.SHAPE_INDEX);
 
             lineEndCap = createLine();
-            lineEndCap.Stroke = new SolidColorBrush(Colors.Red);
+            lineEndCap.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
 
             this.owningCanvas.Children.Add(lineEndCap);
             Canvas.SetZIndex(lineEndCap, App.SHAPE_INDEX);

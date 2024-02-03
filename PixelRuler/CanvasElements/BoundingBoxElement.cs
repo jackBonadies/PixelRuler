@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -28,7 +29,20 @@ namespace PixelRuler
         public BoundingBoxElement(Canvas owningCanvas, Point startPoint) : base(owningCanvas)
         {
             rect1 = createRectangle();
-            rect1.Stroke = marching_ants ? brush1 : new SolidColorBrush(Colors.Red);
+            if(marching_ants)
+            {
+                rect1.Stroke = brush1;
+
+            }
+            else
+            {
+                //var binding = new Binding("Settings.AnnotationColor")
+                //{
+                //    Converter = new PixelRuler.ColorConverter(),
+                //    Source = owningCanvas.DataContext as PixelRulerViewModel,
+                //};
+                rect1.SetResourceReference(Rectangle.StrokeProperty, "AnnotationColor");
+            }
 
             this.owningCanvas.Children.Add(rect1);
             Canvas.SetZIndex(rect1, App.SHAPE_INDEX);

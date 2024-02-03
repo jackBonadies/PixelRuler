@@ -135,21 +135,61 @@ namespace PixelRuler
             }
         }
 
-        public System.Drawing.Color AnnotationsColor
+
+        public ColorAnnotationsBundle AnnotationsColor
         {
             get
             {
-                return Properties.Settings.Default.AnnotationColor;
+                return getColorBundle(Properties.Settings.Default.AnnotationColor);
             }
             set
             {
-                if(Properties.Settings.Default.AnnotationColor != value)
+                if (Properties.Settings.Default.AnnotationColor != value.Key)
                 {
-                    Properties.Settings.Default.AnnotationColor = value;
+                    Properties.Settings.Default.AnnotationColor = value.Key;
+                    SetAnnotationColorState();
                     OnPropertyChanged();
                 }
             }
         }
+
+        private ColorAnnotationsBundle getColorBundle(string key)
+        {
+            var colorBundle = AvailableAnnotationsColors.Where(it => it.Key == Properties.Settings.Default.AnnotationColor);
+            if(colorBundle.Any())
+            {
+                return colorBundle.First();
+            }
+            else
+            {
+                return AvailableAnnotationsColors[0];
+            }
+        }
+
+        private void SetAnnotationColorState()
+        {
+            var colorBundle = getColorBundle(Properties.Settings.Default.AnnotationColor);
+            App.Current.Resources["AnnotationColor"] = new SolidColorBrush(colorBundle.AnnotationColor.ConvertToWpfColor());
+            App.Current.Resources["AnnotationColorText"] = new SolidColorBrush(colorBundle.AnnotationColorText.ConvertToWpfColor());
+            App.Current.Resources["AnnotationColorLabelBackground"] = new SolidColorBrush(colorBundle.LabelColorBackground.ConvertToWpfColor());
+        }
+
+        public ColorAnnotationsBundle[] AvailableAnnotationsColors
+        {
+            get; set;
+        } = new ColorAnnotationsBundle[]
+        {
+            new ColorAnnotationsBundle("Red","#FF2A1A".ToWinFormColorFromRgbHex(), "#FF2A1A".ToWinFormColorFromRgbHex()),
+            //"#EE4B2B".ToWinFormColorFromRgbHex(),
+            //"#FF5733".ToWinFormColorFromRgbHex(),
+            //"#FF0000".ToWinFormColorFromRgbHex(),
+            new ColorAnnotationsBundle("Green","#2BEE4B".ToWinFormColorFromRgbHex()),
+            new ColorAnnotationsBundle("Blue","#4B2BEE".ToWinFormColorFromRgbHex()),
+            new ColorAnnotationsBundle("Purple","#BC13FE".ToWinFormColorFromRgbHex()),
+            new ColorAnnotationsBundle("Orange","#FF9E3D".ToWinFormColorFromRgbHex()),
+            new ColorAnnotationsBundle("White","#FFFFFF".ToWinFormColorFromRgbHex(), System.Drawing.Color.Black),
+            new ColorAnnotationsBundle("Black","#000000".ToWinFormColorFromRgbHex()),
+        };
 
         public bool GlobalShortcutsEnabled
         {
@@ -228,10 +268,7 @@ namespace PixelRuler
 
         public void SetState()
         {
-            if (App.Current.Resources["AnnotationColor"] is SolidColorBrush brush)
-            {
-                //brush.Color = Properties.Settings.Default.AnnotationColor.ConvertToWpfColor();
-            }
+            SetAnnotationColorState();
             ThemeManager.UpdateForThemeChanged(this.DayNightMode);
             this.UpdateCloseToTrayChanged();
 

@@ -2,8 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PixelRuler.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="AnnotationColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">238, 75, 43</Value>
+    <Setting Name="AnnotationColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Red</Value>
     </Setting>
     <Setting Name="CloseToTray" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

@@ -1,17 +1,21 @@
-﻿<local:ThemeWindow x:Class="PixelRuler.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PixelRuler"
-        mc:Ignorable="d"
-        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-        WindowState="Maximized"
-        xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
-        xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
-        Title="PixelRuler" Height="800" Width="1800"
-        d:DataContext="{d:DesignInstance Type=local:PixelRulerViewModel, IsDesignTimeCreatable=True}"
-        Icon="/PixelRulerIcon.ico">
+﻿<local:ThemeWindow
+    x:Class="PixelRuler.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PixelRuler"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="PixelRuler"
+    Width="1800"
+    Height="800"
+    d:DataContext="{d:DesignInstance Type=local:PixelRulerViewModel,
+                                     IsDesignTimeCreatable=True}"
+    Icon="/PixelRulerIcon.ico"
+    WindowState="Maximized"
+    mc:Ignorable="d">
 
     <Window.Resources>
         <!--<ControlTemplate x:Key="ModernIconButton" TargetType="Button">
@@ -27,18 +31,18 @@
         </ControlTemplate>-->
 
 
-        <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Margin" Value="0,0,4,0"></Setter>
+        <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="ui:Button">
+            <Setter Property="Margin" Value="0,0,4,0" />
         </Style>
-        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
-            <Setter Property="Margin" Value="0,0,4,0"></Setter>
+        <Style BasedOn="{StaticResource {x:Type ToggleButton}}" TargetType="ToggleButton">
+            <Setter Property="Margin" Value="0,0,4,0" />
         </Style>
         <Style TargetType="FrameworkElement">
-            <Setter Property="Margin" Value="10"></Setter>
+            <Setter Property="Margin" Value="10" />
         </Style>
 
-        <Style TargetType="Border" x:Key="SeperatorStyle">
-            <Setter Property="Margin" Value="10, 0, 10, 0" />
+        <Style x:Key="SeperatorStyle" TargetType="Border">
+            <Setter Property="Margin" Value="10,0,10,0" />
             <Setter Property="Width" Value="2" />
             <Setter Property="Height" Value="28" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -50,50 +54,90 @@
         </Style>-->
 
     </Window.Resources>
-    
+
     <!--<Window.DataContext>
         <local:PixelRulerViewModel />
     </Window.DataContext>-->
 
     <Window.InputBindings>
-        <KeyBinding Command="{Binding NewScreenshotFullCommand}" Key="{Binding NewScreenshotFullCommand.Key}" Modifiers="{Binding NewScreenshotFullCommand.Modifiers}" />
-        <KeyBinding Command="{Binding BoundsMeasureSelectedCommand}" Key="{Binding BoundsMeasureSelectedCommand.Key}" Modifiers="{Binding BoundsMeasureSelectedCommand.Modifiers}" />
-        <KeyBinding Command="{Binding ColorPickerSelectedCommand}" Key="{Binding ColorPickerSelectedCommand.Key}" Modifiers="{Binding ColorPickerSelectedCommand.Modifiers}" />
-        <KeyBinding Command="{Binding RulerSelectedCommand}" Key="{Binding RulerSelectedCommand.Key}" Modifiers="{Binding RulerSelectedCommand.Modifiers}" />
-        <KeyBinding Command="{Binding ClearAllMeasureElementsCommand}" Key="{Binding ClearAllMeasureElementsCommand.Key}" Modifiers="{Binding ClearAllMeasureElementsCommand.Modifiers}" />
-        <KeyBinding Command="{Binding ZoomInCommand}" Key="{Binding ZoomInCommand.Key}" Modifiers="{Binding ZoomInCommand.Modifiers}" />
-        <KeyBinding Command="{Binding ZoomInCommand}" Key="Add" Modifiers="{Binding ZoomInCommand.Modifiers}" />
-        <KeyBinding Command="{Binding ZoomOutCommand}" Key="{Binding ZoomOutCommand.Key}" Modifiers="{Binding ZoomOutCommand.Modifiers}" />
-        <KeyBinding Command="{Binding ZoomOutCommand}" Key="Subtract" Modifiers="{Binding ZoomOutCommand.Modifiers}" />
-        <KeyBinding Command="{Binding FitWindowCommand}" Key="{Binding FitWindowCommand.Key}" Modifiers="{Binding FitWindowCommand.Modifiers}" />
-        <KeyBinding Command="{Binding FitWindowCommand}" Key="NumPad0" Modifiers="{Binding FitWindowCommand.Modifiers}" />
-        <KeyBinding Command="{Binding CloseWindowCommand}" Key="{Binding CloseWindowCommand.Key}" Modifiers="{Binding CloseWindowCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding NewScreenshotFullCommand.Key}"
+            Command="{Binding NewScreenshotFullCommand}"
+            Modifiers="{Binding NewScreenshotFullCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding BoundsMeasureSelectedCommand.Key}"
+            Command="{Binding BoundsMeasureSelectedCommand}"
+            Modifiers="{Binding BoundsMeasureSelectedCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding ColorPickerSelectedCommand.Key}"
+            Command="{Binding ColorPickerSelectedCommand}"
+            Modifiers="{Binding ColorPickerSelectedCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding RulerSelectedCommand.Key}"
+            Command="{Binding RulerSelectedCommand}"
+            Modifiers="{Binding RulerSelectedCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding ClearAllMeasureElementsCommand.Key}"
+            Command="{Binding ClearAllMeasureElementsCommand}"
+            Modifiers="{Binding ClearAllMeasureElementsCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding ZoomInCommand.Key}"
+            Command="{Binding ZoomInCommand}"
+            Modifiers="{Binding ZoomInCommand.Modifiers}" />
+        <KeyBinding
+            Key="Add"
+            Command="{Binding ZoomInCommand}"
+            Modifiers="{Binding ZoomInCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding ZoomOutCommand.Key}"
+            Command="{Binding ZoomOutCommand}"
+            Modifiers="{Binding ZoomOutCommand.Modifiers}" />
+        <KeyBinding
+            Key="Subtract"
+            Command="{Binding ZoomOutCommand}"
+            Modifiers="{Binding ZoomOutCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding FitWindowCommand.Key}"
+            Command="{Binding FitWindowCommand}"
+            Modifiers="{Binding FitWindowCommand.Modifiers}" />
+        <KeyBinding
+            Key="NumPad0"
+            Command="{Binding FitWindowCommand}"
+            Modifiers="{Binding FitWindowCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding CloseWindowCommand.Key}"
+            Command="{Binding CloseWindowCommand}"
+            Modifiers="{Binding CloseWindowCommand.Modifiers}" />
     </Window.InputBindings>
 
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <local:MainCanvas x:Name="mainCanvas" Grid.Row="1"></local:MainCanvas>
+        <local:MainCanvas x:Name="mainCanvas" Grid.Row="1" />
 
-        <DockPanel Grid.Row="0" Height="40" Background="{DynamicResource PanelColor}">
+        <DockPanel
+            Grid.Row="0"
+            Height="40"
+            Background="{DynamicResource PanelColor}">
 
-            <!--Left Panel-->
+            <!--  Left Panel  -->
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                <StackPanel Width="10"></StackPanel>
-                <Button 
-                    Command="{Binding NewScreenshotFullCommand}"
-                    ToolTipService.ToolTip="{Binding NewScreenshotFullCommand.ToolTipTextFull}">
-                    <wpfui:SymbolIcon Symbol="CameraAdd48" FontSize="17" RenderTransformOrigin="0.5,0.5">
+                <StackPanel Width="10" />
+                <Button Command="{Binding NewScreenshotFullCommand}" ToolTipService.ToolTip="{Binding NewScreenshotFullCommand.ToolTipTextFull}">
+                    <wpfui:SymbolIcon
+                        FontSize="17"
+                        RenderTransformOrigin="0.5,0.5"
+                        Symbol="CameraAdd48">
                         <wpfui:SymbolIcon.RenderTransform>
                             <TransformGroup>
-                                <ScaleTransform ScaleX="1.15" ScaleY="1.15"/>
-                                <SkewTransform/>
-                                <RotateTransform/>
-                                <TranslateTransform/>
+                                <ScaleTransform ScaleX="1.15" ScaleY="1.15" />
+                                <SkewTransform />
+                                <RotateTransform />
+                                <TranslateTransform />
                             </TransformGroup>
                         </wpfui:SymbolIcon.RenderTransform>
 
@@ -101,42 +145,52 @@
                     <!--<TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE722;" FontSize="17" />-->
                 </Button>
 
-                <Border Style="{StaticResource SeperatorStyle}"/>
+                <Border Style="{StaticResource SeperatorStyle}" />
 
-                <ToggleButton IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=BoundingBox}" 
-                              Command="{Binding BoundsMeasureSelectedCommand}" 
-                              ToolTipService.ToolTip="{Binding BoundsMeasureSelectedCommand.ToolTipTextFull}"
-                              >
-                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEF20;" FontSize="17" />
+                <ToggleButton
+                    Command="{Binding BoundsMeasureSelectedCommand}"
+                    IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=BoundingBox}"
+                    ToolTipService.ToolTip="{Binding BoundsMeasureSelectedCommand.ToolTipTextFull}">
+                    <TextBlock
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="17"
+                        Text="&#xEF20;" />
                 </ToggleButton>
 
-                <ToggleButton IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=Ruler}" 
-                              Command="{Binding RulerSelectedCommand}" 
-                              ToolTipService.ToolTip="{Binding RulerSelectedCommand.ToolTipTextFull}"
-                              >
-                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xED5E;" FontSize="17" />
+                <ToggleButton
+                    Command="{Binding RulerSelectedCommand}"
+                    IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=Ruler}"
+                    ToolTipService.ToolTip="{Binding RulerSelectedCommand.ToolTipTextFull}">
+                    <TextBlock
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="17"
+                        Text="&#xED5E;" />
                 </ToggleButton>
 
-                <ToggleButton IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=ColorPicker}"
-                              Command="{Binding ColorPickerSelectedCommand}" 
-                              Margin="0, 0, 0, 0"
-                              ToolTipService.ToolTip="{Binding ColorPickerSelectedCommand.ToolTipTextFull}" 
-                              >
-                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xEF3C;" FontSize="17" />
+                <ToggleButton
+                    Margin="0,0,0,0"
+                    Command="{Binding ColorPickerSelectedCommand}"
+                    IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=ColorPicker}"
+                    ToolTipService.ToolTip="{Binding ColorPickerSelectedCommand.ToolTipTextFull}">
+                    <TextBlock
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="17"
+                        Text="&#xEF3C;" />
                 </ToggleButton>
 
-                <Border Style="{StaticResource SeperatorStyle}"/>
+                <Border Style="{StaticResource SeperatorStyle}" />
 
-                <Button 
-                    Command="{Binding ClearAllMeasureElementsCommand}"
-                    ToolTipService.ToolTip="{Binding ClearAllMeasureElementsCommand.ToolTipTextFull}">
-                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xED62;" FontSize="17" >
+                <Button Command="{Binding ClearAllMeasureElementsCommand}" ToolTipService.ToolTip="{Binding ClearAllMeasureElementsCommand.ToolTipTextFull}">
+                    <TextBlock
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="17"
+                        Text="&#xED62;">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Opacity" Value="1"/>
+                                <Setter Property="Opacity" Value="1" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="False">
-                                        <Setter Property="Opacity" Value="0.5"/>
+                                        <Setter Property="Opacity" Value="0.5" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -147,74 +201,111 @@
 
             </StackPanel>
 
-            <!--Right Panel-->
-            <StackPanel DockPanel.Dock="Right"  Orientation="Horizontal">
-                <ComboBox 
-                    ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}" 
-                    Text="{Binding CurrentZoomPercent, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}" 
+            <!--  Right Panel  -->
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                <ComboBox
+                    MinWidth="80"
                     Margin="0,0,6,0"
-                    FontSize="12" Padding="10,6,0,6" MinWidth="80" />
-                <local:DropDownButtonCustom 
-                    Margin="0,0,6,0"
-                    PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
+                    Padding="10,6,0,6"
+                    FontSize="12"
+                    ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}"
+                    Text="{Binding CurrentZoomPercent, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}" />
+                <local:DropDownButtonCustom Margin="0,0,6,0" PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
                     <local:DropDownButtonCustom.Flyout>
                         <ContextMenu Placement="Bottom">
-                            <MenuItem Header="Settings" Click="SettingsMenuItem_Click"/>
+                            <MenuItem Click="SettingsMenuItem_Click" Header="Settings" />
                         </ContextMenu>
                     </local:DropDownButtonCustom.Flyout>
                     <!--<wpfui:SymbolIcon Symbol="MoreHorizontal48" FontSize="17.5"/>-->
-                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE712;" FontSize="20" />
+                    <TextBlock
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="20"
+                        Text="&#xE712;" />
                 </local:DropDownButtonCustom>
             </StackPanel>
 
-            <!--Center Panel-->
-            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center">
+            <!--  Center Panel  -->
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
 
-                <TextBlock VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">W:</TextBlock>
-                <ui:NumberBox Width="56" IsReadOnly="True" FontSize="15" 
-                              PlaceholderText="{Binding ShapeWidth, Converter={StaticResource DoubleShouldShowPlaceholderConverter}, ConverterParameter='Width', Mode=OneWay}" 
-                              SpinButtonPlacementMode="Hidden" 
-                              ClearButtonEnabled="False" 
-                              Text="{Binding ShapeWidth, Converter={StaticResource DoubleNaNZeroBlankConverter}, Mode=OneWay}" 
-                              Padding="6,6,0,6" Margin="0, 0, 8, 0"/>
+                <TextBlock
+                    Margin="0,0,4,0"
+                    VerticalAlignment="Center"
+                    FontSize="15">
+                    W:
+                </TextBlock>
+                <ui:NumberBox
+                    Width="56"
+                    Margin="0,0,8,0"
+                    Padding="6,6,0,6"
+                    ClearButtonEnabled="False"
+                    FontSize="15"
+                    IsReadOnly="True"
+                    PlaceholderText="{Binding ShapeWidth, Converter={StaticResource DoubleShouldShowPlaceholderConverter}, ConverterParameter='Width', Mode=OneWay}"
+                    SpinButtonPlacementMode="Hidden"
+                    Text="{Binding ShapeWidth, Converter={StaticResource DoubleNaNZeroBlankConverter}, Mode=OneWay}" />
 
-                <TextBlock VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">H:</TextBlock>
-                <ui:NumberBox Width="56" IsReadOnly="True" FontSize="15" 
-                              PlaceholderText="{Binding ShapeHeight, Converter={StaticResource DoubleShouldShowPlaceholderConverter}, ConverterParameter='Height', Mode=OneWay}" 
-                              SpinButtonPlacementMode="Hidden" 
-                              PlaceholderEnabled="False"
-                              ClearButtonEnabled="False" 
-                              Text="{Binding ShapeHeight, Converter={StaticResource DoubleNaNZeroBlankConverter}, Mode=OneWay}" 
-                              Padding="6,6,0,6" Margin="0, 0, 8, 0">
-                </ui:NumberBox>
+                <TextBlock
+                    Margin="0,0,4,0"
+                    VerticalAlignment="Center"
+                    FontSize="15">
+                    H:
+                </TextBlock>
+                <ui:NumberBox
+                    Width="56"
+                    Margin="0,0,8,0"
+                    Padding="6,6,0,6"
+                    ClearButtonEnabled="False"
+                    FontSize="15"
+                    IsReadOnly="True"
+                    PlaceholderEnabled="False"
+                    PlaceholderText="{Binding ShapeHeight, Converter={StaticResource DoubleShouldShowPlaceholderConverter}, ConverterParameter='Height', Mode=OneWay}"
+                    SpinButtonPlacementMode="Hidden"
+                    Text="{Binding ShapeHeight, Converter={StaticResource DoubleNaNZeroBlankConverter}, Mode=OneWay}" />
 
-                <TextBlock Visibility="Collapsed" VerticalAlignment="Center" FontSize="15" Margin="0, 0, 4, 0">C:</TextBlock>
-                <Border Margin="0, 0, 4, 0" Width="26" Height="26" BorderThickness="1" CornerRadius="5" BorderBrush="{DynamicResource ColorBorderColor}" Background="{Binding Color, Converter={StaticResource ColorDisplayColorConverter}, Mode=OneWay}" />
-                <ui:NumberBox Width="86" IsReadOnly="True" FontSize="15" PlaceholderText="Color" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False" Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}, Mode=OneWay}" Padding="6,6,0,6" />
+                <TextBlock
+                    Margin="0,0,4,0"
+                    VerticalAlignment="Center"
+                    FontSize="15"
+                    Visibility="Collapsed">
+                    C:
+                </TextBlock>
+                <Border
+                    Width="26"
+                    Height="26"
+                    Margin="0,0,4,0"
+                    Background="{Binding Color, Converter={StaticResource ColorDisplayColorConverter}, Mode=OneWay}"
+                    BorderBrush="{DynamicResource ColorBorderColor}"
+                    BorderThickness="1"
+                    CornerRadius="5" />
+                <ui:NumberBox
+                    Width="86"
+                    Padding="6,6,0,6"
+                    ClearButtonEnabled="False"
+                    FontSize="15"
+                    IsReadOnly="True"
+                    PlaceholderText="Color"
+                    SpinButtonPlacementMode="Hidden"
+                    Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}, Mode=OneWay}" />
 
             </StackPanel>
 
         </DockPanel>
 
         <tray:NotifyIcon
-        x:Name="notifyIcon"
-                FocusOnLeftClick="True"
-                Initialized="notifyIcon_Initialized"
-                IsVisibleChanged="notifyIcon_IsVisibleChanged"
-                MenuOnRightClick="True"
-                TooltipText="PixelRuler" >
+            x:Name="notifyIcon"
+            FocusOnLeftClick="True"
+            Initialized="notifyIcon_Initialized"
+            IsVisibleChanged="notifyIcon_IsVisibleChanged"
+            MenuOnRightClick="True"
+            TooltipText="PixelRuler">
             <tray:NotifyIcon.Menu>
                 <ContextMenu>
-                    <wpfui:MenuItem
-                            Command="{Binding NewScreenshotFullCommand}"
-                            Header="New Screenshot">
+                    <wpfui:MenuItem Command="{Binding NewScreenshotFullCommand}" Header="New Screenshot">
                         <wpfui:MenuItem.Icon>
                             <wpfui:SymbolIcon Symbol="CameraAdd24" />
                         </wpfui:MenuItem.Icon>
                     </wpfui:MenuItem>
-                    <wpfui:MenuItem
-                            Click="MenuItemExit_Click"
-                            Header="Exit">
+                    <wpfui:MenuItem Click="MenuItemExit_Click" Header="Exit">
                         <wpfui:MenuItem.Icon>
                             <wpfui:SymbolIcon Symbol="ArrowExit20" />
                         </wpfui:MenuItem.Icon>

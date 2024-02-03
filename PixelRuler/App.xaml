@@ -1,8 +1,9 @@
-﻿<Application x:Class="PixelRuler.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:PixelRuler"
-             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+﻿<Application
+    x:Class="PixelRuler.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:PixelRuler"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -14,6 +15,7 @@
             <local:PercentFormatStringConverter x:Key="PercentFormatStringConverter" />
             <local:ColorFormatStringConverter x:Key="ColorFormatStringConverter" />
             <local:ColorDisplayColorConverter x:Key="ColorDisplayColorConverter" />
+            <local:ColorConverter x:Key="ColorConverter" />
             <local:EnumToBoolCheckedStickyConverter x:Key="EnumToBoolCheckedStickyConverter" />
             <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <local:EnumToOptionConverter x:Key="EnumToOptionConverter" />
@@ -28,13 +30,13 @@
             <SolidColorBrush x:Key="AnnotationColor">#EE4B2B</SolidColorBrush>
 
             <Style TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"></Setter>
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
             </Style>
 
             <Style TargetType="ui:TextBlock">
-                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}"></Setter>
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
             </Style>
-            
+
             <Style x:Key="ToggleButtonSoft" TargetType="ToggleButton">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -44,27 +46,30 @@
                                 <Border CornerRadius="6">
                                     <Border.Style>
                                         <Style TargetType="Border">
-                                            <Setter Property="Background" Value="{StaticResource BarColor}"></Setter>
+                                            <Setter Property="Background" Value="{StaticResource BarColor}" />
                                             <Style.Triggers>
 
 
                                                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Value="True">
-                                                    <Setter Property="Background" Value="{StaticResource IsToggledOnColor}"/>
+                                                    <Setter Property="Background" Value="{StaticResource IsToggledOnColor}" />
                                                 </DataTrigger>
 
                                                 <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Value="True">
-                                                    <Setter Property="Background" Value="{StaticResource IsToggledOnColor}"/>
+                                                    <Setter Property="Background" Value="{StaticResource IsToggledOnColor}" />
                                                 </DataTrigger>
 
                                                 <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Value="True">
-                                                    <Setter Property="Background" Value="{StaticResource IsPressedColor}"/>
+                                                    <Setter Property="Background" Value="{StaticResource IsPressedColor}" />
                                                 </DataTrigger>
 
                                             </Style.Triggers>
                                         </Style>
                                     </Border.Style>
 
-                                    <Border Margin="0,0,0,2" Background="{StaticResource ToggledHighlightColor}" VerticalAlignment="Bottom">
+                                    <Border
+                                        Margin="0,0,0,2"
+                                        VerticalAlignment="Bottom"
+                                        Background="{StaticResource ToggledHighlightColor}">
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Setter Property="Visibility" Value="Collapsed" />
@@ -81,11 +86,11 @@
 
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Value="True">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Setter Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
 
                                                     <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Value="True">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Setter Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
 
                                                     <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Value="True">
@@ -102,26 +107,22 @@
                                     </Border>
                                 </Border>
 
-                                <ContentPresenter HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"/>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
 
-            <Style TargetType="{x:Type local:DropDownButtonCustom}" BasedOn="{StaticResource {x:Type Button}}">
-            </Style>
+            <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type local:DropDownButtonCustom}" />
 
         </ResourceDictionary>
     </Application.Resources>
     <JumpList.JumpList>
         <JumpList>
-            <JumpTask Title="New Fullscreen Screenshot" 
-                    />
+            <JumpTask Title="New Fullscreen Screenshot" />
 
-            <JumpTask Title="New Windowed Screenshot" 
-                    />
+            <JumpTask Title="New Windowed Screenshot" />
         </JumpList>
     </JumpList.JumpList>
 </Application>

@@ -25,10 +25,10 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("238, 75, 43")]
-        public global::System.Drawing.Color AnnotationColor {
+        [global::System.Configuration.DefaultSettingValueAttribute("Red")]
+        public string AnnotationColor {
             get {
-                return ((global::System.Drawing.Color)(this["AnnotationColor"]));
+                return ((string)(this["AnnotationColor"]));
             }
             set {
                 this["AnnotationColor"] = value;

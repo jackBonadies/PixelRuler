@@ -46,11 +46,48 @@ namespace PixelRuler
         {
             hexColor = hexColor.Replace("#", string.Empty);
 
+            byte a = 255;
+            if(hexColor.Length == 8)
+            {
+                a = (byte)(Convert.ToUInt32(hexColor.Substring(0, 2), 16));
+                hexColor = hexColor.Substring(2);
+            }
+
             byte r = (byte)(Convert.ToUInt32(hexColor.Substring(0, 2), 16));
             byte g = (byte)(Convert.ToUInt32(hexColor.Substring(2, 2), 16));
             byte b = (byte)(Convert.ToUInt32(hexColor.Substring(4, 2), 16));
 
-            return System.Drawing.Color.FromArgb(255, r, g, b);
+            return System.Drawing.Color.FromArgb(a, r, g, b);
+        }
+
+        private static float Divisor = byte.MaxValue;
+
+        public static System.Drawing.Color AlphaBlend(this System.Drawing.Color backColor, System.Drawing.Color foreColor)
+        {
+            var fa = foreColor.A / Divisor;
+            var fr = foreColor.R / Divisor;
+            var fg = foreColor.G / Divisor;
+            var fb = foreColor.B / Divisor;
+
+            var ba = backColor.A / Divisor;
+            var br = backColor.R / Divisor;
+            var bg = backColor.G / Divisor;
+            var bb = backColor.B / Divisor;
+
+            var a = fa + ba - fa * ba;
+
+            if (a <= 0)
+                return System.Drawing.Color.Transparent;
+
+            var r = (fa * (1 - ba) * fr + fa * ba * fa + (1 - fa) * ba * br) / a;
+            var g = (fa * (1 - ba) * fg + fa * ba * fa + (1 - fa) * ba * bg) / a;
+            var b = (fa * (1 - ba) * fb + fa * ba * fa + (1 - fa) * ba * bb) / a;
+
+            return System.Drawing.Color.FromArgb(
+                (int)(a * byte.MaxValue),
+                (int)(r * byte.MaxValue),
+                (int)(g * byte.MaxValue),
+                (int)(b * byte.MaxValue));
         }
     }
 

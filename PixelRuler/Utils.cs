@@ -97,6 +97,38 @@ namespace PixelRuler
         }
     }
 
+    public class ColorConverter : IValueConverter
+    {
+
+
+
+        /// <summary>
+        /// Drawing Color to WPF Media Color
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            System.Drawing.Color sysDrawingColor = (value as ColorAnnotationsBundle).AnnotationColor;
+            if (parameter is string colorStringToBlend)
+            {
+                var toBlend = colorStringToBlend.ToWinFormColorFromRgbHex();
+                sysDrawingColor = sysDrawingColor.AlphaBlend(toBlend);
+                
+            }
+            return new SolidColorBrush(sysDrawingColor.ConvertToWpfColor());
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return ((SolidColorBrush)value).Color.ToWinformColor();
+        }
+    }
+
     public class PercentFormatStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
