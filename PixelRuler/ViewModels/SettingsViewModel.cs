@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace PixelRuler
@@ -18,15 +19,13 @@ namespace PixelRuler
         {
             fullscreenScreenshotShortcut = new ShortcutInfo(
                 "Fullscreen Screenshot",
-                Properties.Settings.Default.GlobalShortcutFullscreenKey,
-                Properties.Settings.Default.GlobalShortcutFullscreenModifiers);
+                (Key)(Properties.Settings.Default.GlobalShortcutFullscreenKey),
+                (ModifierKeys)Properties.Settings.Default.GlobalShortcutFullscreenModifiers);
 
-            fullscreenScreenshotShortcut = new ShortcutInfo(
-                "Fullscreen Screenshot",
-                Properties.Settings.Default.GlobalShortcutFullscreenKey,
-                Properties.Settings.Default.GlobalShortcutFullscreenModifiers);
-
-
+            windowedScreenshotShortcut = new ShortcutInfo(
+                "Window Screenshot",
+                (Key)(Properties.Settings.Default.GlobalShortcutWindowKey),
+                (ModifierKeys)Properties.Settings.Default.GlobalShortcutWindowModifiers);
         }
 
         public bool StartAtSystemStartup
