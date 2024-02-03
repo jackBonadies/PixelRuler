@@ -74,36 +74,36 @@ namespace PixelRuler.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool GlobalShortcutEnabled {
+        public bool GlobalShortcutsEnabled {
             get {
-                return ((bool)(this["GlobalShortcutEnabled"]));
+                return ((bool)(this["GlobalShortcutsEnabled"]));
             }
             set {
-                this["GlobalShortcutEnabled"] = value;
+                this["GlobalShortcutsEnabled"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("59")]
-        public int GlobalShortcutKey {
+        public int GlobalShortcutFullscreenKey {
             get {
-                return ((int)(this["GlobalShortcutKey"]));
+                return ((int)(this["GlobalShortcutFullscreenKey"]));
             }
             set {
-                this["GlobalShortcutKey"] = value;
+                this["GlobalShortcutFullscreenKey"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("6")]
-        public int GlobalShortcutModifiers {
+        public int GlobalShortcutFullscreenModifiers {
             get {
-                return ((int)(this["GlobalShortcutModifiers"]));
+                return ((int)(this["GlobalShortcutFullscreenModifiers"]));
             }
             set {
-                this["GlobalShortcutModifiers"] = value;
+                this["GlobalShortcutFullscreenModifiers"] = value;
             }
         }
         
@@ -140,6 +140,30 @@ namespace PixelRuler.Properties {
             }
             set {
                 this["DefaultTool"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int GlobalShortcutWindowKey {
+            get {
+                return ((int)(this["GlobalShortcutWindowKey"]));
+            }
+            set {
+                this["GlobalShortcutWindowKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int GlobalShortcutWindowModifiers {
+            get {
+                return ((int)(this["GlobalShortcutWindowModifiers"]));
+            }
+            set {
+                this["GlobalShortcutWindowModifiers"] = value;
             }
         }
     }

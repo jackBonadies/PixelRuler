@@ -220,9 +220,12 @@
                 </ComboBox>
             </ui:CardControl>
 
-            <ui:CardExpander Margin="0,0,0,12" ContentPadding="0">
+            <ui:CardExpander
+                Margin="0,0,0,12"
+                ContentPadding="0"
+                MouseLeftButtonUp="CardExpander_MouseLeftButtonUp">
                 <ui:CardExpander.Header>
-                    <Grid>
+                    <Grid Background="{x:Null}">
                         <ui:TextBlock FontTypography="Body" Text="Global Shortcuts" />
                         <ui:ToggleSwitch
                             Margin="0,0,10,0"
@@ -233,7 +236,8 @@
                 <StackPanel
                     Margin="0,0,0,0"
                     HorizontalAlignment="Stretch"
-                    Background="Transparent">
+                    Background="Transparent"
+                    MouseUp="CardExpanderContent_MouseUp">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />

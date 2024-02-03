@@ -29,5 +29,16 @@ namespace PixelRuler
 
             InitializeComponent();
         }
+
+        private void CardExpander_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            (sender as Expander).IsExpanded = !(sender as Expander).IsExpanded;
+        }
+
+        private void CardExpanderContent_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            // do not close on mouse up
+            e.Handled = true;
+        }
     }
 }

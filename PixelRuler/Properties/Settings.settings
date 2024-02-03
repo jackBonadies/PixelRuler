@@ -14,13 +14,13 @@
     <Setting Name="OnLaunchAction" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="GlobalShortcutEnabled" Type="System.Boolean" Scope="User">
+    <Setting Name="GlobalShortcutsEnabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="GlobalShortcutKey" Type="System.Int32" Scope="User">
+    <Setting Name="GlobalShortcutFullscreenKey" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">59</Value>
     </Setting>
-    <Setting Name="GlobalShortcutModifiers" Type="System.Int32" Scope="User">
+    <Setting Name="GlobalShortcutFullscreenModifiers" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">6</Value>
     </Setting>
     <Setting Name="StartAtWindowsStartup" Type="System.Boolean" Scope="User">
@@ -30,6 +30,12 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="DefaultTool" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="GlobalShortcutWindowKey" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="GlobalShortcutWindowModifiers" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>

@@ -16,7 +16,17 @@ namespace PixelRuler
     {
         public SettingsViewModel()
         {
-            
+            fullscreenScreenshotShortcut = new ShortcutInfo(
+                "Fullscreen Screenshot",
+                Properties.Settings.Default.GlobalShortcutFullscreenKey,
+                Properties.Settings.Default.GlobalShortcutFullscreenModifiers);
+
+            fullscreenScreenshotShortcut = new ShortcutInfo(
+                "Fullscreen Screenshot",
+                Properties.Settings.Default.GlobalShortcutFullscreenKey,
+                Properties.Settings.Default.GlobalShortcutFullscreenModifiers);
+
+
         }
 
         public bool StartAtSystemStartup
@@ -195,52 +205,89 @@ namespace PixelRuler
         {
             get
             {
-                return Properties.Settings.Default.GlobalShortcutEnabled;
+                return Properties.Settings.Default.GlobalShortcutsEnabled;
             }
             set
             {
-                if (Properties.Settings.Default.GlobalShortcutEnabled != value)
+                if (Properties.Settings.Default.GlobalShortcutsEnabled != value)
                 {
-                    Properties.Settings.Default.GlobalShortcutEnabled = value;
+                    Properties.Settings.Default.GlobalShortcutsEnabled = value;
                     // GLOBAL SHORTCUT CHANGED
                     OnPropertyChanged();
                 }
             }
         }
 
-        public System.Windows.Input.Key GlobalStartupKey
+        private ShortcutInfo fullscreenScreenshotShortcut;
+        public ShortcutInfo FullscreenScreenshotShortcut
         {
             get
             {
-                return (System.Windows.Input.Key)Properties.Settings.Default.GlobalShortcutKey;
+                return fullscreenScreenshotShortcut;
             }
             set
             {
-                if ((System.Windows.Input.Key)Properties.Settings.Default.GlobalShortcutKey != value)
+                if(fullscreenScreenshotShortcut != value)
                 {
-                    Properties.Settings.Default.GlobalShortcutKey = (int)value;
-                    // GLOBAL SHORTCUT CHANGED
+                    fullscreenScreenshotShortcut = value;
+                    //TODO shortcut changed.
+                    OnPropertyChanged();
+                }
+            }
+
+        }
+
+        private ShortcutInfo windowedScreenshotShortcut;
+        public ShortcutInfo WindowedScreenshotShortcut
+        {
+            get
+            {
+                return windowedScreenshotShortcut;
+            }
+            set
+            {
+                if (windowedScreenshotShortcut != value)
+                {
+                    windowedScreenshotShortcut = value;
+                    //TODO shortcut changed.
                     OnPropertyChanged();
                 }
             }
         }
 
-        public System.Windows.Input.ModifierKeys GlobalStartupModifiers
-        {
-            get
-            {
-                return (System.Windows.Input.ModifierKeys)Properties.Settings.Default.GlobalShortcutModifiers;
-            }
-            set
-            {
-                if ((System.Windows.Input.ModifierKeys)Properties.Settings.Default.GlobalShortcutModifiers != value)
-                {
-                    Properties.Settings.Default.GlobalShortcutKey = (int)value;
-                    // GLOBAL SHORTCUT CHANGED
-                    OnPropertyChanged();
-                }
-            }
-        }
+        //public System.Windows.Input.Key GlobalStartupKey
+        //{
+        //    get
+        //    {
+        //        return (System.Windows.Input.Key)Properties.Settings.Default.GlobalShortcutFullscreenKey;
+        //    }
+        //    set
+        //    {
+        //        if ((System.Windows.Input.Key)Properties.Settings.Default.GlobalShortcutFullscreenKey != value)
+        //        {
+        //            Properties.Settings.Default.GlobalShortcutFullscreenKey = (int)value;
+        //            // GLOBAL SHORTCUT CHANGED
+        //            OnPropertyChanged();
+        //        }
+        //    }
+        //}
+
+        //public System.Windows.Input.ModifierKeys GlobalStartupModifiers
+        //{
+        //    get
+        //    {
+        //        return (System.Windows.Input.ModifierKeys)Properties.Settings.Default.GlobalShortcutFullscreenModifiers;
+        //    }
+        //    set
+        //    {
+        //        if ((System.Windows.Input.ModifierKeys)Properties.Settings.Default.GlobalShortcutFullscreenModifiers != value)
+        //        {
+        //            Properties.Settings.Default.GlobalShortcutFullscreenKey = (int)value;
+        //            // GLOBAL SHORTCUT CHANGED
+        //            OnPropertyChanged();
+        //        }
+        //    }
+        //}
 
         public string VersionDisplayName
         {

@@ -134,11 +134,22 @@ namespace PixelRuler
         {
             if(this.ViewModel.Settings.GlobalShortcutsEnabled)
             {
+                var fullscreenShortcut = this.ViewModel.Settings.FullscreenScreenshotShortcut;
+                RegisterShortcut(fullscreenShortcut);
+                var windowedShortcut = this.ViewModel.Settings.WindowedScreenshotShortcut;
+                RegisterShortcut(windowedShortcut);
+            }
+        }
+
+        private void RegisterShortcut(ShortcutInfo shortcut)
+        {
+            if (shortcut.IsValid)
+            {
                 var helper = new WindowInteropHelper(this);
-                uint key = (uint)KeyInterop.VirtualKeyFromKey(this.ViewModel.Settings.GlobalStartupKey);
+                uint key = (uint)KeyInterop.VirtualKeyFromKey(this.ViewModel.Settings.FullscreenScreenshotShortcut.Key);
                 //const uint MOD_CTRL = 0x0002;
                 //const uint MOD_SHIFT = 0x0004;
-                uint mods = (uint)this.ViewModel.Settings.GlobalStartupModifiers;
+                uint mods = (uint)this.ViewModel.Settings.FullscreenScreenshotShortcut.Modifiers;
                 if (!RegisterHotKey(helper.Handle, HOTKEY_ID, mods, key))
                 {
                     // handle error
