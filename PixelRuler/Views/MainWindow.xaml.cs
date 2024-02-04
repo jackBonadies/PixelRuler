@@ -46,6 +46,8 @@ namespace PixelRuler
 
             this.KeyDown += MainWindow_KeyDown;
 
+            var handle = new WindowInteropHelper(this).Handle;
+
         }
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
@@ -55,6 +57,11 @@ namespace PixelRuler
             {
                 var el = VisualTreeHelper.HitTest(this, Mouse.GetPosition(this));
                 System.Diagnostics.Debugger.Break();
+            }
+            else if(e.Key == Key.P)
+            {
+                RedrawTitleBar();
+                this.Activate();
             }
 #endif
         }
@@ -110,6 +117,10 @@ namespace PixelRuler
             var helper = new WindowInteropHelper(this);
             _source = HwndSource.FromHwnd(helper.Handle);
             _source.AddHook(HwndHook);
+            var handle = new WindowInteropHelper(this).Handle;
+            // this is a good time to do it
+            ThemeManager.UpdateForThemeChanged(this.ViewModel.Settings.DayNightMode);
+            RedrawTitleBar();
 
             RegisterHotKeys();
         }
