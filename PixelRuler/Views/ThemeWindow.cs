@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,24 +17,32 @@ namespace PixelRuler
         public static event EventHandler<DayNightMode>? ThemeChanged;
         public static void UpdateForThemeChanged(DayNightMode effectiveMode)
         {
-            if (effectiveMode == DayNightMode.FollowSystem)
-            {
-                var sysTheme = SystemThemeManager.GetCachedSystemTheme();
-                if(sysTheme == SystemTheme.Dark)
-                {
-                    effectiveMode = DayNightMode.ForceNight;
-                }
-                else
-                {
-                    effectiveMode = DayNightMode.ForceDay;
-                }
-            }
+            effectiveMode = GetEffectiveMode(effectiveMode);
             ThemeChanged?.Invoke(null, effectiveMode);
             UpdateResourceDictionaries(effectiveMode);
         }
 
+        public static DayNightMode GetEffectiveMode(DayNightMode dayNightMode)
+        {
+            if (dayNightMode == DayNightMode.FollowSystem)
+            {
+                var sysTheme = SystemThemeManager.GetCachedSystemTheme();
+                if (sysTheme == SystemTheme.Dark)
+                {
+                    dayNightMode = DayNightMode.ForceNight;
+                }
+                else
+                {
+                    dayNightMode = DayNightMode.ForceDay;
+                }
+            }
+            return dayNightMode;
+        }
+
         private static void UpdateResourceDictionaries(DayNightMode effectiveMode)
         {
+            effectiveMode = GetEffectiveMode(effectiveMode);
+
             Wpf.Ui.Appearance.ApplicationTheme wpfUiTheme = Wpf.Ui.Appearance.ApplicationTheme.Light;
             if (effectiveMode == DayNightMode.ForceNight)
             {
@@ -92,6 +101,37 @@ namespace PixelRuler
             this.Loaded += ThemeWindow_Loaded;
         }
 
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            var wih = new WindowInteropHelper(this);
+            var windowSource = HwndSource.FromHwnd(wih.Handle);
+            windowSource.AddHook(WndProc);
+
+            base.OnSourceInitialized(e);
+        }
+
+        const int WININICHANGE = 0x001A;
+
+        /// <summary>
+        /// Listens for theme changed, daynight changed.
+        /// </summary>
+        private IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg == WININICHANGE)
+            {
+                SystemThemeManager.UpdateSystemThemeCache();
+                if (Properties.Settings.Default.DayNightMode == (int)DayNightMode.FollowSystem)
+                {
+                    ThemeManager.UpdateForThemeChanged((DayNightMode)Properties.Settings.Default.DayNightMode);
+                }
+
+            }
+
+            return IntPtr.Zero;
+        }
+
+
+
         private void ThemeWindow_Loaded(object sender, RoutedEventArgs e)
         {
             SetThemeFromDataContext();
@@ -125,6 +165,7 @@ namespace PixelRuler
 
         private void OnThemeChanged(object? sender, DayNightMode e)
         {
+            e = ThemeManager.GetEffectiveMode(e);
             var hwnd = new WindowInteropHelper(this).Handle;
             ThemeManager.UseImmersiveDarkMode(hwnd, e == DayNightMode.ForceNight);
             RedrawTitleBar();
