@@ -71,8 +71,14 @@ namespace PixelRuler
 
             StartPoint = startPoint;
 
-            BoundingBoxLabel = new BoundingBoxLabel();
-            BoundingBoxLabel.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
+            boundingBoxLabelForEndPoint = new BoundingBoxLabel();
+            boundingBoxLabelForEndPoint.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
+
+            widthLabel = new LengthLabel();
+            widthLabel.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
+
+            heightLabel = new LengthLabel();
+            heightLabel.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
 
             var sizerEnumValues = Enum.GetValues(typeof(SizerEnum));
             foreach (var sizerEnumValue in sizerEnumValues)
@@ -83,8 +89,14 @@ namespace PixelRuler
                 SetupResizer(circleSizer);
             }
 
-            this.owningCanvas.Children.Add(BoundingBoxLabel);
-            Canvas.SetZIndex(BoundingBoxLabel, App.LABEL_INDEX);
+            this.owningCanvas.Children.Add(boundingBoxLabelForEndPoint);
+            Canvas.SetZIndex(boundingBoxLabelForEndPoint, App.LABEL_INDEX);
+
+            this.owningCanvas.Children.Add(widthLabel);
+            Canvas.SetZIndex(widthLabel, App.LABEL_INDEX);
+
+            this.owningCanvas.Children.Add(heightLabel);
+            Canvas.SetZIndex(heightLabel, App.LABEL_INDEX);
 
             UpdateForZoomChange();
             SetSelectedState();
@@ -341,32 +353,20 @@ namespace PixelRuler
 
         }
 
-        //public Point StartPoint
-        //{
-        //    get; private set;
-        //}
-
-        //private Point endPoint;
-        //public Point EndPoint 
-        //{ 
-        //    get
-        //    {
-        //        return endPoint;
-        //    }
-        //    set
-        //    {
-        //        endPoint = value;
-        //        SetShapeState();
-        //        SetLabelState();
-        //    }
-        //}
-
         private void SetLabelState()
         {
-            Canvas.SetTop(BoundingBoxLabel, EndPoint.Y);
-            Canvas.SetLeft(BoundingBoxLabel, EndPoint.X);// - BoundingBoxLabel.ActualWidth * 1.5);
-            BoundingBoxLabel.BoundingBoxWidth = (int)rect1.Width;
-            BoundingBoxLabel.BoundingBoxHeight = (int)rect1.Height;
+            Canvas.SetTop(boundingBoxLabelForEndPoint, EndPoint.Y);
+            Canvas.SetLeft(boundingBoxLabelForEndPoint, EndPoint.X);// - BoundingBoxLabel.ActualWidth * 1.5);
+            boundingBoxLabelForEndPoint.BoundingBoxWidth = (int)rect1.Width;
+            boundingBoxLabelForEndPoint.BoundingBoxHeight = (int)rect1.Height;
+
+            Canvas.SetLeft(widthLabel, (StartPoint.X + EndPoint.X) / 2.0 - widthLabel.ActualWidth * getUIUnit() / 2.0);// - BoundingBoxLabel.ActualWidth * 1.5);
+            Canvas.SetTop(widthLabel, StartPoint.Y - (widthLabel.ActualHeight + 2) * getUIUnit());
+
+            Canvas.SetLeft(heightLabel, EndPoint.X + 2 * getUIUnit());
+            Canvas.SetTop(heightLabel, (StartPoint.Y + EndPoint.Y) / 2.0 - heightLabel.ActualHeight * getUIUnit() / 2.0);// - BoundingBoxLabel.ActualWidth * 1.5);
+            heightLabel.Dim1 = (int)rect1.Height;
+            widthLabel.Dim1 = (int)rect1.Width;
         }
 
         public int Height
@@ -388,10 +388,22 @@ namespace PixelRuler
         private Rectangle rect1;
         private Rectangle? rect2;
 
-        public BoundingBoxLabel BoundingBoxLabel
+        public BoundingBoxLabel boundingBoxLabelForEndPoint
         {
             get;
-            set;
+            private set;
+        }
+
+        public LengthLabel widthLabel
+        {
+            get;
+            private set;
+        }
+
+        public LengthLabel heightLabel
+        {
+            get;
+            private set;
         }
 
         public override void UpdateForZoomChange()
@@ -401,7 +413,15 @@ namespace PixelRuler
             {
                 rect2.StrokeThickness = getUIUnit();
             }
-            var st = BoundingBoxLabel.RenderTransform as ScaleTransform;
+            var st = boundingBoxLabelForEndPoint.RenderTransform as ScaleTransform;
+            st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
+            st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
+
+            st = widthLabel.RenderTransform as ScaleTransform;
+            st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
+            st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
+
+            st = heightLabel.RenderTransform as ScaleTransform;
             st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
             st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
 
@@ -413,7 +433,9 @@ namespace PixelRuler
             base.Clear();
             this.owningCanvas.Children.Remove(rect1);
             this.owningCanvas.Children.Remove(rect2);
-            this.owningCanvas.Children.Remove(BoundingBoxLabel);
+            this.owningCanvas.Children.Remove(boundingBoxLabelForEndPoint);
+            this.owningCanvas.Children.Remove(widthLabel);
+            this.owningCanvas.Children.Remove(heightLabel);
         }
 
         public override void SetEndPoint(System.Windows.Point roundedPoint)

@@ -107,17 +107,17 @@ namespace PixelRuler
         /// </summary>
         /// <param name="value"></param>
         /// <param name="targetType"></param>
-        /// <param name="parameter"></param>
+        /// <param name="parameterFactor"></param>
         /// <param name="culture"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameterFactor, System.Globalization.CultureInfo culture)
         {
             System.Drawing.Color sysDrawingColor = (value as ColorAnnotationsBundle).AnnotationColor;
-            if (parameter is string colorStringToBlend)
+            if (parameterFactor is string factorStr)
             {
-                var toBlend = colorStringToBlend.ToWinFormColorFromRgbHex();
-                sysDrawingColor = sysDrawingColor.AlphaBlend(toBlend);
+                var factor = double.Parse(factorStr);
+                sysDrawingColor = sysDrawingColor.Times(factor);
                 
             }
             return new SolidColorBrush(sysDrawingColor.ConvertToWpfColor());

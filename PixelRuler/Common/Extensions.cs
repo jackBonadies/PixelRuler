@@ -37,6 +37,15 @@ namespace PixelRuler
             return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
+        public static System.Drawing.Color Times(this System.Drawing.Color color, double factor)
+        {
+            return System.Drawing.Color.FromArgb(
+                color.A,
+                (int)(color.R * factor),
+                (int)(color.G * factor),
+                (int)(color.B * factor));
+        }
+
         public static string ToRgbHexString(this System.Drawing.Color color)
         {
             return $"#{color.R:X2}{color.G:X2}{color.B:X2}";

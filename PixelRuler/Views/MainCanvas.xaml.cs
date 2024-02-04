@@ -623,6 +623,9 @@ namespace PixelRuler
 
                 tt.X -= diffToCorrectX;
                 tt.Y -= diffToCorrectY;
+
+                tt.X = (int)Math.Round(tt.X);
+                tt.Y = (int)Math.Round(tt.Y);
             }
 
             EffectiveZoomChanged?.Invoke(this, st.ScaleX);

@@ -212,7 +212,7 @@
                                 Height="21"
                                 Margin="-4,-4,-4,-4"
                                 Background="{Binding Converter={StaticResource ColorConverter}}"
-                                BorderBrush="{Binding Converter={StaticResource ColorConverter}, ConverterParameter=#22000000}"
+                                BorderBrush="{Binding Converter={StaticResource ColorConverter}, ConverterParameter=.8}"
                                 BorderThickness="1"
                                 CornerRadius="3" />
                         </DataTemplate>

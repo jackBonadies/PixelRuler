@@ -150,6 +150,10 @@ namespace PixelRuler
                         {
                             continue;
                         }
+                        if(!VirtualDesktopHelper.IsWindowOnCurrentVirtualDesktop(foundWindow))
+                        {
+                            continue;
+                        }
                         return foundWindow; 
                     }
                 }
@@ -195,6 +199,55 @@ namespace PixelRuler
                 return sb.ToString();
             }
             return string.Empty;
+        }
+    }
+
+    [ComImport]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [Guid("a5cd92ff-29be-454c-8d04-d82879fb3f1b")]
+    interface IVirtualDesktopManager
+    {
+        [PreserveSig]
+        int IsWindowOnCurrentVirtualDesktop(
+            IntPtr topLevelWindowHandle,
+            out bool onCurrentDesktop);
+
+        [PreserveSig]
+        int GetWindowDesktopId(
+            IntPtr topLevelWindowHandle,
+            out Guid desktopId);
+
+        [PreserveSig]
+        int MoveWindowToDesktop(
+            IntPtr topLevelWindowHandle,
+            ref Guid desktopId);
+    }
+
+    class VirtualDesktopHelper
+    {
+        static IVirtualDesktopManager? desktopManager;
+
+        static VirtualDesktopHelper()
+        {
+            var virtualDesktopManagerType = Type.GetTypeFromCLSID(new Guid("aa509086-5ca9-4c25-8f95-589d3c07b48a"));
+            if(virtualDesktopManagerType != null)
+            {
+                var instance = Activator.CreateInstance(virtualDesktopManagerType);
+                if(instance is IVirtualDesktopManager virtualDesktopManagerInstance)
+                {
+                    desktopManager = virtualDesktopManagerInstance;
+                }
+            }
+        }
+
+        public static bool IsWindowOnCurrentVirtualDesktop(IntPtr windowHandle)
+        {
+            if(desktopManager == null)
+            {
+                return true; // better to be safe
+            }
+            desktopManager.IsWindowOnCurrentVirtualDesktop(windowHandle, out bool isOnCurrentDesktop);
+            return isOnCurrentDesktop;
         }
     }
 }
