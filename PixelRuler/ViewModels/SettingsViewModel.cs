@@ -19,11 +19,13 @@ namespace PixelRuler
         {
             fullscreenScreenshotShortcut = new ShortcutInfo(
                 "Fullscreen Screenshot",
+                App.FULLSCREEN_HOTKEY_ID,
                 (Key)(Properties.Settings.Default.GlobalShortcutFullscreenKey),
                 (ModifierKeys)Properties.Settings.Default.GlobalShortcutFullscreenModifiers);
 
             windowedScreenshotShortcut = new ShortcutInfo(
                 "Window Screenshot",
+                App.WINDOWED_HOTKEY_ID,
                 (Key)(Properties.Settings.Default.GlobalShortcutWindowKey),
                 (ModifierKeys)Properties.Settings.Default.GlobalShortcutWindowModifiers);
         }

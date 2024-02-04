@@ -9,11 +9,12 @@ namespace PixelRuler
 {
     public class ShortcutInfo
     {
-        public ShortcutInfo(string name, Key key, ModifierKeys modifiers)
+        public ShortcutInfo(string name, int hotKeyID, Key key, ModifierKeys modifiers)
         {
             this.CommandName = name;
             this.Key = key;
             this.Modifiers = modifiers;
+            this.HotKeyId = hotKeyID;
         }
 
         public bool IsValid
@@ -30,17 +31,21 @@ namespace PixelRuler
 
         public string CommandName
         {
-            get; set;
+            get; private set;
         }
 
         public Key Key
         {
-            get; set;
+            get; private set;
         }
 
         public ModifierKeys Modifiers
         {
-            get; set;
+            get; private set;
+        }
+        public int HotKeyId 
+        { 
+            get; private set; 
         }
     }
 }

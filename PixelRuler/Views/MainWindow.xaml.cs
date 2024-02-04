@@ -32,8 +32,6 @@ namespace PixelRuler
     /// </summary>
     public partial class MainWindow : ThemeWindow
     {
-
-
         public MainWindow(PixelRulerViewModel prvm)
         {
 
@@ -46,6 +44,19 @@ namespace PixelRuler
             this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
             this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
 
+            this.KeyDown += MainWindow_KeyDown;
+
+        }
+
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+#if DEBUG
+            if(e.Key == Key.D)
+            {
+                var el = VisualTreeHelper.HitTest(this, Mouse.GetPosition(this));
+                System.Diagnostics.Debugger.Break();
+            }
+#endif
         }
 
         private PixelRulerViewModel ViewModel
@@ -91,21 +102,7 @@ namespace PixelRuler
             base.OnDpiChanged(oldDpi, newDpi);
         }
 
-
-        [DllImport("User32.dll")]
-        private static extern bool RegisterHotKey(
-            [In] IntPtr hWnd,
-            [In] int id,
-            [In] uint fsModifiers,
-            [In] uint vk);
-
-        [DllImport("User32.dll")]
-        private static extern bool UnregisterHotKey(
-            [In] IntPtr hWnd,
-            [In] int id);
-
         private HwndSource _source;
-        private const int HOTKEY_ID = 9000;
 
         protected override void OnSourceInitialized(EventArgs e)
         {
@@ -114,23 +111,18 @@ namespace PixelRuler
             _source = HwndSource.FromHwnd(helper.Handle);
             _source.AddHook(HwndHook);
 
-            RegisterHotKey();
-
-
-
-            //icon.ShowBalloonTip(5000, "Title", "Text", System.Windows.Forms.ToolTipIcon.Info);
-            //icon.Click += nIcon_Click;
+            RegisterHotKeys();
         }
 
         protected override void OnClosed(EventArgs e)
         {
             _source.RemoveHook(HwndHook);
             _source = null;
-            UnregisterHotKey();
+            UnregisterHotKeys();
             base.OnClosed(e);
         }
 
-        private void RegisterHotKey()
+        private void RegisterHotKeys()
         {
             if(this.ViewModel.Settings.GlobalShortcutsEnabled)
             {
@@ -141,26 +133,27 @@ namespace PixelRuler
             }
         }
 
-        private void RegisterShortcut(ShortcutInfo shortcut)
+        public void RegisterShortcut(ShortcutInfo shortcut)
         {
             if (shortcut.IsValid)
             {
                 var helper = new WindowInteropHelper(this);
-                uint key = (uint)KeyInterop.VirtualKeyFromKey(this.ViewModel.Settings.FullscreenScreenshotShortcut.Key);
+                uint key = (uint)KeyInterop.VirtualKeyFromKey(shortcut.Key);
                 //const uint MOD_CTRL = 0x0002;
                 //const uint MOD_SHIFT = 0x0004;
-                uint mods = (uint)this.ViewModel.Settings.FullscreenScreenshotShortcut.Modifiers;
-                if (!RegisterHotKey(helper.Handle, HOTKEY_ID, mods, key))
+                uint mods = (uint)shortcut.Modifiers;
+                if (!NativeMethods.RegisterHotKey(helper.Handle, shortcut.HotKeyId, mods, key))
                 {
-                    // handle error
+                    // TODO handle error
                 }
             }
         }
 
-        private void UnregisterHotKey()
+        private void UnregisterHotKeys()
         {
             var helper = new WindowInteropHelper(this);
-            UnregisterHotKey(helper.Handle, HOTKEY_ID);
+            NativeMethods.UnregisterHotKey(helper.Handle, this.ViewModel.Settings.FullscreenScreenshotShortcut.HotKeyId);
+            NativeMethods.UnregisterHotKey(helper.Handle, this.ViewModel.Settings.WindowedScreenshotShortcut.HotKeyId);
         }
 
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -171,24 +164,18 @@ namespace PixelRuler
                 case WM_HOTKEY:
                     switch (wParam.ToInt32())
                     {
-                        case HOTKEY_ID:
-                            OnHotKeyPressed();
+                        case App.FULLSCREEN_HOTKEY_ID:
+                            NewFullScreenshot(true);
+                            handled = true;
+                            break;
+                        case App.WINDOWED_HOTKEY_ID:
+                            NewWindowedScreenshot();
                             handled = true;
                             break;
                     }
                     break;
             }
             return IntPtr.Zero;
-        }
-
-        private void OnHotKeyPressed()
-        {
-            this.NewFullScreenshot(true);
-        }
-
-        private void Hotkey_Pressed(object? sender, HandledEventArgs e)
-        {
-            
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)

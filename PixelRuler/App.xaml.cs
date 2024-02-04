@@ -87,5 +87,8 @@ namespace PixelRuler
         public const int MANIPULATE_HITBOX_INDEX = 510;
         public const int RESIZE_INDEX = 515;
 
+        public const int FULLSCREEN_HOTKEY_ID = 8000;
+        public const int WINDOWED_HOTKEY_ID = 8001;
+
     }
 }

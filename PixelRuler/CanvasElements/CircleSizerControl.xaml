@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PixelRuler.CanvasElements"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Cursor="SizeWE"
     SnapsToDevicePixels="False"
     mc:Ignorable="d">
 
@@ -12,10 +13,7 @@
         <ScaleTransform CenterX=".5" CenterY=".5" ScaleX="1" ScaleY="1" />
     </UserControl.LayoutTransform>
 
-    <Grid
-        Background="Transparent"
-        Cursor="SizeWE"
-        SnapsToDevicePixels="False">
+    <Grid Background="Transparent" SnapsToDevicePixels="False">
 
         <!--<Border Width="11" Height="11" BorderBrush="White" BorderThickness="1" CornerRadius="5.5">
             <Border.RenderTransform>
@@ -28,11 +26,16 @@
         </Border>-->
         <!--<Border Width="9" Height="9" BorderBrush="White" Background="White" BorderThickness="1" CornerRadius="4.5"/>-->
         <Border
-            Width="12"
-            Height="12"
-            Background="White"
-            BorderBrush="{DynamicResource AnnotationColor}"
-            BorderThickness="1"
-            CornerRadius="6" />
+            Width="34"
+            Height="34"
+            Background="Transparent">
+            <Border
+                Width="12"
+                Height="12"
+                Background="White"
+                BorderBrush="{DynamicResource AnnotationColor}"
+                BorderThickness="1"
+                CornerRadius="6" />
+        </Border>
     </Grid>
 </UserControl>

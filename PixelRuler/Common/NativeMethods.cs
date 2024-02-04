@@ -104,6 +104,18 @@ namespace PixelRuler
             DWMWA_FREEZE_REPRESENTATION,
             DWMWA_LAST
         }
+
+        [DllImport("User32.dll")]
+        public static extern bool RegisterHotKey(
+            [In] IntPtr hWnd,
+            [In] int id,
+            [In] uint fsModifiers,
+            [In] uint vk);
+
+        [DllImport("User32.dll")]
+        public static extern bool UnregisterHotKey(
+            [In] IntPtr hWnd,
+            [In] int id);
     }
 
     public static class NativeHelpers

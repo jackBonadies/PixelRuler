@@ -425,6 +425,10 @@ namespace PixelRuler.CanvasElements
                 {
                     finishedDrawing = value;
                     isHorizontalState = isHorizontal();
+                    foreach(var sizer in circleSizerControls)
+                    {
+                        sizer.Cursor = isHorizontal() ? Cursors.SizeWE : Cursors.SizeNS;
+                    }
                     CleanUpStartEndPoints();
                 }
             }

@@ -97,6 +97,26 @@ namespace PixelRuler
             circleSizerControl.MouseMove += StartResizeCircle_MouseMove;
             circleSizerControl.MouseLeftButtonUp += StartResizeCircle_MouseLeftButtonUp;
             Canvas.SetZIndex(circleSizerControl, App.RESIZE_INDEX);
+            switch(circleSizerControl.Tag)
+            {
+                case SizerEnum.TopLeft:
+                case SizerEnum.BottomRight:
+                    circleSizerControl.Cursor = Cursors.SizeNWSE;
+                    break;
+                case SizerEnum.TopRight:
+                case SizerEnum.BottomLeft:
+                    circleSizerControl.Cursor = Cursors.SizeNESW;
+                    break;
+                case SizerEnum.CenterLeft:
+                case SizerEnum.CenterRight:
+                    circleSizerControl.Cursor = Cursors.SizeWE;
+                    break;
+                case SizerEnum.TopCenter:
+                case SizerEnum.BottomCenter:
+                    circleSizerControl.Cursor = Cursors.SizeNS;
+                    break;
+
+            }
         }
 
         private void StartResizeCircle_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
