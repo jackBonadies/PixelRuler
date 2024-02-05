@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PixelRuler.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -56,6 +58,77 @@ namespace PixelRuler
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new Exception("One way converter");
+        }
+    }
+
+    public static class DisplayKeysHelper
+    {
+        public static List<string> GetDisplayKeys(Key key, ModifierKeys modifierKeys, bool pendingCase = false)
+        {
+            if (!pendingCase && (key == Key.None || modifierKeys == ModifierKeys.None))
+            {
+                return new List<string>() { "Not Set" };
+            }
+            else
+            {
+                var keys = new List<string>();
+                if (modifierKeys.HasFlag(ModifierKeys.Windows))
+                {
+                    keys.Add("Win");
+                }
+                if (modifierKeys.HasFlag(ModifierKeys.Control))
+                {
+                    keys.Add("Ctrl");
+                }
+                if (modifierKeys.HasFlag(ModifierKeys.Alt))
+                {
+                    keys.Add("Alt");
+                }
+                if (modifierKeys.HasFlag(ModifierKeys.Shift))
+                {
+                    keys.Add("Shift");
+                }
+
+                if (key != Key.None)
+                {
+                    keys.Add(KeyboardHelper.GetFriendlyName(key));
+                }
+
+                return keys;
+            }
+        }
+    }
+
+    public class DisplayKeysMultiConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            Key key = (Key)values[0];
+            ModifierKeys modifierKeys = (ModifierKeys)values[1];
+            bool pendingCase = values.Length > 2 && values[2] is PendingShortcutInfo;
+            return DisplayKeysHelper.GetDisplayKeys(key, modifierKeys, pendingCase);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new Exception("One way converter");
+        }
+    }
+
+    public class DisplayKeysConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is ShortcutInfo shortcutInfo)
+            {
+                return DisplayKeysHelper.GetDisplayKeys(shortcutInfo.Key, shortcutInfo.Modifiers);
+            }
+            throw new Exception("Unexpected type for DisplayKeysConverter");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new Exception("One way");
         }
     }
 
@@ -427,4 +500,93 @@ namespace PixelRuler
 
 
     //}
+
+    public static class KeyboardHelper
+    {
+        public static string GetFriendlyName(Key key)
+        {
+            switch (key)
+            {
+                case Key.OemSemicolon: //oem1
+                    return ";";
+                case Key.OemQuestion:  //oem2
+                    return "?";
+                case Key.Oem3:     //oem3
+                    return "~";
+                case Key.OemOpenBrackets:  //oem4
+                    return "[";
+                case Key.OemPipe:  //oem5
+                    return "|";
+                case Key.OemCloseBrackets:    //oem6
+                    return "]";
+                case Key.OemQuotes:        //oem7
+                    return "'";
+                case Key.OemBackslash: //oem102
+                    return "/";
+                case Key.OemPlus:
+                    return "+";
+                case Key.OemMinus:
+                    return "-";
+                case Key.OemComma:
+                    return ",";
+                case Key.OemPeriod:
+                    return ".";
+
+                //digits
+                case Key.D0:
+                    return "0";
+                case Key.NumPad0:
+                    return "NumPad 0";
+                case Key.D1:
+                    return "1";
+                case Key.NumPad1:
+                    return "NumPad 1";
+                case Key.D2:
+                    return "2";
+                case Key.NumPad2:
+                    return "NumPad 2";
+                case Key.D3:
+                    return "3";
+                case Key.NumPad3:
+                    return "NumPad 3";
+                case Key.D4:
+                    return "4";
+                case Key.NumPad4:
+                    return "NumPad 4";
+                case Key.D5:
+                    return "5";
+                case Key.NumPad5:
+                    return "NumPad 5";
+                case Key.D6:
+                    return "6";
+                case Key.NumPad6:
+                    return "NumPad 6";
+                case Key.D7:
+                    return "7";
+                case Key.NumPad7:
+                    return "NumPad 7";
+                case Key.D8:
+                    return "8";
+                case Key.NumPad8:
+                    return "NumPad 8";
+                case Key.D9:
+                    return "9";
+                case Key.NumPad9:
+                    return "NumPad 9";
+
+                case Key.CapsLock:
+                    return "CapsLock";
+                case Key.Back:
+                    return "Backspace";
+
+                case Key.Next:
+                    return "PageDown";
+
+                default:
+                    return key.ToString();
+
+            }
+        }
+    }
 }
+

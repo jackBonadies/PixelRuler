@@ -120,9 +120,15 @@ namespace PixelRuler
             var handle = new WindowInteropHelper(this).Handle;
             // this is a good time to do it
             ThemeManager.UpdateForThemeChanged(this.ViewModel.Settings.DayNightMode);
+            this.ViewModel.Settings.ShortcutChanged += Settings_ShortcutChanged;
             RedrawTitleBar();
 
             RegisterHotKeys();
+        }
+
+        private void Settings_ShortcutChanged(object? sender, ShortcutInfo e)
+        {
+            ReregisterShortcut(e);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -165,6 +171,13 @@ namespace PixelRuler
             var helper = new WindowInteropHelper(this);
             NativeMethods.UnregisterHotKey(helper.Handle, this.ViewModel.Settings.FullscreenScreenshotShortcut.HotKeyId);
             NativeMethods.UnregisterHotKey(helper.Handle, this.ViewModel.Settings.WindowedScreenshotShortcut.HotKeyId);
+        }
+
+        private void ReregisterShortcut(ShortcutInfo shortcut)
+        {
+            var helper = new WindowInteropHelper(this);
+            NativeMethods.UnregisterHotKey(helper.Handle, shortcut.HotKeyId);
+            RegisterShortcut(shortcut);
         }
 
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)

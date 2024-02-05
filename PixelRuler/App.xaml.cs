@@ -41,7 +41,6 @@ namespace PixelRuler
             var mainViewModel = new PixelRulerViewModel(settingsViewModel);
 
             MainWindow mainWindow = new MainWindow(mainViewModel);
-            mainWindow.Icon = new BitmapImage(new Uri("pack://application:,,,/PixelRuler;component/PixelRulerIcon.ico"));
             mainWindow.NewFullScreenshot(false);
             mainWindow.Show();
 

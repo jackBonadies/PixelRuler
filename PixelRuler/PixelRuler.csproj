@@ -7,20 +7,14 @@
     <UseWPF>true</UseWPF>
 	<UseWindowsForms>true</UseWindowsForms>  <!-- for NotifyIcon and HotKey-->
 	<ApplicationManifest>app.manifest</ApplicationManifest>
-	<ApplicationIcon>PixelRulerIcon.ico</ApplicationIcon>
+	<ApplicationIcon>Assets/PixelRulerIcon1.ico</ApplicationIcon>
 	<PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Icons\add_a_photo_FILL0_wght400_GRAD0_opsz24%281%29.png" />
-    <None Remove="Icons\add_FILL0_wght400_GRAD0_opsz24.png" />
-    <None Remove="Icons\colorize_FILL0_wght400_GRAD0_opsz24.png" />
-    <None Remove="Icons\more_horiz_FILL0_wght400_GRAD0_opsz24.png" />
-    <None Remove="Icons\photo_camera_FILL0_wght400_GRAD0_opsz24%281%29.png" />
-    <None Remove="Icons\remove_FILL0_wght400_GRAD0_opsz24.png" />
-    <None Remove="Icons\select_FILL0_wght400_GRAD0_opsz24%281%29.png" />
-    <None Remove="Icons\transform_FILL0_wght400_GRAD0_opsz24.png" />
+    <None Remove="Icons\**" />
     <None Remove="PixelRulerIcon.ico" />
+    <None Remove="PixelRulerIcon1.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,15 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Icons\MaterialIcons\add_a_photo_FILL0_wght400_GRAD0_opsz24%281%29.png" />
-    <Resource Include="Icons\MaterialIcons\add_FILL0_wght400_GRAD0_opsz24.png" />
-    <Resource Include="Icons\MaterialIcons\colorize_FILL0_wght400_GRAD0_opsz24.png" />
-    <Resource Include="Icons\MaterialIcons\more_horiz_FILL0_wght400_GRAD0_opsz24.png" />
-    <Resource Include="Icons\MaterialIcons\photo_camera_FILL0_wght400_GRAD0_opsz24%281%29.png" />
-    <Resource Include="Icons\MaterialIcons\remove_FILL0_wght400_GRAD0_opsz24.png" />
-    <Resource Include="Icons\MaterialIcons\select_FILL0_wght400_GRAD0_opsz24%281%29.png" />
-    <Resource Include="Icons\MaterialIcons\transform_FILL0_wght400_GRAD0_opsz24.png" />
-    <Resource Include="PixelRulerIcon.ico" />
+    <Resource Include="Assets\PixelRulerIcon.ico" />
+    <Resource Include="Assets\PixelRulerIcon1.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,6 +34,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -54,6 +46,13 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -7,8 +7,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:ThemesDictionary Theme="Dark" />
-                <local:ThemesDictionary Theme="Dark" />
+                <ui:ThemesDictionary Theme="Light" />
+                <local:ThemesDictionary Theme="Light" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
 
@@ -22,6 +22,8 @@
             <local:EnumToOptionsCollectionConverter x:Key="EnumToOptionsCollectionConverter" />
             <local:DoubleNaNZeroBlankConverter x:Key="DoubleNaNZeroBlankConverter" />
             <local:DoubleShouldShowPlaceholderConverter x:Key="DoubleShouldShowPlaceholderConverter" />
+            <local:DisplayKeysConverter x:Key="DisplayKeysConverter" />
+            <local:DisplayKeysMultiConverter x:Key="DisplayKeysMultiConverter" />
 
             <SolidColorBrush x:Key="BarColor">#F1F3F9</SolidColorBrush>
             <SolidColorBrush x:Key="IsToggledOnColor">#E8EAF0</SolidColorBrush>
@@ -31,6 +33,16 @@
 
             <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            </Style>
+
+
+            <Style x:Key="GreyOutIfDisabled" TargetType="TextBlock">
+                <Setter Property="Opacity" Value="1" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="False">
+                        <Setter Property="Opacity" Value="0.5" />
+                    </DataTrigger>
+                </Style.Triggers>
             </Style>
 
             <Style TargetType="ui:TextBlock">

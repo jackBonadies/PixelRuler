@@ -10,6 +10,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Wpf.Ui.Controls;
 
 namespace PixelRuler
 {
@@ -17,17 +18,79 @@ namespace PixelRuler
     {
         public SettingsViewModel()
         {
-            fullscreenScreenshotShortcut = new ShortcutInfo(
+            FullscreenScreenshotShortcut = new ShortcutInfo(
                 "Fullscreen Screenshot",
                 App.FULLSCREEN_HOTKEY_ID,
-                (Key)(Properties.Settings.Default.GlobalShortcutFullscreenKey),
-                (ModifierKeys)Properties.Settings.Default.GlobalShortcutFullscreenModifiers);
+                (Key)Properties.Settings.Default.GlobalShortcutFullscreenKey,
+                (ModifierKeys)Properties.Settings.Default.GlobalShortcutFullscreenModifiers,
+                Key.P,
+                ModifierKeys.Control | ModifierKeys.Shift);
 
-            windowedScreenshotShortcut = new ShortcutInfo(
+            WindowedScreenshotShortcut = new ShortcutInfo(
                 "Window Screenshot",
                 App.WINDOWED_HOTKEY_ID,
-                (Key)(Properties.Settings.Default.GlobalShortcutWindowKey),
-                (ModifierKeys)Properties.Settings.Default.GlobalShortcutWindowModifiers);
+                (Key)Properties.Settings.Default.GlobalShortcutWindowKey,
+                (ModifierKeys)Properties.Settings.Default.GlobalShortcutWindowModifiers,
+                Key.W,
+                ModifierKeys.Control | ModifierKeys.Shift);
+
+            clearShortcutCommand = new RelayCommand((object? o) =>
+            {
+                if(o is ShortcutInfo shortcutInfo)
+                {
+                    shortcutInfo.Clear();
+                }
+                else
+                {
+                    throw new Exception("Unexpected Type");
+                }
+            });
+
+            editShortcutCommand = new RelayCommand((object? o) =>
+            {
+                if(o is ShortcutInfo shortcutInfo)
+                {
+                    EditShortcutCommandEvent?.Invoke(this, shortcutInfo);
+                }
+                else
+                {
+                    throw new Exception("Unexpected Type");
+                }
+            });
+        }
+
+        public event EventHandler<ShortcutInfo> EditShortcutCommandEvent;
+
+        private RelayCommand editShortcutCommand;
+        public RelayCommand EditShortcutCommand
+        {
+            get
+            {
+                return editShortcutCommand;
+            }
+            set
+            {
+                if(editShortcutCommand != value)
+                {
+                    editShortcutCommand = value;
+                }
+            }
+        }
+
+        private RelayCommand clearShortcutCommand;
+        public RelayCommand ClearShortcutCommand
+        {
+            get
+            {
+                return clearShortcutCommand;
+            }
+            set
+            {
+                if(clearShortcutCommand != value)
+                {
+                    clearShortcutCommand = value;
+                }
+            }
         }
 
         public bool StartAtSystemStartup
@@ -231,11 +294,23 @@ namespace PixelRuler
                 if(fullscreenScreenshotShortcut != value)
                 {
                     fullscreenScreenshotShortcut = value;
+                    fullscreenScreenshotShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChanged(nameof(FullscreenScreenshotShortcut)); };
+                    fullscreenScreenshotShortcut.PropertyChanged += FullscreenScreenshotShortcut_PropertyChanged;
                     //TODO shortcut changed.
                     OnPropertyChanged();
                 }
             }
 
+        }
+
+        public event EventHandler<ShortcutInfo> ShortcutChanged;
+
+        private void FullscreenScreenshotShortcut_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            Properties.Settings.Default.GlobalShortcutFullscreenKey = (int)FullscreenScreenshotShortcut.Key;
+            Properties.Settings.Default.GlobalShortcutFullscreenModifiers = (int)FullscreenScreenshotShortcut.Modifiers;
+            Properties.Settings.Default.Save();
+            ShortcutChanged_Invoke(sender);
         }
 
         private ShortcutInfo windowedScreenshotShortcut;
@@ -250,10 +325,31 @@ namespace PixelRuler
                 if (windowedScreenshotShortcut != value)
                 {
                     windowedScreenshotShortcut = value;
-                    //TODO shortcut changed.
+                    windowedScreenshotShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChanged(nameof(WindowedScreenshotShortcut)); };
+                    windowedScreenshotShortcut.PropertyChanged += WindowedScreenshotShortcut_PropertyChanged;
                     OnPropertyChanged();
                 }
             }
+        }
+
+        private void ShortcutChanged_Invoke(object? sender)
+        {
+            if (sender is ShortcutInfo shortcutInfo)
+            {
+                ShortcutChanged?.Invoke(sender, sender as ShortcutInfo);
+            }
+            else
+            {
+                throw new System.Exception("Unexpected shortcut changed type");
+            }
+        }
+
+        private void WindowedScreenshotShortcut_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            Properties.Settings.Default.GlobalShortcutWindowKey = (int)WindowedScreenshotShortcut.Key;
+            Properties.Settings.Default.GlobalShortcutWindowModifiers = (int)WindowedScreenshotShortcut.Modifiers;
+            Properties.Settings.Default.Save();
+            ShortcutChanged_Invoke(sender);
         }
 
         //public System.Windows.Input.Key GlobalStartupKey

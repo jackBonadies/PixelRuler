@@ -124,209 +124,237 @@
         </Style>
 
     </local:ThemeWindow.Resources>
-    <ui:PassiveScrollViewer Padding="24,0,24,0" FocusVisualStyle="{x:Null}">
-        <StackPanel Margin="0,24,0,12">
-            <ui:TextBlock
-                Margin="0,0,0,8"
-                FontTypography="BodyStrong"
-                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                Text="Appearance &amp; behavior" />
-            <ui:CardControl Margin="0,0,0,12" Icon="{ui:SymbolIcon Color24}">
-                <ui:CardControl.Header>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <ui:TextBlock
-                            Grid.Row="0"
-                            FontTypography="Body"
-                            Text="App theme" />
-                        <ui:TextBlock Grid.Row="1" Text="Select which app theme to display" />
-                    </Grid>
-                </ui:CardControl.Header>
-                <ComboBox
-                    Grid.Column="1"
-                    MinWidth="150"
-                    ItemsSource="{Binding Path=DayNightMode, Converter={StaticResource EnumToOptionsCollectionConverter}}"
-                    SelectedItem="{Binding Path=DayNightMode, Converter={StaticResource EnumToOptionConverter}}">
-                    <!--<ComboBox.ItemTemplate>
+    <Grid>
+        <ui:PassiveScrollViewer Padding="24,0,24,0" FocusVisualStyle="{x:Null}">
+            <StackPanel Margin="0,24,0,12">
+                <ui:TextBlock
+                    Margin="0,0,0,8"
+                    FontTypography="BodyStrong"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="Appearance &amp; behavior" />
+                <ui:CardControl Margin="0,0,0,12" Icon="{ui:SymbolIcon Color24}">
+                    <ui:CardControl.Header>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <ui:TextBlock
+                                Grid.Row="0"
+                                FontTypography="Body"
+                                Text="App theme" />
+                            <ui:TextBlock
+                                Grid.Row="1"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="Select which app theme to display." />
+
+                        </Grid>
+                    </ui:CardControl.Header>
+                    <ComboBox
+                        Grid.Column="1"
+                        MinWidth="150"
+                        ItemsSource="{Binding Path=DayNightMode, Converter={StaticResource EnumToOptionsCollectionConverter}}"
+                        SelectedItem="{Binding Path=DayNightMode, Converter={StaticResource EnumToOptionConverter}}">
+                        <!--<ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding}"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>-->
-                    <!--  SelectedIndex="{Binding ViewModel.CurrentApplicationTheme, Converter={StaticResource ThemeToIndexConverter}, Mode=TwoWay}"  -->
-                    <!--
+                        <!--  SelectedIndex="{Binding ViewModel.CurrentApplicationTheme, Converter={StaticResource ThemeToIndexConverter}, Mode=TwoWay}"  -->
+                        <!--
                 <ComboBoxItem Content="Light" />
                 <ComboBoxItem Content="Dark" />
                 <ComboBoxItem Content="High Contrast" />-->
-                </ComboBox>
-            </ui:CardControl>
+                    </ComboBox>
+                </ui:CardControl>
 
-            <ui:CardControl Margin="0,0,0,12">
-                <ui:CardControl.Header>
-                    <ui:TextBlock
-                        Grid.Row="0"
-                        FontTypography="Body"
-                        Text="Start Behavior" />
-                </ui:CardControl.Header>
-                <ComboBox
-                    Grid.Column="1"
-                    MinWidth="150"
-                    ItemsSource="{Binding Path=LaunchStartupAction, Converter={StaticResource EnumToOptionsCollectionConverter}}"
-                    SelectedItem="{Binding Path=LaunchStartupAction, Converter={StaticResource EnumToOptionConverter}}" />
-            </ui:CardControl>
+                <ui:CardControl Margin="0,0,0,12">
+                    <ui:CardControl.Header>
+                        <ui:TextBlock
+                            Grid.Row="0"
+                            FontTypography="Body"
+                            Text="Start Behavior" />
+                    </ui:CardControl.Header>
+                    <ComboBox
+                        Grid.Column="1"
+                        MinWidth="150"
+                        ItemsSource="{Binding Path=LaunchStartupAction, Converter={StaticResource EnumToOptionsCollectionConverter}}"
+                        SelectedItem="{Binding Path=LaunchStartupAction, Converter={StaticResource EnumToOptionConverter}}" />
+                </ui:CardControl>
 
 
 
-            <ui:CardControl Margin="0,0,0,12">
-                <ui:CardControl.Header>
-                    <ui:TextBlock
-                        Grid.Row="0"
-                        FontTypography="Body"
-                        Text="Default Tool" />
-                </ui:CardControl.Header>
-                <ComboBox
-                    Grid.Column="1"
-                    MinWidth="150"
-                    ItemsSource="{Binding Path=DefaultTool, Converter={StaticResource EnumToOptionsCollectionConverter}}"
-                    SelectedItem="{Binding Path=DefaultTool, Converter={StaticResource EnumToOptionConverter}}" />
-            </ui:CardControl>
+                <ui:CardControl Margin="0,0,0,12">
+                    <ui:CardControl.Header>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <ui:TextBlock
+                                Grid.Row="0"
+                                FontTypography="Body"
+                                Text="Default Tool" />
+                            <ui:TextBlock
+                                Grid.Row="1"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="Default tool selected at startup." />
+                        </Grid>
+                    </ui:CardControl.Header>
+                    <ComboBox
+                        Grid.Column="1"
+                        MinWidth="150"
+                        ItemsSource="{Binding Path=DefaultTool, Converter={StaticResource EnumToOptionsCollectionConverter}}"
+                        SelectedItem="{Binding Path=DefaultTool, Converter={StaticResource EnumToOptionConverter}}" />
+                </ui:CardControl>
 
-            <ui:CardControl Margin="0,0,0,12">
-                <ui:CardControl.Header>
-                    <ui:TextBlock
-                        Grid.Row="0"
-                        FontTypography="Body"
-                        Text="Annotation Color" />
-                </ui:CardControl.Header>
-                <ComboBox
-                    Grid.Column="1"
-                    MinWidth="50"
-                    ItemsSource="{Binding AvailableAnnotationsColors}"
-                    SelectedItem="{Binding AnnotationsColor}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <Border
-                                Width="44"
-                                Height="21"
-                                Margin="-4,-4,-4,-4"
-                                Background="{Binding Converter={StaticResource ColorConverter}}"
-                                BorderBrush="{Binding Converter={StaticResource ColorConverter}, ConverterParameter=.8}"
-                                BorderThickness="1"
-                                CornerRadius="3" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </ui:CardControl>
+                <ui:CardControl Margin="0,0,0,12">
+                    <ui:CardControl.Header>
+                        <ui:TextBlock
+                            Grid.Row="0"
+                            FontTypography="Body"
+                            Text="Annotation Color" />
+                    </ui:CardControl.Header>
+                    <ComboBox
+                        Grid.Column="1"
+                        MinWidth="50"
+                        ItemsSource="{Binding AvailableAnnotationsColors}"
+                        SelectedItem="{Binding AnnotationsColor}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Width="44"
+                                    Height="21"
+                                    Margin="-4,-4,-4,-4"
+                                    Background="{Binding Converter={StaticResource ColorConverter}}"
+                                    BorderBrush="{Binding Converter={StaticResource ColorConverter}, ConverterParameter=.8}"
+                                    BorderThickness="1"
+                                    CornerRadius="3" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </ui:CardControl>
 
-            <ui:CardExpander
-                Margin="0,0,0,12"
-                ContentPadding="0"
-                MouseLeftButtonUp="CardExpander_MouseLeftButtonUp">
-                <ui:CardExpander.Header>
-                    <Grid Background="{x:Null}">
-                        <ui:TextBlock FontTypography="Body" Text="Global Shortcuts" />
-                        <ui:ToggleSwitch
-                            Margin="0,0,10,0"
-                            HorizontalAlignment="Right"
-                            IsChecked="{Binding GlobalShortcutsEnabled, Mode=TwoWay}" />
-                    </Grid>
-                </ui:CardExpander.Header>
-                <StackPanel
-                    Margin="0,0,0,0"
-                    HorizontalAlignment="Stretch"
-                    Background="Transparent"
-                    MouseUp="CardExpanderContent_MouseUp">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Full Screenshot" />
-                        <TextBlock Grid.Column="1" Text="Ctrl+X" />
-                        <TextBlock Grid.Column="2" Text="X" />
-                    </Grid>
-                    <Rectangle
-                        Height="1"
+                <ui:CardExpander
+                    Margin="0,0,0,12"
+                    ContentPadding="0"
+                    MouseLeftButtonUp="CardExpander_MouseLeftButtonUp">
+                    <ui:CardExpander.Header>
+                        <Grid Background="{x:Null}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <ui:TextBlock
+                                    Grid.Row="0"
+                                    FontTypography="Body"
+                                    Text="Global Shortcuts" />
+                                <ui:TextBlock
+                                    Grid.Row="1"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    Text="System-wide shortcuts." />
+                            </Grid>
+                            <ui:ToggleSwitch
+                                Margin="0,0,10,0"
+                                HorizontalAlignment="Right"
+                                IsChecked="{Binding GlobalShortcutsEnabled, Mode=TwoWay}" />
+                        </Grid>
+                    </ui:CardExpander.Header>
+                    <StackPanel
+                        Margin="0,0,0,0"
                         HorizontalAlignment="Stretch"
-                        Fill="{DynamicResource CardBorderBrush}"
-                        SnapsToDevicePixels="True" />
-                    <Grid Margin="16,20,16,20">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Full Screenshot" />
-                        <TextBlock Grid.Column="1" Text="Ctrl+X" />
-                        <TextBlock Grid.Column="2" Text="X" />
-                    </Grid>
-                </StackPanel>
-            </ui:CardExpander>
+                        Background="Transparent"
+                        MouseUp="CardExpanderContent_MouseUp">
+                        <StackPanel.Resources>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding GlobalShortcutsEnabled}" Value="False">
+                                        <Setter Property="Opacity" Value=".5" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+
+                        </StackPanel.Resources>
+                        <local:ShortcutInfoView DataContext="{Binding FullscreenScreenshotShortcut}" IsEnabled="{Binding DataContext.GlobalShortcutsEnabled, RelativeSource={RelativeSource AncestorType=Window}}" />
+                        <Rectangle
+                            Height="1"
+                            HorizontalAlignment="Stretch"
+                            Fill="{DynamicResource CardBorderBrush}"
+                            SnapsToDevicePixels="True" />
+                        <local:ShortcutInfoView DataContext="{Binding WindowedScreenshotShortcut}" IsEnabled="{Binding DataContext.GlobalShortcutsEnabled, RelativeSource={RelativeSource AncestorType=Window}}" />
+                    </StackPanel>
+                </ui:CardExpander>
 
 
-            <ui:CardControl Margin="0,0,0,12">
-                <ui:CardControl.Header>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <ui:TextBlock
-                            Grid.Row="0"
-                            FontTypography="Body"
-                            Text="Close to System Tray" />
-                        <ui:TextBlock Grid.Row="1" Text="Allows keyboard shortcut to be invoked even with no active instances." />
-                    </Grid>
-                </ui:CardControl.Header>
-                <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding CloseToTray, Mode=TwoWay}" />
-            </ui:CardControl>
+                <ui:CardControl Margin="0,0,0,12">
+                    <ui:CardControl.Header>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <ui:TextBlock
+                                Grid.Row="0"
+                                FontTypography="Body"
+                                Text="Close to System Tray" />
+                            <ui:TextBlock
+                                Grid.Row="1"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="Allows keyboard shortcut to be invoked even with no active instances." />
+                        </Grid>
+                    </ui:CardControl.Header>
+                    <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding CloseToTray, Mode=TwoWay}" />
+                </ui:CardControl>
 
-            <ui:CardControl Margin="0,0,0,12">
-                <ui:CardControl.Header>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <ui:TextBlock
-                            Grid.Row="0"
-                            FontTypography="Body"
-                            Text="Start at Windows Startup" />
-                        <ui:TextBlock Grid.Row="1" Text="Starts service at Windows Startup" />
-                    </Grid>
-                </ui:CardControl.Header>
-                <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding StartAtSystemStartup, Mode=TwoWay}" />
-            </ui:CardControl>
+                <ui:CardControl Margin="0,0,0,12">
+                    <ui:CardControl.Header>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <ui:TextBlock
+                                Grid.Row="0"
+                                FontTypography="Body"
+                                Text="Start at Windows Startup" />
+                            <ui:TextBlock
+                                Grid.Row="1"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="Starts service at Windows Startup" />
+                        </Grid>
+                    </ui:CardControl.Header>
+                    <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding StartAtSystemStartup, Mode=TwoWay}" />
+                </ui:CardControl>
 
-            <ui:TextBlock
-                Margin="0,24,0,8"
-                FontTypography="BodyStrong"
-                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                Text="About" />
-            <StackPanel Orientation="Vertical">
-                <ui:TextBlock Margin="0,0,0,4" FontTypography="Body">
-                    <Run Text="PixelRuler " />
-                    <Run Text="{Binding VersionDisplayName, Mode=OneWay}" />
-                </ui:TextBlock>
-                <ui:HyperlinkButton
-                    Margin="0,0,0,0"
-                    Padding="4"
-                    Icon="{ui:SymbolIcon Link24}"
-                    NavigateUri="https://github.com/jackBonadies/PixelRuler"
-                    ToolTip="https://github.com/jackBonadies/PixelRuler">
-                    <ui:TextBlock FontSize="14" FontTypography="Body">
-                        Source Code
+                <ui:TextBlock
+                    Margin="0,24,0,8"
+                    FontTypography="BodyStrong"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="About" />
+                <StackPanel Orientation="Vertical">
+                    <ui:TextBlock Margin="0,0,0,0" FontTypography="Body">
+                        <Run Text="PixelRuler " />
+                        <Run Text="{Binding VersionDisplayName, Mode=OneWay}" />
                     </ui:TextBlock>
-                </ui:HyperlinkButton>
+                    <ui:HyperlinkButton
+                        Margin="0,4,0,0"
+                        Padding="6"
+                        Icon="{ui:SymbolIcon Link24}"
+                        NavigateUri="https://github.com/jackBonadies/PixelRuler"
+                        ToolTip="https://github.com/jackBonadies/PixelRuler">
+                        <ui:TextBlock FontSize="14" FontTypography="Body">
+                            Source Code
+                        </ui:TextBlock>
+                    </ui:HyperlinkButton>
+                </StackPanel>
+
+
+                <!--  UI element size  -->
+                <!--  close to system tray  -->
+                <!--  global shortcut  -->
             </StackPanel>
-
-
-            <!--  UI element size  -->
-            <!--  close to system tray  -->
-            <!--  global shortcut  -->
-        </StackPanel>
-    </ui:PassiveScrollViewer>
+        </ui:PassiveScrollViewer>
+        <ContentPresenter x:Name="RootContentDialog" />
+    </Grid>
 </local:ThemeWindow>
