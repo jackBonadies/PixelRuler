@@ -516,7 +516,7 @@ namespace PixelRuler
                 case Key.OemOpenBrackets:  //oem4
                     return "[";
                 case Key.OemPipe:  //oem5
-                    return "|";
+                    return "\\";
                 case Key.OemCloseBrackets:    //oem6
                     return "]";
                 case Key.OemQuotes:        //oem7
@@ -524,7 +524,7 @@ namespace PixelRuler
                 case Key.OemBackslash: //oem102
                     return "/";
                 case Key.OemPlus:
-                    return "+";
+                    return "=";
                 case Key.OemMinus:
                     return "-";
                 case Key.OemComma:
@@ -532,10 +532,21 @@ namespace PixelRuler
                 case Key.OemPeriod:
                     return ".";
 
+                case Key.Subtract:
+                    return "NumPad -";
+                case Key.Add:
+                    return "NumPad +";
+                case Key.Divide:
+                    return "NumPad /";
+                case Key.Multiply:
+                    return "NumPad *";
+                case Key.Decimal: // if shift pressed the key is Delete TODO
+                    return "NumPad .";
+
                 //digits
                 case Key.D0:
                     return "0";
-                case Key.NumPad0:
+                case Key.NumPad0: // if shift pressed the key is Ins TODO
                     return "NumPad 0";
                 case Key.D1:
                     return "1";

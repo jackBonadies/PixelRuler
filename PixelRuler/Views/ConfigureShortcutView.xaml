@@ -10,14 +10,15 @@
     PreviewKeyDown="UserControl_PreviewKeyDown"
     PreviewKeyUp="UserControl_PreviewKeyUp"
     mc:Ignorable="d">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <local:KeysViewControl Grid.Row="0" />
-        <TextBlock Grid.Row="1" Text="hi world" />
-        <TextBlock Grid.Row="2" Text="hi world" />
+    <Grid
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        Background="Transparent">
+        <local:KeysViewControl
+            Grid.Row="0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch" />
     </Grid>
 </UserControl>

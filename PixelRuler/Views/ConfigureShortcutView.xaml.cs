@@ -84,7 +84,7 @@ namespace PixelRuler
             }
             else
             {
-                pendingShortcutInfo.Key = e.Key;// 
+                pendingShortcutInfo.Key = e.Key; 
                 relevantKey = true;
             }
 
@@ -98,7 +98,18 @@ namespace PixelRuler
 
         private void UserControl_PreviewKeyUp(object sender, KeyEventArgs e)
         {
-            keysDown.Remove(e.Key);
+            if(e.Key == Key.PrintScreen)
+            {
+                // printscreen is on keyup only
+                // a low level hook is maybe too intrusive, so this hack
+                //   (where we unfortunately cannot show printscreen until
+                //    keyup is maybe better)
+                pendingShortcutInfo.Key = e.Key;
+            }
+            else
+            {
+                keysDown.Remove(e.Key);
+            }
 
             e.Handled = true;
         }

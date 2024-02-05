@@ -13,13 +13,13 @@
             <MultiBinding Converter="{StaticResource DisplayKeysMultiConverter}">
                 <Binding Path="Key" />
                 <Binding Path="Modifiers" />
-                <Binding></Binding>
+                <Binding />
             </MultiBinding>
         </ItemsControl.ItemsSource>
 
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
-                <StackPanel Orientation="Horizontal" />
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" />
             </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
 
