@@ -32,7 +32,10 @@ namespace PixelRuler
 
         public EventHandler<double> EffectiveZoomChanged;
 
+        private double zoomBoxSize = 250;
         Rectangle zoomBox;
+
+
 
         public MainCanvas()
         {
@@ -55,21 +58,24 @@ namespace PixelRuler
             this.innerCanvas.MouseUp += MainCanvas_MouseUp;
 
             zoomBox = new Rectangle();
-            zoomBox.Width = 200;
-            zoomBox.Height = 200;
+            zoomBox.Width = zoomBoxSize;
+            zoomBox.Height = zoomBoxSize;
             zoomBox.IsHitTestVisible = false;
-            zoomBox.Fill = 
+            zoomBox.StrokeThickness = 4;
+            zoomBox.Stroke = new SolidColorBrush(Color.FromArgb(127,255,255,255));
+            zoomBox.Fill = //new SolidColorBrush(Colors.Red);
                 
-            new VisualBrush(this.mainImage)
+            new VisualBrush(this.innerCanvas)
             {
-                Viewbox = new Rect(10000, 10000, 200, 200),
+                Viewbox = new Rect(0000, 0000, zoomBoxSize, zoomBoxSize),
                 ViewboxUnits = BrushMappingMode.Absolute,
-                Transform = new ScaleTransform(2, 2, .5, .5),
+                Transform = new ScaleTransform(4, 4, .5, .5),
             };
                 
                 //new SolidColorBrush(Colors.Red);
 
-            this.innerCanvas.Children.Add(zoomBox);
+            this.overlayCanvas.Children.Add(zoomBox);
+            this.overlayCanvas.MouseMove += OverlayCanvas_MouseMove;
 
 
 
@@ -83,6 +89,20 @@ namespace PixelRuler
             this.LostFocus += MainCanvas_LostFocus;
             this.LostMouseCapture += MainCanvas_LostMouseCapture;
 
+        }
+
+        private void OverlayCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            Canvas.SetLeft(zoomBox, e.GetPosition(overlayCanvas).X - zoomBoxSize/2);
+            Canvas.SetTop(zoomBox, e.GetPosition(overlayCanvas).Y - zoomBoxSize/2 + 140);
+
+            (zoomBox.Fill as VisualBrush).Viewbox =
+                new Rect(
+                    e.GetPosition(overlayCanvas).X - (zoomBoxSize / 2) / 4,
+                    e.GetPosition(overlayCanvas).Y - (zoomBoxSize / 2) / 4,
+                    zoomBoxSize,
+                    zoomBoxSize);
+            //(zoomBox.Fill as VisualBrush).Viewbox.X = e.GetPosition(innerCanvas).X;
         }
 
         private void MainCanvas_LostMouseCapture(object sender, MouseEventArgs e)
@@ -614,16 +634,6 @@ namespace PixelRuler
 
         private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            Canvas.SetLeft(zoomBox, e.GetPosition(innerCanvas).X);
-            Canvas.SetTop(zoomBox, e.GetPosition(innerCanvas).Y);
-
-            (zoomBox.Fill as VisualBrush).Viewbox =
-                new Rect(
-                    e.GetPosition(innerCanvas).X,
-                    e.GetPosition(innerCanvas).Y,
-                    200,
-                    200);
-            //(zoomBox.Fill as VisualBrush).Viewbox.X = e.GetPosition(innerCanvas).X;
 
             if (ViewModel.SelectedTool == Tool.ColorPicker)
             {
