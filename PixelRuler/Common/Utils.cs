@@ -508,6 +508,13 @@ namespace PixelRuler
 
     public static class KeyboardHelper
     {
+        public static bool IsShortcutValid(Key key, ModifierKeys modifiers)
+        {
+            // todo may want to make non modifierkeys valid too such as just "PrtScn"
+            //   in case someone really loves this program.
+            return key != Key.None && modifiers != ModifierKeys.None;
+        }
+
         public static string GetFriendlyName(Key key)
         {
             switch (key)

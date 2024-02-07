@@ -14,6 +14,14 @@
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
         Background="Transparent">
+        <TextBlock
+            Grid.Row="0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Center"
+            Foreground="DarkGray"
+            TextAlignment="Center">
+            Press any keys.
+        </TextBlock>
         <local:KeysViewControl
             Grid.Row="0"
             HorizontalAlignment="Stretch"

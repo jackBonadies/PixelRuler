@@ -28,11 +28,21 @@ namespace PixelRuler
             ClearAllMeasureElementsCommand = new RelayCommandFull((object? o) => clearAllMeasureElements(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Shift, "Clear All");
             DeleteAllSelectedCommand = new RelayCommandFull((object? o) => deleteAllSelectedElements(), System.Windows.Input.Key.Delete, System.Windows.Input.ModifierKeys.None, "Delete All Selected");
             SelectAllElementsCommand = new RelayCommandFull((object? o) => selectAllElements(), System.Windows.Input.Key.A, System.Windows.Input.ModifierKeys.Control, "Select All Elements");
+            CopyRawImageToClipboard = new RelayCommandFull((object? o) => copyRawImage(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Control, "Copy Image");
 
             if(settingsViewModel != null)
             {
                 this.Settings = settingsViewModel;
                 this.SelectedTool = settingsViewModel.DefaultTool;
+            }
+        }
+
+        private void copyRawImage()
+        {
+            if(this.ImageSource != null)
+            {
+                Clipboard.SetImage(this.ImageSource);
+                // event for UI feedback.
             }
         }
 
@@ -244,6 +254,8 @@ namespace PixelRuler
                 }
             }
         }
+
+        public RelayCommandFull CopyRawImageToClipboard { get; set; }
 
         private RelayCommandFull selectAllElementsCommand;
         public RelayCommandFull SelectAllElementsCommand

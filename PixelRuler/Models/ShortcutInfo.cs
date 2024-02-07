@@ -18,6 +18,8 @@ namespace PixelRuler
             this.Key = key;
             this.Modifiers = modifiers;
             this.HotKeyId = hotKeyID;
+            this.DefaultKey = defaultKey;
+            this.DefaultModifiers = defaultModifiers;
         }
 
         public void Clear()
@@ -30,12 +32,30 @@ namespace PixelRuler
         {
             get
             {
-                if (this.Key != Key.None && this.Modifiers != ModifierKeys.None)
+                return KeyboardHelper.IsShortcutValid(this.Key, this.Modifiers);
+            }
+        }
+
+        public bool IsDefault
+        {
+            get
+            {
+                if (this.Key == this.DefaultKey && this.Modifiers == this.DefaultModifiers)
                 {
                     return true;
                 }
                 return false;
             }
+        }
+
+        public Key DefaultKey
+        {
+            get; private set;
+        }
+
+        public ModifierKeys DefaultModifiers
+        {
+            get; private set;
         }
 
         public string CommandName
@@ -57,6 +77,7 @@ namespace PixelRuler
                     key = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsValid));
+                    OnPropertyChanged(nameof(IsDefault));
                 }
             }
         }
@@ -75,6 +96,7 @@ namespace PixelRuler
                     modifiers = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsValid));
+                    OnPropertyChanged(nameof(IsDefault));
                 }
             }
         }

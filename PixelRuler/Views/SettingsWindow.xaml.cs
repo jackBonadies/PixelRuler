@@ -35,29 +35,27 @@ namespace PixelRuler
             InitializeComponent();
         }
 
-        private async void Settings_EditShortcutCommandEvent(object? sender, ShortcutInfo e)
+        private async void Settings_EditShortcutCommandEvent(object? sender, ShortcutInfo shortcutInfo)
         {
-            var cds = new ContentDialogService();
-            cds.SetContentPresenter(RootContentDialog);
-            var options = new SimpleContentDialogCreateOptions()
+            var pendingShortcutInfo = new PendingShortcutInfo(shortcutInfo);
+            var contentDialog = new ContentDialog(RootContentDialog)
             {
                 Title = "Set Shortcut",
+                Content = new ConfigureShortcutView(pendingShortcutInfo),
                 CloseButtonText = "Cancel",
                 PrimaryButtonText = "Save",
-                SecondaryButtonText = "Reset",
-                Content = new ConfigureShortcutView(new PendingShortcutInfo(e)),
+                MinWidth = 400,
             };
-            var result = await cds.ShowSimpleDialogAsync(options);
-            switch(result)
+            contentDialog.SetBinding(ContentDialog.IsPrimaryButtonEnabledProperty, new Binding("IsValid") { Source = pendingShortcutInfo });
+
+            var result = await contentDialog.ShowAsync();
+
+            switch (result)
             {
                 case ContentDialogResult.None: // cancel
-                    // cancelled, do nothing
                     break;
                 case ContentDialogResult.Primary:
-                    // save, push down pending shortcut
-                    break;
-                case ContentDialogResult.Secondary:
-                    // reset, reset to suggested
+                    pendingShortcutInfo.UpdateShortcut();
                     break;
             }
         }
