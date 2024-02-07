@@ -71,7 +71,43 @@ namespace PixelRuler
             else if(e.Key == Key.P)
             {
                 RedrawTitleBar();
+                mainCanvas.innerCanvas.Background = new SolidColorBrush(Colors.Blue);
                 this.Activate();
+                var rect = new Rect(0, -500, 1000, 1000);
+                var drawingVisual = new DrawingVisual();
+                using (DrawingContext drawingContext = drawingVisual.RenderOpen())
+                {
+                    VisualBrush visualBrush = new VisualBrush(mainCanvas.innerCanvas)
+                    {
+                        Viewbox = rect,
+                        ViewboxUnits = BrushMappingMode.Absolute
+                    };
+                    drawingContext.DrawRectangle(visualBrush, null, new Rect(0, 0, rect.Width, rect.Height));
+                }
+
+                var renderTargetBitmap = new RenderTargetBitmap(
+                    //(int)mainCanvas.innerCanvas.ActualWidth,  // Use the width of the region
+                    //(int)mainCanvas.innerCanvas.ActualHeight, // Use the height of the region
+                    (int)rect.Width,
+                    (int)rect.Height,
+                    96, // DPI X
+                    96, // DPI Y
+                    PixelFormats.Pbgra32); // Pixel format
+
+                // Render the DrawingVisual containing the cropped region
+                renderTargetBitmap.Render(drawingVisual);
+
+                var pngEncoder = new PngBitmapEncoder();
+                pngEncoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+
+                using (var fileStream = new FileStream(@"C:\tmp\innercanvas.png", FileMode.Create))
+                {
+                    pngEncoder.Save(fileStream);
+                }
+
+                Clipboard.SetImage(renderTargetBitmap);
+
+
             }
 #endif
         }

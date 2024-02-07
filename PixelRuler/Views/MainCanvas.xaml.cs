@@ -32,6 +32,8 @@ namespace PixelRuler
 
         public EventHandler<double> EffectiveZoomChanged;
 
+        Rectangle zoomBox;
+
         public MainCanvas()
         {
             InitializeComponent();
@@ -51,6 +53,26 @@ namespace PixelRuler
             this.innerCanvas.MouseMove += MainCanvas_MouseMove;
             this.innerCanvas.MouseDown += MainCanvas_MouseDown;
             this.innerCanvas.MouseUp += MainCanvas_MouseUp;
+
+            zoomBox = new Rectangle();
+            zoomBox.Width = 200;
+            zoomBox.Height = 200;
+            zoomBox.IsHitTestVisible = false;
+            zoomBox.Fill = 
+                
+            new VisualBrush(this.mainImage)
+            {
+                Viewbox = new Rect(10000, 10000, 200, 200),
+                ViewboxUnits = BrushMappingMode.Absolute,
+                Transform = new ScaleTransform(2, 2, .5, .5),
+            };
+                
+                //new SolidColorBrush(Colors.Red);
+
+            this.innerCanvas.Children.Add(zoomBox);
+
+
+
 
             this.KeyDown += MainCanvas_KeyDown;
 
@@ -592,6 +614,17 @@ namespace PixelRuler
 
         private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
+            Canvas.SetLeft(zoomBox, e.GetPosition(innerCanvas).X);
+            Canvas.SetTop(zoomBox, e.GetPosition(innerCanvas).Y);
+
+            (zoomBox.Fill as VisualBrush).Viewbox =
+                new Rect(
+                    e.GetPosition(innerCanvas).X,
+                    e.GetPosition(innerCanvas).Y,
+                    200,
+                    200);
+            //(zoomBox.Fill as VisualBrush).Viewbox.X = e.GetPosition(innerCanvas).X;
+
             if (ViewModel.SelectedTool == Tool.ColorPicker)
             {
                 if(colorPickBox == null)

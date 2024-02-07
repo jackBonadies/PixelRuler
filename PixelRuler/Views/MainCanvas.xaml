@@ -28,39 +28,41 @@
             Command="{Binding SelectAllElementsCommand}"
             Modifiers="{Binding SelectAllElementsCommand.Modifiers}" />
     </UserControl.InputBindings>
-    <Canvas
-        Name="innerCanvas"
-        Width="30000"
-        Height="30000"
-        Background="#303030"
-        Focusable="True"
-        ManipulationDelta="innerCanvas_ManipulationDelta"
-        ManipulationStarting="innerCanvas_ManipulationStarting">
-        <Canvas.RenderTransform>
-            <TransformGroup>
-                <ScaleTransform x:Name="CanvasScaleTransform" />
-                <TranslateTransform x:Name="CanvasTranslateTransform" />
-            </TransformGroup>
-        </Canvas.RenderTransform>
-        <Rectangle
-            Width="100"
-            Height="100"
-            Stroke="Black" />
-        <Rectangle
-            Width="100"
-            Height="100"
-            Stroke="White"
-            StrokeDashArray="2 2"
-            StrokeDashOffset="-1" />
-        <Image
-            x:Name="mainImage"
-            Canvas.Left="10000"
-            Canvas.Top="10000"
-            FocusVisualStyle="{x:Null}"
+    <Canvas Name="overlayCanvas" Background="Transparent">
+        <Canvas
+            Name="innerCanvas"
+            Width="30000"
+            Height="30000"
+            Background="#303030"
             Focusable="True"
-            RenderOptions.BitmapScalingMode="NearestNeighbor"
-            SnapsToDevicePixels="True"
-            Source="{Binding ImageSource}"
-            SourceUpdated="mainImage_SourceUpdated" />
+            ManipulationDelta="innerCanvas_ManipulationDelta"
+            ManipulationStarting="innerCanvas_ManipulationStarting">
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform x:Name="CanvasScaleTransform" />
+                    <TranslateTransform x:Name="CanvasTranslateTransform" />
+                </TransformGroup>
+            </Canvas.RenderTransform>
+            <Rectangle
+                Width="100"
+                Height="100"
+                Stroke="Black" />
+            <Rectangle
+                Width="100"
+                Height="100"
+                Stroke="White"
+                StrokeDashArray="2 2"
+                StrokeDashOffset="-1" />
+            <Image
+                x:Name="mainImage"
+                Canvas.Left="10000"
+                Canvas.Top="10000"
+                FocusVisualStyle="{x:Null}"
+                Focusable="True"
+                RenderOptions.BitmapScalingMode="NearestNeighbor"
+                SnapsToDevicePixels="True"
+                Source="{Binding ImageSource}"
+                SourceUpdated="mainImage_SourceUpdated" />
+        </Canvas>
     </Canvas>
 </UserControl>
