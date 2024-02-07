@@ -24,11 +24,20 @@ namespace PixelRuler.CanvasElements
             hitBoxManipulate.MouseLeftButtonDown += HitBoxManipulate_MouseDown;
             hitBoxManipulate.MouseMove += HitBoxManipulate_MouseMove;
             hitBoxManipulate.MouseLeftButtonUp += HitBoxManipulate_MouseUp;
+            hitBoxManipulate.LostMouseCapture += HitBoxManipulate_LostMouseCapture;
 
             hitBoxManipulate.Background = new SolidColorBrush(Color.FromArgb(40, 244, 244, 244));
 
             this.owningCanvas.Children.Add(hitBoxManipulate);
             Canvas.SetZIndex(hitBoxManipulate, App.MANIPULATE_HITBOX_INDEX);
+        }
+
+        private void HitBoxManipulate_LostMouseCapture(object sender, MouseEventArgs e)
+        {
+            if(isManipulating)
+            {
+                EndManipulate(false);
+            }
         }
 
         public override void Clear()
@@ -43,7 +52,12 @@ namespace PixelRuler.CanvasElements
 
         private void HitBoxManipulate_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            this.Selected = true;
+            EndManipulate();
+        }
+
+        private void EndManipulate(bool shouldSelect = true)
+        {
+            this.Selected = shouldSelect;
             isManipulating = false;
             this.hitBoxManipulate.ReleaseMouseCapture();
         }
@@ -69,12 +83,18 @@ namespace PixelRuler.CanvasElements
             //this.EndPoint = new Point(MoveStartInfo.shapeEnd.X + xMove, MoveStartInfo.shapeEnd.Y + yMove);
         }
 
+        private readonly bool select_on_mouse_down = true;
 
         private void HitBoxManipulate_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!this.FinishedDrawing)
             {
                 return;
+            }
+
+            if(select_on_mouse_down)
+            {
+                this.Selected = true;
             }
 
 

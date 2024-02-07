@@ -454,12 +454,17 @@ namespace PixelRuler
     {
         public static bool IsShiftDown()
         {
-            return (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
+            return (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift;
         }
 
         public static bool IsCtrlDown()
         {
             return (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
+        }
+
+        public static bool IsMultiSelect()
+        {
+            return IsShiftDown() || IsCtrlDown();
         }
     }
 

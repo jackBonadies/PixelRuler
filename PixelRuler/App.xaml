@@ -133,7 +133,6 @@
     <JumpList.JumpList>
         <JumpList>
             <JumpTask Title="New Fullscreen Screenshot" />
-
             <JumpTask Title="New Windowed Screenshot" />
         </JumpList>
     </JumpList.JumpList>

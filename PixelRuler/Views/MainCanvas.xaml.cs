@@ -58,6 +58,25 @@ namespace PixelRuler
             //this.mainCanvas.MouseLeftButtonUp += MainCanvas_MouseLeftButtonUp;
             measurementElements.CollectionChanged += MeasurementElements_CollectionChanged;
 
+            this.LostFocus += MainCanvas_LostFocus;
+            this.LostMouseCapture += MainCanvas_LostMouseCapture;
+
+        }
+
+        private void MainCanvas_LostMouseCapture(object sender, MouseEventArgs e)
+        {
+            if (drawingShape)
+            {
+                this.EndShape();
+            }
+            else if(isPanning)
+            {
+                this.EndPan();
+            }
+        }
+
+        private void MainCanvas_LostFocus(object sender, RoutedEventArgs e)
+        {
         }
 
         private void MainCanvas_KeyDown(object sender, KeyEventArgs e)
@@ -285,26 +304,25 @@ namespace PixelRuler
         {
             if(e.ChangedButton == MouseButton.Left)
             {
-                this.EndShape(e);
+                this.EndShape();
             }
             else if(e.ChangedButton == MouseButton.Middle || e.ChangedButton == MouseButton.Right)
             {
-                this.EndPan(e);
+                this.EndPan();
             }
         }
 
-        private void EndPan(MouseButtonEventArgs e)
+        private void EndPan()
         {
-            innerCanvas.ReleaseMouseCapture();
-
             isPanning = false;
+            innerCanvas.ReleaseMouseCapture();
         }
 
-        private void EndShape(MouseButtonEventArgs e)
+        private void EndShape()
         {
+            drawingShape = false;
             innerCanvas.Cursor = cursorOld;
             innerCanvas.ReleaseMouseCapture();
-            drawingShape = false;
 
             if(currentMeasurementElement != null)
             {
@@ -458,7 +476,7 @@ namespace PixelRuler
                 if(measEl.Selected)
                 {
                     ViewModel.ActiveMeasureElement = measEl;
-                    if(KeyUtil.IsCtrlDown() || KeyUtil.IsShiftDown() || selectAll)
+                    if(KeyUtil.IsMultiSelect() || selectAll)
                     {
                         return;
                     }
