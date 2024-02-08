@@ -39,7 +39,8 @@ namespace PixelRuler
 
         public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
-
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetActiveWindow();
 
         [StructLayout(LayoutKind.Sequential)]
         public struct POINT

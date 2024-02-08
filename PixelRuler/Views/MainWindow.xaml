@@ -202,7 +202,7 @@
                     Text="{Binding CurrentZoomPercent, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}" />
                 <local:DropDownButtonCustom Margin="0,0,6,0" PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
                     <local:DropDownButtonCustom.Flyout>
-                        <ContextMenu Placement="Bottom">
+                        <ContextMenu Width="100" Placement="Bottom">
                             <MenuItem Click="SettingsMenuItem_Click" Header="Settings" />
                         </ContextMenu>
                     </local:DropDownButtonCustom.Flyout>

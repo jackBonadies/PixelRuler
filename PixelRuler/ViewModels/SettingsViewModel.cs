@@ -276,7 +276,7 @@ namespace PixelRuler
                 if (Properties.Settings.Default.GlobalShortcutsEnabled != value)
                 {
                     Properties.Settings.Default.GlobalShortcutsEnabled = value;
-                    // GLOBAL SHORTCUT CHANGED
+                    GlobalShortcutsEnabledChanged?.Invoke(this, value);
                     OnPropertyChanged();
                 }
             }
@@ -300,8 +300,9 @@ namespace PixelRuler
                     OnPropertyChanged();
                 }
             }
-
         }
+
+        public event EventHandler<bool> GlobalShortcutsEnabledChanged;
 
         public event EventHandler<ShortcutInfo> ShortcutChanged;
 

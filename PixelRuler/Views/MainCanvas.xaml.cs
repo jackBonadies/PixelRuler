@@ -550,6 +550,20 @@ namespace PixelRuler
             }
         }
 
+        private Point applyConstraints(Point mouseEndPoint)
+        {
+            var roundedEndPoint = roundToPixel(mouseEndPoint);
+            if(currentMeasurementElement is BoundingBoxElement)
+            {
+                var diffX = Math.Abs(currentMeasurementElement.StartPoint.X - roundedEndPoint.X);
+                var diffY = Math.Abs(currentMeasurementElement.StartPoint.Y - roundedEndPoint.Y);
+                var newX = currentMeasurementElement.StartPoint.X + diffX;
+                var newY = currentMeasurementElement.StartPoint.Y + diffY;
+                return new Point(newX, newY);
+            }
+            return roundedEndPoint;
+        }
+
         private bool isPanning = false;
 
         double origX;

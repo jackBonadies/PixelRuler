@@ -11,6 +11,8 @@
     PreviewKeyUp="UserControl_PreviewKeyUp"
     mc:Ignorable="d">
     <Grid
+        MinWidth="300"
+        MinHeight="56"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
         Background="Transparent">
@@ -18,15 +20,29 @@
             Grid.Row="0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Center"
-            Foreground="DarkGray"
+            FontSize="16.5"
+            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+            Text="Press any keys."
             TextAlignment="Center">
-            Press any keys.
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding AnyKeys}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
         </TextBlock>
         <local:KeysViewControl
             Grid.Row="0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch" />
+            VerticalContentAlignment="Stretch">
+            <local:KeysViewControl.LayoutTransform>
+                <ScaleTransform CenterX=".5" CenterY=".5" ScaleX="1.35" ScaleY="1.35" />
+            </local:KeysViewControl.LayoutTransform>
+        </local:KeysViewControl>
     </Grid>
 </UserControl>

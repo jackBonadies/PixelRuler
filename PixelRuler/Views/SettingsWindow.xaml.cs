@@ -38,15 +38,16 @@ namespace PixelRuler
         private async void Settings_EditShortcutCommandEvent(object? sender, ShortcutInfo shortcutInfo)
         {
             var pendingShortcutInfo = new PendingShortcutInfo(shortcutInfo);
+            var diagContents = new ConfigureShortcutView(pendingShortcutInfo);
             var contentDialog = new ContentDialog(RootContentDialog)
             {
                 Title = "Set Shortcut",
-                Content = new ConfigureShortcutView(pendingShortcutInfo),
+                Content = diagContents,
                 CloseButtonText = "Cancel",
                 PrimaryButtonText = "Save",
-                MinWidth = 400,
             };
             contentDialog.SetBinding(ContentDialog.IsPrimaryButtonEnabledProperty, new Binding("IsValid") { Source = pendingShortcutInfo });
+            contentDialog.Loaded += (object o, RoutedEventArgs e) => diagContents.Focus();
 
             var result = await contentDialog.ShowAsync();
 

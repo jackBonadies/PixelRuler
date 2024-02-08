@@ -28,7 +28,13 @@ namespace PixelRuler
             this.DataContext = pendingShortcutInfo;
             this.Focusable = true;
             this.MouseUp += ConfigureShortcutView_MouseUp;
+            this.LostFocus += ConfigureShortcutView_LostFocus;
             this.Focus();
+        }
+
+        private void ConfigureShortcutView_LostFocus(object sender, RoutedEventArgs e)
+        {
+            keysDown.Clear();
         }
 
         private void ConfigureShortcutView_MouseUp(object sender, MouseButtonEventArgs e)
@@ -105,6 +111,13 @@ namespace PixelRuler
                 //   (where we unfortunately cannot show printscreen until
                 //    keyup is maybe better)
                 pendingShortcutInfo.Key = e.Key;
+            }
+            else if (e.Key == Key.System)
+            {
+                if (e.SystemKey == Key.LeftAlt || e.SystemKey == Key.RightAlt)
+                {
+                    keysDown.Remove(e.SystemKey);
+                }
             }
             else
             {

@@ -158,6 +158,10 @@ namespace PixelRuler
             int moveXEnd = 0;
             int moveYEnd = 0;
 
+            bool movingCorner = true;
+            bool movingXEnd = false;
+            bool movingYEnd = false;
+
             if (sizerManipulating.IsBottom())
             {
                 moveYEnd = yMove;
@@ -168,6 +172,7 @@ namespace PixelRuler
             }
             else
             {
+                movingCorner = false;
                 moveYStart = 0;
             }
 
@@ -181,12 +186,17 @@ namespace PixelRuler
             }
             else
             {
+                movingCorner = false;
                 moveXStart = 0;
             }
+
+            movingXEnd = moveXEnd != 0;
+            movingYEnd = moveYEnd != 0;
 
 
             this.StartPoint = new Point(this.StartPoint.X + moveXStart, this.StartPoint.Y + moveYStart);
             this.EndPoint = new Point(this.EndPoint.X + moveXEnd, this.EndPoint.Y + moveYEnd);
+            // TODO is key down. contrain circle.
             this.SetState();
 
             //if (isHorizontal())
@@ -440,7 +450,19 @@ namespace PixelRuler
 
         public override void SetEndPoint(System.Windows.Point roundedPoint)
         {
-            this.EndPoint = roundedPoint;
+            var diffX = (roundedPoint.X - StartPoint.X);
+            var diffY = (roundedPoint.Y - StartPoint.Y);
+            var diffXAbs = Math.Abs(diffX);
+            var xAbsSign = Math.Sign(diffX);
+            var diffYAbs = Math.Abs(diffY);
+            var yAbsSign = Math.Sign(diffY);
+
+            var diffAbsMin = Math.Min(diffXAbs, diffYAbs);
+            // TODO if contraining, constrian end point.
+            var x = StartPoint.X + xAbsSign * diffAbsMin;
+            var y = StartPoint.Y + yAbsSign * diffAbsMin;
+            this.EndPoint = new Point(x, y);
+            
             this.SetState();
         }
 

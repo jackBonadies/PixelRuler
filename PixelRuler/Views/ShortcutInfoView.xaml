@@ -19,14 +19,69 @@
         VerticalAlignment="Center"
         Focusable="False">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <TextBlock VerticalAlignment="Center" Text="{Binding CommandName}" />
-        <local:KeysViewControl Grid.Column="1" />
+
+        <Grid ToolTipService.ToolTip="Failed to bind shortcut.&#x0a;This hotkey is likely already in use by another program.">
+
+            <TextBlock
+                Grid.Column="0"
+                Margin="0,2,5,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="18"
+                Foreground="{DynamicResource StrongErrorBrush}"
+                Text="&#xE783;">
+                <!--<TextBlock.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="hi world" />
+                    </ToolTip>
+                </TextBlock.ToolTip>-->
+                <TextBlock.Style>
+                    <Style BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Status}" Value="{x:Static local:RegistrationStatus.FailedRegistration}">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Grid>
+
+        <!--<Grid VerticalAlignment="Center">
+            <TextBlock
+                Grid.Column="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontFamily="Arial"
+                FontSize="16"
+                FontWeight="Bold"
+                Foreground="Red"
+                Text="!"
+                TextAlignment="Center" />
+            <TextBlock
+                Grid.Column="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="20"
+                Foreground="Red"
+                Text="&#xF138;" />
+
+        </Grid>-->
+        <TextBlock
+            Grid.Column="1"
+            VerticalAlignment="Center"
+            Text="{Binding CommandName}" />
+        <local:KeysViewControl Grid.Column="2" />
         <StackPanel
-            Grid.Column="2"
+            Grid.Column="3"
             Margin="4,0,0,0"
             Orientation="Horizontal">
             <Button
@@ -35,7 +90,8 @@
                 Margin="2,0,2,0"
                 Padding="0"
                 Command="{Binding DataContext.EditShortcutCommand, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
-                CommandParameter="{Binding}">
+                CommandParameter="{Binding}"
+                ToolTipService.ToolTip="Edit Shortcut">
                 <TextBlock
                     FontFamily="Segoe MDL2 Assets"
                     FontSize="16"
@@ -48,7 +104,8 @@
                 Padding="0"
                 Command="{Binding DataContext.ClearShortcutCommand, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
                 CommandParameter="{Binding}"
-                IsEnabled="{Binding IsValid}">
+                IsEnabled="{Binding IsValid}"
+                ToolTipService.ToolTip="Unbind Shortcut">
                 <TextBlock
                     FontFamily="Segoe MDL2 Assets"
                     FontSize="13"

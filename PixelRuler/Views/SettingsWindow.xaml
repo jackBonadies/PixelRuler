@@ -253,7 +253,7 @@
                                 <ui:TextBlock
                                     Grid.Row="1"
                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                    Text="System-wide shortcuts." />
+                                    Text="System-wide hotkeys." />
                             </Grid>
                             <ui:ToggleSwitch
                                 Margin="0,0,10,0"
@@ -301,7 +301,7 @@
                             <ui:TextBlock
                                 Grid.Row="1"
                                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                Text="Allows keyboard shortcut to be invoked even with no active instances." />
+                                Text="Allows keyboard shortcuts to be invoked even with no active instances." />
                         </Grid>
                     </ui:CardControl.Header>
                     <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding CloseToTray, Mode=TwoWay}" />
@@ -321,7 +321,7 @@
                             <ui:TextBlock
                                 Grid.Row="1"
                                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                Text="Starts service at Windows Startup" />
+                                Text="Starts service at Windows Startup." />
                         </Grid>
                     </ui:CardControl.Header>
                     <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding StartAtSystemStartup, Mode=TwoWay}" />

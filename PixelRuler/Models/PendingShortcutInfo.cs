@@ -25,6 +25,7 @@ namespace PixelRuler.Models
                     key = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsValid));
+                    OnPropertyChanged(nameof(AnyKeys));
                 }
             }
         }
@@ -43,6 +44,7 @@ namespace PixelRuler.Models
                     modifiers = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsValid));
+                    OnPropertyChanged(nameof(AnyKeys));
                 }
             }
         }
@@ -50,8 +52,8 @@ namespace PixelRuler.Models
         public PendingShortcutInfo(ShortcutInfo shortcutInfo)
         {
             ShortcutInfo = shortcutInfo;
-            Key = shortcutInfo.Key;
-            Modifiers = shortcutInfo.Modifiers;
+            //Key = shortcutInfo.Key;
+            //Modifiers = shortcutInfo.Modifiers;
         }
 
         public void UpdateShortcut()
@@ -65,6 +67,14 @@ namespace PixelRuler.Models
             get
             {
                 return KeyboardHelper.IsShortcutValid(this.Key, this.Modifiers);
+            }
+        }
+
+        public bool AnyKeys
+        {
+            get
+            {
+                return this.Key != Key.None || this.Modifiers != ModifierKeys.None;
             }
         }
 

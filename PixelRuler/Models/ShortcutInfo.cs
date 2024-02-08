@@ -101,6 +101,23 @@ namespace PixelRuler
             }
         }
 
+        private RegistrationStatus status;
+        public RegistrationStatus Status
+        {
+            get
+            {
+                return status;
+            }
+            set
+            {
+                if (status != value)
+                {
+                    status = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public int HotKeyId 
         { 
             get; private set; 
@@ -112,5 +129,12 @@ namespace PixelRuler
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+    }
+
+    public enum RegistrationStatus
+    {
+        Unregistered = 0,
+        SuccessfulRegistration = 1,
+        FailedRegistration = 2,
     }
 }

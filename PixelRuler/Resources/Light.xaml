@@ -1,7 +1,7 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <SolidColorBrush x:Key="SeperatorColor">#e0e0e0</SolidColorBrush>
     <SolidColorBrush x:Key="PanelColor">#EFF4F9</SolidColorBrush>
-    <SolidColorBrush x:Key="ColorBorderColor">#aa303030</SolidColorBrush> 
-    
+    <SolidColorBrush x:Key="ColorBorderColor">#aa303030</SolidColorBrush>
+    <Color x:Key="StrongErrorColor">#FF0000</Color>
+    <SolidColorBrush x:Key="StrongErrorBrush" Color="{DynamicResource StrongErrorColor}" />
 </ResourceDictionary>
