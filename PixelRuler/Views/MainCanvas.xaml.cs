@@ -402,7 +402,7 @@ namespace PixelRuler
 
         private void SetColorUnderMouse(MouseEventArgs e)
         {
-            var pt = truncate(e.GetPosition(mainImage));
+            var pt = TruncatePoint(e.GetPosition(mainImage));
 
             if (this.ViewModel.Image == null ||
                 this.ViewModel.Image.Width <= pt.X ||
@@ -438,7 +438,7 @@ namespace PixelRuler
             cursorOld = innerCanvas.Cursor;
             //innerCanvas.Cursor = Cursors.None;
 
-            var roundedPoint = roundToPixel(e.GetPosition(innerCanvas));
+            var roundedPoint = RoundPoint(e.GetPosition(innerCanvas));
 
             if(!isSticky)
             {
@@ -495,14 +495,14 @@ namespace PixelRuler
 
         private Cursor? cursorOld;
 
-        private Point truncate(Point mousePos)
+        private Point TruncatePoint(Point mousePos)
         {
             var roundX = (int)(mousePos.X);
             var roundY = (int)(mousePos.Y);
             return new Point(roundX, roundY);
         }
 
-        private Point roundToPixel(Point mousePos)
+        public static Point RoundPoint(Point mousePos)
         {
             var roundX = Math.Round(mousePos.X);
             var roundY = Math.Round(mousePos.Y);
@@ -520,7 +520,7 @@ namespace PixelRuler
                 {
                     colorPickBox = new ColorPickElement(this.innerCanvas);
                 }
-                var truncatedPoint = truncate(e.GetPosition(innerCanvas));
+                var truncatedPoint = TruncatePoint(e.GetPosition(innerCanvas));
                 colorPickBox.SetPosition(truncatedPoint);
                 if(System.Windows.Input.Mouse.LeftButton == MouseButtonState.Pressed)
                 {
@@ -545,14 +545,14 @@ namespace PixelRuler
             }
             else if (drawingShape)
             {
-                var roundedPoint = roundToPixel(e.GetPosition(innerCanvas));
+                var roundedPoint = RoundPoint(e.GetPosition(innerCanvas));
                 currentMeasurementElement.SetEndPoint(roundedPoint);
             }
         }
 
         private Point applyConstraints(Point mouseEndPoint)
         {
-            var roundedEndPoint = roundToPixel(mouseEndPoint);
+            var roundedEndPoint = RoundPoint(mouseEndPoint);
             if(currentMeasurementElement is BoundingBoxElement)
             {
                 var diffX = Math.Abs(currentMeasurementElement.StartPoint.X - roundedEndPoint.X);

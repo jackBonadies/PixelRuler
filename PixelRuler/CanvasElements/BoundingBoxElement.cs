@@ -151,52 +151,115 @@ namespace PixelRuler
             int xMove = -(int)delta.X;
             int yMove = -(int)delta.Y;
 
-            MoveStartInfo.mouseStart = new Point(xMove, yMove).Add(MoveStartInfo.mouseStart);
+            //MoveStartInfo.mouseStart = new Point(xMove, yMove).Add(MoveStartInfo.mouseStart);
 
-            int moveXStart = 0;
-            int moveYStart = 0;
-            int moveXEnd = 0;
-            int moveYEnd = 0;
+            //int moveXStart = 0;
+            //int moveYStart = 0;
+            //int moveXEnd = 0;
+            //int moveYEnd = 0;
 
-            bool movingCorner = true;
+            //bool movingCorner = true;
             bool movingXEnd = false;
             bool movingYEnd = false;
 
-            if (sizerManipulating.IsBottom())
+            //if (sizerManipulating.IsBottom())
+            //{
+            //    moveYEnd = yMove;
+            //}
+            //else if (sizerManipulating.IsTop())
+            //{
+            //    moveYStart = yMove;
+            //}
+            //else
+            //{
+            //    movingCorner = false;
+            //    moveYStart = 0;
+            //}
+
+            //if (sizerManipulating.IsLeft())
+            //{
+            //    moveXStart = xMove;
+            //}
+            //else if (sizerManipulating.IsRight())
+            //{
+            //    moveXEnd = xMove;
+            //}
+            //else
+            //{
+            //    movingCorner = false;
+            //    moveXStart = 0;
+            //}
+            bool movingCorner = (sizerManipulating.IsBottom() || sizerManipulating.IsTop()) &&
+                                (sizerManipulating.IsLeft() || sizerManipulating.IsRight());
+
+            movingXEnd = sizerManipulating.IsRight();
+            movingYEnd = sizerManipulating.IsBottom();
+
+            //var candidateStart = new Point(this.StartPoint.X + moveXStart, this.StartPoint.Y + moveYStart);
+            //var candidateEnd = new Point(this.EndPoint.X + moveXEnd, this.EndPoint.Y + moveYEnd);
+
+            // create newPos start and end by combining components....
+            var desiredEndX = this.EndPoint.X;
+            var desiredEndY = this.EndPoint.Y;
+
+            var desiredStartX = this.StartPoint.X;
+            var desiredStartY = this.StartPoint.Y;
+
+            if(movingXEnd)
             {
-                moveYEnd = yMove;
-            }
-            else if (sizerManipulating.IsTop())
-            {
-                moveYStart = yMove;
+                desiredEndX = MoveStartInfo.shapeEnd.X + xMove;
             }
             else
             {
-                movingCorner = false;
-                moveYStart = 0;
+                desiredStartX = MoveStartInfo.shapeStart.X + xMove;
             }
 
-            if (sizerManipulating.IsLeft())
+            if(movingYEnd)
             {
-                moveXStart = xMove;
-            }
-            else if (sizerManipulating.IsRight())
-            {
-                moveXEnd = xMove;
+                desiredEndY = MoveStartInfo.shapeEnd.Y + yMove;
             }
             else
             {
-                movingCorner = false;
-                moveXStart = 0;
+                desiredStartY = MoveStartInfo.shapeStart.Y + yMove;
             }
 
-            movingXEnd = moveXEnd != 0;
-            movingYEnd = moveYEnd != 0;
+            var desiredStart = MainCanvas.RoundPoint(new Point(desiredStartX, desiredStartY));
+            var desiredEnd = MainCanvas.RoundPoint(new Point(desiredEndX, desiredEndY));
+
+            if(movingCorner)
+            {
+                bool constrain = KeyUtil.IsCtrlDown();
+                if(constrain)
+                {
+                    (desiredStart, desiredEnd) = constrainToAspectRatio(movingXEnd, movingYEnd, desiredStart, desiredEnd);
+                }
+                this.StartPoint = desiredStart;
+                this.EndPoint = desiredEnd;
+            }
+            else
+            {
+                if(sizerManipulating.IsLeft())
+                {
+                    this.StartPoint = new Point(desiredStart.X, this.StartPoint.Y);
+                }
+                else if(sizerManipulating.IsRight())
+                {
+                    this.EndPoint = new Point(desiredEnd.X, this.EndPoint.Y);
+                }
+                else if(sizerManipulating.IsTop())
+                {
+                    this.StartPoint = new Point(this.StartPoint.X, desiredStart.Y);
+                }
+                else if(sizerManipulating.IsBottom())
+                {
+                    this.EndPoint = new Point(this.EndPoint.X, desiredEnd.Y);
+                }
+
+            }
 
 
-            this.StartPoint = new Point(this.StartPoint.X + moveXStart, this.StartPoint.Y + moveYStart);
-            this.EndPoint = new Point(this.EndPoint.X + moveXEnd, this.EndPoint.Y + moveYEnd);
-            // TODO is key down. contrain circle.
+            //this.StartPoint = new Point(this.StartPoint.X + moveXStart, this.StartPoint.Y + moveYStart);
+            //this.EndPoint = new Point(this.EndPoint.X + moveXEnd, this.EndPoint.Y + moveYEnd);
             this.SetState();
 
             //if (isHorizontal())
@@ -448,6 +511,50 @@ namespace PixelRuler
             this.owningCanvas.Children.Remove(heightLabel);
         }
 
+        private (System.Windows.Point, System.Windows.Point) constrainToAspectRatio(
+            bool movingXEnd, 
+            bool movingYEnd, 
+            System.Windows.Point candidateStart, 
+            System.Windows.Point candidateEnd, 
+            double aspectRatio = 1)
+        {
+            var diffX = (candidateEnd.X - candidateStart.X);
+            var diffY = (candidateEnd.Y - candidateStart.Y);
+            var diffXAbs = Math.Abs(diffX);
+            var xAbsSign = Math.Sign(diffX);
+            var diffYAbs = Math.Abs(diffY);
+            var yAbsSign = Math.Sign(diffY);
+
+            var diffAbsMin = Math.Min(diffXAbs, diffYAbs);
+            // TODO if contraining, constrain end point.
+            double newStartX = StartPoint.X;
+            double newStartY = StartPoint.Y;
+            double newEndX = EndPoint.X;
+            double newEndY = EndPoint.Y;
+
+            if(movingXEnd)
+            {
+                newEndX = StartPoint.X + xAbsSign * diffAbsMin;
+            }
+            else
+            {
+                newStartX = EndPoint.X - xAbsSign * diffAbsMin;
+            }
+
+            if(movingYEnd)
+            {
+                newEndY = StartPoint.Y + yAbsSign * diffAbsMin;
+            }
+            else
+            {
+                newStartY = EndPoint.Y - yAbsSign * diffAbsMin;
+            }
+
+            var constrainedStart = new Point(newStartX, newStartY);
+            var constrainedEnd = new Point(newEndX, newEndY);
+            return (constrainedStart, constrainedEnd);
+        }
+
         public override void SetEndPoint(System.Windows.Point roundedPoint)
         {
             var diffX = (roundedPoint.X - StartPoint.X);
@@ -461,8 +568,16 @@ namespace PixelRuler
             // TODO if contraining, constrian end point.
             var x = StartPoint.X + xAbsSign * diffAbsMin;
             var y = StartPoint.Y + yAbsSign * diffAbsMin;
-            this.EndPoint = new Point(x, y);
-            
+
+            //this.EndPoint = new Point(x, y);
+            bool constrain = KeyUtil.IsCtrlDown();
+            if (constrain)
+            {
+                (_, roundedPoint) = constrainToAspectRatio(true, true, StartPoint, roundedPoint, 1);
+            }
+            this.EndPoint = roundedPoint;
+
+
             this.SetState();
         }
 
