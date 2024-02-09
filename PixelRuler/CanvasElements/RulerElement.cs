@@ -22,21 +22,30 @@ namespace PixelRuler.CanvasElements
         CircleSizerControl endResizeCircle;
         LengthLabel rulerLengthLabel;
 
-        public RulerElement(Canvas canvas, Point startPoint) : base(canvas) 
+        private Canvas canvas;
+        public RulerElement(Canvas canvas) : base(canvas)
         {
+            this.canvas = canvas;
             line1 = createLine();
+            lineBeginCap = createLine();
+            lineEndCap = createLine();
+            startResizeCircle = new CircleSizerControl();
+            endResizeCircle = new CircleSizerControl();
+            rulerLengthLabel = new LengthLabel();
+        }
+
+        public override void AddToOwnerCanvas()
+        {
             line1.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
 
             this.owningCanvas.Children.Add(line1);
             Canvas.SetZIndex(line1, App.SHAPE_INDEX);
 
-            lineBeginCap = createLine();
             lineBeginCap.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
 
             this.owningCanvas.Children.Add(lineBeginCap);
             Canvas.SetZIndex(lineBeginCap, App.SHAPE_INDEX);
 
-            lineEndCap = createLine();
             lineEndCap.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
 
             this.owningCanvas.Children.Add(lineEndCap);
@@ -45,15 +54,10 @@ namespace PixelRuler.CanvasElements
             hitBoxManipulate.GotFocus += HitBoxManipulate_GotFocus;
             hitBoxManipulate.LostFocus += HitBoxManipulate_LostFocus;
 
-            startResizeCircle = new CircleSizerControl();
-            endResizeCircle = new CircleSizerControl();
 
             SetupResizer(startResizeCircle);
             SetupResizer(endResizeCircle);
 
-            StartPoint = startPoint;
-
-            rulerLengthLabel = new LengthLabel();
             rulerLengthLabel.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
 
             this.owningCanvas.Children.Add(rulerLengthLabel);

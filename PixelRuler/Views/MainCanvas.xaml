@@ -16,6 +16,14 @@
             Command="{Binding DeleteAllSelectedCommand}"
             Modifiers="{Binding DeleteAllSelectedCommand.Modifiers}" />
         <KeyBinding
+            Key="{Binding CopyCanvasContents.Key}"
+            Command="{Binding CopyCanvasContents}"
+            Modifiers="{Binding CopyCanvasContents.Modifiers}" />
+        <KeyBinding
+            Key="{Binding PasteCanvasContents.Key}"
+            Command="{Binding PasteCanvasContents}"
+            Modifiers="{Binding PasteCanvasContents.Modifiers}" />
+        <KeyBinding
             Key="{Binding SelectAllElementsCommand.Key}"
             Command="{Binding SelectAllElementsCommand}"
             Modifiers="{Binding SelectAllElementsCommand.Modifiers}" />

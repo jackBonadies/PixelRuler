@@ -44,11 +44,21 @@ namespace PixelRuler
 
             this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
             this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
+            this.ViewModel.CopyCanvasContents = new RelayCommandFull((object? o) => { CopyContents(); }, Key.C, ModifierKeys.Control, "Copy Elements");
+            this.ViewModel.PasteCanvasContents = new RelayCommandFull((object? o) => { this.mainCanvas.PasteCopiedData(); }, Key.V, ModifierKeys.Control, "Paste Elements");
 
             this.KeyDown += MainWindow_KeyDown;
 
             var handle = new WindowInteropHelper(this).Handle;
 
+        }
+
+        private void CopyContents()
+        {
+            if(!this.mainCanvas.CopySelectedData())
+            {
+                this.ViewModel.CopyRawImageToClipboard();
+            }
         }
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)

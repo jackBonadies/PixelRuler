@@ -17,7 +17,7 @@ namespace PixelRuler
 {
     public class PixelRulerViewModel : INotifyPropertyChanged
     {
-        public PixelRulerViewModel(SettingsViewModel settingsViewModel = null)
+        public PixelRulerViewModel(SettingsViewModel? settingsViewModel = null)
         {
             BoundsMeasureSelectedCommand = new RelayCommandFull((object? o) => SelectedTool = Tool.BoundingBox, System.Windows.Input.Key.B, System.Windows.Input.ModifierKeys.None, "Bounds Measure");
             ColorPickerSelectedCommand = new RelayCommandFull((object? o) => SelectedTool = Tool.ColorPicker, System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.None, "Color Picker");
@@ -28,7 +28,7 @@ namespace PixelRuler
             ClearAllMeasureElementsCommand = new RelayCommandFull((object? o) => clearAllMeasureElements(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Shift, "Clear All");
             DeleteAllSelectedCommand = new RelayCommandFull((object? o) => deleteAllSelectedElements(), System.Windows.Input.Key.Delete, System.Windows.Input.ModifierKeys.None, "Delete All Selected");
             SelectAllElementsCommand = new RelayCommandFull((object? o) => selectAllElements(), System.Windows.Input.Key.A, System.Windows.Input.ModifierKeys.Control, "Select All Elements");
-            CopyRawImageToClipboard = new RelayCommandFull((object? o) => copyRawImage(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Control, "Copy Image");
+            CopyRawImageToClipboardCommand = new RelayCommandFull((object? o) => CopyRawImageToClipboard(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Control, "Copy Image");
 
             if(settingsViewModel != null)
             {
@@ -37,7 +37,7 @@ namespace PixelRuler
             }
         }
 
-        private void copyRawImage()
+        public void CopyRawImageToClipboard()
         {
             if(this.ImageSource != null)
             {
@@ -255,7 +255,41 @@ namespace PixelRuler
             }
         }
 
-        public RelayCommandFull CopyRawImageToClipboard { get; set; }
+        private RelayCommandFull pasteCanvasContents;
+        public RelayCommandFull PasteCanvasContents
+        {
+            get
+            {
+                return pasteCanvasContents;
+            }
+            set
+            {
+                if (pasteCanvasContents != value)
+                {
+                    pasteCanvasContents = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private RelayCommandFull copyCanvasContents;
+        public RelayCommandFull CopyCanvasContents
+        {
+            get
+            {
+                return copyCanvasContents;
+            }
+            set
+            {
+                if(copyCanvasContents != value)
+                {
+                    copyCanvasContents = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public RelayCommandFull CopyRawImageToClipboardCommand { get; set; }
 
         private RelayCommandFull selectAllElementsCommand;
         public RelayCommandFull SelectAllElementsCommand

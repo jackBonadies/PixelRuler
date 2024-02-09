@@ -107,6 +107,75 @@ namespace PixelRuler
             }
         }
 
+        public bool CopySelectedData()
+        {
+            if(this.SelectedMeasureElements.Any())
+            {
+                var copiedMeasElData = new List<MeasureElementData>();
+                foreach (var el in SelectedMeasureElements)
+                {
+                    // clone for source
+                    // clone again to paste
+                    //todo or store source data i.e. strart and end (nothing else needed)
+                    copiedMeasElData.Add(el.Archive());
+                }
+                copyCanvasData = new CopyData(copiedMeasElData);
+                return true;
+            }
+            return false;
+        }
+
+        public bool PasteCopiedData()
+        {
+                if(copyCanvasData != null && copyCanvasData.CopiedData.Any())
+                {
+                    var wasSelected = this.SelectedMeasureElements.ToList();
+                    foreach (var item in wasSelected) 
+                    {
+                        item.Selected = false;
+                    }
+
+                    try
+                    {
+                        selectAll = true;
+                        copyCanvasData.NumTimesPasted++;
+                        Point offset = new Point(30 * copyCanvasData.NumTimesPasted, 30 * copyCanvasData.NumTimesPasted); //may want shape to provide whether its vert or horz
+                        foreach (var data in copyCanvasData.CopiedData)
+                        {
+                            var newEl = MeasurementElementZoomCanvasShape.FromMeasureElementData(data, innerCanvas);
+                            newEl.StartPoint = newEl.StartPoint.Add(offset);
+                            newEl.EndPoint = newEl.EndPoint.Add(offset);
+                            newEl.FinishedDrawing = true;
+                            AddToCanvas(newEl);
+                            newEl.SetState();
+                            newEl.UpdateForZoomChange();
+                            newEl.Selected = true;
+                            newEl.SetState();
+                        }
+                    }
+                    finally
+                    {
+                        selectAll = false;
+                    }
+                return true;
+                }
+            return false;
+        }
+
+        public class CopyData
+        {
+            public CopyData(List<MeasureElementData> data)
+            {
+                CopiedData = data;
+                NumTimesPasted = 0;
+            }
+            public List<MeasureElementData> CopiedData;
+            public int NumTimesPasted;
+        }
+
+        //move to viewmodel TODO
+        CopyData? copyCanvasData = null;
+
         private IEnumerable<MeasurementElementZoomCanvasShape> SelectedMeasureElements
         {
             get
@@ -447,18 +516,27 @@ namespace PixelRuler
 
             if(ViewModel.SelectedTool == Tool.BoundingBox)
             {
-                currentMeasurementElement = new BoundingBoxElement(this.innerCanvas, roundedPoint);
+                currentMeasurementElement = new BoundingBoxElement(this.innerCanvas);
             }
             else
             {
-                currentMeasurementElement = new RulerElement(this.innerCanvas, roundedPoint);
+                currentMeasurementElement = new RulerElement(this.innerCanvas);
             }
 
-            ViewModel.ActiveMeasureElement = currentMeasurementElement;
 
-            measurementElements.Add(currentMeasurementElement);
-            currentMeasurementElement.SelectedChanged += CurrentMeasurementElement_SelectedChanged;
-            currentMeasurementElement.Moving += CurrentMeasurementElement_Moving;
+            currentMeasurementElement.StartPoint = roundedPoint;
+
+            AddToCanvas(currentMeasurementElement);
+
+            ViewModel.ActiveMeasureElement = currentMeasurementElement; //TODO why are these even different, it should just be ViewModel.ActiveMeasureElement no second field
+        }
+
+        private void AddToCanvas(MeasurementElementZoomCanvasShape el)
+        {
+            el.AddToOwnerCanvas();
+            measurementElements.Add(el);
+            el.SelectedChanged += CurrentMeasurementElement_SelectedChanged;
+            el.Moving += CurrentMeasurementElement_Moving;
         }
 
         private void CurrentMeasurementElement_Moving(object? sender, Point e)

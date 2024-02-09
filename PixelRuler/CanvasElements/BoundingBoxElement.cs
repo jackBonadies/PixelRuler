@@ -25,10 +25,17 @@ namespace PixelRuler
 
 
 
-
-        public BoundingBoxElement(Canvas owningCanvas, Point startPoint) : base(owningCanvas)
+        public BoundingBoxElement(Canvas owningCanvas) : base(owningCanvas)
         {
+            this.owningCanvas = owningCanvas;
             rect1 = createRectangle();
+            boundingBoxLabelForEndPoint = new BoundingBoxLabel();
+            widthLabel = new LengthLabel();
+            heightLabel = new LengthLabel();
+        }
+
+        public override void AddToOwnerCanvas()
+        {
             if(marching_ants)
             {
                 rect1.Stroke = brush1;
@@ -69,15 +76,10 @@ namespace PixelRuler
                 Canvas.SetZIndex(rect2, App.SHAPE_INDEX + 1);
             }
 
-            StartPoint = startPoint;
-
-            boundingBoxLabelForEndPoint = new BoundingBoxLabel();
             boundingBoxLabelForEndPoint.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
 
-            widthLabel = new LengthLabel();
             widthLabel.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
 
-            heightLabel = new LengthLabel();
             heightLabel.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
 
             var sizerEnumValues = Enum.GetValues(typeof(SizerEnum));

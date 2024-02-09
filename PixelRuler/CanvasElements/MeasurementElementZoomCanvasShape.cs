@@ -32,6 +32,37 @@ namespace PixelRuler.CanvasElements
             Canvas.SetZIndex(hitBoxManipulate, App.MANIPULATE_HITBOX_INDEX);
         }
 
+        public virtual MeasureElementData Archive()
+        {
+            return new MeasureElementData()
+            {
+                StartPoint = this.StartPoint,
+                EndPoint = this.EndPoint,
+                ElementType = this is BoundingBoxElement ? Tool.BoundingBox : Tool.Ruler
+            };
+        }
+
+        public static MeasurementElementZoomCanvasShape FromMeasureElementData(MeasureElementData data, Canvas owningCanvas)
+        {
+            MeasurementElementZoomCanvasShape el = null;
+            switch (data.ElementType)
+            {
+                case Tool.Ruler:
+                    el = new RulerElement(owningCanvas);
+                    break;
+                case Tool.BoundingBox:
+                    el = new BoundingBoxElement(owningCanvas);
+                    break;
+                default:
+                    return null;
+            }
+            el.StartPoint = data.StartPoint;
+            el.EndPoint = data.EndPoint;
+            return el;
+        }
+
+        public abstract void AddToOwnerCanvas();
+
         private void HitBoxManipulate_LostMouseCapture(object sender, MouseEventArgs e)
         {
             if(isManipulating)
@@ -140,7 +171,7 @@ namespace PixelRuler.CanvasElements
             {
                 return startPoint;
             }
-            protected set
+            set
             {
                 if (startPoint != value)
                 {
@@ -157,7 +188,7 @@ namespace PixelRuler.CanvasElements
             {
                 return endPoint;
             }
-            protected set
+            set
             {
                 if(endPoint != value)
                 {
@@ -235,12 +266,19 @@ namespace PixelRuler.CanvasElements
             Moving?.Invoke(this, pt);
         }
 
-        public event EventHandler<System.Windows.Point> Moving;
+        public event EventHandler<System.Windows.Point>? Moving;
 
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         public event PropertyChangedEventHandler? PropertyChanged;
+    }
+
+    public class MeasureElementData
+    {
+        public Point StartPoint;
+        public Point EndPoint;
+        public Tool ElementType;
     }
 }
