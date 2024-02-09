@@ -33,10 +33,10 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="GlobalShortcutWindowKey" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">87</Value>
     </Setting>
     <Setting Name="GlobalShortcutWindowModifiers" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">66</Value>
     </Setting>
   </Settings>
 </SettingsFile>

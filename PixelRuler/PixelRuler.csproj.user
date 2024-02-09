@@ -6,46 +6,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Views\ConfigureShortcutView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\KeysViewControl.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\MainCanvas.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\ShortcutInfoView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\WindowSelectionWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\ConfigureShortcutView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\KeysViewControl.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\MainCanvas.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\MainWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\ShortcutInfoView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\WindowSelectionWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup />
 </Project>
