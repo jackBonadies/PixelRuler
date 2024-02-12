@@ -1,4 +1,5 @@
 ﻿using PixelRuler.CanvasElements;
+using PixelRuler.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -32,8 +33,7 @@ namespace PixelRuler
 
         public EventHandler<double> EffectiveZoomChanged;
 
-        private double zoomBoxSize = 250;
-        Rectangle zoomBox;
+        ZoomBox zoomBox;
 
 
 
@@ -57,25 +57,12 @@ namespace PixelRuler
             this.innerCanvas.MouseDown += MainCanvas_MouseDown;
             this.innerCanvas.MouseUp += MainCanvas_MouseUp;
 
-            zoomBox = new Rectangle();
-            zoomBox.Width = zoomBoxSize;
-            zoomBox.Height = zoomBoxSize;
-            zoomBox.IsHitTestVisible = false;
-            zoomBox.StrokeThickness = 4;
-            zoomBox.Stroke = new SolidColorBrush(Color.FromArgb(127,255,255,255));
-            zoomBox.Fill = //new SolidColorBrush(Colors.Red);
-                
-            new VisualBrush(this.innerCanvas)
-            {
-                Viewbox = new Rect(0000, 0000, zoomBoxSize, zoomBoxSize),
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Transform = new ScaleTransform(4, 4, .5, .5),
-            };
-                
-                //new SolidColorBrush(Colors.Red);
+            zoomBox = new ZoomBox(this, 250, 4);
 
             this.overlayCanvas.Children.Add(zoomBox);
-            this.overlayCanvas.MouseMove += OverlayCanvas_MouseMove;
+            this.overlayCanvas.PreviewMouseDown += OverlayCanvas_MouseDown;
+            this.overlayCanvas.PreviewMouseMove += OverlayCanvas_MouseMove;
+            this.overlayCanvas.PreviewMouseUp += OverlayCanvas_MouseUp;
 
 
 
@@ -91,17 +78,19 @@ namespace PixelRuler
 
         }
 
+        private void OverlayCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            zoomBox.Visibility = Visibility.Visible;
+        }
+
+        private void OverlayCanvas_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            zoomBox.Visibility = Visibility.Collapsed;
+        }
+
         private void OverlayCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            Canvas.SetLeft(zoomBox, e.GetPosition(overlayCanvas).X - zoomBoxSize/2);
-            Canvas.SetTop(zoomBox, e.GetPosition(overlayCanvas).Y - zoomBoxSize/2 + 140);
-
-            (zoomBox.Fill as VisualBrush).Viewbox =
-                new Rect(
-                    e.GetPosition(overlayCanvas).X - (zoomBoxSize / 2) / 4,
-                    e.GetPosition(overlayCanvas).Y - (zoomBoxSize / 2) / 4,
-                    zoomBoxSize,
-                    zoomBoxSize);
+            zoomBox.OnOverlayCanvasMouseMove(e.GetPosition(overlayCanvas), e.GetPosition(innerCanvas));
             //(zoomBox.Fill as VisualBrush).Viewbox.X = e.GetPosition(innerCanvas).X;
         }
 
