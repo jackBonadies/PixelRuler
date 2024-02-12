@@ -9,6 +9,7 @@
 	<ApplicationManifest>app.manifest</ApplicationManifest>
 	<ApplicationIcon>Assets/PixelRulerIcon1.ico</ApplicationIcon>
 	<PlatformTarget>AnyCPU</PlatformTarget>
+	<Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
