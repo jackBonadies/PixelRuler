@@ -14,7 +14,7 @@
     <Canvas Height="10000" Background="#01FFFFFF">
         <Canvas.RenderTransform>
             <TransformGroup>
-                <ScaleTransform CenterX="0" ScaleX="0.8" ScaleY="0.8" />
+                <ScaleTransform x:Name="reverseDpiTransform" CenterX="0" CenterY="0" ScaleX="1" ScaleY="1" />
                 <SkewTransform />
                 <RotateTransform />
                 <TranslateTransform />

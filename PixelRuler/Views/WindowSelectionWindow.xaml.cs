@@ -100,6 +100,10 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_SourceInitialized(object? sender, EventArgs e)
         {
+            var dpi = this.GetDpi();
+            var scale = 1 / dpi;
+            reverseDpiTransform.ScaleX = scale;
+            reverseDpiTransform.ScaleY = scale;
         }
 
         private void WindowSelectionWindow_Loaded(object sender, RoutedEventArgs e)
