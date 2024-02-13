@@ -24,7 +24,6 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using PixelRuler;
 using System.Reflection;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace PixelRuler
 {
@@ -94,13 +93,8 @@ namespace PixelRuler
         {
             if(bounds == null)
             {
-                var primaryScreen = System.Windows.Forms.Screen.PrimaryScreen;
-                if (primaryScreen == null)
-                {
-                    throw new Exception("Primary Screen is null");
-                }
-                int pixelWidth = primaryScreen.Bounds.Width;
-                int pixelHeight = primaryScreen.Bounds.Height;
+                var pixelWidth = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width;
+                var pixelHeight = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height;
                 bounds = new Rect(0, 0, pixelWidth, pixelHeight);
             }
 

@@ -5,7 +5,6 @@
     <TargetFramework>net7.0-windows10.0.18362.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-	<UseWindowsForms>true</UseWindowsForms>  <!-- for NotifyIcon and HotKey-->
 	<ApplicationManifest>app.manifest</ApplicationManifest>
 	<ApplicationIcon>Assets/PixelRulerIcon1.ico</ApplicationIcon>
 	<PlatformTarget>AnyCPU</PlatformTarget>
@@ -14,6 +13,7 @@
 
   <ItemGroup>
     <None Remove="Icons\**" />
+    <None Remove="Assets\rasterized_segoe_colorpicker_contrast.cur" />
     <None Remove="PixelRulerIcon.ico" />
     <None Remove="PixelRulerIcon1.ico" />
   </ItemGroup>
@@ -22,11 +22,13 @@
     <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
     <PackageReference Include="WPF-UI" Version="3.0.0-preview.13" />
     <PackageReference Include="WPF-UI.Tray" Version="3.0.0-preview.11" />
+    <PackageReference Include="WpfScreenHelper" Version="2.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Assets\PixelRulerIcon.ico" />
     <Resource Include="Assets\PixelRulerIcon1.ico" />
+    <Resource Include="Assets\rasterized_segoe_colorpicker_contrast.cur" />
   </ItemGroup>
 
   <ItemGroup>

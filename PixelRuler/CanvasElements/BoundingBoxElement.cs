@@ -13,7 +13,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
-using static System.Windows.Forms.LinkLabel;
 
 namespace PixelRuler
 {

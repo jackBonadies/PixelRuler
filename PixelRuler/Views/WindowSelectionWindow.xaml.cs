@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Windows.Data.Text;
 
 namespace PixelRuler
 {
@@ -34,8 +35,8 @@ namespace PixelRuler
             this.Top = 0;
             this.Left = 0;
             // the actual window size may be larger due to dpi scaling
-            this.Height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
-            this.Width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
+            this.Width = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width;
+            this.Height = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height;
             this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
             this.AllowsTransparency = true;
