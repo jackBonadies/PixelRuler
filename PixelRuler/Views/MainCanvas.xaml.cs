@@ -364,7 +364,7 @@ namespace PixelRuler
                     this.Cursor = Cursors.Cross;
                     break;
                 case Tool.ColorPicker:
-                    this.Cursor = Cursors.Arrow;
+                    this.Cursor = this.FindResource("EyeDropperCursor") as Cursor;
                     break;
             }
         }

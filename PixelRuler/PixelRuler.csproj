@@ -13,9 +13,15 @@
 
   <ItemGroup>
     <None Remove="Icons\**" />
-    <None Remove="Assets\rasterized_segoe_colorpicker_contrast.cur" />
+    <None Remove="Assets\rasterized_segoe_colorpicker_contrast_16.cur" />
+    <None Remove="Assets\rasterized_segoe_colorpicker_contrast_64.cur" />
     <None Remove="PixelRulerIcon.ico" />
     <None Remove="PixelRulerIcon1.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\rasterized_segoe_colorpicker_contrast_16.cur" />
+    <Resource Include="Assets\rasterized_segoe_colorpicker_contrast_64.cur" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,7 +34,6 @@
   <ItemGroup>
     <Resource Include="Assets\PixelRulerIcon.ico" />
     <Resource Include="Assets\PixelRulerIcon1.ico" />
-    <Resource Include="Assets\rasterized_segoe_colorpicker_contrast.cur" />
   </ItemGroup>
 
   <ItemGroup>
