@@ -5,7 +5,7 @@ VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PixelRuler", "PixelRuler\PixelRuler.csproj", "{CF06B75B-D08C-4961-80E6-C7CCD689703E}"
 EndProject
-Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "WapProjTemplate2", "WapProjTemplate2\WapProjTemplate2.wapproj", "{CEE4FE68-3674-4286-B312-B3467C218BF6}"
+Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "Packaging", "WapProjTemplate2\Packaging.wapproj", "{CEE4FE68-3674-4286-B312-B3467C218BF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
