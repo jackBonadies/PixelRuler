@@ -91,8 +91,8 @@ namespace PixelRuler.Views
 
             // innerCanvasLocation is the zoom canvas so 10k
             // overlayCanvasLocation is location on the overlay canvas i.e. b/t 0 and screen size
-            Canvas.SetLeft(this, overlayCanvasLocation.X - ZoomWindowSize / 2);
-            Canvas.SetTop(this, overlayCanvasLocation.Y - ZoomWindowSize / 2 + 156);
+            Canvas.SetLeft(this, overlayCanvasLocation.X - outerBorder.ActualWidth / 2);
+            Canvas.SetTop(this, overlayCanvasLocation.Y - outerBorder.ActualHeight / 2 + 156);
 
             //var transform = owningCanvas.TransformToAncestor(owningCanvas);
             //var pt = owningCanvas.innerCanvas.RenderTransform.Transform(overlayCanvasLocation);
