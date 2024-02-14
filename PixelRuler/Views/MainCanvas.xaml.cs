@@ -57,7 +57,7 @@ namespace PixelRuler
             this.innerCanvas.MouseDown += MainCanvas_MouseDown;
             this.innerCanvas.MouseUp += MainCanvas_MouseUp;
 
-            zoomBox = new ZoomBox(this, 250, 4);
+            zoomBox = new ZoomBox(this, 256, 16);
 
             this.overlayCanvas.Children.Add(zoomBox);
             this.overlayCanvas.PreviewMouseDown += OverlayCanvas_MouseDown;
@@ -568,6 +568,24 @@ namespace PixelRuler
             measurementElements.Add(el);
             el.SelectedChanged += CurrentMeasurementElement_SelectedChanged;
             el.Moving += CurrentMeasurementElement_Moving;
+            el.StartResize += CurrentMeasurementElement_StartResize;
+            el.Resizing += CurrentMeasurementElement_Resizing;
+            el.EndResize += CurrentMeasurementElement_EndResize;
+        }
+
+        private void CurrentMeasurementElement_EndResize(object? sender, object e)
+        {
+            zoomBox.Visibility = Visibility.Collapsed;
+        }
+
+        private void CurrentMeasurementElement_Resizing(object? sender, object e)
+        {
+            zoomBox.UpdateForElementResize(sender as MeasurementElementZoomCanvasShape, e);
+        }
+
+        private void CurrentMeasurementElement_StartResize(object? sender, object e)
+        {
+            zoomBox.Visibility = Visibility.Visible;
         }
 
         private void CurrentMeasurementElement_Moving(object? sender, Point e)

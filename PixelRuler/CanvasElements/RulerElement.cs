@@ -119,6 +119,7 @@ namespace PixelRuler.CanvasElements
             isManipulating = false;
             (sender as UIElement).ReleaseMouseCapture();
             CleanUpStartEndPoints();
+            OnEndResize(null);
         }
 
         private void StartResizeCircle_MouseMove(object sender, MouseEventArgs e)
@@ -165,10 +166,10 @@ namespace PixelRuler.CanvasElements
 
             SetShapeState();
             SetLabelState();
+            OnResizing(isStartPointManipulating);
             e.Handled = true;
             //this.EndPoint = new Point(MoveStartInfo.shapeEnd.X + xMove, MoveStartInfo.shapeEnd.Y + yMove);
         }
-
 
         bool isStartPointManipulating = false;
 
@@ -187,6 +188,7 @@ namespace PixelRuler.CanvasElements
             (sender as UIElement).Focus();
             MoveStartInfo = (e.GetPosition(this.owningCanvas), StartPoint, EndPoint);
             (sender as UIElement).CaptureMouse();
+            OnStartResize(isStartPointManipulating);
             e.Handled = true;
         }
 

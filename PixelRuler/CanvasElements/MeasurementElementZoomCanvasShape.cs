@@ -11,6 +11,25 @@ namespace PixelRuler.CanvasElements
 {
     public abstract class MeasurementElementZoomCanvasShape : AbstractZoomCanvasShape, INotifyPropertyChanged
     {
+        public event EventHandler<object>? Resizing;
+        public event EventHandler<object>? StartResize;
+        public event EventHandler<object>? EndResize;
+
+        protected void OnResizing(object tag)
+        {
+            Resizing?.Invoke(this, tag);
+        }
+
+        protected void OnStartResize(object tag)
+        {
+            StartResize?.Invoke(this, tag);
+        }
+
+        protected void OnEndResize(object tag)
+        {
+            EndResize?.Invoke(this, tag);
+        }
+
         protected System.Collections.Generic.List<CircleSizerControl> circleSizerControls = new System.Collections.Generic.List<CircleSizerControl>();
 
         protected MeasurementElementZoomCanvasShape(Canvas owningCanvas) : base(owningCanvas)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PixelRuler.CanvasElements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,8 +25,11 @@ namespace PixelRuler.Views
         public double ZoomFactor;
         MainCanvas owningCanvas;
         Rectangle currentPixelIndicator;
+        readonly bool useCanvas = false;
         public ZoomBox(MainCanvas owningCanvas, double windowSize, double zoomFactor)
         {
+            Visual visualForBrush = useCanvas ? owningCanvas.innerCanvas : owningCanvas.mainImage;
+            
             InitializeComponent();
 
             this.owningCanvas = owningCanvas;
@@ -37,13 +41,16 @@ namespace PixelRuler.Views
             this.IsHitTestVisible = false;
             //zoomBox.StrokeThickness = 4;
             //zoomBox.Stroke = new SolidColorBrush(Color.FromArgb(127,255,255,255));
+
+            int offset = useCanvas ? 0 : 10000;
+
             zoomCanvas.Background = //new SolidColorBrush(Colors.Red);
                 
-            new VisualBrush(owningCanvas.innerCanvas)
+            new VisualBrush(visualForBrush)
             {
-                Viewbox = new Rect(0000, 0000, ZoomWindowSize, ZoomWindowSize),
+                Viewbox = new Rect(offset, offset, ZoomWindowSize, ZoomWindowSize),
                 ViewboxUnits = BrushMappingMode.Absolute,
-                Transform = new ScaleTransform(ZoomFaotor, ZoomFactor, .5, .5),
+                Transform = new ScaleTransform(ZoomFactor, ZoomFactor, 0, 0),
             };
 
             currentPixelIndicator = new Rectangle()
@@ -66,16 +73,21 @@ namespace PixelRuler.Views
             Canvas.SetLeft(this, overlayCanvasLocation.X - ZoomWindowSize / 2);
             Canvas.SetTop(this, overlayCanvasLocation.Y - ZoomWindowSize / 2 + 140);
 
+            //var transform = owningCanvas.TransformToAncestor(owningCanvas);
+            //var pt = owningCanvas.innerCanvas.RenderTransform.Transform(overlayCanvasLocation);
+            //var offsetX = useCanvas ? 0 : owningCanvas.CanvasTranslateTransform.X / owningCanvas.CanvasScaleTransform.ScaleX;
+            //var offsetY = useCanvas ? 0 : owningCanvas.CanvasTranslateTransform.Y / owningCanvas.CanvasScaleTransform.ScaleY;
+
             (this.zoomCanvas.Background as VisualBrush).Viewbox =
                 new Rect(
-                    overlayCanvasLocation.X - (ZoomWindowSize / 2) / ZoomFactor,
-                    overlayCanvasLocation.Y - (ZoomWindowSize / 2) / ZoomFactor,
+                    innerCanvasLocation.X - (ZoomWindowSize / 2) / ZoomFactor,
+                    innerCanvasLocation.Y - (ZoomWindowSize / 2) / ZoomFactor,
                     ZoomWindowSize,
                     ZoomWindowSize);
 
 
             // left have to offset by width/2
-            var pixelSize = ZoomFactor * this.owningCanvas.CanvasScaleTransform.ScaleX;
+            var pixelSize = ZoomFactor;
             currentPixelIndicator.Width = pixelSize;
             currentPixelIndicator.Height = pixelSize;
             var center = ZoomWindowSize / 2;// - pixelSize / 2;
@@ -83,8 +95,15 @@ namespace PixelRuler.Views
             var yOffset = (int)(innerCanvasLocation.Y) * pixelSize - innerCanvasLocation.Y * pixelSize;
             ////var xOffset = innerCanvasLocation.X - Math.Round((innerCanvasLocation.X / pixelSize)) * pixelSize;
             //var yOffset = innerCanvasLocation.Y - Math.Round((innerCanvasLocation.Y / pixelSize)) * pixelSize;
+
             Canvas.SetLeft(currentPixelIndicator, center + xOffset);
             Canvas.SetTop(currentPixelIndicator, center + yOffset);
+        }
+
+        public void UpdateForElementResize(MeasurementElementZoomCanvasShape? measurementElementZoomCanvasShape, object e)
+        {
+            //Canvas.SetLeft(currentPixelIndicator, measurementElementZoomCanvasShape.EndPoint - (this.zoomCanvas.Background as VisualBrush).Viewbox.Left xOffset);
+            //Canvas.SetTop(currentPixelIndicator, center + yOffset);
         }
 
         public ZoomBox()
