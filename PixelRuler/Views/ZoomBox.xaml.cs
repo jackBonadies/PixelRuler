@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,6 +26,7 @@ namespace PixelRuler.Views
         public double ZoomFactor;
         MainCanvas owningCanvas;
         Rectangle currentPixelIndicator;
+        Line currentLineGuide;
         readonly bool useCanvas = false;
         public ZoomBox(MainCanvas owningCanvas, double windowSize, double zoomFactor)
         {
@@ -57,21 +59,40 @@ namespace PixelRuler.Views
             {
                 Width = ZoomFactor,
                 Height = ZoomFactor,
-                Stroke = new SolidColorBrush(Colors.Red),
                 StrokeThickness = 1,
             };
+
+
+            currentLineGuide = new Line() 
+            {
+                StrokeThickness = 1,
+                Y1 = 0,
+                Y2 = ZoomWindowSize,
+                SnapsToDevicePixels = true
+            };
+
+            currentLineGuide.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
+            currentPixelIndicator.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
+
             Canvas.SetLeft(currentPixelIndicator, ZoomWindowSize/2);
             Canvas.SetTop(currentPixelIndicator, ZoomWindowSize/2);
 
+            zoomCanvas.Children.Add(currentLineGuide);
             zoomCanvas.Children.Add(currentPixelIndicator);
         }
 
         public void OnOverlayCanvasMouseMove(Point overlayCanvasLocation, Point innerCanvasLocation)
         {
+            if(measEl != null)
+            {
+                innerCanvasLocation = measEl.StartPoint;
+                overlayCanvasLocation =  this.owningCanvas.innerCanvas.TranslatePoint(measEl.StartPoint, this.Parent as Canvas);
+            }
+
             // innerCanvasLocation is the zoom canvas so 10k
             // overlayCanvasLocation is location on the overlay canvas i.e. b/t 0 and screen size
             Canvas.SetLeft(this, overlayCanvasLocation.X - ZoomWindowSize / 2);
-            Canvas.SetTop(this, overlayCanvasLocation.Y - ZoomWindowSize / 2 + 140);
+            Canvas.SetTop(this, overlayCanvasLocation.Y - ZoomWindowSize / 2 + 156);
 
             //var transform = owningCanvas.TransformToAncestor(owningCanvas);
             //var pt = owningCanvas.innerCanvas.RenderTransform.Transform(overlayCanvasLocation);
@@ -98,10 +119,15 @@ namespace PixelRuler.Views
 
             Canvas.SetLeft(currentPixelIndicator, center + xOffset);
             Canvas.SetTop(currentPixelIndicator, center + yOffset);
+
+            Canvas.SetLeft(currentLineGuide, center + xOffset);
+            Canvas.SetTop(currentLineGuide, 0);
         }
 
+        private MeasurementElementZoomCanvasShape measEl;
         public void UpdateForElementResize(MeasurementElementZoomCanvasShape? measurementElementZoomCanvasShape, object e)
         {
+            this.measEl = measurementElementZoomCanvasShape;
             //Canvas.SetLeft(currentPixelIndicator, measurementElementZoomCanvasShape.EndPoint - (this.zoomCanvas.Background as VisualBrush).Viewbox.Left xOffset);
             //Canvas.SetTop(currentPixelIndicator, center + yOffset);
         }
