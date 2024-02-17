@@ -136,7 +136,7 @@ namespace PixelRuler.CanvasElements
             int xMove = -(int)delta.X;
             int yMove = -(int)delta.Y;
 
-            MoveStartInfo.mouseStart = new Point(xMove, yMove).Add(MoveStartInfo.mouseStart);
+            MoveStartInfo.mouseStart = new Point(xMove * App.ResizeSpeedFactor, yMove * App.ResizeSpeedFactor).Add(MoveStartInfo.mouseStart);
 
             if (IsHorizontal())
             {

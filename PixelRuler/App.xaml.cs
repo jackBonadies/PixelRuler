@@ -40,7 +40,7 @@ namespace PixelRuler
             var settingsViewModel = new SettingsViewModel();
             var mainViewModel = new PixelRulerViewModel(settingsViewModel);
 
-            MainWindow mainWindow = new MainWindow(mainViewModel);
+            MainWindow mainWindow = new MainWindow(mainViewModel, backgroundOnly);
             mainWindow.NewFullScreenshot(false);
             mainWindow.Show();
 
@@ -78,6 +78,7 @@ namespace PixelRuler
         };
 
         public static readonly int ResizeSpeedFactor = 5;
+        public static readonly bool FloatingZoomBoxPosAllowed = true;
 
         public static readonly double MinZoomPercent = ZoomSelections[0];
         public static readonly double MaxZoomPercent = ZoomSelections[ZoomSelections.Length - 1];
