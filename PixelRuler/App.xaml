@@ -13,7 +13,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <!--<FrameworkElement x:Key="EyeDropperCursor" Cursor="Assets/rasterized_segoe_colorpicker_contrast.cur" />-->
-            <Cursor x:Key="EyeDropperCursor">Assets/rasterized_segoe_colorpicker_contrast_16.cur</Cursor>
+            <Cursor x:Key="EyeDropperCursor">Assets/rasterized_segoe_colorpicker_contrast_hotspot_offset24.cur</Cursor>
 
             <local:PercentFormatStringConverter x:Key="PercentFormatStringConverter" />
             <local:ColorFormatStringConverter x:Key="ColorFormatStringConverter" />

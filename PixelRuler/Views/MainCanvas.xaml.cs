@@ -1,4 +1,5 @@
 ﻿using PixelRuler.CanvasElements;
+using PixelRuler.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -32,6 +33,10 @@ namespace PixelRuler
 
         public EventHandler<double> EffectiveZoomChanged;
 
+        ZoomBox zoomBox;
+
+
+
         public MainCanvas()
         {
             InitializeComponent();
@@ -52,6 +57,16 @@ namespace PixelRuler
             this.innerCanvas.MouseDown += MainCanvas_MouseDown;
             this.innerCanvas.MouseUp += MainCanvas_MouseUp;
 
+            zoomBox = new ZoomBox(this, 256, 16);
+
+            this.overlayCanvas.Children.Add(zoomBox);
+            this.overlayCanvas.PreviewMouseDown += OverlayCanvas_MouseDown;
+            this.overlayCanvas.PreviewMouseMove += OverlayCanvas_MouseMove;
+            this.overlayCanvas.PreviewMouseUp += OverlayCanvas_MouseUp;
+
+
+
+
             this.KeyDown += MainCanvas_KeyDown;
 
             //this.mainCanvas.MouseLeftButtonDown += MainCanvas_MouseLeftButtonDown;
@@ -61,6 +76,34 @@ namespace PixelRuler
             this.LostFocus += MainCanvas_LostFocus;
             this.LostMouseCapture += MainCanvas_LostMouseCapture;
 
+        }
+
+        private void OverlayCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if(e.ChangedButton == MouseButton.Left)
+            {
+                if(ViewModel.SelectedTool == Tool.ColorPicker)
+                {
+                    zoomBox.Show(null, e);
+                }
+            }
+        }
+
+        private void OverlayCanvas_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if(e.ChangedButton == MouseButton.Left)
+            {
+                if(ViewModel.SelectedTool == Tool.ColorPicker)
+                {
+                    zoomBox.Hide();
+                }
+            }
+        }
+
+        private void OverlayCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            zoomBox.OnOverlayCanvasMouseMove();
+            //(zoomBox.Fill as VisualBrush).Viewbox.X = e.GetPosition(innerCanvas).X;
         }
 
         private void MainCanvas_LostMouseCapture(object sender, MouseEventArgs e)
@@ -361,11 +404,14 @@ namespace PixelRuler
             switch(ViewModel.SelectedTool)
             {
                 case Tool.BoundingBox:
+                case Tool.Ruler:
                     this.Cursor = Cursors.Cross;
                     break;
                 case Tool.ColorPicker:
                     this.Cursor = this.FindResource("EyeDropperCursor") as Cursor;
                     break;
+                default:
+                    throw new Exception("Unknown Tool");
             }
         }
 
@@ -537,6 +583,24 @@ namespace PixelRuler
             measurementElements.Add(el);
             el.SelectedChanged += CurrentMeasurementElement_SelectedChanged;
             el.Moving += CurrentMeasurementElement_Moving;
+            el.StartResize += CurrentMeasurementElement_StartResize;
+            el.Resizing += CurrentMeasurementElement_Resizing;
+            el.EndResize += CurrentMeasurementElement_EndResize;
+        }
+
+        private void CurrentMeasurementElement_EndResize(object? sender, MeasureElementResizeData e)
+        {
+            zoomBox.Hide();
+        }
+
+        private void CurrentMeasurementElement_Resizing(object? sender, MeasureElementResizeData e)
+        {
+            zoomBox.UpdateForElementResize(sender as MeasurementElementZoomCanvasShape, e);
+        }
+
+        private void CurrentMeasurementElement_StartResize(object? sender, MeasureElementResizeData e)
+        {
+            zoomBox.Show(e, null);
         }
 
         private void CurrentMeasurementElement_Moving(object? sender, Point e)
@@ -592,6 +656,7 @@ namespace PixelRuler
 
         private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
+
             if (ViewModel.SelectedTool == Tool.ColorPicker)
             {
                 if(colorPickBox == null)
@@ -617,8 +682,22 @@ namespace PixelRuler
                 totalAmountToMoveX += delta.X;
                 totalAmountToMoveY += delta.Y;
 
+                //var prevX = tt.X;
+                //var prevY = tt.Y;
+
                 tt.X = Math.Round((origX + totalAmountToMoveX));
                 tt.Y = Math.Round((origY + totalAmountToMoveY));
+
+                //var leftCanvasSpace = new Point(Canvas.GetLeft(mainImage), Canvas.GetTop(mainImage));
+                //var realSpaceFromCanvasSpace = innerCanvas.TranslatePoint(leftCanvasSpace, this);
+                //var minTranslateX = this.ActualWidth * .8;
+                //if (realSpaceFromCanvasSpace.X > minTranslateX)
+                //{
+                //    //var minX = this.TranslatePoint(new Point(minTranslateX, 0), innerCanvas);
+                //    //tt.X = minX.X;
+                //    //tt.Y = prevY;
+                //}
+
                 //tt.Y += delta.Y * ScaleTransform.ScaleY;
             }
             else if (drawingShape)

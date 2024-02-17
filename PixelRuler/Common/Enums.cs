@@ -75,6 +75,51 @@ namespace PixelRuler
         {
             return sizerEnum == SizerEnum.TopLeft || sizerEnum == SizerEnum.TopRight || sizerEnum == SizerEnum.TopCenter;
         }
+
+        public static SizerPosX GetXFlag(this SizerEnum sizerEnum)
+        {
+            if(sizerEnum.IsLeft())
+            {
+                return SizerPosX.Left;
+            }
+            else if(sizerEnum.IsRight())
+            {
+                return SizerPosX.Right;
+            }
+            else
+            {
+                return SizerPosX.Centered;
+            }
+        }
+
+        public static SizerPosY GetYFlag(this SizerEnum sizerEnum)
+        {
+            if(sizerEnum.IsBottom())
+            {
+                return SizerPosY.Below;
+            }
+            else if(sizerEnum.IsTop())
+            {
+                return SizerPosY.Above;
+            }
+            else
+            {
+                return SizerPosY.Centered;
+            }
+        }
+    }
+
+    public enum SizerPosX
+    {
+        Centered = 0,
+        Left = 1,
+        Right = 2,
+    }
+    public enum SizerPosY
+    {
+        Centered = 0,
+        Below = 1,
+        Above = 2,
     }
 
     public enum SizerEnum

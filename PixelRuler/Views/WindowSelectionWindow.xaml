@@ -47,8 +47,8 @@
             x:Name="rect"
             Canvas.Left="500"
             Canvas.Top="50"
-            Width="100"
-            Height="100"
+            Width="0"
+            Height="0"
             Stroke="Red"
             StrokeThickness="1" />
 

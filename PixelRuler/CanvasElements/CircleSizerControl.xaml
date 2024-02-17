@@ -10,7 +10,7 @@
     mc:Ignorable="d">
 
     <UserControl.LayoutTransform>
-        <ScaleTransform CenterX=".5" CenterY=".5" ScaleX="1" ScaleY="1" />
+        <ScaleTransform CenterX="0" CenterY="0" ScaleX="1" ScaleY="1" />
     </UserControl.LayoutTransform>
 
     <Grid Background="Transparent" SnapsToDevicePixels="False">
