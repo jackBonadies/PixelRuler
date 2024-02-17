@@ -130,7 +130,7 @@ namespace PixelRuler.CanvasElements
                 return;
             }
             var newPos = e.GetPosition(this.owningCanvas);
-            var delta = MoveStartInfo.mouseStart - newPos;
+            var delta = (MoveStartInfo.mouseStart - newPos) / App.ResizeSpeedFactor;
             System.Diagnostics.Trace.WriteLine($"x: {delta.X} y: {delta.Y}");
 
             int xMove = -(int)delta.X;

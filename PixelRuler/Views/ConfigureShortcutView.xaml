@@ -39,8 +39,7 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            Background="Red">
+            VerticalContentAlignment="Stretch">
             <local:KeysViewControl.LayoutTransform>
                 <ScaleTransform CenterX="0" CenterY="0" ScaleX="1.35" ScaleY="1.35" />
             </local:KeysViewControl.LayoutTransform>

@@ -77,6 +77,8 @@ namespace PixelRuler
             25600,
         };
 
+        public static readonly int ResizeSpeedFactor = 5;
+
         public static readonly double MinZoomPercent = ZoomSelections[0];
         public static readonly double MaxZoomPercent = ZoomSelections[ZoomSelections.Length - 1];
 
