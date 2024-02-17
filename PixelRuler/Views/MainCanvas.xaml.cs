@@ -80,17 +80,29 @@ namespace PixelRuler
 
         private void OverlayCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            zoomBox.Visibility = Visibility.Visible;
+            if(e.ChangedButton == MouseButton.Left)
+            {
+                if(ViewModel.SelectedTool == Tool.ColorPicker)
+                {
+                    zoomBox.Show(null, e);
+                }
+            }
         }
 
         private void OverlayCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            zoomBox.Visibility = Visibility.Collapsed;
+            if(e.ChangedButton == MouseButton.Left)
+            {
+                if(ViewModel.SelectedTool == Tool.ColorPicker)
+                {
+                    zoomBox.Hide();
+                }
+            }
         }
 
         private void OverlayCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            zoomBox.OnOverlayCanvasMouseMove(e.GetPosition(overlayCanvas), e.GetPosition(innerCanvas));
+            zoomBox.OnOverlayCanvasMouseMove();
             //(zoomBox.Fill as VisualBrush).Viewbox.X = e.GetPosition(innerCanvas).X;
         }
 
@@ -392,11 +404,14 @@ namespace PixelRuler
             switch(ViewModel.SelectedTool)
             {
                 case Tool.BoundingBox:
+                case Tool.Ruler:
                     this.Cursor = Cursors.Cross;
                     break;
                 case Tool.ColorPicker:
                     this.Cursor = this.FindResource("EyeDropperCursor") as Cursor;
                     break;
+                default:
+                    throw new Exception("Unknown Tool");
             }
         }
 
@@ -573,19 +588,19 @@ namespace PixelRuler
             el.EndResize += CurrentMeasurementElement_EndResize;
         }
 
-        private void CurrentMeasurementElement_EndResize(object? sender, object e)
+        private void CurrentMeasurementElement_EndResize(object? sender, MeasureElementResizeData e)
         {
-            zoomBox.Visibility = Visibility.Collapsed;
+            zoomBox.Hide();
         }
 
-        private void CurrentMeasurementElement_Resizing(object? sender, object e)
+        private void CurrentMeasurementElement_Resizing(object? sender, MeasureElementResizeData e)
         {
             zoomBox.UpdateForElementResize(sender as MeasurementElementZoomCanvasShape, e);
         }
 
-        private void CurrentMeasurementElement_StartResize(object? sender, object e)
+        private void CurrentMeasurementElement_StartResize(object? sender, MeasureElementResizeData e)
         {
-            zoomBox.Visibility = Visibility.Visible;
+            zoomBox.Show(e, null);
         }
 
         private void CurrentMeasurementElement_Moving(object? sender, Point e)
@@ -667,8 +682,22 @@ namespace PixelRuler
                 totalAmountToMoveX += delta.X;
                 totalAmountToMoveY += delta.Y;
 
+                //var prevX = tt.X;
+                //var prevY = tt.Y;
+
                 tt.X = Math.Round((origX + totalAmountToMoveX));
                 tt.Y = Math.Round((origY + totalAmountToMoveY));
+
+                //var leftCanvasSpace = new Point(Canvas.GetLeft(mainImage), Canvas.GetTop(mainImage));
+                //var realSpaceFromCanvasSpace = innerCanvas.TranslatePoint(leftCanvasSpace, this);
+                //var minTranslateX = this.ActualWidth * .8;
+                //if (realSpaceFromCanvasSpace.X > minTranslateX)
+                //{
+                //    //var minX = this.TranslatePoint(new Point(minTranslateX, 0), innerCanvas);
+                //    //tt.X = minX.X;
+                //    //tt.Y = prevY;
+                //}
+
                 //tt.Y += delta.Y * ScaleTransform.ScaleY;
             }
             else if (drawingShape)

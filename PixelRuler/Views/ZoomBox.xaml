@@ -6,14 +6,26 @@
     xmlns:local="clr-namespace:PixelRuler.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <UserControl.Effect>
+        <DropShadowEffect
+            BlurRadius="14"
+            Direction="0"
+            ShadowDepth="0" />
+    </UserControl.Effect>
     <Border
         x:Name="outerBorder"
         BorderBrush="LightGray"
         BorderThickness="3"
         CornerRadius="4">
-        <Canvas
-            x:Name="zoomCanvas"
-            Width="100"
-            Height="100" />
+        <Grid>
+            <Border
+                x:Name="imageBackgroundBorder"
+                Background="Red"
+                CornerRadius="2.5" />
+            <Canvas
+                x:Name="zoomCanvas"
+                Width="100"
+                Height="100" />
+        </Grid>
     </Border>
 </UserControl>

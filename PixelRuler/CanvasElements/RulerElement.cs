@@ -53,6 +53,7 @@ namespace PixelRuler.CanvasElements
 
             hitBoxManipulate.GotFocus += HitBoxManipulate_GotFocus;
             hitBoxManipulate.LostFocus += HitBoxManipulate_LostFocus;
+            //hitBoxManipulate.IsHitTestVisible = false;
 
 
             SetupResizer(startResizeCircle);
@@ -90,7 +91,7 @@ namespace PixelRuler.CanvasElements
 
         private void CleanUpStartEndPoints()
         {
-            if (isHorizontal())
+            if (IsHorizontal())
             {
                 EndPoint = new Point(EndPoint.X, StartPoint.Y);
                 if (StartPoint.X > EndPoint.X)
@@ -137,7 +138,7 @@ namespace PixelRuler.CanvasElements
 
             MoveStartInfo.mouseStart = new Point(xMove, yMove).Add(MoveStartInfo.mouseStart);
 
-            if (isHorizontal())
+            if (IsHorizontal())
             {
                 if (isStartPointManipulating)
                 {
@@ -195,7 +196,7 @@ namespace PixelRuler.CanvasElements
         private bool isStartPointCircleResizer(CircleSizerControl circleSizerControl)
         {
             bool nominalStart = circleSizerControl == startResizeCircle;
-            if (isHorizontal())
+            if (IsHorizontal())
             {
                 if (Canvas.GetLeft(startResizeCircle) > Canvas.GetLeft(endResizeCircle))
                 {
@@ -224,7 +225,7 @@ namespace PixelRuler.CanvasElements
         //}
         private bool? isHorizontalState = null;
 
-        private bool isHorizontal()
+        public bool IsHorizontal()
         {
             if (isHorizontalState == null)
             {
@@ -248,7 +249,7 @@ namespace PixelRuler.CanvasElements
         {
             get
             {
-                if(!isHorizontal())
+                if(!IsHorizontal())
                 {
                     return double.NaN;
                 }
@@ -260,7 +261,7 @@ namespace PixelRuler.CanvasElements
         {
             get
             {
-                if(isHorizontal())
+                if(IsHorizontal())
                 {
                     return double.NaN;
                 }
@@ -279,7 +280,7 @@ namespace PixelRuler.CanvasElements
             line1.Y1 = StartPoint.Y;
 
 
-            if(isHorizontal())
+            if(IsHorizontal())
             {
                 line1.X2 = EndPoint.X;
                 line1.Y2 = line1.Y1;
@@ -315,7 +316,7 @@ namespace PixelRuler.CanvasElements
             hitBoxManipulate.Height = maxY - minY + padding * 2;
 
 
-            if(isHorizontal())
+            if(IsHorizontal())
             {
                 Canvas.SetTop(startResizeCircle, hitBoxManipulate.Height / 2 - startResizeCircle.ActualHeight / 2 * getUIUnit() / owningCanvas.GetDpi());
                 Canvas.SetTop(endResizeCircle, hitBoxManipulate.Height / 2 - startResizeCircle.ActualHeight / 2 * getUIUnit() / owningCanvas.GetDpi());
@@ -341,7 +342,7 @@ namespace PixelRuler.CanvasElements
                 return;
             }
 
-            if (isHorizontal())
+            if (IsHorizontal())
             {
                 Canvas.SetTop(rulerLengthLabel, line1.Y1 - (rulerLengthLabel.ActualHeight + 2) * getUIUnit());
                 Canvas.SetLeft(rulerLengthLabel, (line1.X1 + line1.X2) / 2.0 - rulerLengthLabel.ActualWidth * getUIUnit() / 2.0  );// - BoundingBoxLabel.ActualWidth * 1.5);
@@ -406,7 +407,7 @@ namespace PixelRuler.CanvasElements
         {
             get
             {
-                return isHorizontal() ? Math.Abs(line1.X1 - line1.X2) : Math.Abs(line1.Y1 - line1.Y2);
+                return IsHorizontal() ? Math.Abs(line1.X1 - line1.X2) : Math.Abs(line1.Y1 - line1.Y2);
             }
         }
 
@@ -430,10 +431,10 @@ namespace PixelRuler.CanvasElements
                 if(finishedDrawing != value)
                 {
                     finishedDrawing = value;
-                    isHorizontalState = isHorizontal();
+                    isHorizontalState = IsHorizontal();
                     foreach(var sizer in circleSizerControls)
                     {
-                        sizer.Cursor = isHorizontal() ? Cursors.SizeWE : Cursors.SizeNS;
+                        sizer.Cursor = IsHorizontal() ? Cursors.SizeWE : Cursors.SizeNS;
                     }
                     CleanUpStartEndPoints();
                 }

@@ -11,23 +11,23 @@ namespace PixelRuler.CanvasElements
 {
     public abstract class MeasurementElementZoomCanvasShape : AbstractZoomCanvasShape, INotifyPropertyChanged
     {
-        public event EventHandler<object>? Resizing;
-        public event EventHandler<object>? StartResize;
-        public event EventHandler<object>? EndResize;
+        public event EventHandler<MeasureElementResizeData>? Resizing;
+        public event EventHandler<MeasureElementResizeData>? StartResize;
+        public event EventHandler<MeasureElementResizeData>? EndResize;
 
         protected void OnResizing(object tag)
         {
-            Resizing?.Invoke(this, tag);
+            Resizing?.Invoke(this, new MeasureElementResizeData(this, tag));
         }
 
         protected void OnStartResize(object tag)
         {
-            StartResize?.Invoke(this, tag);
+            StartResize?.Invoke(this, new MeasureElementResizeData(this, tag));
         }
 
         protected void OnEndResize(object tag)
         {
-            EndResize?.Invoke(this, tag);
+            EndResize?.Invoke(this, new MeasureElementResizeData(this, tag));
         }
 
         protected System.Collections.Generic.List<CircleSizerControl> circleSizerControls = new System.Collections.Generic.List<CircleSizerControl>();
@@ -299,5 +299,18 @@ namespace PixelRuler.CanvasElements
         public Point StartPoint;
         public Point EndPoint;
         public Tool ElementType;
+    }
+
+    public class MeasureElementResizeData
+    {
+        public MeasureElementResizeData(MeasurementElementZoomCanvasShape measurementElementZoomCanvasShape, object tag)
+        {
+            MeasEl = measurementElementZoomCanvasShape;
+            Tag = tag;
+        }
+
+        public MeasurementElementZoomCanvasShape MeasEl { get; set; }
+        public object Tag { get; set; }
+
     }
 }
