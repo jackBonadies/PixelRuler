@@ -32,12 +32,24 @@ namespace PixelRuler
     /// </summary>
     public partial class MainWindow : ThemeWindow
     {
-        public MainWindow(PixelRulerViewModel prvm)
+        public MainWindow(PixelRulerViewModel prvm, bool backgrounded)
         {
 
             this.DataContext = prvm;
 
             InitializeComponent();
+
+            // basically we need to .Show() a window without actually showing it
+            //   for the notifyicon
+            if(backgrounded)
+            {
+                this.WindowStartupLocation = WindowStartupLocation.Manual;
+                this.WindowState = WindowState.Normal; // better than minimized bc no lower left flicker
+                this.ShowActivated = false;
+                this.Top = int.MinValue;
+                this.Left = int.MinValue;
+                this.ShowInTaskbar = false;
+            }
 
             this.Loaded += MainWindow_Loaded;
 
@@ -47,6 +59,7 @@ namespace PixelRuler
             this.ViewModel.PasteCanvasContents = new RelayCommandFull((object? o) => { this.mainCanvas.PasteCopiedData(); }, Key.V, ModifierKeys.Control, "Paste Elements");
 
             this.KeyDown += MainWindow_KeyDown;
+            this.notifyIcon.Menu.DataContext = prvm;
 
             var handle = new WindowInteropHelper(this).Handle;
 
@@ -280,6 +293,9 @@ namespace PixelRuler
         {
             if(Properties.Settings.Default.CloseToTray)
             {
+                // only 1 instance needs to close to tray otherwise you have
+                //   several tray notification icons as you open and close 
+                //   instances.
                 this.Hide(); // i.e. so taskbar stays up
                 e.Cancel = true;
             }
@@ -342,14 +358,5 @@ namespace PixelRuler
             settingsWindow.ShowDialog();
         }
 
-        private void notifyIcon_Initialized(object sender, EventArgs e)
-        {
-
-        }
-
-        private void notifyIcon_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-
-        }
     }
 }

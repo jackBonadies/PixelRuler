@@ -108,11 +108,29 @@ namespace PixelRuler.Views
             innerCanvasLocation = Mouse.GetPosition(owningCanvas.innerCanvas);
             overlayCanvasLocation = Mouse.GetPosition(owningCanvas.overlayCanvas);
 
+            bool floatXPos = false;
+            bool floatYPos = false;
+
             if (currentZoomBoxInfo != null)
             {
-                if(currentZoomBoxInfo.MeasEl is RulerElement)
+                if(currentZoomBoxInfo.MeasEl is RulerElement ruler)
                 {
                     var innerCanvasLocationToTrack = (currentZoomBoxInfo.Tag is true) ? currentZoomBoxInfo.MeasEl.StartPoint : currentZoomBoxInfo.MeasEl.EndPoint;
+
+                    if(App.FloatingZoomBoxPosAllowed)
+                    {
+                        if (ruler.IsHorizontal())
+                        {
+                            floatYPos = true;
+                            innerCanvasLocationToTrack.Y = innerCanvasLocation.Y;
+                        }
+                        else
+                        {
+                            floatXPos = true;
+                            innerCanvasLocationToTrack.X = innerCanvasLocation.X;
+                        }
+                    }
+
                     innerCanvasLocation = innerCanvasLocationToTrack;
                     overlayCanvasLocation =  this.owningCanvas.innerCanvas.TranslatePoint(innerCanvasLocationToTrack, this.Parent as Canvas);
                 }
@@ -125,6 +143,7 @@ namespace PixelRuler.Views
                         SizerPosX.Left => currentZoomBoxInfo.MeasEl.StartPoint.X,
                         SizerPosX.Centered => (currentZoomBoxInfo.MeasEl.StartPoint.X + currentZoomBoxInfo.MeasEl.EndPoint.X) / 2.0,
                         SizerPosX.Right => currentZoomBoxInfo.MeasEl.EndPoint.X,
+                        _ => throw new NotImplementedException(),
                     };
 
                     var canvasLocY = sizerEnum.GetYFlag() switch
@@ -132,8 +151,23 @@ namespace PixelRuler.Views
                         SizerPosY.Above => currentZoomBoxInfo.MeasEl.StartPoint.Y,
                         SizerPosY.Centered => (currentZoomBoxInfo.MeasEl.StartPoint.Y + currentZoomBoxInfo.MeasEl.EndPoint.Y) / 2.0,
                         SizerPosY.Below => currentZoomBoxInfo.MeasEl.EndPoint.Y,
+                        _ => throw new NotImplementedException(),
                     };
-                      
+
+                    if (App.FloatingZoomBoxPosAllowed)
+                    {
+                        if (sizerEnum.GetXFlag() == SizerPosX.Centered)
+                        {
+                            floatXPos = true;
+                            canvasLocX = innerCanvasLocation.X;
+                        }
+
+                        if (sizerEnum.GetYFlag() == SizerPosY.Centered)
+                        {
+                            floatYPos = true;
+                            canvasLocY = innerCanvasLocation.Y;
+                        }
+                    }
 
                     var innerCanvasLocationToTrack = new Point(canvasLocX, canvasLocY);
                     innerCanvasLocation = innerCanvasLocationToTrack;
