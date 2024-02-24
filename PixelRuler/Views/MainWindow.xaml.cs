@@ -59,6 +59,7 @@ namespace PixelRuler
             this.ViewModel.PasteCanvasContents = new RelayCommandFull((object? o) => { this.mainCanvas.PasteCopiedData(); }, Key.V, ModifierKeys.Control, "Paste Elements");
 
             this.KeyDown += MainWindow_KeyDown;
+            this.KeyUp += MainWindow_KeyUp;
             this.notifyIcon.Menu.DataContext = prvm;
 
             var handle = new WindowInteropHelper(this).Handle;
@@ -70,6 +71,14 @@ namespace PixelRuler
             if(!this.mainCanvas.CopySelectedData())
             {
                 this.ViewModel.CopyRawImageToClipboard();
+            }
+        }
+
+        private void MainWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+            {
+                mainCanvas.HideZoomBox();
             }
         }
 
@@ -123,6 +132,10 @@ namespace PixelRuler
 
             }
 #endif
+            if(e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+            {
+                mainCanvas.ShowZoomBox();
+            }
         }
 
         private PixelRulerViewModel ViewModel
@@ -281,8 +294,12 @@ namespace PixelRuler
 
             // basically undo the TransformToDevice transform so that 100% zoom has 1 pixel : 1 pixel
             mainCanvas.LayoutTransform = new ScaleTransform(1 / dpi, 1 / dpi);
+            mainCanvas.Panning += MainCanvas_Panning;
         }
 
+        private void MainCanvas_Panning(object? sender, EventArgs e)
+        {
+        }
 
         private void MenuItemExit_Click(object sender, RoutedEventArgs e)
         {

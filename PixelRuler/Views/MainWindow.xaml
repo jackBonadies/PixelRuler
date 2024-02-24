@@ -284,8 +284,6 @@
         <tray:NotifyIcon
             x:Name="notifyIcon"
             FocusOnLeftClick="True"
-            Initialized="notifyIcon_Initialized"
-            IsVisibleChanged="notifyIcon_IsVisibleChanged"
             MenuOnRightClick="True"
             TooltipText="PixelRuler">
             <tray:NotifyIcon.Menu>

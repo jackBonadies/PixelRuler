@@ -78,6 +78,7 @@ namespace PixelRuler
             this.LostFocus += MainCanvas_LostFocus;
             this.LostMouseCapture += MainCanvas_LostMouseCapture;
 
+            this.gridLineTop.MainCanvas = this;
             this.gridLineTop.MouseMove += GridLineTop_MouseMove;
             this.gridLineTop.MouseEnter += GridLineTop_MouseEnter;
             this.gridLineTop.MouseLeave += GridLineTop_MouseLeave;
@@ -753,9 +754,8 @@ namespace PixelRuler
                 var ocp = e.GetPosition(this.overlayCanvas);
                 var overlayPt = mainImage.TranslatePoint(ocp, this.overlayCanvas);
                 gridLineTop.translation.X = tt.X + this.innerCanvas.GetScaleTransform().ScaleX * 10000 + 30;
-                var startX = overlayCanvas.TranslatePoint(new Point(0, 0), mainImage);
-                var endX = overlayCanvas.TranslatePoint(new Point(overlayCanvas.ActualWidth, overlayCanvas.ActualHeight), mainImage);
-                gridLineTop.UpdateLinesForRange(startX.X, endX.X);
+                gridLineTop.UpdateTickmarks();
+
                 verticalPendingLineOverlay.X1 = ocp.X; // tt.X + this.innerCanvas.GetScaleTransform().ScaleX * 10000 + 30 + 100 * this.innerCanvas.GetScaleTransform().ScaleX;
                 verticalPendingLineOverlay.X2 = ocp.X; // tt.X + this.innerCanvas.GetScaleTransform().ScaleX * 10000 + 30 + 100 * this.innerCanvas.GetScaleTransform().ScaleX;
 
