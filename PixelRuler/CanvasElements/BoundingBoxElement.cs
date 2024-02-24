@@ -1,5 +1,6 @@
 ﻿using ABI.System.Collections.Generic;
 using PixelRuler.CanvasElements;
+using PixelRuler.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace PixelRuler
         public BoundingBoxElement(Canvas owningCanvas) : base(owningCanvas)
         {
             this.owningCanvas = owningCanvas;
-            rect1 = createRectangle();
+            rect1 = UiUtils.CreateRectangle();
             boundingBoxLabelForEndPoint = new BoundingBoxLabel();
             widthLabel = new LengthLabel();
             heightLabel = new LengthLabel();
@@ -55,7 +56,7 @@ namespace PixelRuler
 
             if (marching_ants)
             {
-                rect2 = createRectangle();
+                rect2 = UiUtils.CreateRectangle();
                 rect2.Stroke = brush2;
 
                 var dashArray = new double[] { 4, 4 };
@@ -623,6 +624,11 @@ namespace PixelRuler
             var y2 = this.EndPoint.Y;
             this.StartPoint = new Point(Math.Min(x1, x2), Math.Min(y1, y2));
             this.EndPoint = new Point(Math.Max(x1, x2), Math.Max(y1, y2));
+        }
+
+        public override List<UIElement> GetZoomCanvasElements()
+        {
+            throw new NotImplementedException();
         }
     }
 }

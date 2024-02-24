@@ -134,6 +134,14 @@ namespace PixelRuler
         BottomCenter = 7,
     }
 
+    public enum ZoomBoxCase
+    {
+        None = 0,
+        QuickZoom = 1,
+        Resizer = 2,
+        ColorPicker = 3,
+    }
+
     [AttributeUsage(AttributeTargets.Field)]
     public class DisplayLabelAttribute : Attribute
     {

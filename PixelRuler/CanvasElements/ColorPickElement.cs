@@ -1,4 +1,5 @@
 ﻿using PixelRuler.CanvasElements;
+using PixelRuler.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace PixelRuler
 
         public ColorPickElement(Canvas canvas)  : base(canvas)
         {
-            this.rect = createRectangle();
+            this.rect = UiUtils.CreateRectangle();
             this.rect.Stroke = new SolidColorBrush(Colors.Red);
             owningCanvas.Children.Add(rect);
             Canvas.SetZIndex(rect, App.COLOR_PICKER_INDEX);

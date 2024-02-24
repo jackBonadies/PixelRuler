@@ -10,6 +10,7 @@ using System.Windows.Shapes;
 using System.Windows;
 using System.Security.Policy;
 using System.Windows.Input;
+using PixelRuler.Common;
 
 namespace PixelRuler.CanvasElements
 {
@@ -26,9 +27,9 @@ namespace PixelRuler.CanvasElements
         public RulerElement(Canvas canvas) : base(canvas)
         {
             this.canvas = canvas;
-            line1 = createLine();
-            lineBeginCap = createLine();
-            lineEndCap = createLine();
+            line1 = UiUtils.CreateLine();
+            lineBeginCap = UiUtils.CreateLine();
+            lineEndCap = UiUtils.CreateLine();
             startResizeCircle = new CircleSizerControl();
             endResizeCircle = new CircleSizerControl();
             rulerLengthLabel = new LengthLabel();
@@ -40,6 +41,17 @@ namespace PixelRuler.CanvasElements
 
             this.owningCanvas.Children.Add(line1);
             Canvas.SetZIndex(line1, App.SHAPE_INDEX);
+
+            var line = new Line()
+            {
+                X1 = 100 + 10000,
+                X2 = 100 + 10000,
+                Y1 = -10000,
+                Y2 = 20000,
+                StrokeThickness = 1,
+                Stroke = new SolidColorBrush(Colors.Magenta)
+            };
+            this.owningCanvas.Children.Add(line);
 
             lineBeginCap.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
 
@@ -401,6 +413,16 @@ namespace PixelRuler.CanvasElements
         {
             SetShapeState();
             SetLabelState();
+        }
+
+        public override List<UIElement> GetZoomCanvasElements()
+        {
+            return new List<UIElement>()
+            {
+                new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1 },
+                new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1 },
+                new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1 },
+            };
         }
 
         public double Extent

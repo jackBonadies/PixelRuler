@@ -24,24 +24,6 @@ namespace PixelRuler.CanvasElements
             return dpi / this.owningCanvas.GetScaleTransform().ScaleX;
         }
 
-        protected Line createLine()
-        {
-            var line = new Line();
-            line.StrokeThickness = 1;
-            line.SnapsToDevicePixels = true;
-            return line;
-        }
-
-        protected Rectangle createRectangle()
-        {
-            var rect = new Rectangle();
-            rect.Width = 0;
-            rect.Height = 0;
-            rect.StrokeThickness = 1;
-            rect.SnapsToDevicePixels = true;
-            return rect;
-        }
-
         public abstract void Clear();
         public abstract void UpdateForZoomChange();
     }
