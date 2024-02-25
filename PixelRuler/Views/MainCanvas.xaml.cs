@@ -84,6 +84,20 @@ namespace PixelRuler
             this.gridLineTop.MouseLeave += GridLineTop_MouseLeave;
             this.gridLineTop.MouseLeftButtonUp += GridLineTop_MouseLeftButtonUp;
 
+            this.gridLineLeft.MainCanvas = this;
+            this.gridLineLeft.MouseMove += GridLineTop_MouseMove;
+            this.gridLineLeft.MouseEnter += GridLineTop_MouseEnter;
+            this.gridLineLeft.MouseLeave += GridLineTop_MouseLeave;
+            this.gridLineLeft.MouseLeftButtonUp += GridLineTop_MouseLeftButtonUp;
+
+            this.Loaded += MainCanvas_Loaded;
+
+        }
+
+        private void MainCanvas_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.gridLineTop.SetZoom(1);
+            this.gridLineLeft.SetZoom(1);
         }
 
         private void OverlayCanvas_MouseLeave(object sender, MouseEventArgs e)
@@ -101,8 +115,10 @@ namespace PixelRuler
 
         private void GridLineTop_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            var isVertical = (sender as Gridline).IsVertical;
             var actualImageCoordinate = overlayCanvas.TranslatePoint(e.GetPosition(this.overlayCanvas), mainImage);
-            var guideLineElement = new GuidelineElement(this, actualImageCoordinate.X, false);
+            var coor = isVertical ? actualImageCoordinate.Y : actualImageCoordinate.X;
+            var guideLineElement = new GuidelineElement(this, coor, isVertical);
             OverlayCanvasElements.Add(guideLineElement);
             guideLineElement.AddToCanvas();
             guideLineElement.UpdateForCoordinatesChanged();
@@ -753,8 +769,12 @@ namespace PixelRuler
 
                 var ocp = e.GetPosition(this.overlayCanvas);
                 var overlayPt = mainImage.TranslatePoint(ocp, this.overlayCanvas);
-                gridLineTop.translation.X = tt.X + this.innerCanvas.GetScaleTransform().ScaleX * 10000 + 30;
+
+                gridLineTop.UpdateTranslation();
                 gridLineTop.UpdateTickmarks();
+
+                gridLineLeft.UpdateTranslation();
+                gridLineLeft.UpdateTickmarks();
 
                 verticalPendingLineOverlay.X1 = ocp.X; // tt.X + this.innerCanvas.GetScaleTransform().ScaleX * 10000 + 30 + 100 * this.innerCanvas.GetScaleTransform().ScaleX;
                 verticalPendingLineOverlay.X2 = ocp.X; // tt.X + this.innerCanvas.GetScaleTransform().ScaleX * 10000 + 30 + 100 * this.innerCanvas.GetScaleTransform().ScaleX;
@@ -904,6 +924,11 @@ namespace PixelRuler
             }
 
             gridLineTop.SetZoom(st.ScaleX);
+            gridLineTop.UpdateTranslation();
+
+            gridLineLeft.SetZoom(st.ScaleX);
+            gridLineLeft.UpdateTranslation();
+
             EffectiveZoomChanged?.Invoke(this, st.ScaleX);
             UpdateForZoomChange(); // TODO will the event be lagged?
         }

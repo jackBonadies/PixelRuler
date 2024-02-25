@@ -92,6 +92,27 @@
                 Y1="-5000"
                 Y2="20000" />
         </Canvas>
+        <views:Gridline
+            x:Name="gridLineLeft"
+            Canvas.Left="0"
+            Canvas.Top="-10000"
+            IsVertical="True"
+            SnapsToDevicePixels="True"
+            UseLayoutRounding="True">
+            <views:Gridline.LayoutTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="-1" ScaleY="1" />
+                    <RotateTransform Angle="-90" />
+                </TransformGroup>
+            </views:Gridline.LayoutTransform>
+        </views:Gridline>
         <views:Gridline x:Name="gridLineTop" Canvas.Left="-10000" />
+        <Rectangle
+            Canvas.Left="0"
+            Canvas.Top="0"
+            Width="30"
+            Height="30"
+            Fill="Black"
+            Stroke="#ffffff" />
     </Canvas>
 </UserControl>

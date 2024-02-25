@@ -37,7 +37,7 @@ namespace PixelRuler.CanvasElements
 
         public override void AddToOwnerCanvas()
         {
-            line1.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
+            line1.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
 
             this.owningCanvas.Children.Add(line1);
             Canvas.SetZIndex(line1, App.SHAPE_INDEX);
@@ -53,12 +53,12 @@ namespace PixelRuler.CanvasElements
             };
             this.owningCanvas.Children.Add(line);
 
-            lineBeginCap.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
+            lineBeginCap.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
 
             this.owningCanvas.Children.Add(lineBeginCap);
             Canvas.SetZIndex(lineBeginCap, App.SHAPE_INDEX);
 
-            lineEndCap.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
+            lineEndCap.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
 
             this.owningCanvas.Children.Add(lineEndCap);
             Canvas.SetZIndex(lineEndCap, App.SHAPE_INDEX);

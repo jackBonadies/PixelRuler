@@ -95,5 +95,7 @@ namespace PixelRuler
         public const int FULLSCREEN_HOTKEY_ID = 8000;
         public const int WINDOWED_HOTKEY_ID = 8001;
 
+        public const string AnnotationColorKey = "AnnotationColor";
+
     }
 }

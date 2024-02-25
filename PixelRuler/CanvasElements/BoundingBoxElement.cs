@@ -48,7 +48,7 @@ namespace PixelRuler
                 //    Converter = new PixelRuler.ColorConverter(),
                 //    Source = owningCanvas.DataContext as PixelRulerViewModel,
                 //};
-                rect1.SetResourceReference(Rectangle.StrokeProperty, "AnnotationColor");
+                rect1.SetResourceReference(Rectangle.StrokeProperty, App.AnnotationColorKey);
             }
 
             this.owningCanvas.Children.Add(rect1);
@@ -628,7 +628,10 @@ namespace PixelRuler
 
         public override List<UIElement> GetZoomCanvasElements()
         {
-            throw new NotImplementedException();
+            return new List<UIElement>()
+            {
+                new Rectangle() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1 },
+            };
         }
     }
 }

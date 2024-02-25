@@ -25,17 +25,36 @@ namespace PixelRuler.Views
         private int startCoor = int.MaxValue;
         private int endCoor = int.MaxValue;
 
+        public bool IsVertical
+        {
+            get { return (bool)GetValue(IsVerticalProperty); }
+            set { SetValue(IsVerticalProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsVerticalProperty
+            = DependencyProperty.Register(
+                  "IsVertical",
+                  typeof(bool),
+                  typeof(Gridline),
+                  new PropertyMetadata(false)
+              );
+
         public MainCanvas MainCanvas { get; set; }
 
         public Gridline()
         {
             InitializeComponent();
+
             //SetTickmarks(1);
-            SetBorder();
-            canvas.Width = 20000;
             this.Cursor = Cursors.Hand;
+            this.Loaded += Gridline_Loaded;
         }
 
+        private void Gridline_Loaded(object sender, RoutedEventArgs e)
+        {
+            SetBorder();
+            canvas.Width = 20000;
+        }
 
         private void SetBorder()
         {
@@ -114,6 +133,8 @@ namespace PixelRuler.Views
                         X2 = curValLoc + 10000,
                         Stroke = new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
                         StrokeThickness = 1,
+                        SnapsToDevicePixels = true,
+                        UseLayoutRounding = true
                     };
 
                     if (curVal % majorTickSpacing == 0)
@@ -123,6 +144,16 @@ namespace PixelRuler.Views
                             Text = curVal.ToString(),
                             Foreground = new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
                         };
+                        if(this.IsVertical)
+                        {
+                            txtBlock.LayoutTransform = new TransformGroup()
+                            {
+                                Children =
+                                {
+                                    new ScaleTransform() {ScaleX = -1 },
+                                }
+                            };
+                        }
                         canvas.Children.Add(txtBlock);
                         Canvas.SetLeft(txtBlock, curValLoc + 5 + 10000);
                         Canvas.SetTop(txtBlock, 0);
@@ -146,6 +177,20 @@ namespace PixelRuler.Views
 
                 }
                 curVal++;
+            }
+        }
+
+        public void UpdateTranslation()
+        {
+            var tt = this.MainCanvas.innerCanvas.GetTranslateTransform();
+            var st = this.MainCanvas.innerCanvas.GetScaleTransform();
+            if (IsVertical)
+            {
+                this.translation.X = tt.Y + st.ScaleX * 10000 + 30;
+            }
+            else
+            {
+                this.translation.X = tt.X + st.ScaleX * 10000 + 30;
             }
         }
 
@@ -180,10 +225,16 @@ namespace PixelRuler.Views
 
         public (int start, int end) GetRange()
         {
-            var startX = MainCanvas.overlayCanvas.TranslatePoint(new Point(0, 0), MainCanvas.mainImage);
-            var endX = MainCanvas.overlayCanvas.TranslatePoint(new Point(MainCanvas.overlayCanvas.ActualWidth, MainCanvas.overlayCanvas.ActualHeight), MainCanvas.mainImage);
-            int start = (int)startX.X;
-            int end = (int)endX.X;
+            var startPoint = MainCanvas.overlayCanvas.TranslatePoint(new Point(0, 0), MainCanvas.mainImage);
+            var endPont = MainCanvas.overlayCanvas.TranslatePoint(new Point(MainCanvas.overlayCanvas.ActualWidth, MainCanvas.overlayCanvas.ActualHeight), MainCanvas.mainImage);
+
+            int start = (int)startPoint.X;
+            int end = (int)endPont.X;
+            if(this.IsVertical)
+            {
+                start = (int)startPoint.Y;
+                end = (int)endPont.Y;
+            }
             return (start - 1, end + 1);
         }
     }
