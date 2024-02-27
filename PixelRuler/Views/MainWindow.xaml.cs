@@ -150,117 +150,13 @@ namespace PixelRuler
             base.OnDpiChanged(oldDpi, newDpi);
         }
 
-        private HwndSource _source;
-
         protected override void OnSourceInitialized(EventArgs e)
         {
+            this.RedrawTitleBar();
             base.OnSourceInitialized(e);
-            var helper = new WindowInteropHelper(this);
-            _source = HwndSource.FromHwnd(helper.Handle);
-            _source.AddHook(HwndHook);
-            var handle = new WindowInteropHelper(this).Handle;
-            // this is a good time to do it
-            ThemeManager.UpdateForThemeChanged(this.ViewModel.Settings.DayNightMode);
-            this.ViewModel.Settings.ShortcutChanged += Settings_ShortcutChanged;
-            this.ViewModel.Settings.GlobalShortcutsEnabledChanged += Settings_GlobalShortcutsEnabledChanged;
-            RedrawTitleBar();
-
-            RegisterHotKeys();
         }
 
-        private void Settings_GlobalShortcutsEnabledChanged(object? sender, bool hotkeysEnabled)
-        {
-            if(hotkeysEnabled)
-            {
-                RegisterHotKeys();
-            }
-            else
-            {
-                UnregisterHotKeys();
-            }
-        }
 
-        private void Settings_ShortcutChanged(object? sender, ShortcutInfo e)
-        {
-            ReregisterShortcut(e);
-        }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            _source.RemoveHook(HwndHook);
-            _source = null;
-            UnregisterHotKeys();
-            base.OnClosed(e);
-        }
-
-        private void RegisterHotKeys()
-        {
-            if(this.ViewModel.Settings.GlobalShortcutsEnabled)
-            {
-                var fullscreenShortcut = this.ViewModel.Settings.FullscreenScreenshotShortcut;
-                RegisterShortcut(fullscreenShortcut);
-                var windowedShortcut = this.ViewModel.Settings.WindowedScreenshotShortcut;
-                RegisterShortcut(windowedShortcut);
-            }
-        }
-
-        public void RegisterShortcut(ShortcutInfo shortcut)
-        {
-            if (shortcut.IsValid)
-            {
-                var helper = new WindowInteropHelper(this);
-                uint key = (uint)KeyInterop.VirtualKeyFromKey(shortcut.Key);
-                //const uint MOD_CTRL = 0x0002;
-                //const uint MOD_SHIFT = 0x0004;
-                uint mods = (uint)shortcut.Modifiers;
-                if (!NativeMethods.RegisterHotKey(helper.Handle, shortcut.HotKeyId, mods, key))
-                {
-                    shortcut.Status = RegistrationStatus.FailedRegistration;
-                }
-                else
-                {
-                    shortcut.Status = RegistrationStatus.SuccessfulRegistration;
-                }
-            }
-        }
-
-        private void UnregisterHotKeys()
-        {
-            var helper = new WindowInteropHelper(this);
-            this.ViewModel.Settings.FullscreenScreenshotShortcut.Status = RegistrationStatus.Unregistered;
-            NativeMethods.UnregisterHotKey(helper.Handle, this.ViewModel.Settings.FullscreenScreenshotShortcut.HotKeyId);
-            this.ViewModel.Settings.WindowedScreenshotShortcut.Status = RegistrationStatus.Unregistered;
-            NativeMethods.UnregisterHotKey(helper.Handle, this.ViewModel.Settings.WindowedScreenshotShortcut.HotKeyId);
-        }
-
-        private void ReregisterShortcut(ShortcutInfo shortcut)
-        {
-            var helper = new WindowInteropHelper(this);
-            NativeMethods.UnregisterHotKey(helper.Handle, shortcut.HotKeyId);
-            RegisterShortcut(shortcut);
-        }
-
-        private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            const int WM_HOTKEY = 0x0312;
-            switch (msg)
-            {
-                case WM_HOTKEY:
-                    switch (wParam.ToInt32())
-                    {
-                        case App.FULLSCREEN_HOTKEY_ID:
-                            NewFullScreenshot(true);
-                            handled = true;
-                            break;
-                        case App.WINDOWED_HOTKEY_ID:
-                            NewWindowedScreenshot();
-                            handled = true;
-                            break;
-                    }
-                    break;
-            }
-            return IntPtr.Zero;
-        }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
