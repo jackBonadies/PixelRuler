@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PixelRuler.CanvasElements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,7 @@ namespace PixelRuler.Views
     /// </summary>
     public partial class Gridline : UserControl
     {
-        private double scale;
+        public double Scale { get; private set; }
         private int startCoor = int.MaxValue;
         private int endCoor = int.MaxValue;
 
@@ -70,6 +71,7 @@ namespace PixelRuler.Views
             this.canvas.Children.Add(line);
             Canvas.SetLeft(line, 0);
             Canvas.SetTop(line, 0);
+            Canvas.SetZIndex(line, 10);
 
             line = new Line()
             {
@@ -83,10 +85,12 @@ namespace PixelRuler.Views
             this.canvas.Children.Add(line);
             Canvas.SetLeft(line, 0);
             Canvas.SetTop(line, 0);
+            Canvas.SetZIndex(line, 10);
         }
+
         public void SetZoom(double scale)
         {
-            if(this.scale == scale)
+            if(this.Scale == scale)
             {
                 return;
             }
@@ -94,23 +98,30 @@ namespace PixelRuler.Views
             startCoor = int.MaxValue;
             endCoor = int.MaxValue;
 
-            this.scale = scale;
+            this.Scale = scale;
 
             this.canvas.Children.Clear();
             SetBorder();
-
             UpdateTickmarks();
-            //SetTickmarks(scale);
+            SetGuidelineTicks();
+        }
+
+        private void SetGuidelineTicks()
+        {
+            foreach(var tick in guideLineTicks)
+            {
+                tick.AddToGridline();
+            }
         }
 
         private void AddTickmarksForRange(int start, int end)
         {
-            int majorTickSpacing = (int)(100 / scale);
-            if (scale == 8)
+            int majorTickSpacing = (int)(100 / Scale);
+            if (Scale == 8)
             {
                 majorTickSpacing = 10;
             }
-            if (scale == 16)
+            if (Scale == 16)
             {
                 // cant do 4 (since 50 / 4)
                 majorTickSpacing = 5;
@@ -126,7 +137,7 @@ namespace PixelRuler.Views
             {
                 if (curVal % minorTickSpacing == 0)
                 {
-                    var curValLoc = curVal * scale;
+                    var curValLoc = curVal * Scale;
                     var line = new Line()
                     {
                         X1 = curValLoc + 10000,
@@ -236,6 +247,13 @@ namespace PixelRuler.Views
                 end = (int)endPont.Y;
             }
             return (start - 1, end + 1);
+        }
+
+        private List<GuidelineTick> guideLineTicks = new List<GuidelineTick>();
+        internal void AddTick(GuidelineTick gridLineTick)
+        {
+            guideLineTicks.Add(gridLineTick);
+            gridLineTick.AddToGridline();
         }
     }
 }

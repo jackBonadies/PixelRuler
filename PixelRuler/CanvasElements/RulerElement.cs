@@ -419,9 +419,9 @@ namespace PixelRuler.CanvasElements
         {
             return new List<UIElement>()
             {
-                new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1 },
-                new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1 },
-                new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1 },
+                new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1/this.line1.GetDpi() },
+                new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1/this.line1.GetDpi() },
+                new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1/this.line1.GetDpi() },
             };
         }
 

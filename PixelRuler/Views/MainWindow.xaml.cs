@@ -90,6 +90,11 @@ namespace PixelRuler
                 var el = VisualTreeHelper.HitTest(this, Mouse.GetPosition(this));
                 System.Diagnostics.Debugger.Break();
             }
+            else if (e.Key == Key.G)
+            {
+                (mainCanvas.DataContext as PixelRulerViewModel).ShowGridLines = 
+                    !(mainCanvas.DataContext as PixelRulerViewModel).ShowGridLines;
+            }
             else if(e.Key == Key.P)
             {
                 RedrawTitleBar();

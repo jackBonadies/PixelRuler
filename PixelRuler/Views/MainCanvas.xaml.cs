@@ -79,16 +79,16 @@ namespace PixelRuler
             this.LostMouseCapture += MainCanvas_LostMouseCapture;
 
             this.gridLineTop.MainCanvas = this;
-            this.gridLineTop.MouseMove += GridLineTop_MouseMove;
-            this.gridLineTop.MouseEnter += GridLineTop_MouseEnter;
-            this.gridLineTop.MouseLeave += GridLineTop_MouseLeave;
-            this.gridLineTop.MouseLeftButtonUp += GridLineTop_MouseLeftButtonUp;
+            this.gridLineTop.MouseMove += GridLine_MouseMove;
+            this.gridLineTop.MouseEnter += GridLine_MouseEnter;
+            this.gridLineTop.MouseLeave += GridLine_MouseLeave;
+            this.gridLineTop.MouseLeftButtonUp += GridLine_LeftButtonUp;
 
             this.gridLineLeft.MainCanvas = this;
-            this.gridLineLeft.MouseMove += GridLineTop_MouseMove;
-            this.gridLineLeft.MouseEnter += GridLineTop_MouseEnter;
-            this.gridLineLeft.MouseLeave += GridLineTop_MouseLeave;
-            this.gridLineLeft.MouseLeftButtonUp += GridLineTop_MouseLeftButtonUp;
+            this.gridLineLeft.MouseMove += GridLine_MouseMove;
+            this.gridLineLeft.MouseEnter += GridLine_MouseEnter;
+            this.gridLineLeft.MouseLeave += GridLine_MouseLeave;
+            this.gridLineLeft.MouseLeftButtonUp += GridLine_LeftButtonUp;
 
             this.Loaded += MainCanvas_Loaded;
 
@@ -113,26 +113,43 @@ namespace PixelRuler
             }
         }
 
-        private void GridLineTop_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void GridLine_LeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var isVertical = (sender as Gridline).IsVertical;
-            var actualImageCoordinate = overlayCanvas.TranslatePoint(e.GetPosition(this.overlayCanvas), mainImage);
-            var coor = isVertical ? actualImageCoordinate.Y : actualImageCoordinate.X;
-            var guideLineElement = new GuidelineElement(this, coor, isVertical);
-            OverlayCanvasElements.Add(guideLineElement);
-            guideLineElement.AddToCanvas();
-            guideLineElement.UpdateForCoordinatesChanged();
+            var zoomCanvasCoor = overlayCanvas.TranslatePoint(e.GetPosition(this.overlayCanvas), this.innerCanvas);
+            var gridLineCoor = e.GetPosition(this.gridLineTop.canvas);
+
+            var coor = isVertical ? zoomCanvasCoor.Y : zoomCanvasCoor.X;
+            var roundCoor = (int)Math.Round(coor);
+            var guideLineElement = new GuidelineElement(this, roundCoor, isVertical);
+            guideLineElement.UpdateForZoomChange();
+            MeasurementElements.Add(guideLineElement);
+            guideLineElement.AddToOwnerCanvas();
+            // add to gridline view.
+            if(isVertical)
+            {
+                var guidelineTick = new GuidelineTick(gridLineLeft, guideLineElement);
+                gridLineLeft.AddTick(guidelineTick);
+            }
+            else
+            {
+                var guidelineTick = new GuidelineTick(gridLineTop, guideLineElement);
+                gridLineTop.AddTick(guidelineTick);
+            }
+
+            //guideLineElement.UpdateForCoordinatesChanged();
         }
 
-        private void GridLineTop_MouseLeave(object sender, MouseEventArgs e)
+        private void GridLine_MouseLeave(object sender, MouseEventArgs e)
+        {
+            
+        }
+
+        private void GridLine_MouseEnter(object sender, MouseEventArgs e)
         {
         }
 
-        private void GridLineTop_MouseEnter(object sender, MouseEventArgs e)
-        {
-        }
-
-        private void GridLineTop_MouseMove(object sender, MouseEventArgs e)
+        private void GridLine_MouseMove(object sender, MouseEventArgs e)
         {
             var pt = RoundPoint(e.GetPosition(this.innerCanvas));
 
@@ -323,7 +340,34 @@ namespace PixelRuler
             this.ViewModel.ClearAllMeasureElements += ClearAllMeasureElements;
             this.ViewModel.DeleteAllSelectedElements += DeleteAllSelectedMeasureElements;
             this.ViewModel.AllElementsSelected += AllElementsSelected;
+            this.ViewModel.ShowGridLinesChanged += ViewModel_ShowGridLinesChanged;
             SetClearAllMeasurementsEnabledState();
+            SetShowGridLineState();
+        }
+
+        private void SetShowGridLineState()
+        {
+            if(this.ViewModel.ShowGridLines)
+            {
+                Canvas.SetLeft(this.innerCanvas, 30);
+                Canvas.SetTop(this.innerCanvas, 30);
+                this.gridLineCorner.Visibility = Visibility.Visible;
+                this.gridLineTop.Visibility = Visibility.Visible;
+                this.gridLineLeft.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Canvas.SetLeft(this.innerCanvas, 0);
+                Canvas.SetTop(this.innerCanvas, 0);
+                this.gridLineCorner.Visibility = Visibility.Collapsed;
+                this.gridLineTop.Visibility = Visibility.Collapsed;
+                this.gridLineLeft.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void ViewModel_ShowGridLinesChanged(object? sender, EventArgs e)
+        {
+            SetShowGridLineState();
         }
 
         bool selectAll = false;

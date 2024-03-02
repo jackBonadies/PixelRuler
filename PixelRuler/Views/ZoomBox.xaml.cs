@@ -285,7 +285,7 @@ namespace PixelRuler.Views
                     X2 = translatedPoint1.X,
                     Y1 = 0,
                     Y2 = 20000,
-                    StrokeThickness = 1,
+                    StrokeThickness = 1 / this.GetDpi(),
                     Stroke = new SolidColorBrush(Colors.Red)
                 };
                 this.zoomCanvas.Children.Add(line);
@@ -327,6 +327,28 @@ namespace PixelRuler.Views
                     rectIt.Width = finalPtEnd.X - finalPtStart.X;
                     rectIt.Height = finalPtEnd.Y - finalPtStart.Y; //TODO exception
 
+                }
+                else if (elInfo.Item1 is GuidelineElement g1)
+                {
+                    var finalPtStart = getZoomBoxCoorFromZoomCanvas(new Point(g1.Coordinate, g1.Coordinate));
+
+                    var lineIt = (elInfo.Item2[0] as Line);
+
+                    (lineIt).X1 = 0;
+                    (lineIt).X2 = this.zoomCanvas.Width;
+                    (lineIt).Y1 = 0;
+                    (lineIt).Y2 = this.zoomCanvas.Height;
+
+                    if(g1.IsHorizontal)
+                    {
+                        (lineIt).Y1 = finalPtStart.Y;
+                        (lineIt).Y2 = finalPtStart.Y;
+                    }
+                    else
+                    {
+                        (lineIt).X1 = finalPtStart.X;
+                        (lineIt).X2 = finalPtStart.X;
+                    }
                 }
                 //elInfo.Item1.UpdateZoomCanvasElements(elInfo.Item2, zoomBox, ZoomFactor,)
             }
@@ -379,16 +401,17 @@ namespace PixelRuler.Views
             this.Visibility = Visibility.Visible;
             currentZoomBoxInfo = measEl;
 
-            zoomCanvas.Children.Clear();
-            this.currentLineGuideVert.Visibility = Visibility.Collapsed;
-            this.currentLineGuideHorz.Visibility = Visibility.Collapsed;
-            this.currentPixelIndicator.Visibility = Visibility.Collapsed;
+            zoomCanvas.Children.Clear(); // TODO need to readd the other guidelines....
+            //this.currentLineGuideVert.Visibility = Visibility.Collapsed;
+            //this.currentLineGuideHorz.Visibility = Visibility.Collapsed;
+            //this.currentPixelIndicator.Visibility = Visibility.Collapsed;
 
 
             switch (currentZoomBoxCase)
             {
                 case ZoomBoxCase.ColorPicker:
                     this.currentPixelIndicator.Visibility = Visibility.Visible;
+                    zoomCanvas.Children.Add(currentPixelIndicator);
                     break;
                 case ZoomBoxCase.Resizer:
                     if (measEl.MeasEl is RulerElement r)
@@ -396,10 +419,12 @@ namespace PixelRuler.Views
                         if (r.IsHorizontal())
                         {
                             this.currentLineGuideVert.Visibility = Visibility.Visible;
+                            zoomCanvas.Children.Add(currentLineGuideVert);
                         }
                         else
                         {
                             this.currentLineGuideHorz.Visibility = Visibility.Visible;
+                            zoomCanvas.Children.Add(currentLineGuideHorz);
                         }
                     }
                     else if (measEl.MeasEl is BoundingBoxElement b)
@@ -408,10 +433,12 @@ namespace PixelRuler.Views
                         if (sizerEnum.IsBottom() || sizerEnum.IsTop())
                         {
                             this.currentLineGuideHorz.Visibility = Visibility.Visible;
+                            zoomCanvas.Children.Add(currentLineGuideHorz);
                         }
                         if (sizerEnum.IsLeft() || sizerEnum.IsRight())
                         {
                             this.currentLineGuideVert.Visibility = Visibility.Visible;
+                            zoomCanvas.Children.Add(currentLineGuideVert);
                         }
                     }
                     break;
