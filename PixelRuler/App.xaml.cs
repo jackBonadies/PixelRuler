@@ -80,7 +80,7 @@ namespace PixelRuler
             25600,
         };
 
-        public static readonly int ResizeSpeedFactor = 5;
+        public static readonly int ResizeSpeedFactor = 1;
         public static readonly bool FloatingZoomBoxPosAllowed = true;
 
         public static readonly double MinZoomPercent = ZoomSelections[0];

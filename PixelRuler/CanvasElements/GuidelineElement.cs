@@ -50,7 +50,7 @@ namespace PixelRuler.CanvasElements
             mainLine.StrokeThickness = 1;
 
             hitBoxCanvas = new Canvas();
-            hitBoxCanvas.Cursor = Cursors.SizeWE;
+            hitBoxCanvas.Cursor = isHorizontal ? Cursors.SizeNS : Cursors.SizeWE;
             if(isHorizontal)
             {
                 hitBoxCanvas.Width = 30000;
@@ -62,24 +62,78 @@ namespace PixelRuler.CanvasElements
                 hitBoxCanvas.Height = 30000;
             }
             hitBoxCanvas.Background = new SolidColorBrush(Colors.Transparent);
+            hitBoxCanvas.MouseLeftButtonDown += HitBoxCanvas_MouseLeftButtonDown;
+            hitBoxCanvas.MouseMove += HitBoxCanvas_MouseMove;
+            hitBoxCanvas.MouseLeftButtonUp += HitBoxCanvas_MouseLeftButtonUp;
 
-            if (isHorizontal)
+            SetPositionState();
+        }
+
+        private void SetPositionState()
+        {
+            if (IsHorizontal)
             {
-                this.mainLine.Y1 = coordinate;
-                this.mainLine.Y2 = coordinate;
+                this.mainLine.Y1 = Coordinate;
+                this.mainLine.Y2 = Coordinate;
 
                 Canvas.SetLeft(hitBoxCanvas, 0);
-                Canvas.SetTop(hitBoxCanvas, coordinate - (int)(hitBoxCanvas.Height / 2));
+                Canvas.SetTop(hitBoxCanvas, Coordinate - (int)(hitBoxCanvas.Height / 2));
             }
             else
             {
-                this.mainLine.X1 = coordinate;
-                this.mainLine.X2 = coordinate;
+                this.mainLine.X1 = Coordinate;
+                this.mainLine.X2 = Coordinate;
 
-                Canvas.SetLeft(hitBoxCanvas, coordinate - (int)(hitBoxCanvas.Width / 2));
+                Canvas.SetLeft(hitBoxCanvas, Coordinate - (int)(hitBoxCanvas.Width / 2));
                 Canvas.SetTop(hitBoxCanvas, 0);
             }
 
+        }
+
+        private void HitBoxCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            isManipulating = false;
+            (sender as UIElement).ReleaseMouseCapture();
+        }
+
+        private void HitBoxCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+
+            if (!isManipulating)
+            {
+                return;
+            }
+            var newPos = e.GetPosition(this.owningCanvas);
+            var delta = (MoveStartInfo.mouseStart - newPos) / App.ResizeSpeedFactor;
+            System.Diagnostics.Trace.WriteLine($"x: {delta.X} y: {delta.Y}");
+
+            int xMove = -(int)delta.X;
+            int yMove = -(int)delta.Y;
+
+            MoveStartInfo.mouseStart = new Point(xMove * App.ResizeSpeedFactor, yMove * App.ResizeSpeedFactor).Add(MoveStartInfo.mouseStart);
+
+            // move by xMove...
+            if(IsHorizontal)
+            {
+                this.Coordinate += yMove;
+            }
+            else
+            {
+                this.Coordinate += xMove;
+            }
+
+            SetPositionState();
+
+            e.Handled = true;
+        }
+
+        private void HitBoxCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            isManipulating = true;
+            (sender as UIElement).Focus();
+            MoveStartInfo = (e.GetPosition(this.owningCanvas), StartPoint, EndPoint);
+            (sender as UIElement).CaptureMouse();
+            e.Handled = true;
         }
 
         public override bool IsEmpty => true;

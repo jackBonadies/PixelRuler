@@ -30,18 +30,6 @@
             Modifiers="{Binding SelectAllElementsCommand.Modifiers}" />
     </UserControl.InputBindings>
     <Canvas Name="overlayCanvas" Background="Transparent">
-        <Line
-            x:Name="verticalPendingLineOverlay"
-            Panel.ZIndex="516"
-            Opacity=".6"
-            SnapsToDevicePixels="True"
-            Stroke="Magenta"
-            StrokeThickness="1"
-            Visibility="Visible"
-            X1="100"
-            X2="100"
-            Y1="-5000"
-            Y2="20000" />
         <Canvas
             Name="innerCanvas"
             Canvas.Left="30"
@@ -79,6 +67,18 @@
                 SnapsToDevicePixels="True"
                 Source="{Binding ImageSource}"
                 SourceUpdated="mainImage_SourceUpdated" />
+            <Line
+                x:Name="horizontalPendingLine"
+                Panel.ZIndex="505"
+                Opacity=".6"
+                SnapsToDevicePixels="True"
+                Stroke="Aqua"
+                StrokeThickness="1"
+                Visibility="Collapsed"
+                X1="0"
+                X2="20000"
+                Y1="0"
+                Y2="0" />
             <Line
                 x:Name="verticalPendingLine"
                 Panel.ZIndex="505"

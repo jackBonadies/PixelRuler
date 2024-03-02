@@ -142,7 +142,14 @@ namespace PixelRuler
 
         private void GridLine_MouseLeave(object sender, MouseEventArgs e)
         {
-            
+            if(sender == gridLineTop)
+            {
+                verticalPendingLine.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                horizontalPendingLine.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void GridLine_MouseEnter(object sender, MouseEventArgs e)
@@ -153,9 +160,18 @@ namespace PixelRuler
         {
             var pt = RoundPoint(e.GetPosition(this.innerCanvas));
 
-            verticalPendingLine.X1 = pt.X;
-            verticalPendingLine.X2 = pt.X;
-            verticalPendingLine.Visibility = Visibility.Visible;
+            if(sender == gridLineTop)
+            {
+                verticalPendingLine.X1 = pt.X;
+                verticalPendingLine.X2 = pt.X;
+                verticalPendingLine.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                horizontalPendingLine.Y1 = pt.Y;
+                horizontalPendingLine.Y2 = pt.Y;
+                horizontalPendingLine.Visibility = Visibility.Visible;
+            }
         }
 
         private void OverlayCanvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -694,19 +710,6 @@ namespace PixelRuler
             el.StartResize += CurrentMeasurementElement_StartResize;
             el.Resizing += CurrentMeasurementElement_Resizing;
             el.EndResize += CurrentMeasurementElement_EndResize;
-
-
-            var line = new Line()
-            {
-                X1 = 120 + 10000,
-                X2 = 120 + 10000,
-                Y1 = -10000,
-                Y2 = 20000,
-                StrokeThickness = 1,
-                Stroke = new SolidColorBrush(Colors.Magenta)
-            };
-            this.innerCanvas.Children.Add(line);
-
         }
 
         private void CurrentMeasurementElement_EndResize(object? sender, MeasureElementResizeData e)
@@ -819,10 +822,6 @@ namespace PixelRuler
 
                 gridLineLeft.UpdateTranslation();
                 gridLineLeft.UpdateTickmarks();
-
-                verticalPendingLineOverlay.X1 = ocp.X; // tt.X + this.innerCanvas.GetScaleTransform().ScaleX * 10000 + 30 + 100 * this.innerCanvas.GetScaleTransform().ScaleX;
-                verticalPendingLineOverlay.X2 = ocp.X; // tt.X + this.innerCanvas.GetScaleTransform().ScaleX * 10000 + 30 + 100 * this.innerCanvas.GetScaleTransform().ScaleX;
-
 
                 foreach(var overlayElement in OverlayCanvasElements)
                 {
