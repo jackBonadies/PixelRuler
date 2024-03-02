@@ -143,7 +143,7 @@ namespace PixelRuler.Views
                         X1 = curValLoc + 10000,
                         X2 = curValLoc + 10000,
                         Stroke = new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
-                        StrokeThickness = 1,
+                        StrokeThickness = .8,
                         SnapsToDevicePixels = true,
                         UseLayoutRounding = true
                     };

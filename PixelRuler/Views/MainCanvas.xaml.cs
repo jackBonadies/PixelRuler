@@ -96,8 +96,11 @@ namespace PixelRuler
 
         private void MainCanvas_Loaded(object sender, RoutedEventArgs e)
         {
-            this.gridLineTop.SetZoom(1);
-            this.gridLineLeft.SetZoom(1);
+            if(this.ViewModel.ShowGridLines)
+            {
+                this.gridLineTop.SetZoom(1);
+                this.gridLineLeft.SetZoom(1);
+            }
         }
 
         private void OverlayCanvas_MouseLeave(object sender, MouseEventArgs e)
@@ -817,11 +820,15 @@ namespace PixelRuler
                 var ocp = e.GetPosition(this.overlayCanvas);
                 var overlayPt = mainImage.TranslatePoint(ocp, this.overlayCanvas);
 
-                gridLineTop.UpdateTranslation();
-                gridLineTop.UpdateTickmarks();
+                if(ViewModel.ShowGridLines)
+                {
+                    gridLineTop.UpdateTranslation();
+                    gridLineTop.UpdateTickmarks();
 
-                gridLineLeft.UpdateTranslation();
-                gridLineLeft.UpdateTickmarks();
+                    gridLineLeft.UpdateTranslation();
+                    gridLineLeft.UpdateTickmarks();
+                }
+
 
                 foreach(var overlayElement in OverlayCanvasElements)
                 {
@@ -966,11 +973,14 @@ namespace PixelRuler
                 tt.Y = (int)Math.Round(tt.Y);
             }
 
-            gridLineTop.SetZoom(st.ScaleX);
-            gridLineTop.UpdateTranslation();
+            if(this.ViewModel.ShowGridLines)
+            {
+                gridLineTop.SetZoom(st.ScaleX);
+                gridLineTop.UpdateTranslation();
 
-            gridLineLeft.SetZoom(st.ScaleX);
-            gridLineLeft.UpdateTranslation();
+                gridLineLeft.SetZoom(st.ScaleX);
+                gridLineLeft.UpdateTranslation();
+            }
 
             EffectiveZoomChanged?.Invoke(this, st.ScaleX);
             UpdateForZoomChange(); // TODO will the event be lagged?
