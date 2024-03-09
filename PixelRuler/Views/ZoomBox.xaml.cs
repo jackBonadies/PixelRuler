@@ -30,18 +30,22 @@ namespace PixelRuler.Views
         Line currentLineGuideVert;
         Line currentLineGuideHorz;
         readonly bool useCanvas = false;
-        public ZoomBox(MainCanvas owningCanvas, double windowSize, double zoomFactor)
-        {
-            Visual visualForBrush = useCanvas ? owningCanvas.innerCanvas : owningCanvas.mainImage;
+        private ZoomViewModel zoomViewModel;
+        private VisualBrush zoomboxBrush;
 
+        public ZoomBox(MainCanvas owningCanvas, double windowSize, ZoomViewModel zoomViewModel)
+        {
+            this.zoomViewModel = zoomViewModel;
+            Visual visualForBrush = useCanvas ? owningCanvas.innerCanvas : owningCanvas.mainImage;
             
             InitializeComponent();
 
             this.zoomCanvas.Children.Add(line1);
 
             this.owningCanvas = owningCanvas;
+            this.owningCanvas.EffectiveZoomChanged += OnEffectiveZoomChanged;
             ZoomWindowSize = windowSize;
-            ZoomFactor = 2.0;
+            ZoomFactor = zoomViewModel.ZoomFactor;
 
             zoomCanvas.Width = ZoomWindowSize;
             zoomCanvas.Height = ZoomWindowSize;
@@ -51,19 +55,18 @@ namespace PixelRuler.Views
 
             int offset = useCanvas ? 0 : 10000;
 
-            imageBackgroundBorder.Background = //new SolidColorBrush(Colors.Red);
-                
-            new VisualBrush(visualForBrush)
+            zoomboxBrush = new VisualBrush(visualForBrush)
             {
                 Viewbox = new Rect(offset, offset, ZoomWindowSize, ZoomWindowSize),
                 ViewboxUnits = BrushMappingMode.Absolute,
-                Transform = new ScaleTransform(ZoomFactor, ZoomFactor, 0, 0),
+                Transform = new ScaleTransform(TotalZoom, TotalZoom, 0, 0),
             };
+            imageBackgroundBorder.Background = zoomboxBrush;
 
             currentPixelIndicator = new Rectangle()
             {
-                Width = ZoomFactor,
-                Height = ZoomFactor,
+                Width = TotalZoom,
+                Height = TotalZoom,
                 StrokeThickness = 1,
             };
 
@@ -95,6 +98,35 @@ namespace PixelRuler.Views
             zoomCanvas.Children.Add(currentPixelIndicator);
 
             this.Visibility = Visibility.Collapsed;
+        }
+
+        private void OnEffectiveZoomChanged(object? sender, double e)
+        {
+            this.zoomboxBrush.Transform = new ScaleTransform(TotalZoom, TotalZoom);
+        }
+
+        private double getZoomRelativeToCanvas()
+        {
+            return TotalZoom / owningCanvas.EffectiveZoom;
+        }
+
+        private double TotalZoom
+        {
+            get
+            {
+                if(zoomViewModel.ZoomMode == ZoomMode.Fixed)
+                {
+                    return Math.Min(zoomViewModel.ZoomFactor, zoomViewModel.ZoomLimitEffectiveZoom);
+                }
+                else if(zoomViewModel.ZoomMode == ZoomMode.Relative)
+                {
+                    return Math.Min(zoomViewModel.ZoomFactor * owningCanvas.EffectiveZoom, zoomViewModel.ZoomLimitEffectiveZoom);
+                }
+                else
+                {
+                    throw new Exception("Zoom Mode Unexpected");
+                }
+            }
         }
 
         public void OnOverlayCanvasMouseMove()
@@ -252,14 +284,14 @@ namespace PixelRuler.Views
 
             (this.imageBackgroundBorder.Background as VisualBrush).Viewbox =
                 new Rect(
-                    innerCanvasLocation.X - (ZoomWindowSize / 2) / ZoomFactor,
-                    innerCanvasLocation.Y - (ZoomWindowSize / 2) / ZoomFactor,
+                    innerCanvasLocation.X - (ZoomWindowSize / 2) / TotalZoom,
+                    innerCanvasLocation.Y - (ZoomWindowSize / 2) / TotalZoom,
                     ZoomWindowSize,
                     ZoomWindowSize);
 
 
             // left have to offset by width/2
-            var pixelSize = ZoomFactor;
+            var pixelSize = TotalZoom;
             currentPixelIndicator.Width = pixelSize;
             currentPixelIndicator.Height = pixelSize;
             var center = ZoomWindowSize / 2;// - pixelSize / 2;
@@ -371,8 +403,8 @@ namespace PixelRuler.Views
             var zoomBoxStartY = mainImageY - zoomBoxY;
 
             // scale it *ZoomFactor from the center
-            var finalX = ((zoomBoxStartX) - this.ActualWidth / 2) * ZoomFactor + this.ActualWidth / 2;
-            var finalY = ((zoomBoxStartY) - this.ActualHeight / 2) * ZoomFactor + this.ActualHeight / 2;
+            var finalX = ((zoomBoxStartX) - this.ActualWidth / 2) * getZoomRelativeToCanvas() + this.ActualWidth / 2;
+            var finalY = ((zoomBoxStartY) - this.ActualHeight / 2) * getZoomRelativeToCanvas() + this.ActualHeight / 2;
 
             return new Point(finalX, finalY);
         }
@@ -397,6 +429,12 @@ namespace PixelRuler.Views
                 // since keydown fires repeatedly..
                 return;
             }
+
+            if(TotalZoom <= owningCanvas.EffectiveZoom)
+            {
+                return;
+            }
+
             currentZoomBoxCase = zoomBoxCase;
             this.Visibility = Visibility.Visible;
             currentZoomBoxInfo = measEl;

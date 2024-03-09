@@ -47,7 +47,9 @@ namespace PixelRuler.CanvasElements
 
  
             mainLine.Stroke = new SolidColorBrush(Colors.Aqua);
-            mainLine.StrokeThickness = 1;
+            mainLine.StrokeThickness = getUIStrokeThicknessUnit();
+
+            RenderOptions.SetEdgeMode(mainLine, EdgeMode.Aliased);
 
             hitBoxCanvas = new Canvas();
             hitBoxCanvas.Cursor = isHorizontal ? Cursors.SizeNS : Cursors.SizeWE;
@@ -212,7 +214,7 @@ namespace PixelRuler.CanvasElements
         {
             return new List<UIElement>()
             {
-                new Line() {Stroke=new SolidColorBrush(Colors.Aqua), StrokeThickness= 1}
+                new Line() {Stroke=new SolidColorBrush(Colors.Aqua), StrokeThickness= getUIStrokeThicknessUnit()}
             };
         }
 
@@ -227,7 +229,7 @@ namespace PixelRuler.CanvasElements
         public override void UpdateForZoomChange()
         {
             //mainLine.RenderTransform = new ScaleTransform(getUIUnit()*2, 1);
-            mainLine.StrokeThickness = getUIUnit();
+            mainLine.StrokeThickness = getUIStrokeThicknessUnit();
             //lineBeginCap.StrokeThickness = getUIUnit();
             //lineEndCap.StrokeThickness = getUIUnit();
 

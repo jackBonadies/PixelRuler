@@ -56,10 +56,6 @@ namespace PixelRuler
             this.innerCanvas.MouseDown += MainCanvas_MouseDown;
             this.innerCanvas.MouseUp += MainCanvas_MouseUp;
 
-            zoomBox = new ZoomBox(this, 256, 16);
-
-            Canvas.SetZIndex(zoomBox, 1200);
-            this.overlayCanvas.Children.Add(zoomBox);
             this.overlayCanvas.PreviewMouseDown += OverlayCanvas_MouseDown;
             this.overlayCanvas.PreviewMouseMove += OverlayCanvas_MouseMove;
             this.overlayCanvas.PreviewMouseUp += OverlayCanvas_MouseUp;
@@ -362,6 +358,10 @@ namespace PixelRuler
             this.ViewModel.ShowGridLinesChanged += ViewModel_ShowGridLinesChanged;
             SetClearAllMeasurementsEnabledState();
             SetShowGridLineState();
+
+            zoomBox = new ZoomBox(this, 256, this.ViewModel.Settings.ZoomViewModel);
+            Canvas.SetZIndex(zoomBox, 1200);
+            this.overlayCanvas.Children.Add(zoomBox);
         }
 
         private void SetShowGridLineState()

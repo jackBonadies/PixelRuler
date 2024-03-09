@@ -76,7 +76,7 @@ namespace PixelRuler
 
         private void MainWindow_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+            if(e.Key == Key.Space)
             {
                 mainCanvas.HideZoomBox();
             }
@@ -137,7 +137,7 @@ namespace PixelRuler
 
             }
 #endif
-            if(e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+            if(e.Key == Key.Space)
             {
                 mainCanvas.ShowZoomBox();
             }

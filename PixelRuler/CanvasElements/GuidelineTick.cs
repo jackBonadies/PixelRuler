@@ -34,7 +34,8 @@ namespace PixelRuler.CanvasElements
                 SnapsToDevicePixels = true,
                 UseLayoutRounding = true,
             };
-            tickLine.X1 = tickLine.X2 = gridLineCoor;
+            tickLine.X1 = tickLine.X2 = gridLineCoor + .5; // TODO: Why
+            RenderOptions.SetEdgeMode(tickLine, EdgeMode.Aliased);
             OwningGridLine.canvas.Children.Add(tickLine);
         }
     }
