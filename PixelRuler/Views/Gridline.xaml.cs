@@ -1,4 +1,5 @@
 ﻿using PixelRuler.CanvasElements;
+using PixelRuler.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,19 +29,22 @@ namespace PixelRuler.Views
 
         public bool IsVertical
         {
-            get { return (bool)GetValue(IsVerticalProperty); }
-            set { SetValue(IsVerticalProperty, value); }
+            get;
+            set;
+            //get { return (bool)GetValue(IsVerticalProperty); }
+            //set { SetValue(IsVerticalProperty, value); }
         }
 
-        public static readonly DependencyProperty IsVerticalProperty
-            = DependencyProperty.Register(
-                  "IsVertical",
-                  typeof(bool),
-                  typeof(Gridline),
-                  new PropertyMetadata(false)
-              );
+        //public static readonly DependencyProperty IsVerticalProperty
+        //    = DependencyProperty.Register(
+        //          "IsVertical",
+        //          typeof(bool),
+        //          typeof(Gridline),
+        //          new PropertyMetadata(false)
+        //      );
 
         public MainCanvas MainCanvas { get; set; }
+        private GuidelineTick currentMousePosTick;
 
         public Gridline()
         {
@@ -49,6 +53,19 @@ namespace PixelRuler.Views
             //SetTickmarks(1);
             this.Cursor = Cursors.Hand;
             this.Loaded += Gridline_Loaded;
+
+            currentMousePosTick = new GuidelineTick(this, null, GuidelineTick.GridlineTickType.CurrentMarker);
+
+        }
+
+        public void ShowCurrentPosIndicator()
+        {
+            currentMousePosTick.tickLine.Visibility = Visibility.Visible; 
+        }
+
+        public void HideCurrentPosIndicator()
+        {
+            currentMousePosTick.tickLine.Visibility = Visibility.Collapsed; 
         }
 
         private void Gridline_Loaded(object sender, RoutedEventArgs e)
@@ -100,10 +117,16 @@ namespace PixelRuler.Views
 
             this.Scale = scale;
 
-            this.canvas.Children.Clear();
+            ClearCanvas();
             SetBorder();
             UpdateTickmarks();
             SetGuidelineTicks();
+        }
+
+        private void ClearCanvas()
+        {
+            this.canvas.Children.Clear();
+            currentMousePosTick.AddToGridline();
         }
 
         private void SetGuidelineTicks()
@@ -254,6 +277,22 @@ namespace PixelRuler.Views
         {
             guideLineTicks.Add(gridLineTick);
             gridLineTick.AddToGridline();
+        }
+
+        internal void SetCurrentMousePosition(Point roundedPoint)
+        {
+            if (IsVertical)
+            {
+                // we should always keep a tick...
+                // and then on mouse enter/leave just set visibility
+                // ClearCanvas should add these back..
+                currentMousePosTick.ImageCoordinate = (int)roundedPoint.Y;
+            }
+            else
+            {
+                currentMousePosTick.ImageCoordinate = (int)roundedPoint.X;
+            }
+            currentMousePosTick.UpdatePosition();
         }
     }
 }

@@ -628,9 +628,11 @@ namespace PixelRuler
 
         public override List<UIElement> GetZoomCanvasElements()
         {
+            var rect = new Rectangle() { StrokeThickness = getUIStrokeThicknessUnit() };
+            rect.SetStrokeToAnnotationColor();
             return new List<UIElement>()
             {
-                new Rectangle() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1 },
+                rect
             };
         }
     }

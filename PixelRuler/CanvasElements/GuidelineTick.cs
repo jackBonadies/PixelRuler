@@ -11,32 +11,66 @@ namespace PixelRuler.CanvasElements
 {
     public class GuidelineTick
     {
-        public GuidelineElement GuidelineElement { get; init; }
+        public GuidelineElement? GuidelineElement { get; init; }
         public Gridline OwningGridLine { get; init; }
+        /// <summary>
+        /// For current indicators
+        /// </summary>
+        public int ImageCoordinate { get; set; }
+        public Line tickLine { get; set; }
+        public enum GridlineTickType
+        {
+            Guideline = 0,
+            CurrentMarker = 1,
+        }
 
-        public GuidelineTick(Gridline gridLine, GuidelineElement guidelineElement)
+        public GridlineTickType TickType { get; private set; }
+        
+
+        public GuidelineTick(Gridline gridLine, GuidelineElement? guidelineElement, GridlineTickType tickType)
         {
             GuidelineElement = guidelineElement;
             OwningGridLine = gridLine;
-        }
-
-        public void AddToGridline()
-        {
-            var gridLineCoor = this.GuidelineElement.ImageCoordinate * this.OwningGridLine.Scale + 10000;
-            var tickLine = new Line
+            TickType = tickType;
+            tickLine = new Line
             {
                 X1 = 0,
                 X2 = 30,
                 Y1 = 0,
                 Y2 = 30,
-                StrokeThickness = 1,
-                Stroke = new SolidColorBrush(Colors.Aqua),
+                StrokeThickness = .8,
+                Stroke = new SolidColorBrush(
+                    tickType == GridlineTickType.Guideline ? 
+                    Colors.Aqua : Colors.Aqua),
                 SnapsToDevicePixels = true,
                 UseLayoutRounding = true,
             };
-            tickLine.X1 = tickLine.X2 = gridLineCoor + .5; // TODO: Why
             RenderOptions.SetEdgeMode(tickLine, EdgeMode.Aliased);
+        }
+
+
+        public void AddToGridline()
+        {
+            UpdatePosition();
             OwningGridLine.canvas.Children.Add(tickLine);
+        }
+
+        public void UpdatePosition()
+        {
+            var gridLineCoor = getImageCoordinate() * this.OwningGridLine.Scale + 10000;
+            tickLine.X1 = tickLine.X2 = gridLineCoor + .5; // TODO: Why
+        }
+
+        private int getImageCoordinate()
+        {
+            if (this.GuidelineElement != null)
+            {
+                return this.GuidelineElement.ImageCoordinate;
+            }
+            else
+            {
+                return this.ImageCoordinate;
+            }
         }
     }
 }

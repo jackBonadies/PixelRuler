@@ -127,12 +127,12 @@ namespace PixelRuler
             // add to gridline view.
             if(isVertical)
             {
-                var guidelineTick = new GuidelineTick(gridLineLeft, guideLineElement);
+                var guidelineTick = new GuidelineTick(gridLineLeft, guideLineElement, GuidelineTick.GridlineTickType.Guideline);
                 gridLineLeft.AddTick(guidelineTick);
             }
             else
             {
-                var guidelineTick = new GuidelineTick(gridLineTop, guideLineElement);
+                var guidelineTick = new GuidelineTick(gridLineTop, guideLineElement, GuidelineTick.GridlineTickType.Guideline);
                 gridLineTop.AddTick(guidelineTick);
             }
 
@@ -199,6 +199,12 @@ namespace PixelRuler
         {
             zoomBox.OnOverlayCanvasMouseMove();
             //(zoomBox.Fill as VisualBrush).Viewbox.X = e.GetPosition(innerCanvas).X;
+            if (this.ViewModel.ShowGridLines)
+            {
+                var roundedPoint = RoundPoint(e.GetPosition(this.mainImage));
+                gridLineTop.SetCurrentMousePosition(roundedPoint);
+                gridLineLeft.SetCurrentMousePosition(roundedPoint);
+            }
         }
 
 
@@ -524,6 +530,8 @@ namespace PixelRuler
 
         private void MainCanvas_MouseLeave(object sender, MouseEventArgs e)
         {
+            gridLineLeft.HideCurrentPosIndicator();
+            gridLineTop.HideCurrentPosIndicator();
         }
 
         private void MainCanvas_MouseEnter(object sender, MouseEventArgs e)
@@ -540,6 +548,8 @@ namespace PixelRuler
                 default:
                     throw new Exception("Unknown Tool");
             }
+            gridLineLeft.ShowCurrentPosIndicator();
+            gridLineTop.ShowCurrentPosIndicator();
         }
 
         private void MainCanvas_MouseUp(object sender, MouseButtonEventArgs e)
@@ -851,12 +861,6 @@ namespace PixelRuler
             {
                 var roundedPoint = RoundPoint(e.GetPosition(innerCanvas));
                 currentMeasurementElement.SetEndPoint(roundedPoint);
-            }
-
-            if (this.ViewModel.ShowGridLines)
-            {
-                gridLineTop.SetCurrentMousePosition();
-                gridLineLeft.SetCurrentMousePosition();
             }
         }
 

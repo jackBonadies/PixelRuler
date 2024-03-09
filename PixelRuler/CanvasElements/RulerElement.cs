@@ -406,11 +406,21 @@ namespace PixelRuler.CanvasElements
 
         public override List<UIElement> GetZoomCanvasElements()
         {
+            // TODO: umm line settings??? for all GetZoomCanvasElements()
+            var mainLine = UiUtils.CreateLine();
+            mainLine.StrokeThickness = getUIStrokeThicknessUnit();
+            mainLine.SetStrokeToAnnotationColor();
+            var side1 = UiUtils.CreateLine();
+            side1.StrokeThickness = getUIStrokeThicknessUnit();
+            side1.SetStrokeToAnnotationColor();
+            var side2 = UiUtils.CreateLine();
+            side2.StrokeThickness = getUIStrokeThicknessUnit();
+            side2.SetStrokeToAnnotationColor();
             return new List<UIElement>()
             {
-                new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1/this.line1.GetDpi() },
-                new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1/this.line1.GetDpi() },
-                new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1/this.line1.GetDpi() },
+                mainLine,
+                side1,
+                side2,
             };
         }
 
