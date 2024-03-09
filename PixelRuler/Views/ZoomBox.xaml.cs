@@ -32,10 +32,11 @@ namespace PixelRuler.Views
         readonly bool useCanvas = false;
         private ZoomViewModel zoomViewModel;
         private VisualBrush zoomboxBrush;
+        private int borderThickness = -1;
 
         public ZoomBox(MainCanvas owningCanvas, double windowSize, ZoomViewModel zoomViewModel)
         {
-            this.zoomViewModel = zoomViewModel;
+            this.DataContext = this.zoomViewModel = zoomViewModel;
             Visual visualForBrush = useCanvas ? owningCanvas.innerCanvas : owningCanvas.mainImage;
             
             InitializeComponent();
@@ -46,6 +47,7 @@ namespace PixelRuler.Views
             this.owningCanvas.EffectiveZoomChanged += OnEffectiveZoomChanged;
             ZoomWindowSize = windowSize;
             ZoomFactor = zoomViewModel.ZoomFactor;
+            borderThickness = zoomViewModel.BorderThickness;
 
             zoomCanvas.Width = ZoomWindowSize;
             zoomCanvas.Height = ZoomWindowSize;
@@ -219,8 +221,6 @@ namespace PixelRuler.Views
             var boxWidth = outerBorder.DesiredSize.Width;
             var boxHeight = outerBorder.DesiredSize.Height;
 
-
-
             SizerPosX boxOffsetX = SizerPosX.Centered;
             SizerPosY boxOffsetY = SizerPosY.Centered;
 
@@ -340,10 +340,10 @@ namespace PixelRuler.Views
 
                     var lineIt = (elInfo.Item2[0] as Line);
                     // scale it *ZoomFactor from the center
-                    (lineIt).X1 = finalPtStart.X;
-                    (lineIt).X2 = finalPtEnd.X;
-                    (lineIt).Y1 = finalPtStart.Y;
-                    (lineIt).Y2 = finalPtEnd.Y;
+                    (lineIt).X1 = finalPtStart.X - borderThickness;
+                    (lineIt).X2 = finalPtEnd.X - borderThickness;
+                    (lineIt).Y1 = finalPtStart.Y - borderThickness;
+                    (lineIt).Y2 = finalPtEnd.Y - borderThickness;
 
                 }
                 else if (elInfo.Item1 is BoundingBoxElement b1)
@@ -354,8 +354,8 @@ namespace PixelRuler.Views
 
                     var rectIt = (elInfo.Item2[0] as Rectangle);
                     // scale it *ZoomFactor from the center
-                    Canvas.SetLeft(rectIt, finalPtStart.X);
-                    Canvas.SetTop(rectIt, finalPtStart.Y);
+                    Canvas.SetLeft(rectIt, finalPtStart.X - borderThickness);
+                    Canvas.SetTop(rectIt, finalPtStart.Y - borderThickness);
                     rectIt.Width = finalPtEnd.X - finalPtStart.X;
                     rectIt.Height = finalPtEnd.Y - finalPtStart.Y; //TODO exception
 
@@ -373,13 +373,13 @@ namespace PixelRuler.Views
 
                     if(g1.IsHorizontal)
                     {
-                        (lineIt).Y1 = finalPtStart.Y;
-                        (lineIt).Y2 = finalPtStart.Y;
+                        (lineIt).Y1 = finalPtStart.Y - borderThickness;
+                        (lineIt).Y2 = finalPtStart.Y - borderThickness;
                     }
                     else
                     {
-                        (lineIt).X1 = finalPtStart.X;
-                        (lineIt).X2 = finalPtStart.X;
+                        (lineIt).X1 = finalPtStart.X - borderThickness;
+                        (lineIt).X2 = finalPtStart.X - borderThickness;
                     }
                 }
                 //elInfo.Item1.UpdateZoomCanvasElements(elInfo.Item2, zoomBox, ZoomFactor,)

@@ -56,14 +56,14 @@ namespace PixelRuler.CanvasElements
             if(isHorizontal)
             {
                 hitBoxCanvas.Width = 30000;
-                hitBoxCanvas.Height = 5;
+                hitBoxCanvas.Height = getUIUnit() * 5;
             }
             else
             {
-                hitBoxCanvas.Width = 5;
-                hitBoxCanvas.Height = 30000;
+                hitBoxCanvas.Width = getUIUnit() * 5;
+                hitBoxCanvas.Height = 1000;
             }
-            hitBoxCanvas.Background = new SolidColorBrush(Colors.Transparent);
+            hitBoxCanvas.Background = new SolidColorBrush(Colors.Red);
             hitBoxCanvas.MouseLeftButtonDown += HitBoxCanvas_MouseLeftButtonDown;
             hitBoxCanvas.MouseMove += HitBoxCanvas_MouseMove;
             hitBoxCanvas.MouseLeftButtonUp += HitBoxCanvas_MouseLeftButtonUp;
@@ -92,6 +92,9 @@ namespace PixelRuler.CanvasElements
                 closeButtonView.MouseLeave += CloseButtonView_MouseLeave;
                 closeButtonView.MouseLeftButtonDown += CloseButtonView_MouseLeftButtonDown;
                 closeButtonView.Cursor = Cursors.Hand;
+                //var st = new ScaleTransform();
+                //st.ScaleX = st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
+                //closeButtonView.RenderTransform = st;
                 Canvas.SetZIndex(closeButtonView, 5000);
             }
             if(!this.owningCanvas.Children.Contains(closeButtonView))
@@ -141,8 +144,8 @@ namespace PixelRuler.CanvasElements
                 this.mainLine.X1 = Coordinate;
                 this.mainLine.X2 = Coordinate;
 
-                Canvas.SetLeft(hitBoxCanvas, Coordinate - (int)(hitBoxCanvas.Width / 2));
-                Canvas.SetTop(hitBoxCanvas, 0);
+                Canvas.SetLeft(hitBoxCanvas, Coordinate - hitBoxCanvas.Width / 2);
+                Canvas.SetTop(hitBoxCanvas, 10000);
             }
 
         }
@@ -233,35 +236,25 @@ namespace PixelRuler.CanvasElements
             //lineBeginCap.StrokeThickness = getUIUnit();
             //lineEndCap.StrokeThickness = getUIUnit();
 
-            //var st = rulerLengthLabel.RenderTransform as ScaleTransform;
-            //st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
-            //st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
+            var st = closeButtonView?.RenderTransform as ScaleTransform;
+            if (st != null)
+            {
+                //st.ScaleX = st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
+            }
+
+            if(IsHorizontal)
+            {
+                //hitBoxCanvas.Height = getUIUnit() * 5;
+            }
+            else
+            {
+                hitBoxCanvas.Width = getUIUnit() * 5;
+            }
+            SetPositionState();
 
             base.UpdateForZoomChange();
         }
 
-        public void UpdateForCoordinatesChanged()
-        {
-            // TODO REMOVE...
-            
-            var overlayPt = this.mainCanvas.mainImage.TranslatePoint(new Point(Coordinate, Coordinate), this.mainCanvas.overlayCanvas);
-            if (IsHorizontal)
-            {
-                this.mainLine.Y1 = overlayPt.Y;
-                this.mainLine.Y2 = overlayPt.Y;
-
-                Canvas.SetLeft(hitBoxCanvas, 0);
-                Canvas.SetTop(hitBoxCanvas, overlayPt.Y - (int)(hitBoxCanvas.Height / 2));
-            }
-            else
-            {
-                this.mainLine.X1 = overlayPt.X;
-                this.mainLine.X2 = overlayPt.X;
-
-                Canvas.SetLeft(hitBoxCanvas, overlayPt.X - (int)(hitBoxCanvas.Width / 2));
-                Canvas.SetTop(hitBoxCanvas, 0);
-            }
-        }
     }
 
     //public class GuidelineElementOverlay : IOverlayCanvasShape

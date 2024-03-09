@@ -783,7 +783,6 @@ namespace PixelRuler
 
         private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-
             if (ViewModel.SelectedTool == Tool.ColorPicker)
             {
                 if(colorPickBox == null)
@@ -797,7 +796,6 @@ namespace PixelRuler
                     SetColorUnderMouse(e);
                 }
             }
-
 
             if (isPanning)
             {
@@ -853,6 +851,12 @@ namespace PixelRuler
             {
                 var roundedPoint = RoundPoint(e.GetPosition(innerCanvas));
                 currentMeasurementElement.SetEndPoint(roundedPoint);
+            }
+
+            if (this.ViewModel.ShowGridLines)
+            {
+                gridLineTop.SetCurrentMousePosition();
+                gridLineLeft.SetCurrentMousePosition();
             }
         }
 

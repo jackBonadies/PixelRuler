@@ -440,5 +440,7 @@ namespace PixelRuler
         /// Never zoom beyond
         /// </summary>
         public double ZoomLimitEffectiveZoom { get; set; } = 32;
+
+        public int BorderThickness { get; set; } = 3;
     }
 }
