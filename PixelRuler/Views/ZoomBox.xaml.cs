@@ -146,7 +146,6 @@ namespace PixelRuler.Views
 
             innerCanvasLocation = Mouse.GetPosition(owningCanvas.innerCanvas);
             overlayCanvasLocation = Mouse.GetPosition(owningCanvas.overlayCanvas);
-            var t = owningCanvas.innerCanvas.TranslatePoint(new Point(10000, 10000), this);
             var translatedPoint1 = owningCanvas.innerCanvas.TranslatePoint(new Point(10200, 10000), this);
 
 

@@ -97,6 +97,8 @@ namespace PixelRuler
                 this.gridLineTop.SetZoom(1);
                 this.gridLineLeft.SetZoom(1);
             }
+            this.gridLineCorner.Width = App.BorderSizeDpiIndependentUnits * this.GetDpi();
+            this.gridLineCorner.Height = App.BorderSizeDpiIndependentUnits * this.GetDpi();
         }
 
         private void OverlayCanvas_MouseLeave(object sender, MouseEventArgs e)

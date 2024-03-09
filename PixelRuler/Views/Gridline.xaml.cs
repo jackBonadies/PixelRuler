@@ -21,11 +21,17 @@ namespace PixelRuler.Views
     /// <summary>
     /// Interaction logic for Gridline.xaml
     /// </summary>
+    /// <remarks>
+    /// This control has an inverse dpi scale (so that horizontally 1 pixel
+    ///   is 1 pixel).  But that does mean we have to scale the UI elements 
+    ///   manually (i.e. height and text size).
+    /// </remarks>
     public partial class Gridline : UserControl
     {
         public double Scale { get; private set; } = -1;
         private int startCoor = int.MaxValue;
         private int endCoor = int.MaxValue;
+        private int borderSizePixels;
 
         public bool IsVertical
         {
@@ -55,6 +61,7 @@ namespace PixelRuler.Views
             this.Loaded += Gridline_Loaded;
 
             currentMousePosTick = new GuidelineTick(this, null, GuidelineTick.GridlineTickType.CurrentMarker);
+
         }
 
         public void ShowCurrentPosIndicator()
@@ -69,8 +76,11 @@ namespace PixelRuler.Views
 
         private void Gridline_Loaded(object sender, RoutedEventArgs e)
         {
+            borderSizePixels = (int)Math.Round(App.BorderSizeDpiIndependentUnits * this.GetDpi());
+
             SetBorder();
             canvas.Width = 20000;
+            canvas.Height = borderSizePixels;
         }
 
         private void SetBorder()
@@ -94,8 +104,8 @@ namespace PixelRuler.Views
             {
                 X1 = 0,
                 X2 = 20000,
-                Y1 = 30,
-                Y2 = 30,
+                Y1 = borderSizePixels,
+                Y2 = borderSizePixels,
                 Stroke = new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
                 StrokeThickness = 1,
             };
@@ -171,6 +181,7 @@ namespace PixelRuler.Views
                         SnapsToDevicePixels = true,
                         UseLayoutRounding = true
                     };
+                    Canvas.SetZIndex(line, -1000);
                     RenderOptions.SetEdgeMode(line, EdgeMode.Aliased);
 
                     if (curVal % majorTickSpacing == 0)
@@ -180,7 +191,8 @@ namespace PixelRuler.Views
                             Text = curVal.ToString(),
                             Foreground = new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
                         };
-                        if(this.IsVertical)
+                        txtBlock.FontSize = 10.5 * this.GetDpi();
+                        if (this.IsVertical)
                         {
                             txtBlock.LayoutTransform = new TransformGroup()
                             {
@@ -194,17 +206,17 @@ namespace PixelRuler.Views
                         Canvas.SetLeft(txtBlock, curValLoc + 5 + 10000);
                         Canvas.SetTop(txtBlock, 0);
                         line.Y1 = 0;
-                        line.Y2 = 30;
+                        line.Y2 = App.BorderSizeDpiIndependentUnits * this.GetDpi();
                     }
                     else if ((curVal * 2) % majorTickSpacing == 0)
                     {
-                        line.Y1 = 14;
-                        line.Y2 = 30;
+                        line.Y1 = borderSizePixels * .55;
+                        line.Y2 = borderSizePixels;
                     }
                     else
                     {
-                        line.Y1 = 18;
-                        line.Y2 = 30;
+                        line.Y1 = borderSizePixels * .7;
+                        line.Y2 = borderSizePixels;
                     }
 
                     canvas.Children.Add(line);
@@ -222,11 +234,11 @@ namespace PixelRuler.Views
             var st = this.MainCanvas.innerCanvas.GetScaleTransform();
             if (IsVertical)
             {
-                this.translation.X = tt.Y + st.ScaleX * 10000 + 30;
+                this.translation.X = tt.Y + st.ScaleX * 10000 + borderSizePixels;
             }
             else
             {
-                this.translation.X = tt.X + st.ScaleX * 10000 + 30;
+                this.translation.X = tt.X + st.ScaleX * 10000 + borderSizePixels;
             }
         }
 

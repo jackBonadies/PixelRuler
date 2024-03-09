@@ -38,7 +38,7 @@ namespace PixelRuler.CanvasElements
                 X2 = 30,
                 Y1 = 0,
                 Y2 = 30,
-                StrokeThickness = .8,
+                StrokeThickness = 1,
                 Stroke = new SolidColorBrush(
                     tickType == GridlineTickType.Guideline ? 
                     Colors.Aqua : Colors.Aqua),
@@ -61,7 +61,7 @@ namespace PixelRuler.CanvasElements
         public void UpdatePosition()
         {
             var gridLineCoor = getImageCoordinate() * this.OwningGridLine.Scale + 10000;
-            tickLine.X1 = tickLine.X2 = gridLineCoor + .5; // TODO: Why
+            tickLine.X1 = tickLine.X2 = gridLineCoor; // TODO: Why
         }
 
         private int getImageCoordinate()
