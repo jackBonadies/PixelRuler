@@ -17,6 +17,10 @@ namespace PixelRuler.CanvasElements
             this.owningCanvas = owningCanvas;
         }
 
+        /// <summary>
+        /// This is so that UI elements are dpi scaled.  i.e. a circle appears twice as big on a 200% dpi screen.
+        /// </summary>
+        /// <returns></returns>
         protected double getUIUnit()
         {
             // we need to perform dpi scaling here bc our parent undid dpi scaling
@@ -24,22 +28,13 @@ namespace PixelRuler.CanvasElements
             return dpi / this.owningCanvas.GetScaleTransform().ScaleX;
         }
 
-        protected Line createLine()
+        /// <summary>
+        /// This is so that UI elements are dpi independent.  i.e. a line thickness of 1 is always 1.
+        /// </summary>
+        /// <returns></returns>
+        protected double getUIStrokeThicknessUnit()
         {
-            var line = new Line();
-            line.StrokeThickness = 1;
-            line.SnapsToDevicePixels = true;
-            return line;
-        }
-
-        protected Rectangle createRectangle()
-        {
-            var rect = new Rectangle();
-            rect.Width = 0;
-            rect.Height = 0;
-            rect.StrokeThickness = 1;
-            rect.SnapsToDevicePixels = true;
-            return rect;
+            return 1 / this.owningCanvas.GetScaleTransform().ScaleX;
         }
 
         public abstract void Clear();

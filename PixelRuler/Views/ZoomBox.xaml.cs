@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml;
 
 namespace PixelRuler.Views
 {
@@ -29,15 +30,24 @@ namespace PixelRuler.Views
         Line currentLineGuideVert;
         Line currentLineGuideHorz;
         readonly bool useCanvas = false;
-        public ZoomBox(MainCanvas owningCanvas, double windowSize, double zoomFactor)
+        private ZoomViewModel zoomViewModel;
+        private VisualBrush zoomboxBrush;
+        private int borderThickness = -1;
+
+        public ZoomBox(MainCanvas owningCanvas, double windowSize, ZoomViewModel zoomViewModel)
         {
+            this.DataContext = this.zoomViewModel = zoomViewModel;
             Visual visualForBrush = useCanvas ? owningCanvas.innerCanvas : owningCanvas.mainImage;
             
             InitializeComponent();
 
+            this.zoomCanvas.Children.Add(line1);
+
             this.owningCanvas = owningCanvas;
+            this.owningCanvas.EffectiveZoomChanged += OnEffectiveZoomChanged;
             ZoomWindowSize = windowSize;
-            ZoomFactor = zoomFactor;
+            ZoomFactor = zoomViewModel.ZoomFactor;
+            borderThickness = zoomViewModel.BorderThickness;
 
             zoomCanvas.Width = ZoomWindowSize;
             zoomCanvas.Height = ZoomWindowSize;
@@ -47,19 +57,18 @@ namespace PixelRuler.Views
 
             int offset = useCanvas ? 0 : 10000;
 
-            imageBackgroundBorder.Background = //new SolidColorBrush(Colors.Red);
-                
-            new VisualBrush(visualForBrush)
+            zoomboxBrush = new VisualBrush(visualForBrush)
             {
                 Viewbox = new Rect(offset, offset, ZoomWindowSize, ZoomWindowSize),
                 ViewboxUnits = BrushMappingMode.Absolute,
-                Transform = new ScaleTransform(ZoomFactor, ZoomFactor, 0, 0),
+                Transform = new ScaleTransform(TotalZoom, TotalZoom, 0, 0),
             };
+            imageBackgroundBorder.Background = zoomboxBrush;
 
             currentPixelIndicator = new Rectangle()
             {
-                Width = ZoomFactor,
-                Height = ZoomFactor,
+                Width = TotalZoom,
+                Height = TotalZoom,
                 StrokeThickness = 1,
             };
 
@@ -79,9 +88,9 @@ namespace PixelRuler.Views
                 SnapsToDevicePixels = true
             };
 
-            currentLineGuideVert.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
-            currentLineGuideHorz.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
-            currentPixelIndicator.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
+            currentLineGuideVert.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
+            currentLineGuideHorz.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
+            currentPixelIndicator.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
 
             Canvas.SetLeft(currentPixelIndicator, ZoomWindowSize/2);
             Canvas.SetTop(currentPixelIndicator, ZoomWindowSize/2);
@@ -93,6 +102,35 @@ namespace PixelRuler.Views
             this.Visibility = Visibility.Collapsed;
         }
 
+        private void OnEffectiveZoomChanged(object? sender, double e)
+        {
+            this.zoomboxBrush.Transform = new ScaleTransform(TotalZoom, TotalZoom);
+        }
+
+        private double getZoomRelativeToCanvas()
+        {
+            return TotalZoom / owningCanvas.EffectiveZoom;
+        }
+
+        private double TotalZoom
+        {
+            get
+            {
+                if(zoomViewModel.ZoomMode == ZoomMode.Fixed)
+                {
+                    return Math.Min(zoomViewModel.ZoomFactor, zoomViewModel.ZoomLimitEffectiveZoom);
+                }
+                else if(zoomViewModel.ZoomMode == ZoomMode.Relative)
+                {
+                    return Math.Min(zoomViewModel.ZoomFactor * owningCanvas.EffectiveZoom, zoomViewModel.ZoomLimitEffectiveZoom);
+                }
+                else
+                {
+                    throw new Exception("Zoom Mode Unexpected");
+                }
+            }
+        }
+
         public void OnOverlayCanvasMouseMove()
         {
             SetPositions();
@@ -100,6 +138,7 @@ namespace PixelRuler.Views
 
 
 
+        Line line = null;
         private void SetPositions()
         {
             Point innerCanvasLocation = default;
@@ -107,6 +146,9 @@ namespace PixelRuler.Views
 
             innerCanvasLocation = Mouse.GetPosition(owningCanvas.innerCanvas);
             overlayCanvasLocation = Mouse.GetPosition(owningCanvas.overlayCanvas);
+            var t = owningCanvas.innerCanvas.TranslatePoint(new Point(10000, 10000), this);
+            var translatedPoint1 = owningCanvas.innerCanvas.TranslatePoint(new Point(10200, 10000), this);
+
 
             bool floatXPos = false;
             bool floatYPos = false;
@@ -179,8 +221,6 @@ namespace PixelRuler.Views
             var boxWidth = outerBorder.DesiredSize.Width;
             var boxHeight = outerBorder.DesiredSize.Height;
 
-
-
             SizerPosX boxOffsetX = SizerPosX.Centered;
             SizerPosY boxOffsetY = SizerPosY.Centered;
 
@@ -244,14 +284,14 @@ namespace PixelRuler.Views
 
             (this.imageBackgroundBorder.Background as VisualBrush).Viewbox =
                 new Rect(
-                    innerCanvasLocation.X - (ZoomWindowSize / 2) / ZoomFactor,
-                    innerCanvasLocation.Y - (ZoomWindowSize / 2) / ZoomFactor,
+                    innerCanvasLocation.X - (ZoomWindowSize / 2) / TotalZoom,
+                    innerCanvasLocation.Y - (ZoomWindowSize / 2) / TotalZoom,
                     ZoomWindowSize,
                     ZoomWindowSize);
 
 
             // left have to offset by width/2
-            var pixelSize = ZoomFactor;
+            var pixelSize = TotalZoom;
             currentPixelIndicator.Width = pixelSize;
             currentPixelIndicator.Height = pixelSize;
             var center = ZoomWindowSize / 2;// - pixelSize / 2;
@@ -268,7 +308,109 @@ namespace PixelRuler.Views
 
             Canvas.SetLeft(currentLineGuideHorz, 0);
             Canvas.SetTop(currentLineGuideHorz, center + yOffset);
+
+            if (line is null)
+            {
+                line = new Line()
+                {
+                    X1 = translatedPoint1.X,
+                    X2 = translatedPoint1.X,
+                    Y1 = 0,
+                    Y2 = 20000,
+                    StrokeThickness = 1 / this.GetDpi(),
+                    Stroke = new SolidColorBrush(Colors.Red)
+                };
+                this.zoomCanvas.Children.Add(line);
+            }
+            else
+            {
+                var zoomBox = Canvas.GetLeft(this) + this.zoomCanvas.Width / 2;
+                line.X1 = (100 - zoomBox) * ZoomFactor;
+                line.X2 = (100 - zoomBox) * ZoomFactor;
+            }
+                
+
+            foreach(var elInfo in ZoomCanvasElementInfo)
+            {
+                if(elInfo.Item1 is RulerElement r1)
+                {
+
+                    var finalPtStart = getZoomBoxCoorFromZoomCanvas(r1.StartPoint);
+                    var finalPtEnd = getZoomBoxCoorFromZoomCanvas(r1.EndPoint);
+
+                    var lineIt = (elInfo.Item2[0] as Line);
+                    // scale it *ZoomFactor from the center
+                    (lineIt).X1 = finalPtStart.X - borderThickness;
+                    (lineIt).X2 = finalPtEnd.X - borderThickness;
+                    (lineIt).Y1 = finalPtStart.Y - borderThickness;
+                    (lineIt).Y2 = finalPtEnd.Y - borderThickness;
+
+                }
+                else if (elInfo.Item1 is BoundingBoxElement b1)
+                {
+
+                    var finalPtStart = getZoomBoxCoorFromZoomCanvas(b1.StartPoint);
+                    var finalPtEnd = getZoomBoxCoorFromZoomCanvas(b1.EndPoint);
+
+                    var rectIt = (elInfo.Item2[0] as Rectangle);
+                    // scale it *ZoomFactor from the center
+                    Canvas.SetLeft(rectIt, finalPtStart.X - borderThickness);
+                    Canvas.SetTop(rectIt, finalPtStart.Y - borderThickness);
+                    rectIt.Width = finalPtEnd.X - finalPtStart.X;
+                    rectIt.Height = finalPtEnd.Y - finalPtStart.Y; //TODO exception
+
+                }
+                else if (elInfo.Item1 is GuidelineElement g1)
+                {
+                    var finalPtStart = getZoomBoxCoorFromZoomCanvas(new Point(g1.Coordinate, g1.Coordinate));
+
+                    var lineIt = (elInfo.Item2[0] as Line);
+
+                    (lineIt).X1 = 0;
+                    (lineIt).X2 = this.zoomCanvas.Width;
+                    (lineIt).Y1 = 0;
+                    (lineIt).Y2 = this.zoomCanvas.Height;
+
+                    if(g1.IsHorizontal)
+                    {
+                        (lineIt).Y1 = finalPtStart.Y - borderThickness;
+                        (lineIt).Y2 = finalPtStart.Y - borderThickness;
+                    }
+                    else
+                    {
+                        (lineIt).X1 = finalPtStart.X - borderThickness;
+                        (lineIt).X2 = finalPtStart.X - borderThickness;
+                    }
+                }
+                //elInfo.Item1.UpdateZoomCanvasElements(elInfo.Item2, zoomBox, ZoomFactor,)
+            }
         }
+        private Line line1 = new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1, UseLayoutRounding = true, SnapsToDevicePixels=true };
+
+
+        private Point getZoomBoxCoorFromZoomCanvas(Point zoomCanvasPt)
+        {
+            // zoomCanvasPt is 10k, 10k..
+            var overlayPt = this.owningCanvas.innerCanvas.TranslatePoint(zoomCanvasPt, this.Parent as Canvas);
+            // this is overlay pt
+            var mainImageX = overlayPt.X + offsetAmount;
+            var mainImageY = overlayPt.Y + offsetAmount;
+
+            // where it is on the zoom box
+            var zoomBoxX = Canvas.GetLeft(this) + 0;
+            var zoomBoxY = Canvas.GetTop(this) + 0;
+            var zoomBoxStartX = mainImageX - zoomBoxX;
+            var zoomBoxStartY = mainImageY - zoomBoxY;
+
+            // scale it *ZoomFactor from the center
+            var finalX = ((zoomBoxStartX) - this.ActualWidth / 2) * getZoomRelativeToCanvas() + this.ActualWidth / 2;
+            var finalY = ((zoomBoxStartY) - this.ActualHeight / 2) * getZoomRelativeToCanvas() + this.ActualHeight / 2;
+
+            return new Point(finalX, finalY);
+        }
+
+
+        private double offsetAmount = 0;
 
         public void UpdateForElementResize(MeasurementElementZoomCanvasShape? measurementElementZoomCanvasShape, MeasureElementResizeData e)
         {
@@ -278,54 +420,95 @@ namespace PixelRuler.Views
         }
 
         MeasureElementResizeData? currentZoomBoxInfo;
+        ZoomBoxCase currentZoomBoxCase = ZoomBoxCase.None;
 
-        public void Show(MeasureElementResizeData? measEl, MouseEventArgs? e)
+        public void Show(MeasureElementResizeData? measEl, MouseEventArgs? e, ZoomBoxCase zoomBoxCase)
         {
+            if(currentZoomBoxCase == zoomBoxCase)
+            {
+                // since keydown fires repeatedly..
+                return;
+            }
+
+            if(TotalZoom <= owningCanvas.EffectiveZoom)
+            {
+                return;
+            }
+
+            currentZoomBoxCase = zoomBoxCase;
             this.Visibility = Visibility.Visible;
             currentZoomBoxInfo = measEl;
-            if (measEl == null)
+
+            zoomCanvas.Children.Clear(); // TODO need to readd the other guidelines....
+            //this.currentLineGuideVert.Visibility = Visibility.Collapsed;
+            //this.currentLineGuideHorz.Visibility = Visibility.Collapsed;
+            //this.currentPixelIndicator.Visibility = Visibility.Collapsed;
+
+
+            switch (currentZoomBoxCase)
             {
-                this.currentLineGuideVert.Visibility = Visibility.Collapsed;
-                this.currentLineGuideHorz.Visibility = Visibility.Collapsed;
-                this.currentPixelIndicator.Visibility = Visibility.Visible;
+                case ZoomBoxCase.ColorPicker:
+                    this.currentPixelIndicator.Visibility = Visibility.Visible;
+                    zoomCanvas.Children.Add(currentPixelIndicator);
+                    break;
+                case ZoomBoxCase.Resizer:
+                    if (measEl.MeasEl is RulerElement r)
+                    {
+                        if (r.IsHorizontal())
+                        {
+                            this.currentLineGuideVert.Visibility = Visibility.Visible;
+                            zoomCanvas.Children.Add(currentLineGuideVert);
+                        }
+                        else
+                        {
+                            this.currentLineGuideHorz.Visibility = Visibility.Visible;
+                            zoomCanvas.Children.Add(currentLineGuideHorz);
+                        }
+                    }
+                    else if (measEl.MeasEl is BoundingBoxElement b)
+                    {
+                        var sizerEnum = (SizerEnum)measEl.Tag;
+                        if (sizerEnum.IsBottom() || sizerEnum.IsTop())
+                        {
+                            this.currentLineGuideHorz.Visibility = Visibility.Visible;
+                            zoomCanvas.Children.Add(currentLineGuideHorz);
+                        }
+                        if (sizerEnum.IsLeft() || sizerEnum.IsRight())
+                        {
+                            this.currentLineGuideVert.Visibility = Visibility.Visible;
+                            zoomCanvas.Children.Add(currentLineGuideVert);
+                        }
+                    }
+                    break;
+                case ZoomBoxCase.QuickZoom:
+                    ZoomCanvasElementInfo.Clear();
+                    // copy a version of current annotations
+                    foreach (var measurementEl in owningCanvas.MeasurementElements)
+                    {
+                        // keep dictionary measElOriginal -> zoombox version
+                        // update zoombox version from orig..
+                        var canvasElemenets = measurementEl.GetZoomCanvasElements();
+                        ZoomCanvasElementInfo.Add((measurementEl, canvasElemenets));
+                        foreach(var canvasEl in canvasElemenets)
+                        {
+                            zoomCanvas.Children.Add(canvasEl);
+                        }
+                        //measurementEl.UpdateZoomCanvasElements();
+                        //measurementEl.UpdateZoomCanvasElements();
+                        //this.zoomCanvas.Children.Add();
+                    }
+                    break;
             }
-            else
-            {
-                if (measEl.MeasEl is RulerElement r)
-                {
-                    if(r.IsHorizontal())
-                    {
-                        this.currentLineGuideHorz.Visibility = Visibility.Collapsed;
-                        this.currentLineGuideVert.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        this.currentLineGuideHorz.Visibility = Visibility.Visible;
-                        this.currentLineGuideVert.Visibility = Visibility.Collapsed;
-                    }
-                }
-                else if(measEl.MeasEl is BoundingBoxElement b)
-                {
-                    var sizerEnum = (SizerEnum)measEl.Tag;
-                    this.currentLineGuideVert.Visibility = Visibility.Collapsed;
-                    this.currentLineGuideHorz.Visibility = Visibility.Collapsed;
-                    if (sizerEnum.IsBottom() || sizerEnum.IsTop())
-                    {
-                        this.currentLineGuideHorz.Visibility = Visibility.Visible;
-                    }
-                    if(sizerEnum.IsLeft() || sizerEnum.IsRight())
-                    {
-                        this.currentLineGuideVert.Visibility = Visibility.Visible;
-                    }
-                }
-                this.currentPixelIndicator.Visibility = Visibility.Collapsed;
-            }
+
             SetPositions();
         }
+
+        private List<(MeasurementElementZoomCanvasShape, List<UIElement>)> ZoomCanvasElementInfo = new();
 
         public void Hide()
         {
             this.Visibility = Visibility.Collapsed;
+            currentZoomBoxCase = ZoomBoxCase.None;
         }
 
         public ZoomBox()

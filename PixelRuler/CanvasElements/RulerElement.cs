@@ -10,6 +10,7 @@ using System.Windows.Shapes;
 using System.Windows;
 using System.Security.Policy;
 using System.Windows.Input;
+using PixelRuler.Common;
 
 namespace PixelRuler.CanvasElements
 {
@@ -26,9 +27,9 @@ namespace PixelRuler.CanvasElements
         public RulerElement(Canvas canvas) : base(canvas)
         {
             this.canvas = canvas;
-            line1 = createLine();
-            lineBeginCap = createLine();
-            lineEndCap = createLine();
+            line1 = UiUtils.CreateLine();
+            lineBeginCap = UiUtils.CreateLine();
+            lineEndCap = UiUtils.CreateLine();
             startResizeCircle = new CircleSizerControl();
             endResizeCircle = new CircleSizerControl();
             rulerLengthLabel = new LengthLabel();
@@ -36,17 +37,17 @@ namespace PixelRuler.CanvasElements
 
         public override void AddToOwnerCanvas()
         {
-            line1.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
+            line1.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
 
             this.owningCanvas.Children.Add(line1);
             Canvas.SetZIndex(line1, App.SHAPE_INDEX);
 
-            lineBeginCap.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
+            lineBeginCap.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
 
             this.owningCanvas.Children.Add(lineBeginCap);
             Canvas.SetZIndex(lineBeginCap, App.SHAPE_INDEX);
 
-            lineEndCap.SetResourceReference(Line.StrokeProperty, "AnnotationColor");
+            lineEndCap.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
 
             this.owningCanvas.Children.Add(lineEndCap);
             Canvas.SetZIndex(lineEndCap, App.SHAPE_INDEX);
@@ -401,6 +402,25 @@ namespace PixelRuler.CanvasElements
         {
             SetShapeState();
             SetLabelState();
+        }
+
+        public override List<UIElement> GetZoomCanvasElements()
+        {
+            var mainLine = UiUtils.CreateLine();
+            mainLine.StrokeThickness = getUIStrokeThicknessUnit();
+            mainLine.SetStrokeToAnnotationColor();
+            var side1 = UiUtils.CreateLine();
+            side1.StrokeThickness = getUIStrokeThicknessUnit();
+            side1.SetStrokeToAnnotationColor();
+            var side2 = UiUtils.CreateLine();
+            side2.StrokeThickness = getUIStrokeThicknessUnit();
+            side2.SetStrokeToAnnotationColor();
+            return new List<UIElement>()
+            {
+                mainLine,
+                side1,
+                side2,
+            };
         }
 
         public double Extent

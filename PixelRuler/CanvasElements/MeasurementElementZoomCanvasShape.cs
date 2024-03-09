@@ -291,6 +291,9 @@ namespace PixelRuler.CanvasElements
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public abstract System.Collections.Generic.List<UIElement> GetZoomCanvasElements();
+
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 

@@ -418,5 +418,29 @@ namespace PixelRuler
             this.UpdateCloseToTrayChanged();
 
         }
+
+        public ZoomViewModel ZoomViewModel { get; set; } = new ZoomViewModel();
+    }
+
+    public enum ZoomMode
+    {
+        Fixed = 0,
+        Relative = 1,
+    }
+
+    // todo: own file. + make actual viewmodel
+    public class ZoomViewModel
+    {
+        public double ZoomFactor { get; set; } = 8;
+        /// <summary>
+        /// Zoom mode - relative to current canvas zoom or absolute
+        /// </summary>
+        public ZoomMode ZoomMode { get; set; } = ZoomMode.Relative;
+        /// <summary>
+        /// Never zoom beyond
+        /// </summary>
+        public double ZoomLimitEffectiveZoom { get; set; } = 32;
+
+        public int BorderThickness { get; set; } = 3;
     }
 }

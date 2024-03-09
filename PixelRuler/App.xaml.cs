@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -20,9 +21,13 @@ namespace PixelRuler
     public partial class App : Application
     {
         private const string backgroundCmdLineArg = "background";
+        public const string ProgramInstancesGUID = "18055682-7245-4d0e-9e60-dcb71ce17da7";
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            System.Diagnostics.Trace.WriteLine("PixelRulerStartup");
+            Semaphore semaphore = new Semaphore(2, 2, ProgramInstancesGUID, out bool wasCreated);
+            bool res = semaphore.WaitOne(0);
             base.OnStartup(e);
             bool backgroundOnly = false;
 
@@ -34,8 +39,6 @@ namespace PixelRuler
                     backgroundOnly = true;
                 }
             }
-
-
 
             var settingsViewModel = new SettingsViewModel();
             var mainViewModel = new PixelRulerViewModel(settingsViewModel);
@@ -77,7 +80,7 @@ namespace PixelRuler
             25600,
         };
 
-        public static readonly int ResizeSpeedFactor = 5;
+        public static readonly int ResizeSpeedFactor = 1;
         public static readonly bool FloatingZoomBoxPosAllowed = true;
 
         public static readonly double MinZoomPercent = ZoomSelections[0];
@@ -91,6 +94,8 @@ namespace PixelRuler
 
         public const int FULLSCREEN_HOTKEY_ID = 8000;
         public const int WINDOWED_HOTKEY_ID = 8001;
+
+        public const string AnnotationColorKey = "AnnotationColor";
 
     }
 }

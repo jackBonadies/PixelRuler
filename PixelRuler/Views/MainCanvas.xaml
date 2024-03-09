@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PixelRuler"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:PixelRuler.Views"
     d:DesignHeight="450"
     d:DesignWidth="800"
     ClipToBounds="True"
@@ -31,12 +32,17 @@
     <Canvas Name="overlayCanvas" Background="Transparent">
         <Canvas
             Name="innerCanvas"
+            Canvas.Left="30"
+            Canvas.Top="30"
             Width="30000"
             Height="30000"
             Background="#303030"
+            ClipToBounds="True"
             Focusable="True"
             ManipulationDelta="innerCanvas_ManipulationDelta"
-            ManipulationStarting="innerCanvas_ManipulationStarting">
+            ManipulationStarting="innerCanvas_ManipulationStarting"
+            SnapsToDevicePixels="True"
+            UseLayoutRounding="True">
             <Canvas.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform x:Name="CanvasScaleTransform" />
@@ -63,6 +69,60 @@
                 SnapsToDevicePixels="True"
                 Source="{Binding ImageSource}"
                 SourceUpdated="mainImage_SourceUpdated" />
+            <Line
+                x:Name="horizontalPendingLine"
+                Panel.ZIndex="505"
+                Opacity=".6"
+                SnapsToDevicePixels="True"
+                Stroke="Aqua"
+                StrokeThickness="1"
+                Visibility="Collapsed"
+                X1="0"
+                X2="20000"
+                Y1="0"
+                Y2="0" />
+            <Line
+                x:Name="verticalPendingLine"
+                Panel.ZIndex="505"
+                Opacity=".6"
+                SnapsToDevicePixels="True"
+                Stroke="Aqua"
+                StrokeThickness="1"
+                Visibility="Collapsed"
+                X1="0"
+                X2="0"
+                Y1="-5000"
+                Y2="20000" />
         </Canvas>
+        <views:Gridline
+            x:Name="gridLineLeft"
+            Canvas.Left="0"
+            Canvas.Top="-10000"
+            IsVertical="True"
+            SnapsToDevicePixels="True"
+            UseLayoutRounding="True">
+            <views:Gridline.LayoutTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="-1" ScaleY="1" />
+                    <RotateTransform Angle="-90" />
+                </TransformGroup>
+            </views:Gridline.LayoutTransform>
+        </views:Gridline>
+        <views:Gridline
+            x:Name="gridLineTop"
+            Canvas.Left="-10000"
+            SnapsToDevicePixels="True"
+            UseLayoutRounding="True" />
+        <Rectangle
+            x:Name="gridLineCorner"
+            Canvas.Left="0"
+            Canvas.Top="1"
+            Width="30"
+            Height="29"
+            Fill="#202020"
+            RenderOptions.EdgeMode="Aliased"
+            SnapsToDevicePixels="True"
+            Stroke="#909090"
+            StrokeThickness="1" />
     </Canvas>
 </UserControl>

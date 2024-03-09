@@ -27,15 +27,14 @@ namespace PixelRuler
     public partial class MainCanvas : UserControl
     {
         MeasurementElementZoomCanvasShape? currentMeasurementElement;
-        ObservableCollection<MeasurementElementZoomCanvasShape> measurementElements = new ObservableCollection<MeasurementElementZoomCanvasShape>();
+        public ObservableCollection<MeasurementElementZoomCanvasShape> MeasurementElements { get; private set; } = new();
+        public ObservableCollection<IOverlayCanvasShape> OverlayCanvasElements { get; private set; } = new();
         ColorPickElement? colorPickBox;
         bool drawingShape;
 
         public EventHandler<double> EffectiveZoomChanged;
 
         ZoomBox zoomBox;
-
-
 
         public MainCanvas()
         {
@@ -57,12 +56,11 @@ namespace PixelRuler
             this.innerCanvas.MouseDown += MainCanvas_MouseDown;
             this.innerCanvas.MouseUp += MainCanvas_MouseUp;
 
-            zoomBox = new ZoomBox(this, 256, 16);
-
-            this.overlayCanvas.Children.Add(zoomBox);
             this.overlayCanvas.PreviewMouseDown += OverlayCanvas_MouseDown;
             this.overlayCanvas.PreviewMouseMove += OverlayCanvas_MouseMove;
             this.overlayCanvas.PreviewMouseUp += OverlayCanvas_MouseUp;
+            this.overlayCanvas.MouseEnter += OverlayCanvas_MouseEnter;
+            this.overlayCanvas.MouseLeave += OverlayCanvas_MouseLeave;
 
 
 
@@ -71,11 +69,108 @@ namespace PixelRuler
 
             //this.mainCanvas.MouseLeftButtonDown += MainCanvas_MouseLeftButtonDown;
             //this.mainCanvas.MouseLeftButtonUp += MainCanvas_MouseLeftButtonUp;
-            measurementElements.CollectionChanged += MeasurementElements_CollectionChanged;
+            MeasurementElements.CollectionChanged += MeasurementElements_CollectionChanged;
 
             this.LostFocus += MainCanvas_LostFocus;
             this.LostMouseCapture += MainCanvas_LostMouseCapture;
 
+            this.gridLineTop.MainCanvas = this;
+            this.gridLineTop.MouseMove += GridLine_MouseMove;
+            this.gridLineTop.MouseEnter += GridLine_MouseEnter;
+            this.gridLineTop.MouseLeave += GridLine_MouseLeave;
+            this.gridLineTop.MouseLeftButtonUp += GridLine_LeftButtonUp;
+
+            this.gridLineLeft.MainCanvas = this;
+            this.gridLineLeft.MouseMove += GridLine_MouseMove;
+            this.gridLineLeft.MouseEnter += GridLine_MouseEnter;
+            this.gridLineLeft.MouseLeave += GridLine_MouseLeave;
+            this.gridLineLeft.MouseLeftButtonUp += GridLine_LeftButtonUp;
+
+            this.Loaded += MainCanvas_Loaded;
+
+        }
+
+        private void MainCanvas_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(this.ViewModel.ShowGridLines)
+            {
+                this.gridLineTop.SetZoom(1);
+                this.gridLineLeft.SetZoom(1);
+            }
+        }
+
+        private void OverlayCanvas_MouseLeave(object sender, MouseEventArgs e)
+        {
+            zoomBox.Hide();
+        }
+
+        private void OverlayCanvas_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if(KeyUtil.IsCtrlDown())
+            {
+                zoomBox.Show(null, e, ZoomBoxCase.QuickZoom);
+            }
+        }
+
+        private void GridLine_LeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var isVertical = (sender as Gridline).IsVertical;
+            var zoomCanvasCoor = overlayCanvas.TranslatePoint(e.GetPosition(this.overlayCanvas), this.innerCanvas);
+            var gridLineCoor = e.GetPosition(this.gridLineTop.canvas);
+
+            var coor = isVertical ? zoomCanvasCoor.Y : zoomCanvasCoor.X;
+            var roundCoor = (int)Math.Round(coor);
+            var guideLineElement = new GuidelineElement(this, roundCoor, isVertical);
+            guideLineElement.UpdateForZoomChange();
+            MeasurementElements.Add(guideLineElement);
+            guideLineElement.AddToOwnerCanvas();
+            // add to gridline view.
+            if(isVertical)
+            {
+                var guidelineTick = new GuidelineTick(gridLineLeft, guideLineElement, GuidelineTick.GridlineTickType.Guideline);
+                gridLineLeft.AddTick(guidelineTick);
+            }
+            else
+            {
+                var guidelineTick = new GuidelineTick(gridLineTop, guideLineElement, GuidelineTick.GridlineTickType.Guideline);
+                gridLineTop.AddTick(guidelineTick);
+            }
+
+            //guideLineElement.UpdateForCoordinatesChanged();
+        }
+
+        private void GridLine_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if(sender == gridLineTop)
+            {
+                verticalPendingLine.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                horizontalPendingLine.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void GridLine_MouseEnter(object sender, MouseEventArgs e)
+        {
+        }
+
+        private void GridLine_MouseMove(object sender, MouseEventArgs e)
+        {
+            var pt = RoundPoint(e.GetPosition(this.innerCanvas));
+
+            if(sender == gridLineTop)
+            {
+                verticalPendingLine.X1 = pt.X;
+                verticalPendingLine.X2 = pt.X;
+                verticalPendingLine.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                horizontalPendingLine.Y1 = pt.Y;
+                horizontalPendingLine.Y2 = pt.Y;
+                horizontalPendingLine.Visibility = Visibility.Visible;
+            }
         }
 
         private void OverlayCanvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -84,7 +179,7 @@ namespace PixelRuler
             {
                 if(ViewModel.SelectedTool == Tool.ColorPicker)
                 {
-                    zoomBox.Show(null, e);
+                    zoomBox.Show(null, e, ZoomBoxCase.ColorPicker);
                 }
             }
         }
@@ -104,7 +199,14 @@ namespace PixelRuler
         {
             zoomBox.OnOverlayCanvasMouseMove();
             //(zoomBox.Fill as VisualBrush).Viewbox.X = e.GetPosition(innerCanvas).X;
+            if (this.ViewModel.ShowGridLines)
+            {
+                var roundedPoint = RoundPoint(e.GetPosition(this.mainImage));
+                gridLineTop.SetCurrentMousePosition(roundedPoint);
+                gridLineLeft.SetCurrentMousePosition(roundedPoint);
+            }
         }
+
 
         private void MainCanvas_LostMouseCapture(object sender, MouseEventArgs e)
         {
@@ -223,7 +325,7 @@ namespace PixelRuler
         {
             get
             {
-                return this.measurementElements.Where(it => it.Selected);
+                return this.MeasurementElements.Where(it => it.Selected);
             }
         }
 
@@ -259,7 +361,47 @@ namespace PixelRuler
             this.ViewModel.ClearAllMeasureElements += ClearAllMeasureElements;
             this.ViewModel.DeleteAllSelectedElements += DeleteAllSelectedMeasureElements;
             this.ViewModel.AllElementsSelected += AllElementsSelected;
+            this.ViewModel.ShowGridLinesChanged += ViewModel_ShowGridLinesChanged;
             SetClearAllMeasurementsEnabledState();
+            SetShowGridLineState();
+
+            zoomBox = new ZoomBox(this, 256, this.ViewModel.Settings.ZoomViewModel);
+            Canvas.SetZIndex(zoomBox, 1200);
+            this.overlayCanvas.Children.Add(zoomBox);
+        }
+
+        private void SetShowGridLineState()
+        {
+            if(this.ViewModel.ShowGridLines)
+            {
+                Canvas.SetLeft(this.innerCanvas, 30);
+                Canvas.SetTop(this.innerCanvas, 30);
+                this.gridLineCorner.Visibility = Visibility.Visible;
+                this.gridLineTop.Visibility = Visibility.Visible;
+                this.gridLineLeft.Visibility = Visibility.Visible;
+
+                this.gridLineLeft.SetZoom(this.EffectiveZoom);
+                this.gridLineTop.SetZoom(this.EffectiveZoom);
+
+                gridLineTop.UpdateTranslation();
+                gridLineTop.UpdateTickmarks();
+
+                gridLineLeft.UpdateTranslation();
+                gridLineLeft.UpdateTickmarks();
+            }
+            else
+            {
+                Canvas.SetLeft(this.innerCanvas, 0);
+                Canvas.SetTop(this.innerCanvas, 0);
+                this.gridLineCorner.Visibility = Visibility.Collapsed;
+                this.gridLineTop.Visibility = Visibility.Collapsed;
+                this.gridLineLeft.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void ViewModel_ShowGridLinesChanged(object? sender, EventArgs e)
+        {
+            SetShowGridLineState();
         }
 
         bool selectAll = false;
@@ -268,7 +410,7 @@ namespace PixelRuler
             try
             {
                 selectAll = true;
-                foreach(var measEl in measurementElements)
+                foreach(var measEl in MeasurementElements)
                 {
                     measEl.Selected = true;
                 }
@@ -281,16 +423,16 @@ namespace PixelRuler
 
         private void ClearAllMeasureElements(object? sender, EventArgs e)
         {
-            foreach(var measEl in measurementElements)
+            foreach(var measEl in MeasurementElements)
             {
                 measEl.Clear();
             }
-            measurementElements.Clear();
+            MeasurementElements.Clear();
         }
 
         private void DeleteAllSelectedMeasureElements(object? sender, EventArgs e)
         {
-            var selectedItems = measurementElements.Where(it => it.Selected).ToList();
+            var selectedItems = MeasurementElements.Where(it => it.Selected).ToList();
             if(selectedItems.Contains(ViewModel.ActiveMeasureElement))
             {
                 ViewModel.ActiveMeasureElement = null;
@@ -298,14 +440,14 @@ namespace PixelRuler
             foreach (var measEl in selectedItems)
             {
                 measEl.Clear();
-                measurementElements.Remove(measEl);
+                MeasurementElements.Remove(measEl);
             }
         }
 
         private void SetClearAllMeasurementsEnabledState()
         {
             bool anyNonEmpty = false;
-            foreach (var measEl in measurementElements)
+            foreach (var measEl in MeasurementElements)
             {
                 if(!measEl.IsEmpty && measEl.FinishedDrawing)
                 {
@@ -397,6 +539,8 @@ namespace PixelRuler
 
         private void MainCanvas_MouseLeave(object sender, MouseEventArgs e)
         {
+            gridLineLeft.HideCurrentPosIndicator();
+            gridLineTop.HideCurrentPosIndicator();
         }
 
         private void MainCanvas_MouseEnter(object sender, MouseEventArgs e)
@@ -413,6 +557,8 @@ namespace PixelRuler
                 default:
                     throw new Exception("Unknown Tool");
             }
+            gridLineLeft.ShowCurrentPosIndicator();
+            gridLineTop.ShowCurrentPosIndicator();
         }
 
         private void MainCanvas_MouseUp(object sender, MouseButtonEventArgs e)
@@ -445,7 +591,7 @@ namespace PixelRuler
                 if(currentMeasurementElement.IsEmpty)
                 {
                     currentMeasurementElement.Clear();
-                    measurementElements.Remove(currentMeasurementElement);
+                    MeasurementElements.Remove(currentMeasurementElement);
                 }
             }
             SetClearAllMeasurementsEnabledState();
@@ -537,7 +683,7 @@ namespace PixelRuler
 
         private void UnselectAll()
         {
-            foreach(var measEl in measurementElements)
+            foreach(var measEl in MeasurementElements)
             {
                 measEl.Selected = false;
             }
@@ -580,7 +726,7 @@ namespace PixelRuler
         private void AddToCanvas(MeasurementElementZoomCanvasShape el)
         {
             el.AddToOwnerCanvas();
-            measurementElements.Add(el);
+            MeasurementElements.Add(el);
             el.SelectedChanged += CurrentMeasurementElement_SelectedChanged;
             el.Moving += CurrentMeasurementElement_Moving;
             el.StartResize += CurrentMeasurementElement_StartResize;
@@ -600,7 +746,7 @@ namespace PixelRuler
 
         private void CurrentMeasurementElement_StartResize(object? sender, MeasureElementResizeData e)
         {
-            zoomBox.Show(e, null);
+            zoomBox.Show(e, null, ZoomBoxCase.Resizer);
         }
 
         private void CurrentMeasurementElement_Moving(object? sender, Point e)
@@ -622,7 +768,7 @@ namespace PixelRuler
                     {
                         return;
                     }
-                    var toDeselect = measurementElements.Where(it => it != measEl && it.Selected);
+                    var toDeselect = MeasurementElements.Where(it => it != measEl && it.Selected);
                     foreach(var measElToDeselect in toDeselect)
                     {
                         measElToDeselect.Selected = false;
@@ -656,7 +802,6 @@ namespace PixelRuler
 
         private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-
             if (ViewModel.SelectedTool == Tool.ColorPicker)
             {
                 if(colorPickBox == null)
@@ -670,7 +815,6 @@ namespace PixelRuler
                     SetColorUnderMouse(e);
                 }
             }
-
 
             if (isPanning)
             {
@@ -687,6 +831,28 @@ namespace PixelRuler
 
                 tt.X = Math.Round((origX + totalAmountToMoveX));
                 tt.Y = Math.Round((origY + totalAmountToMoveY));
+
+                Panning?.Invoke(this, EventArgs.Empty);
+
+                var ocp = e.GetPosition(this.overlayCanvas);
+                var overlayPt = mainImage.TranslatePoint(ocp, this.overlayCanvas);
+
+                if(ViewModel.ShowGridLines)
+                {
+                    gridLineTop.UpdateTranslation();
+                    gridLineTop.UpdateTickmarks();
+
+                    gridLineLeft.UpdateTranslation();
+                    gridLineLeft.UpdateTickmarks();
+                }
+
+
+                foreach(var overlayElement in OverlayCanvasElements)
+                {
+                    overlayElement.UpdateForCoordinatesChanged();
+                }
+
+
 
                 //var leftCanvasSpace = new Point(Canvas.GetLeft(mainImage), Canvas.GetTop(mainImage));
                 //var realSpaceFromCanvasSpace = innerCanvas.TranslatePoint(leftCanvasSpace, this);
@@ -706,6 +872,8 @@ namespace PixelRuler
                 currentMeasurementElement.SetEndPoint(roundedPoint);
             }
         }
+
+        public event EventHandler<EventArgs> Panning;
 
         private Point applyConstraints(Point mouseEndPoint)
         {
@@ -781,6 +949,11 @@ namespace PixelRuler
 
             Zoom(oldScale, newScale, pointToKeepAtLocation);
 
+            foreach(var overlayElement in OverlayCanvasElements)
+            {
+                overlayElement.UpdateForCoordinatesChanged();
+            }
+
             e.Handled = true;
         }
 
@@ -817,6 +990,15 @@ namespace PixelRuler
                 tt.Y = (int)Math.Round(tt.Y);
             }
 
+            if(this.ViewModel.ShowGridLines)
+            {
+                gridLineTop.SetZoom(st.ScaleX);
+                gridLineTop.UpdateTranslation();
+
+                gridLineLeft.SetZoom(st.ScaleX);
+                gridLineLeft.UpdateTranslation();
+            }
+
             EffectiveZoomChanged?.Invoke(this, st.ScaleX);
             UpdateForZoomChange(); // TODO will the event be lagged?
         }
@@ -850,7 +1032,7 @@ namespace PixelRuler
                 colorPickBox.UpdateForZoomChange();
             }
 
-            foreach(var measEl in measurementElements)
+            foreach(var measEl in MeasurementElements)
             {
                 measEl.UpdateForZoomChange();
             }
@@ -888,6 +1070,16 @@ namespace PixelRuler
 
 
             e.Handled = true;
+        }
+
+        public void ShowZoomBox()
+        {
+            this.zoomBox.Show(null, null, ZoomBoxCase.QuickZoom);
+        }
+
+        public void HideZoomBox()
+        {
+            this.zoomBox.Hide();
         }
     }
 }

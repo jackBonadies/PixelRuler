@@ -398,6 +398,25 @@ namespace PixelRuler
             get; set;
         }
 
+        public event EventHandler<EventArgs> ShowGridLinesChanged;
+        private bool showGridlines = false;
+        public bool ShowGridLines
+        {
+            get
+            {
+                return showGridlines;
+            }
+            set
+            {
+                if(showGridlines != value)
+                {
+                    showGridlines = value;
+                    OnPropertyChanged();
+                    ShowGridLinesChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
         private Tool selectedTool;
         public Tool SelectedTool
         {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace PixelRuler
 {
@@ -25,6 +26,11 @@ namespace PixelRuler
             System.Windows.PresentationSource source = System.Windows.PresentationSource.FromVisual(element);
             double dpiX = source.CompositionTarget.TransformToDevice.M11;
             return dpiX;
+        }
+
+        public static void SetStrokeToAnnotationColor(this Shape shape)
+        {
+            shape.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
         }
 
     }
