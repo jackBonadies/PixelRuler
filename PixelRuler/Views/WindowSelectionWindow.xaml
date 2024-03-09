@@ -49,8 +49,10 @@
             Canvas.Top="50"
             Width="0"
             Height="0"
+            RadiusX="4"
+            RadiusY="4"
             Stroke="Red"
-            StrokeThickness="1" />
+            StrokeThickness="4" />
 
     </Canvas>
 </Window>

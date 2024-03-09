@@ -406,7 +406,6 @@ namespace PixelRuler.CanvasElements
 
         public override List<UIElement> GetZoomCanvasElements()
         {
-            // TODO: umm line settings??? for all GetZoomCanvasElements()
             var mainLine = UiUtils.CreateLine();
             mainLine.StrokeThickness = getUIStrokeThicknessUnit();
             mainLine.SetStrokeToAnnotationColor();

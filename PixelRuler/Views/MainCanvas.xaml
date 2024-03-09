@@ -116,10 +116,13 @@
         <Rectangle
             x:Name="gridLineCorner"
             Canvas.Left="0"
-            Canvas.Top="0"
+            Canvas.Top="1"
             Width="30"
-            Height="30"
-            Fill="Black"
-            Stroke="#ffffff" />
+            Height="29"
+            Fill="#202020"
+            RenderOptions.EdgeMode="Aliased"
+            SnapsToDevicePixels="True"
+            Stroke="#909090"
+            StrokeThickness="1" />
     </Canvas>
 </UserControl>

@@ -23,7 +23,7 @@ namespace PixelRuler.Views
     /// </summary>
     public partial class Gridline : UserControl
     {
-        public double Scale { get; private set; }
+        public double Scale { get; private set; } = -1;
         private int startCoor = int.MaxValue;
         private int endCoor = int.MaxValue;
 
@@ -55,7 +55,6 @@ namespace PixelRuler.Views
             this.Loaded += Gridline_Loaded;
 
             currentMousePosTick = new GuidelineTick(this, null, GuidelineTick.GridlineTickType.CurrentMarker);
-
         }
 
         public void ShowCurrentPosIndicator()
@@ -80,11 +79,12 @@ namespace PixelRuler.Views
             {
                 X1 = 0,
                 X2 = 20000,
-                Y1 = 0,
-                Y2 = 0,
+                Y1 = 1,
+                Y2 = 1,
                 Stroke = new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
                 StrokeThickness = 1,
             };
+            RenderOptions.SetEdgeMode(line, EdgeMode.Aliased);
             this.canvas.Children.Add(line);
             Canvas.SetLeft(line, 0);
             Canvas.SetTop(line, 0);
@@ -99,6 +99,7 @@ namespace PixelRuler.Views
                 Stroke = new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
                 StrokeThickness = 1,
             };
+            RenderOptions.SetEdgeMode(line, EdgeMode.Aliased);
             this.canvas.Children.Add(line);
             Canvas.SetLeft(line, 0);
             Canvas.SetTop(line, 0);
@@ -166,10 +167,11 @@ namespace PixelRuler.Views
                         X1 = curValLoc + 10000,
                         X2 = curValLoc + 10000,
                         Stroke = new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
-                        StrokeThickness = .8,
+                        StrokeThickness = 1,
                         SnapsToDevicePixels = true,
                         UseLayoutRounding = true
                     };
+                    RenderOptions.SetEdgeMode(line, EdgeMode.Aliased);
 
                     if (curVal % majorTickSpacing == 0)
                     {

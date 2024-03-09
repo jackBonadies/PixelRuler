@@ -52,7 +52,10 @@ namespace PixelRuler.CanvasElements
         public void AddToGridline()
         {
             UpdatePosition();
-            OwningGridLine.canvas.Children.Add(tickLine);
+            if (!OwningGridLine.canvas.Children.Contains(tickLine))
+            {
+                OwningGridLine.canvas.Children.Add(tickLine);
+            }
         }
 
         public void UpdatePosition()

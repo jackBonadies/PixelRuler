@@ -379,6 +379,15 @@ namespace PixelRuler
                 this.gridLineCorner.Visibility = Visibility.Visible;
                 this.gridLineTop.Visibility = Visibility.Visible;
                 this.gridLineLeft.Visibility = Visibility.Visible;
+
+                this.gridLineLeft.SetZoom(this.EffectiveZoom);
+                this.gridLineTop.SetZoom(this.EffectiveZoom);
+
+                gridLineTop.UpdateTranslation();
+                gridLineTop.UpdateTickmarks();
+
+                gridLineLeft.UpdateTranslation();
+                gridLineLeft.UpdateTickmarks();
             }
             else
             {
