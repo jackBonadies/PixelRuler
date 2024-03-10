@@ -281,30 +281,6 @@
 
         </DockPanel>
 
-        <tray:NotifyIcon
-            x:Name="notifyIcon"
-            FocusOnLeftClick="True"
-            MenuOnRightClick="True"
-            TooltipText="PixelRuler">
-            <tray:NotifyIcon.Menu>
-                <ContextMenu>
-                    <wpfui:MenuItem Command="{Binding NewScreenshotFullCommand}" Header="{Binding NewScreenshotFullCommand.ToolTipTextFull}">
-                        <wpfui:MenuItem.Icon>
-                            <wpfui:SymbolIcon Symbol="CameraAdd24" />
-                        </wpfui:MenuItem.Icon>
-                    </wpfui:MenuItem>
-                    <wpfui:MenuItem Command="{Binding NewScreenshotFullCommand}" Header="New Full Screenshot">
-                        <wpfui:MenuItem.Icon>
-                            <wpfui:SymbolIcon Symbol="CameraAdd24" />
-                        </wpfui:MenuItem.Icon>
-                    </wpfui:MenuItem>
-                    <wpfui:MenuItem Click="MenuItemExit_Click" Header="Exit">
-                        <wpfui:MenuItem.Icon>
-                            <wpfui:SymbolIcon Symbol="ArrowExit20" />
-                        </wpfui:MenuItem.Icon>
-                    </wpfui:MenuItem>
-                </ContextMenu>
-            </tray:NotifyIcon.Menu>
-        </tray:NotifyIcon>
+
     </Grid>
 </local:ThemeWindow>
