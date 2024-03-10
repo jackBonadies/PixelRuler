@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
 namespace PixelRuler.Common
@@ -14,6 +15,7 @@ namespace PixelRuler.Common
             var line = new Line();
             line.StrokeThickness = 1;
             line.SnapsToDevicePixels = true;
+            line.UseLayoutRounding = true;
             return line;
         }
 
@@ -25,6 +27,11 @@ namespace PixelRuler.Common
             rect.StrokeThickness = 1;
             rect.SnapsToDevicePixels = true;
             return rect;
+        }
+
+        public static int GetBorderPixelSize(double dpi)
+        {
+            return (int)Math.Round(App.BorderSizeDpiIndependentUnits * dpi);
         }
     }
 }

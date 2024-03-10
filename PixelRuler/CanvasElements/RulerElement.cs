@@ -407,13 +407,13 @@ namespace PixelRuler.CanvasElements
         public override List<UIElement> GetZoomCanvasElements()
         {
             var mainLine = UiUtils.CreateLine();
-            mainLine.StrokeThickness = getUIStrokeThicknessUnit();
+            mainLine.StrokeThickness = 1;
             mainLine.SetStrokeToAnnotationColor();
             var side1 = UiUtils.CreateLine();
-            side1.StrokeThickness = getUIStrokeThicknessUnit();
+            side1.StrokeThickness = 1;
             side1.SetStrokeToAnnotationColor();
             var side2 = UiUtils.CreateLine();
-            side2.StrokeThickness = getUIStrokeThicknessUnit();
+            side2.StrokeThickness = 1;
             side2.SetStrokeToAnnotationColor();
             return new List<UIElement>()
             {

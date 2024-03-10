@@ -1,4 +1,5 @@
 ﻿using PixelRuler.CanvasElements;
+using PixelRuler.Common;
 using PixelRuler.Views;
 using System;
 using System.Collections.Generic;
@@ -97,6 +98,8 @@ namespace PixelRuler
                 this.gridLineTop.SetZoom(1);
                 this.gridLineLeft.SetZoom(1);
             }
+            this.gridLineCorner.Width = UiUtils.GetBorderPixelSize(this.GetDpi());
+            this.gridLineCorner.Height = UiUtils.GetBorderPixelSize(this.GetDpi());
         }
 
         private void OverlayCanvas_MouseLeave(object sender, MouseEventArgs e)
@@ -374,8 +377,8 @@ namespace PixelRuler
         {
             if(this.ViewModel.ShowGridLines)
             {
-                Canvas.SetLeft(this.innerCanvas, 30);
-                Canvas.SetTop(this.innerCanvas, 30);
+                Canvas.SetLeft(this.innerCanvas, UiUtils.GetBorderPixelSize(this.GetDpi()));
+                Canvas.SetTop(this.innerCanvas, UiUtils.GetBorderPixelSize(this.GetDpi()));
                 this.gridLineCorner.Visibility = Visibility.Visible;
                 this.gridLineTop.Visibility = Visibility.Visible;
                 this.gridLineLeft.Visibility = Visibility.Visible;

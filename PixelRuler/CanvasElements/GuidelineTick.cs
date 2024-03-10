@@ -1,10 +1,12 @@
-﻿using PixelRuler.Views;
+﻿using PixelRuler.Common;
+using PixelRuler.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
 namespace PixelRuler.CanvasElements
@@ -35,19 +37,23 @@ namespace PixelRuler.CanvasElements
             tickLine = new Line
             {
                 X1 = 0,
-                X2 = 30,
                 Y1 = 0,
-                Y2 = 30,
-                StrokeThickness = .8,
+                StrokeThickness = 1,
                 Stroke = new SolidColorBrush(
                     tickType == GridlineTickType.Guideline ? 
                     Colors.Aqua : Colors.Aqua),
                 SnapsToDevicePixels = true,
                 UseLayoutRounding = true,
             };
+            tickLine.Loaded += TickLine_Loaded;
             RenderOptions.SetEdgeMode(tickLine, EdgeMode.Aliased);
         }
 
+        private void TickLine_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            tickLine.X2 = UiUtils.GetBorderPixelSize(tickLine.GetDpi());
+            tickLine.Y2 = UiUtils.GetBorderPixelSize(tickLine.GetDpi());
+        }
 
         public void AddToGridline()
         {
@@ -61,7 +67,9 @@ namespace PixelRuler.CanvasElements
         public void UpdatePosition()
         {
             var gridLineCoor = getImageCoordinate() * this.OwningGridLine.Scale + 10000;
-            tickLine.X1 = tickLine.X2 = gridLineCoor + .5; // TODO: Why
+            tickLine.X1 = tickLine.X2 = gridLineCoor + .5/this.OwningGridLine.GetDpi(); // TODO: Why
+            //var window = System.Windows.Window.GetWindow(tickLine);
+            //var child = (window.Content as System.Windows.Controls.Grid).Children[0];
         }
 
         private int getImageCoordinate()

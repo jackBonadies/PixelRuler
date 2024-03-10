@@ -80,6 +80,8 @@ namespace PixelRuler
             25600,
         };
 
+        public const double BorderSizeDpiIndependentUnits = 24;
+
         public static readonly int ResizeSpeedFactor = 1;
         public static readonly bool FloatingZoomBoxPosAllowed = true;
 
