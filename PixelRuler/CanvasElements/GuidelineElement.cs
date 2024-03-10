@@ -63,7 +63,7 @@ namespace PixelRuler.CanvasElements
                 hitBoxCanvas.Width = getUIUnit() * 5;
                 hitBoxCanvas.Height = 1000;
             }
-            hitBoxCanvas.Background = new SolidColorBrush(Colors.Red);
+            hitBoxCanvas.Background = new SolidColorBrush(Colors.Transparent);
             hitBoxCanvas.MouseLeftButtonDown += HitBoxCanvas_MouseLeftButtonDown;
             hitBoxCanvas.MouseMove += HitBoxCanvas_MouseMove;
             hitBoxCanvas.MouseLeftButtonUp += HitBoxCanvas_MouseLeftButtonUp;
@@ -215,7 +215,7 @@ namespace PixelRuler.CanvasElements
 
         public override List<UIElement> GetZoomCanvasElements()
         {
-            var line = new Line() { StrokeThickness = getUIStrokeThicknessUnit() };
+            var line = new Line() { StrokeThickness = 1 };
             line.SetStrokeToAnnotationColor();
             return new List<UIElement>()
             {

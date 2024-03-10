@@ -628,7 +628,7 @@ namespace PixelRuler
 
         public override List<UIElement> GetZoomCanvasElements()
         {
-            var rect = new Rectangle() { StrokeThickness = getUIStrokeThicknessUnit() };
+            var rect = new Rectangle() { StrokeThickness = 1 };
             rect.SetStrokeToAnnotationColor();
             return new List<UIElement>()
             {
