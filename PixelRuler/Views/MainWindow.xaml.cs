@@ -84,16 +84,16 @@ namespace PixelRuler
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
+            if (e.Key == Key.G)
+            {
+                (mainCanvas.DataContext as PixelRulerViewModel).ShowGridLines =
+                    !(mainCanvas.DataContext as PixelRulerViewModel).ShowGridLines;
+            }
 #if DEBUG
             if(e.Key == Key.D)
             {
                 var el = VisualTreeHelper.HitTest(this, Mouse.GetPosition(this));
                 System.Diagnostics.Debugger.Break();
-            }
-            else if (e.Key == Key.G)
-            {
-                (mainCanvas.DataContext as PixelRulerViewModel).ShowGridLines = 
-                    !(mainCanvas.DataContext as PixelRulerViewModel).ShowGridLines;
             }
             else if(e.Key == Key.P)
             {
@@ -137,7 +137,7 @@ namespace PixelRuler
 
             }
 #endif
-            if(e.Key == Key.Space)
+            if (e.Key == Key.Space)
             {
                 mainCanvas.ShowZoomBox();
             }

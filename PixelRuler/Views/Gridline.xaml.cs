@@ -11,6 +11,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -76,7 +77,7 @@ namespace PixelRuler.Views
 
         private void Gridline_Loaded(object sender, RoutedEventArgs e)
         {
-            borderSizePixels = (int)Math.Round(App.BorderSizeDpiIndependentUnits * this.GetDpi());
+            borderSizePixels = UiUtils.GetBorderPixelSize(this.GetDpi());
 
             SetBorder();
             canvas.Width = 20000;
@@ -206,7 +207,7 @@ namespace PixelRuler.Views
                         Canvas.SetLeft(txtBlock, curValLoc + 5 + 10000);
                         Canvas.SetTop(txtBlock, 0);
                         line.Y1 = 0;
-                        line.Y2 = App.BorderSizeDpiIndependentUnits * this.GetDpi();
+                        line.Y2 = UiUtils.GetBorderPixelSize(this.GetDpi());
                     }
                     else if ((curVal * 2) % majorTickSpacing == 0)
                     {
