@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,15 +18,54 @@ using System.Windows.Shapes;
 
 namespace PixelRuler
 {
+    public class RootViewModel : INotifyPropertyChanged
+    {
+        public RootViewModel(SettingsViewModel? settingsViewModel = null) 
+        {
+            Settings = settingsViewModel;
+            this.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewScreenshotFullLogic(); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
+            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { NewScreenshotWindowedLogic(); }, Key.N, ModifierKeys.Control, "New Windowed Screenshot");
+
+        }
+
+        private void NewScreenshotWindowedLogic()
+        {
+            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(this.Settings));
+            mainWindow.NewWindowedScreenshot();
+            mainWindow.Show();
+        }
+        public RelayCommandFull NewScreenshotWindowedCommand { get; init; }
+
+        private void NewScreenshotFullLogic()
+        {
+            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(this.Settings));
+            mainWindow.NewFullScreenshot(false);
+            mainWindow.Show();
+        }
+        public RelayCommandFull NewScreenshotFullCommand { get; init; } 
+        public SettingsViewModel Settings { get; set; }
+
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string? name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+    }
+
+
     /// <summary>
     /// Interaction logic for RootWindow.xaml
     /// </summary>
     public partial class RootWindow : Window
     {
-        public RootWindow(PixelRulerViewModel prvm)
+        public RootWindow(RootViewModel rootViewModel)
         {
             InitializeComponent();
 
+            this.RootViewModel = rootViewModel;
+            this.DataContext = rootViewModel;
             this.WindowStartupLocation = WindowStartupLocation.Manual;
             this.WindowState = WindowState.Normal; // better than minimized bc no lower left flicker
             this.ShowActivated = false;
@@ -32,8 +73,10 @@ namespace PixelRuler
             this.Left = int.MinValue;
             this.ShowInTaskbar = false;
             this.DataContextChanged += RootWindow_DataContextChanged;
-            this.notifyIcon.Menu.DataContext = prvm;
+            this.notifyIcon.Menu.DataContext = rootViewModel;
         }
+
+        public RootViewModel RootViewModel { get; init; }
 
         private void RootWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -47,7 +90,13 @@ namespace PixelRuler
 
         private HwndSource _source;
 
-        public SettingsViewModel SettingsViewModel { get; internal set; }
+        public SettingsViewModel SettingsViewModel
+        {
+            get
+            {
+                return this.RootViewModel.Settings;
+            }
+        }
 
         protected override void OnSourceInitialized(EventArgs e)
         {
@@ -60,7 +109,6 @@ namespace PixelRuler
             ThemeManager.UpdateForThemeChanged(this.SettingsViewModel.DayNightMode);
             this.SettingsViewModel.ShortcutChanged += Settings_ShortcutChanged;
             this.SettingsViewModel.GlobalShortcutsEnabledChanged += Settings_GlobalShortcutsEnabledChanged;
-
 
             RegisterHotKeys();
         }
@@ -157,13 +205,6 @@ namespace PixelRuler
                     break;
             }
             return IntPtr.Zero;
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(this.SettingsViewModel));
-            mainWindow.NewFullScreenshot(false);
-            mainWindow.Show();
         }
     }
 }

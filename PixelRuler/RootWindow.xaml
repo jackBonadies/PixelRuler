@@ -24,7 +24,7 @@
                         <wpfui:SymbolIcon Symbol="CameraAdd24" />
                     </wpfui:MenuItem.Icon>
                 </wpfui:MenuItem>
-                <wpfui:MenuItem Click="MenuItem_Click"  Header="New Full Screenshot">
+                <wpfui:MenuItem Command="{Binding NewScreenshotWindowedCommand}" Header="{Binding NewScreenshotWindowedCommand.ToolTipTextFull}">
                     <wpfui:MenuItem.Icon>
                         <wpfui:SymbolIcon Symbol="CameraAdd24" />
                     </wpfui:MenuItem.Icon>

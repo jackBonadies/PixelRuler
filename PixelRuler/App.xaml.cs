@@ -58,12 +58,8 @@ namespace PixelRuler
             settingsViewModel = new SettingsViewModel();
             var mainViewModel = new PixelRulerViewModel(settingsViewModel);
 
-            var rootWindow = new RootWindow(mainViewModel);
-            rootWindow.DataContext = mainViewModel;
-            rootWindow.SettingsViewModel = settingsViewModel;
+            var rootWindow = new RootWindow(new RootViewModel(settingsViewModel));
             rootWindow.Show();
-
-
 
             settingsViewModel.SetState();
 
