@@ -11,7 +11,7 @@
     Background="Transparent"
     Cursor="Cross"
     mc:Ignorable="d">
-    <Canvas Height="10000" Background="#01FFFFFF">
+    <Canvas Background="#01FFFFFF">
         <Canvas.RenderTransform>
             <TransformGroup>
                 <ScaleTransform x:Name="reverseDpiTransform" CenterX="0" CenterY="0" ScaleX="1" ScaleY="1" />
@@ -20,6 +20,17 @@
                 <TranslateTransform />
             </TransformGroup>
         </Canvas.RenderTransform>
+
+        <Line
+            x:Name="vertIndicator"
+            Panel.ZIndex="100"
+            Stroke="Red"
+            StrokeThickness="1" />
+        <Line
+            x:Name="horzIndicator"
+            Panel.ZIndex="100"
+            Stroke="Red"
+            StrokeThickness="1" />
 
         <!--  Combined Geomtry - responsible for the dimming around selected window  -->
         <Path

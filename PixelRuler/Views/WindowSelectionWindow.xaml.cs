@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PixelRuler.Common;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -26,17 +27,22 @@ namespace PixelRuler
     /// </summary>
     public partial class WindowSelectionWindow : Window
     {
-        public WindowSelectionWindow()
+        // TODO simple viewmodel for mode and rectangle
+
+        ScreenshotMode mode;
+
+        public WindowSelectionWindow(ScreenshotMode mode)
         {
             InitializeComponent();
+            this.mode = mode;
             this.Loaded += WindowSelectionWindow_Loaded;
             this.SourceInitialized += WindowSelectionWindow_SourceInitialized;
             this.WindowState = WindowState.Normal;
-            this.Top = 0;
-            this.Left = 0;
-            // the actual window size may be larger due to dpi scaling
-            this.Width = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width;
-            this.Height = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height;
+            var fullBounds = UiUtils.GetFullBounds(WpfScreenHelper.Screen.AllScreens);
+            this.Top = fullBounds.Top;
+            this.Left = fullBounds.Left;
+            this.Width = fullBounds.Width;
+            this.Height = fullBounds.Height;
             this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
             this.AllowsTransparency = true;
@@ -44,6 +50,14 @@ namespace PixelRuler
             this.PreviewMouseMove += WindowSelectionWindow_PreviewMouseMove;
             this.KeyDown += WindowSelectionWindow_KeyDown;
             this.MouseUp += WindowSelectionWindow_MouseUp;
+
+            horzIndicator.X1 = fullBounds.Left;
+            horzIndicator.X2 = fullBounds.Right;
+            horzIndicator.Y1 = horzIndicator.Y2 = 300;
+
+            vertIndicator.X1 = vertIndicator.X2 = 300;
+            vertIndicator.Y1 = fullBounds.Top;
+            vertIndicator.Y2 = fullBounds.Bottom;
 
             blurRect.Rect = new Rect(0, 0, this.Width, this.Height);
         }
@@ -69,7 +83,20 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            SelectWindowUnderCursor();
+            if(mode == ScreenshotMode.Window)
+            {
+                SelectWindowUnderCursor();
+            }
+            else
+            {
+                SetCursorIndicator(e.GetPosition(this));
+            }
+        }
+
+        private void SetCursorIndicator(Point point)
+        {
+            vertIndicator.X1 = vertIndicator.X2 = point.X;
+            horzIndicator.Y1 = horzIndicator.Y2 = point.Y;
         }
 
         private Rect SelectWindowUnderCursor()

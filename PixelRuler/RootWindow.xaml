@@ -11,6 +11,7 @@
     Title="RootWindow"
     Width="800"
     Height="450"
+    d:DataContext="{d:DesignInstance Type=local:RootViewModel}"
     mc:Ignorable="d">
     <tray:NotifyIcon
         x:Name="notifyIcon"
@@ -25,6 +26,11 @@
                     </wpfui:MenuItem.Icon>
                 </wpfui:MenuItem>
                 <wpfui:MenuItem Command="{Binding NewScreenshotWindowedCommand}" Header="{Binding NewScreenshotWindowedCommand.ToolTipTextFull}">
+                    <wpfui:MenuItem.Icon>
+                        <wpfui:SymbolIcon Symbol="CameraAdd24" />
+                    </wpfui:MenuItem.Icon>
+                </wpfui:MenuItem>
+                <wpfui:MenuItem Command="{Binding NewScreenshotRegionCommand}" Header="{Binding NewScreenshotRegionCommand.ToolTipTextFull}">
                     <wpfui:MenuItem.Icon>
                         <wpfui:SymbolIcon Symbol="CameraAdd24" />
                     </wpfui:MenuItem.Icon>

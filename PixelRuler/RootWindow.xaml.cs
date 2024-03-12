@@ -18,22 +18,32 @@ using System.Windows.Shapes;
 
 namespace PixelRuler
 {
+    public enum ScreenshotMode
+    {
+        Window = 0,
+        RegionRect = 1,
+    }
+
+    // TODO own class
     public class RootViewModel : INotifyPropertyChanged
     {
         public RootViewModel(SettingsViewModel? settingsViewModel = null) 
         {
             Settings = settingsViewModel;
             this.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewScreenshotFullLogic(); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
-            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { NewScreenshotWindowedLogic(); }, Key.N, ModifierKeys.Control, "New Windowed Screenshot");
+            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { NewScreenshotRegionLogic(ScreenshotMode.Window); }, Key.N, ModifierKeys.Control, "New Windowed Screenshot");
+            this.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { NewScreenshotRegionLogic(ScreenshotMode.RegionRect); }, Key.N, ModifierKeys.Control, "New Region Screenshot");
 
         }
 
-        private void NewScreenshotWindowedLogic()
+        private void NewScreenshotRegionLogic(ScreenshotMode mode)
         {
             MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(this.Settings));
-            mainWindow.NewWindowedScreenshot();
+            mainWindow.NewWindowedScreenshot(mode);
             mainWindow.Show();
         }
+
+        public RelayCommandFull NewScreenshotRegionCommand { get; init; }
         public RelayCommandFull NewScreenshotWindowedCommand { get; init; }
 
         private void NewScreenshotFullLogic()

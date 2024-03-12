@@ -54,7 +54,7 @@ namespace PixelRuler
             this.Loaded += MainWindow_Loaded;
 
             this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
-            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
+            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(ScreenshotMode.Window); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
             this.ViewModel.CopyCanvasContents = new RelayCommandFull((object? o) => { CopyContents(); }, Key.C, ModifierKeys.Control, "Copy Elements");
             this.ViewModel.PasteCanvasContents = new RelayCommandFull((object? o) => { this.mainCanvas.PasteCopiedData(); }, Key.V, ModifierKeys.Control, "Paste Elements");
 
@@ -220,10 +220,10 @@ namespace PixelRuler
             base.OnClosing(e);
         }
 
-        public async void NewWindowedScreenshot()
+        public async void NewWindowedScreenshot(ScreenshotMode mode)
         {
             this.Hide();
-            var wsw = new WindowSelectionWindow();
+            var wsw = new WindowSelectionWindow(mode);
             var res = wsw.ShowDialog();
             Bitmap bmp = null;
             if(res is true)
