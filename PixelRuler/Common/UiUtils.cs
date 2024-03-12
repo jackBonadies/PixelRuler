@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using WpfScreenHelper;
@@ -43,6 +44,20 @@ namespace PixelRuler.Common
                 unionRect.Union(screen.Bounds);
             }
             return unionRect;
+        }
+
+        public static Point TruncatePoint(Point mousePos)
+        {
+            var roundX = (int)(mousePos.X);
+            var roundY = (int)(mousePos.Y);
+            return new Point(roundX, roundY);
+        }
+
+        public static Point RoundPoint(Point mousePos)
+        {
+            var roundX = Math.Round(mousePos.X);
+            var roundY = Math.Round(mousePos.Y);
+            return new Point(roundX, roundY);
         }
     }
 }

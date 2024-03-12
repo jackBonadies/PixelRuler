@@ -11,7 +11,7 @@
     Background="Transparent"
     Cursor="Cross"
     mc:Ignorable="d">
-    <Canvas Background="#01FFFFFF">
+    <Canvas x:Name="canv" Background="#01FFFFFF">
         <Canvas.RenderTransform>
             <TransformGroup>
                 <ScaleTransform x:Name="reverseDpiTransform" CenterX="0" CenterY="0" ScaleX="1" ScaleY="1" />
@@ -24,16 +24,19 @@
         <Line
             x:Name="vertIndicator"
             Panel.ZIndex="100"
+            SnapsToDevicePixels="True"
             Stroke="Red"
             StrokeThickness="1" />
         <Line
             x:Name="horzIndicator"
             Panel.ZIndex="100"
+            SnapsToDevicePixels="True"
             Stroke="Red"
             StrokeThickness="1" />
 
         <!--  Combined Geomtry - responsible for the dimming around selected window  -->
         <Path
+            x:Name="blurBackground"
             Canvas.Left="0"
             Canvas.Top="0"
             Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}"
@@ -44,11 +47,11 @@
             <Path.Data>
                 <CombinedGeometry GeometryCombineMode="Exclude">
                     <CombinedGeometry.Geometry1>
-                        <RectangleGeometry x:Name="blurRect" Rect="0,0,250,250" />
+                        <RectangleGeometry x:Name="blurRectGeometry" Rect="0,0,250,250" />
                     </CombinedGeometry.Geometry1>
                     <!--  Hole where there is no dark dim  -->
                     <CombinedGeometry.Geometry2>
-                        <RectangleGeometry x:Name="innerRect" Rect="50,50,25,25" />
+                        <RectangleGeometry x:Name="innerRectGeometry" Rect="50,50,25,25" />
                     </CombinedGeometry.Geometry2>
                 </CombinedGeometry>
             </Path.Data>

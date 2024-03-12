@@ -226,8 +226,8 @@ namespace PixelRuler
                 desiredStartY = MoveStartInfo.shapeStart.Y + yMove;
             }
 
-            var desiredStart = MainCanvas.RoundPoint(new Point(desiredStartX, desiredStartY));
-            var desiredEnd = MainCanvas.RoundPoint(new Point(desiredEndX, desiredEndY));
+            var desiredStart = UiUtils.RoundPoint(new Point(desiredStartX, desiredStartY));
+            var desiredEnd = UiUtils.RoundPoint(new Point(desiredEndX, desiredEndY));
 
             if(movingCorner)
             {

@@ -160,7 +160,7 @@ namespace PixelRuler
 
         private void GridLine_MouseMove(object sender, MouseEventArgs e)
         {
-            var pt = RoundPoint(e.GetPosition(this.innerCanvas));
+            var pt = UiUtils.RoundPoint(e.GetPosition(this.innerCanvas));
 
             if(sender == gridLineTop)
             {
@@ -204,7 +204,7 @@ namespace PixelRuler
             //(zoomBox.Fill as VisualBrush).Viewbox.X = e.GetPosition(innerCanvas).X;
             if (this.ViewModel.ShowGridLines)
             {
-                var roundedPoint = RoundPoint(e.GetPosition(this.mainImage));
+                var roundedPoint = UiUtils.RoundPoint(e.GetPosition(this.mainImage));
                 gridLineTop.SetCurrentMousePosition(roundedPoint);
                 gridLineLeft.SetCurrentMousePosition(roundedPoint);
             }
@@ -666,7 +666,7 @@ namespace PixelRuler
 
         private void SetColorUnderMouse(MouseEventArgs e)
         {
-            var pt = TruncatePoint(e.GetPosition(mainImage));
+            var pt = UiUtils.TruncatePoint(e.GetPosition(mainImage));
 
             if (this.ViewModel.Image == null ||
                 this.ViewModel.Image.Width <= pt.X ||
@@ -702,7 +702,7 @@ namespace PixelRuler
             cursorOld = innerCanvas.Cursor;
             //innerCanvas.Cursor = Cursors.None;
 
-            var roundedPoint = RoundPoint(e.GetPosition(innerCanvas));
+            var roundedPoint = UiUtils.RoundPoint(e.GetPosition(innerCanvas));
 
             if(!isSticky)
             {
@@ -786,19 +786,6 @@ namespace PixelRuler
 
         private Cursor? cursorOld;
 
-        private Point TruncatePoint(Point mousePos)
-        {
-            var roundX = (int)(mousePos.X);
-            var roundY = (int)(mousePos.Y);
-            return new Point(roundX, roundY);
-        }
-
-        public static Point RoundPoint(Point mousePos)
-        {
-            var roundX = Math.Round(mousePos.X);
-            var roundY = Math.Round(mousePos.Y);
-            return new Point(roundX, roundY);
-        }
 
         double totalAmountToMoveX;
         double totalAmountToMoveY;
@@ -811,7 +798,7 @@ namespace PixelRuler
                 {
                     colorPickBox = new ColorPickElement(this.innerCanvas);
                 }
-                var truncatedPoint = TruncatePoint(e.GetPosition(innerCanvas));
+                var truncatedPoint = UiUtils.TruncatePoint(e.GetPosition(innerCanvas));
                 colorPickBox.SetPosition(truncatedPoint);
                 if(System.Windows.Input.Mouse.LeftButton == MouseButtonState.Pressed)
                 {
@@ -871,7 +858,7 @@ namespace PixelRuler
             }
             else if (drawingShape)
             {
-                var roundedPoint = RoundPoint(e.GetPosition(innerCanvas));
+                var roundedPoint = UiUtils.RoundPoint(e.GetPosition(innerCanvas));
                 currentMeasurementElement.SetEndPoint(roundedPoint);
             }
         }
@@ -880,7 +867,7 @@ namespace PixelRuler
 
         private Point applyConstraints(Point mouseEndPoint)
         {
-            var roundedEndPoint = RoundPoint(mouseEndPoint);
+            var roundedEndPoint = UiUtils.RoundPoint(mouseEndPoint);
             if(currentMeasurementElement is BoundingBoxElement)
             {
                 var diffX = Math.Abs(currentMeasurementElement.StartPoint.X - roundedEndPoint.X);
