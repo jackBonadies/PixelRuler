@@ -43,7 +43,7 @@ namespace PixelRuler.CanvasElements
                     tickType == GridlineTickType.Guideline ? 
                     Colors.Aqua : Colors.Aqua),
                 SnapsToDevicePixels = true,
-                UseLayoutRounding = true,
+                UseLayoutRounding = false,
             };
             tickLine.Loaded += TickLine_Loaded;
             RenderOptions.SetEdgeMode(tickLine, EdgeMode.Aliased);

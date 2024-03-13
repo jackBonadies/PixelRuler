@@ -384,7 +384,7 @@ namespace PixelRuler.Views
                 //elInfo.Item1.UpdateZoomCanvasElements(elInfo.Item2, zoomBox, ZoomFactor,)
             }
         }
-        private Line line1 = new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1, UseLayoutRounding = true, SnapsToDevicePixels=true };
+        private Line line1 = new Line() { Stroke = new SolidColorBrush(Colors.Aqua), StrokeThickness = 1, UseLayoutRounding = false, SnapsToDevicePixels=true };
 
 
         private Point getZoomBoxCoorFromZoomCanvas(Point zoomCanvasPt)

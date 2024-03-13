@@ -1,0 +1,46 @@
+﻿<Window
+    x:Class="PixelRuler.RootWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PixelRuler"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="RootWindow"
+    Width="800"
+    Height="450"
+    d:DataContext="{d:DesignInstance Type=local:RootViewModel}"
+    mc:Ignorable="d">
+    <tray:NotifyIcon
+        x:Name="notifyIcon"
+        FocusOnLeftClick="True"
+        MenuOnRightClick="True"
+        TooltipText="PixelRuler">
+        <tray:NotifyIcon.Menu>
+            <ContextMenu>
+                <wpfui:MenuItem Command="{Binding NewScreenshotFullCommand}" Header="{Binding NewScreenshotFullCommand.ToolTipTextFull}">
+                    <wpfui:MenuItem.Icon>
+                        <wpfui:SymbolIcon Symbol="CameraAdd24" />
+                    </wpfui:MenuItem.Icon>
+                </wpfui:MenuItem>
+                <wpfui:MenuItem Command="{Binding NewScreenshotWindowedCommand}" Header="{Binding NewScreenshotWindowedCommand.ToolTipTextFull}">
+                    <wpfui:MenuItem.Icon>
+                        <wpfui:SymbolIcon Symbol="CameraAdd24" />
+                    </wpfui:MenuItem.Icon>
+                </wpfui:MenuItem>
+                <wpfui:MenuItem Command="{Binding NewScreenshotRegionCommand}" Header="{Binding NewScreenshotRegionCommand.ToolTipTextFull}">
+                    <wpfui:MenuItem.Icon>
+                        <wpfui:SymbolIcon Symbol="CameraAdd24" />
+                    </wpfui:MenuItem.Icon>
+                </wpfui:MenuItem>
+                <wpfui:MenuItem Click="MenuItemExit_Click" Header="Exit">
+                    <wpfui:MenuItem.Icon>
+                        <wpfui:SymbolIcon Symbol="ArrowExit20" />
+                    </wpfui:MenuItem.Icon>
+                </wpfui:MenuItem>
+            </ContextMenu>
+        </tray:NotifyIcon.Menu>
+    </tray:NotifyIcon>
+</Window>

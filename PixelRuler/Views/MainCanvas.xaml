@@ -40,7 +40,7 @@
             ManipulationDelta="innerCanvas_ManipulationDelta"
             ManipulationStarting="innerCanvas_ManipulationStarting"
             SnapsToDevicePixels="True"
-            UseLayoutRounding="True">
+            UseLayoutRounding="False">
             <Canvas.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform x:Name="CanvasScaleTransform" />
@@ -98,7 +98,7 @@
             Canvas.Top="-10000"
             IsVertical="True"
             SnapsToDevicePixels="True"
-            UseLayoutRounding="True">
+            UseLayoutRounding="False">
             <views:Gridline.LayoutTransform>
                 <TransformGroup>
                     <ScaleTransform ScaleX="-1" ScaleY="1" />
@@ -110,7 +110,7 @@
             x:Name="gridLineTop"
             Canvas.Left="-10000"
             SnapsToDevicePixels="True"
-            UseLayoutRounding="True" />
+            UseLayoutRounding="False" />
         <Rectangle
             x:Name="gridLineCorner"
             Canvas.Left="0"

@@ -15,6 +15,9 @@ using PixelRuler.CanvasElements;
 
 namespace PixelRuler
 {
+    /// <summary>
+    /// Per window view model
+    /// </summary>
     public class PixelRulerViewModel : INotifyPropertyChanged
     {
         public PixelRulerViewModel(SettingsViewModel? settingsViewModel = null)

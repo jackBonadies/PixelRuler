@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using WpfScreenHelper;
 
 namespace PixelRuler.Common
 {
@@ -15,7 +17,6 @@ namespace PixelRuler.Common
             var line = new Line();
             line.StrokeThickness = 1;
             line.SnapsToDevicePixels = true;
-            line.UseLayoutRounding = true;
             return line;
         }
 
@@ -32,6 +33,30 @@ namespace PixelRuler.Common
         public static int GetBorderPixelSize(double dpi)
         {
             return (int)Math.Round(App.BorderSizeDpiIndependentUnits * dpi);
+        }
+
+        public static System.Windows.Rect GetFullBounds(IEnumerable<Screen> screens)
+        {
+            System.Windows.Rect unionRect = screens.First().Bounds;
+            foreach (Screen screen in screens.Skip(1))
+            {
+                unionRect.Union(screen.Bounds);
+            }
+            return unionRect;
+        }
+
+        public static Point TruncatePoint(Point mousePos)
+        {
+            var roundX = (int)(mousePos.X);
+            var roundY = (int)(mousePos.Y);
+            return new Point(roundX, roundY);
+        }
+
+        public static Point RoundPoint(Point mousePos)
+        {
+            var roundX = Math.Round(mousePos.X);
+            var roundY = Math.Round(mousePos.Y);
+            return new Point(roundX, roundY);
         }
     }
 }

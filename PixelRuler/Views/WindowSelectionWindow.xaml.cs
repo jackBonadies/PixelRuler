@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PixelRuler.Common;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -26,17 +27,24 @@ namespace PixelRuler
     /// </summary>
     public partial class WindowSelectionWindow : Window
     {
-        public WindowSelectionWindow()
+        // TODO simple viewmodel for mode and rectangle
+
+        ScreenshotMode mode;
+        Rect fullBounds;
+
+        public WindowSelectionWindow(ScreenshotMode mode)
         {
             InitializeComponent();
+            this.mode = mode;
             this.Loaded += WindowSelectionWindow_Loaded;
             this.SourceInitialized += WindowSelectionWindow_SourceInitialized;
             this.WindowState = WindowState.Normal;
-            this.Top = 0;
-            this.Left = 0;
-            // the actual window size may be larger due to dpi scaling
-            this.Width = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width;
-            this.Height = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height;
+
+            this.fullBounds = UiUtils.GetFullBounds(WpfScreenHelper.Screen.AllScreens);
+            this.Top = fullBounds.Top;
+            this.Left = fullBounds.Left;
+            this.Width = fullBounds.Width;
+            this.Height = fullBounds.Height;
             this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
             this.AllowsTransparency = true;
@@ -44,15 +52,59 @@ namespace PixelRuler
             this.PreviewMouseMove += WindowSelectionWindow_PreviewMouseMove;
             this.KeyDown += WindowSelectionWindow_KeyDown;
             this.MouseUp += WindowSelectionWindow_MouseUp;
+            this.MouseDown += WindowSelectionWindow_MouseDown;
 
-            blurRect.Rect = new Rect(0, 0, this.Width, this.Height);
+            this.blurRectGeometry.Rect = fullBounds;
+            this.rectSelectionOutline.Width = 0;
+            this.rectSelectionOutline.Height = 0;
+
+            setForMode();
+        }
+
+
+        private void setForMode()
+        {
+            if(mode == ScreenshotMode.Window)
+            {
+                blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x80, 0, 0, 0));
+            }
+            else
+            {
+                blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x30, 0, 0, 0));
+
+                horzIndicator.X1 = fullBounds.Left;
+                horzIndicator.X2 = fullBounds.Right;
+                horzIndicator.Y1 = horzIndicator.Y2 = 300;
+
+                vertIndicator.X1 = vertIndicator.X2 = 300;
+                vertIndicator.Y1 = fullBounds.Top;
+                vertIndicator.Y2 = fullBounds.Bottom;
+            }
         }
 
         public Rect SelectedRect { get; set; }
+        private bool dragging = false;
+        private Point startPoint;
+
+        private void WindowSelectionWindow_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            dragging = true;
+            startPoint = UiUtils.RoundPoint(e.GetPosition(this.canv));
+            innerRectGeometry.Rect = new Rect(startPoint, startPoint);
+            horzIndicator.Visibility = Visibility.Collapsed;
+            vertIndicator.Visibility = Visibility.Collapsed;
+        }
 
         private void WindowSelectionWindow_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            SelectedRect = SelectWindowUnderCursor();
+            if(mode == ScreenshotMode.Window)
+            {
+                SelectedRect = SelectWindowUnderCursor();
+            }
+            else
+            {
+                SelectedRect = new Rect(startPoint, UiUtils.RoundPoint(e.GetPosition(this.canv)));
+            }
 
             this.DialogResult = true;
             this.Close();
@@ -69,7 +121,34 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            SelectWindowUnderCursor();
+            if(mode == ScreenshotMode.Window)
+            {
+                SelectWindowUnderCursor();
+            }
+            else
+            {
+                SetCursorIndicator(e.GetPosition(this.canv));
+                if(dragging)
+                {
+                    innerRectGeometry.Rect = new Rect(startPoint, e.GetPosition(this.canv));
+                    var minX = Math.Min(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
+                    var maxX = Math.Max(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
+                    var minY = Math.Min(innerRectGeometry.Rect.Top, innerRectGeometry.Rect.Bottom);
+                    var maxY = Math.Max(innerRectGeometry.Rect.Top, innerRectGeometry.Rect.Bottom);
+                    Canvas.SetLeft(rectSelectionOutline, minX);
+                    Canvas.SetTop(rectSelectionOutline, minY);
+                    rectSelectionOutline.Width = maxX - minX + 1;
+                    rectSelectionOutline.Height = maxY - minY + 1;
+                }
+            }
+        }
+
+        private void SetCursorIndicator(Point point)
+        {
+            vertIndicator.X1 = vertIndicator.X2 = (int)Math.Round(point.X);
+            horzIndicator.Y1 = horzIndicator.Y2 = (int)Math.Round(point.Y);
+            //horzIndicator.StrokeDashOffset = point.X; 
+            //vertIndicator.StrokeDashOffset = point.Y; 
         }
 
         private Rect SelectWindowUnderCursor()
@@ -90,7 +169,7 @@ namespace PixelRuler
             rect.Width = rect12.Right - rect12.Left;
             rect.Height = rect12.Bottom - rect12.Top;
             var wpfRect = new Rect(rect12.Left - this.Left, rect12.Top - this.Top, rect12.Right - rect12.Left, rect12.Bottom - rect12.Top);
-            innerRect.Rect = wpfRect;
+            innerRectGeometry.Rect = wpfRect;
 
             return wpfRect;
         }

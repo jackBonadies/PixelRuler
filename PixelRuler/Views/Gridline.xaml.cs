@@ -180,7 +180,7 @@ namespace PixelRuler.Views
                         Stroke = new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
                         StrokeThickness = 1,
                         SnapsToDevicePixels = true,
-                        UseLayoutRounding = true
+                        UseLayoutRounding = false
                     };
                     Canvas.SetZIndex(line, -1000);
                     RenderOptions.SetEdgeMode(line, EdgeMode.Aliased);

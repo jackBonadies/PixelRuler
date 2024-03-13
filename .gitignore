@@ -10,3 +10,5 @@
 /WapProjTemplate2/WapProjTemplate2.assets.cache
 /WapProjTemplate2/WapProjTemplate2.wapproj.user
 /PixelRuler/PixelRuler.csproj.user
+/PixelRuler/Properties/PublishProfiles/FolderProfile.pubxml.user
+*.user
