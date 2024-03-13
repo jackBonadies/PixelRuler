@@ -120,6 +120,7 @@
         <local:MainCanvas x:Name="mainCanvas" Grid.Row="1" />
 
         <DockPanel
+            x:Name="topPanel"
             Grid.Row="0"
             Height="40"
             Background="{DynamicResource PanelColor}">

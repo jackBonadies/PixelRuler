@@ -53,6 +53,7 @@ namespace PixelRuler
             //}
 
             this.Loaded += MainWindow_Loaded;
+            this.IsVisibleChanged += MainWindow_IsVisibleChanged;
 
             this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
             this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(ScreenshotMode.Window, false); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
@@ -65,6 +66,21 @@ namespace PixelRuler
 
             var handle = new WindowInteropHelper(this).Handle;
 
+            this.SizeChanged += MainWindow_SizeChanged;
+
+        }
+
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //var deltaX = (e.NewSize.Width - e.PreviousSize.Width);
+            //var deltaY = (e.NewSize.Height - e.PreviousSize.Height);
+            //var tt = this.mainCanvas.innerCanvas.GetTranslateTransform();
+            //tt.X += deltaX / 2;
+            //tt.Y += deltaY / 2;
+        }
+
+        private void MainWindow_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
         }
 
         private void CopyContents()

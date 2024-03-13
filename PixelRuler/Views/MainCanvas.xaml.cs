@@ -88,7 +88,22 @@ namespace PixelRuler
             this.gridLineLeft.MouseLeftButtonUp += GridLine_LeftButtonUp;
 
             this.Loaded += MainCanvas_Loaded;
+            this.SizeChanged += MainCanvas_SizeChanged;
 
+        }
+
+        private IntBucket resizeXbucket = new IntBucket();
+        private IntBucket resizeYbucket = new IntBucket();
+
+        private void MainCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var deltaX = (e.NewSize.Width - e.PreviousSize.Width);
+            var deltaY = (e.NewSize.Height - e.PreviousSize.Height);
+            var tt = this.innerCanvas.GetTranslateTransform();
+            resizeXbucket.Add(deltaX / 2);
+            resizeYbucket.Add(deltaY / 2);
+            tt.X += resizeXbucket.GetValue();
+            tt.Y += resizeYbucket.GetValue();
         }
 
         private void MainCanvas_Loaded(object sender, RoutedEventArgs e)
@@ -100,6 +115,8 @@ namespace PixelRuler
             }
             this.gridLineCorner.Width = UiUtils.GetBorderPixelSize(this.GetDpi());
             this.gridLineCorner.Height = UiUtils.GetBorderPixelSize(this.GetDpi());
+
+            SetImageLocation(this.innerCanvas, mainImage);
         }
 
         private void OverlayCanvas_MouseLeave(object sender, MouseEventArgs e)
@@ -461,15 +478,25 @@ namespace PixelRuler
             this.ViewModel.ClearAllMeasureElementsCommand.SetCanExecute(anyNonEmpty);
         }
 
-        private static void SetImageLocation(Canvas canvas, Image image)
+        private void SetImageLocation(Canvas canvas, Image image)
         {
             // image should be center or if larger than screen bounds then topleft.
-            canvas.GetTranslateTransform().X = -Canvas.GetLeft(image);
-            canvas.GetTranslateTransform().Y = -Canvas.GetTop(image);
+            double x = -Canvas.GetLeft(image);
+            double y = -Canvas.GetTop(image);
+
+            if(this.IsLoaded)
+            {
+                // if (shouldCenter)
+                x += (this.ActualWidth - this.ViewModel.Image.Width) / 2.0;
+                y += (this.ActualHeight - this.ViewModel.Image.Height) / 2.0;
+            }
+            canvas.GetTranslateTransform().X = (int)Math.Round(x);
+            canvas.GetTranslateTransform().Y = (int)Math.Round(y);
         }
 
         private void ViewModel_ImageSourceChanged(object? sender, EventArgs e)
         {
+            // happens before Loaded... cant get this.ActualHeight...
             SetImageLocation(innerCanvas, mainImage);    
         }
 
