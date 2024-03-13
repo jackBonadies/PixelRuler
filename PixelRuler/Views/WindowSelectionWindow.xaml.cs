@@ -55,18 +55,12 @@ namespace PixelRuler
             this.MouseDown += WindowSelectionWindow_MouseDown;
 
             this.blurRectGeometry.Rect = fullBounds;
+            this.rectSelectionOutline.Width = 0;
+            this.rectSelectionOutline.Height = 0;
 
             setForMode();
         }
 
-        private bool dragging = false;
-        private Point startPoint;
-        private void WindowSelectionWindow_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            dragging = true;
-            startPoint = UiUtils.RoundPoint(e.GetPosition(this.canv));
-            innerRectGeometry.Rect = new Rect(startPoint, startPoint);
-        }
 
         private void setForMode()
         {
@@ -89,6 +83,17 @@ namespace PixelRuler
         }
 
         public Rect SelectedRect { get; set; }
+        private bool dragging = false;
+        private Point startPoint;
+
+        private void WindowSelectionWindow_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            dragging = true;
+            startPoint = UiUtils.RoundPoint(e.GetPosition(this.canv));
+            innerRectGeometry.Rect = new Rect(startPoint, startPoint);
+            horzIndicator.Visibility = Visibility.Collapsed;
+            vertIndicator.Visibility = Visibility.Collapsed;
+        }
 
         private void WindowSelectionWindow_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -126,6 +131,14 @@ namespace PixelRuler
                 if(dragging)
                 {
                     innerRectGeometry.Rect = new Rect(startPoint, e.GetPosition(this.canv));
+                    var minX = Math.Min(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
+                    var maxX = Math.Max(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
+                    var minY = Math.Min(innerRectGeometry.Rect.Top, innerRectGeometry.Rect.Bottom);
+                    var maxY = Math.Max(innerRectGeometry.Rect.Top, innerRectGeometry.Rect.Bottom);
+                    Canvas.SetLeft(rectSelectionOutline, minX);
+                    Canvas.SetTop(rectSelectionOutline, minY);
+                    rectSelectionOutline.Width = maxX - minX + 1;
+                    rectSelectionOutline.Height = maxY - minY + 1;
                 }
             }
         }
@@ -134,6 +147,8 @@ namespace PixelRuler
         {
             vertIndicator.X1 = vertIndicator.X2 = (int)Math.Round(point.X);
             horzIndicator.Y1 = horzIndicator.Y2 = (int)Math.Round(point.Y);
+            //horzIndicator.StrokeDashOffset = point.X; 
+            //vertIndicator.StrokeDashOffset = point.Y; 
         }
 
         private Rect SelectWindowUnderCursor()
