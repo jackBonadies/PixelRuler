@@ -17,7 +17,6 @@ namespace PixelRuler.Common
             var line = new Line();
             line.StrokeThickness = 1;
             line.SnapsToDevicePixels = true;
-            line.UseLayoutRounding = true;
             return line;
         }
 
