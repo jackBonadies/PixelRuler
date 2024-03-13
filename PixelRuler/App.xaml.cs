@@ -24,13 +24,10 @@ namespace PixelRuler
         //public class CommandLineArg
 
         private const string backgroundCmdLineArg = "background";
-        public const string ProgramInstancesGUID = "18055682-7245-4d0e-9e60-dcb71ce17da7";
 
         protected override void OnStartup(StartupEventArgs e)
         {
             System.Diagnostics.Trace.WriteLine("PixelRulerStartup");
-            Semaphore semaphore = new Semaphore(2, 2, ProgramInstancesGUID, out bool wasCreated);
-            bool res = semaphore.WaitOne(0);
             base.OnStartup(e);
 
             bool backgroundOnly = false;
