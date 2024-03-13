@@ -49,7 +49,7 @@ namespace PixelRuler.CanvasElements
             mainLine.Stroke = new SolidColorBrush(Colors.Aqua);
             mainLine.StrokeThickness = getUIStrokeThicknessUnit();
 
-            RenderOptions.SetEdgeMode(mainLine, EdgeMode.Aliased);
+            //RenderOptions.SetEdgeMode(mainLine, EdgeMode.Aliased);
 
             hitBoxCanvas = new Canvas();
             hitBoxCanvas.Cursor = isHorizontal ? Cursors.SizeNS : Cursors.SizeWE;

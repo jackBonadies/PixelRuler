@@ -30,23 +30,23 @@ namespace PixelRuler
         public RootViewModel(SettingsViewModel? settingsViewModel = null) 
         {
             Settings = settingsViewModel;
-            this.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewScreenshotFullLogic(); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
-            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { NewScreenshotRegionLogic(ScreenshotMode.Window); }, Key.N, ModifierKeys.Control, "New Windowed Screenshot");
-            this.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { NewScreenshotRegionLogic(ScreenshotMode.RegionRect); }, Key.N, ModifierKeys.Control, "New Region Screenshot");
+            this.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewScreenshotFullLogic(true); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
+            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { NewScreenshotRegionLogic(ScreenshotMode.Window, true); }, Key.N, ModifierKeys.Control, "New Windowed Screenshot");
+            this.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { NewScreenshotRegionLogic(ScreenshotMode.RegionRect, true); }, Key.N, ModifierKeys.Control, "New Region Screenshot");
 
         }
 
-        private void NewScreenshotRegionLogic(ScreenshotMode mode)
+        private void NewScreenshotRegionLogic(ScreenshotMode mode, bool newWindow)
         {
             MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(this.Settings));
-            mainWindow.NewWindowedScreenshot(mode);
+            mainWindow.NewWindowedScreenshot(mode, newWindow);
             mainWindow.Show();
         }
 
         public RelayCommandFull NewScreenshotRegionCommand { get; init; }
         public RelayCommandFull NewScreenshotWindowedCommand { get; init; }
 
-        private void NewScreenshotFullLogic()
+        private void NewScreenshotFullLogic(bool newWindow)
         {
             MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(this.Settings));
             mainWindow.NewFullScreenshot(false);

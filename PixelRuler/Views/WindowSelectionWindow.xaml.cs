@@ -186,8 +186,11 @@ namespace PixelRuler
             reverseDpiTransform.ScaleY = scale;
         }
 
+        public double Dpi { get; private set; }
+
         private void WindowSelectionWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            Dpi = this.GetDpi();
         }
     }
 }

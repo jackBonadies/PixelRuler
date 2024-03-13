@@ -46,7 +46,7 @@ namespace PixelRuler.CanvasElements
                 UseLayoutRounding = false,
             };
             tickLine.Loaded += TickLine_Loaded;
-            RenderOptions.SetEdgeMode(tickLine, EdgeMode.Aliased);
+            //RenderOptions.SetEdgeMode(tickLine, EdgeMode.Aliased);
         }
 
         private void TickLine_Loaded(object sender, System.Windows.RoutedEventArgs e)

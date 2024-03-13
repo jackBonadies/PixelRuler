@@ -24,6 +24,7 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using PixelRuler;
 using System.Reflection;
+using WpfScreenHelper;
 
 namespace PixelRuler
 {
@@ -54,7 +55,7 @@ namespace PixelRuler
             this.Loaded += MainWindow_Loaded;
 
             this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
-            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(ScreenshotMode.Window); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
+            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(ScreenshotMode.Window, false); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
             this.ViewModel.CopyCanvasContents = new RelayCommandFull((object? o) => { CopyContents(); }, Key.C, ModifierKeys.Control, "Copy Elements");
             this.ViewModel.PasteCanvasContents = new RelayCommandFull((object? o) => { this.mainCanvas.PasteCopiedData(); }, Key.V, ModifierKeys.Control, "Paste Elements");
 
@@ -220,7 +221,7 @@ namespace PixelRuler
             base.OnClosing(e);
         }
 
-        public async void NewWindowedScreenshot(ScreenshotMode mode)
+        public async void NewWindowedScreenshot(ScreenshotMode mode, bool newWindow)
         {
             this.Hide();
             var wsw = new WindowSelectionWindow(mode);
@@ -231,6 +232,33 @@ namespace PixelRuler
                 bmp = CaptureScreen(wsw.SelectedRect);
                 this.ViewModel.Image = bmp;
                 mainCanvas.SetImage(this.ViewModel.ImageSource);
+            }
+            
+            if(res is true && newWindow)
+            {
+                if(wsw.SelectedRect.Width * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width && 
+                   wsw.SelectedRect.Height  * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height)
+                {
+                    this.WindowState = WindowState.Maximized;
+                }
+                else
+                {
+                    // set reasonable size
+                    // Left, Top, Width, Height are all dpi independent values, must translate. 
+                    // should be close to where the snip was done (if applicable)
+                    // should have some min size
+                    // no part of it should be offscreen
+                    // if close to max then maximize.
+                    Rect workArea = SystemParameters.WorkArea;
+                    //WpfScreenHelper.Screen.PrimaryScreen.WorkingArea
+                    var dpiScaleFactor = wsw.Dpi;
+                    this.Left = wsw.SelectedRect.Left / dpiScaleFactor - 60;
+                    this.Top = wsw.SelectedRect.Top / dpiScaleFactor - 60;
+                    this.Width = Math.Max(wsw.SelectedRect.Width / dpiScaleFactor + 120, 600);
+                    this.Height = Math.Max(wsw.SelectedRect.Height / dpiScaleFactor + 120, 420);
+                    this.WindowStartupLocation = WindowStartupLocation.Manual;
+                    this.WindowState = WindowState.Normal;
+                }
             }
 
             this.Show();
