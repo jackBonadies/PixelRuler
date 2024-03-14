@@ -245,15 +245,15 @@ namespace PixelRuler
             Bitmap bmp = null;
             if(res is true)
             {
-                bmp = CaptureScreen(wsw.SelectedRect);
+                bmp = CaptureScreen(wsw.SelectedRectWin);
                 this.ViewModel.Image = bmp;
                 mainCanvas.SetImage(this.ViewModel.ImageSource);
             }
             
             if(res is true && newWindow)
             {
-                if(wsw.SelectedRect.Width * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width && 
-                   wsw.SelectedRect.Height  * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height)
+                if(wsw.SelectedRectCanvas.Width * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width && 
+                   wsw.SelectedRectCanvas.Height  * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height)
                 {
                     this.WindowState = WindowState.Maximized;
                 }
@@ -268,10 +268,10 @@ namespace PixelRuler
                     Rect workArea = SystemParameters.WorkArea;
                     //WpfScreenHelper.Screen.PrimaryScreen.WorkingArea
                     var dpiScaleFactor = wsw.Dpi;
-                    this.Left = wsw.SelectedRect.Left / dpiScaleFactor - 60;
-                    this.Top = wsw.SelectedRect.Top / dpiScaleFactor - 60;
-                    this.Width = Math.Max(wsw.SelectedRect.Width / dpiScaleFactor + 120, 600);
-                    this.Height = Math.Max(wsw.SelectedRect.Height / dpiScaleFactor + 120, 420);
+                    this.Left = wsw.SelectedRectCanvas.Left / dpiScaleFactor - 60;
+                    this.Top = wsw.SelectedRectCanvas.Top / dpiScaleFactor - 60;
+                    this.Width = Math.Max(wsw.SelectedRectCanvas.Width / dpiScaleFactor + 120, 600);
+                    this.Height = Math.Max(wsw.SelectedRectCanvas.Height / dpiScaleFactor + 120, 420);
                     this.WindowStartupLocation = WindowStartupLocation.Manual;
                     this.WindowState = WindowState.Normal;
                 }

@@ -42,7 +42,7 @@ namespace PixelRuler
 
             this.fullBounds = UiUtils.GetFullBounds(WpfScreenHelper.Screen.AllScreens);
             this.Top = fullBounds.Top;
-            this.Left = fullBounds.Left;
+            this.Left = fullBounds.Left / 1.5; //TODO
             this.Width = fullBounds.Width;
             this.Height = fullBounds.Height;
             this.WindowStyle = WindowStyle.None;
@@ -54,7 +54,7 @@ namespace PixelRuler
             this.MouseUp += WindowSelectionWindow_MouseUp;
             this.MouseDown += WindowSelectionWindow_MouseDown;
 
-            this.blurRectGeometry.Rect = fullBounds;
+            this.blurRectGeometry.Rect = fullBounds; // offset i.e. it needs to start at 0..
             this.rectSelectionOutline.Width = 0;
             this.rectSelectionOutline.Height = 0;
 
@@ -82,7 +82,36 @@ namespace PixelRuler
             }
         }
 
-        public Rect SelectedRect { get; set; }
+        /// <summary>
+        /// Windows rect, this is in screen coordinates
+        /// i.e. if second monitor is to the left of first, the leftmost
+        ///      point will be 0,0 in canvas coords, but -1920 in screen coords
+        /// </summary>
+        public Rect SelectedRectWin
+        {
+            get; private set;
+        }
+
+        /// <summary>
+        /// Canvas Rect where 0,0 is leftmost point on virtual screen.
+        /// </summary>
+        private Rect selectedRectCanvas;
+        public Rect SelectedRectCanvas
+        {
+            get
+            {
+                return selectedRectCanvas;
+            }
+            set
+            {
+                if(selectedRectCanvas != value)
+                {
+                    selectedRectCanvas = value;
+                    value.Offset(fullBounds.Left, fullBounds.Top);
+                    SelectedRectWin = value;
+                }
+            }
+        }
         private bool dragging = false;
         private Point startPoint;
 
@@ -99,11 +128,11 @@ namespace PixelRuler
         {
             if(mode == ScreenshotMode.Window)
             {
-                SelectedRect = SelectWindowUnderCursor();
+                SelectedRectCanvas = SelectWindowUnderCursor();
             }
             else
             {
-                SelectedRect = new Rect(startPoint, UiUtils.RoundPoint(e.GetPosition(this.canv)));
+                SelectedRectCanvas = new Rect(startPoint, UiUtils.RoundPoint(e.GetPosition(this.canv)));
             }
 
             this.DialogResult = true;
@@ -164,11 +193,11 @@ namespace PixelRuler
             System.Diagnostics.Trace.WriteLine($"ProcName {procname}");
             //System.Diagnostics.Trace.WriteLine($"Title {title}");
 
-            Canvas.SetLeft(this.rect, rect12.Left - this.Left);
-            Canvas.SetTop(this.rect, rect12.Top - this.Top);
+            Canvas.SetLeft(this.rect, rect12.Left - this.fullBounds.Left);
+            Canvas.SetTop(this.rect, rect12.Top - this.fullBounds.Top);
             rect.Width = rect12.Right - rect12.Left;
             rect.Height = rect12.Bottom - rect12.Top;
-            var wpfRect = new Rect(rect12.Left - this.Left, rect12.Top - this.Top, rect12.Right - rect12.Left, rect12.Bottom - rect12.Top);
+            var wpfRect = new Rect(rect12.Left - this.fullBounds.Left, rect12.Top - this.fullBounds.Top, rect12.Right - rect12.Left, rect12.Bottom - rect12.Top);
             innerRectGeometry.Rect = wpfRect;
 
             return wpfRect;
