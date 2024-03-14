@@ -1,6 +1,7 @@
 ﻿using PixelRuler.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -31,25 +32,33 @@ namespace PixelRuler
 
         ScreenshotMode mode;
         Rect fullBounds;
+        SettingsViewModel settings;
 
-        public WindowSelectionWindow(ScreenshotMode mode)
+        public WindowSelectionWindow(ScreenshotMode mode, SettingsViewModel settings)
         {
+            this.settings = settings;
             InitializeComponent();
             this.mode = mode;
             this.Loaded += WindowSelectionWindow_Loaded;
             this.SourceInitialized += WindowSelectionWindow_SourceInitialized;
             this.WindowState = WindowState.Normal;
 
-            this.fullBounds = UiUtils.GetFullBounds(WpfScreenHelper.Screen.AllScreens);
+            this.fullBounds = WpfScreenHelper.Screen.PrimaryScreen.Bounds;
             this.Top = fullBounds.Top;
-            this.Left = fullBounds.Left / 1.5; //TODO
-            this.Width = fullBounds.Width;
-            this.Height = fullBounds.Height;
+            this.Left = fullBounds.Left; //TODO
+            this.Width = fullBounds.Width / 1.5;
+            this.Height = fullBounds.Height / 1.5;
             this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
             this.AllowsTransparency = true;
             this.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+
+            this.Loaded += WindowSelectionWindow_Loaded;
+            this.SourceInitialized += WindowSelectionWindow_SourceInitialized;
             this.PreviewMouseMove += WindowSelectionWindow_PreviewMouseMove;
+
+            this.SizeChanged += WindowSelectionWindow_SizeChanged;
+            this.PreviewKeyDown += WindowSelectionWindow_PreviewKeyDown;
             this.KeyDown += WindowSelectionWindow_KeyDown;
             this.MouseUp += WindowSelectionWindow_MouseUp;
             this.MouseDown += WindowSelectionWindow_MouseDown;
@@ -61,10 +70,9 @@ namespace PixelRuler
             setForMode();
         }
 
-
         private void setForMode()
         {
-            if(mode == ScreenshotMode.Window)
+            if (mode == ScreenshotMode.Window)
             {
                 blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x80, 0, 0, 0));
             }
@@ -80,6 +88,40 @@ namespace PixelRuler
                 vertIndicator.Y1 = fullBounds.Top;
                 vertIndicator.Y2 = fullBounds.Bottom;
             }
+        }
+
+        private void WindowSelectionWindow_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Escape)
+            {
+                this.Close();
+            }
+        }
+
+        private void WindowSelectionWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+        }
+
+        private void WindowSelectionWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DesignerProperties.GetIsInDesignMode(this))
+            {
+                return;
+            }
+            // basically undo the TransformToDevice transform so that 100% zoom has 1 pixel : 1 pixel
+            var dpi = this.GetDpi();
+            canv.LayoutTransform = new ScaleTransform(1 / dpi, 1 / dpi);
+
+            var bmp = UiUtils.CaptureScreen(WpfScreenHelper.Screen.PrimaryScreen.Bounds);
+            var prvm = new PixelRulerViewModel(settings);
+            this.DataContext = prvm;
+            this.canv.DataContext = prvm;
+            prvm.Image = bmp;
+            canv.SetImage(prvm.ImageSource);
+
+            Dpi = this.GetDpi();
+
+
         }
 
         /// <summary>
@@ -104,7 +146,7 @@ namespace PixelRuler
             }
             set
             {
-                if(selectedRectCanvas != value)
+                if (selectedRectCanvas != value)
                 {
                     selectedRectCanvas = value;
                     value.Offset(fullBounds.Left, fullBounds.Top);
@@ -126,7 +168,7 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if(mode == ScreenshotMode.Window)
+            if (mode == ScreenshotMode.Window)
             {
                 SelectedRectCanvas = SelectWindowUnderCursor();
             }
@@ -150,14 +192,14 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if(mode == ScreenshotMode.Window)
+            if (mode == ScreenshotMode.Window)
             {
                 SelectWindowUnderCursor();
             }
             else
             {
                 SetCursorIndicator(e.GetPosition(this.canv));
-                if(dragging)
+                if (dragging)
                 {
                     innerRectGeometry.Rect = new Rect(startPoint, e.GetPosition(this.canv));
                     var minX = Math.Min(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
@@ -183,7 +225,7 @@ namespace PixelRuler
         private Rect SelectWindowUnderCursor()
         {
             var windowUnderCursorHwnd = NativeHelpers.GetWindowUnderPointExcludingOwn(new WindowInteropHelper(this).Handle);
-            
+
             //NativeMethods.GetWindowRect(windowUnderCursorHwnd, out NativeMethods.RECT rectWin); // includes too much window chrome..
 
             NativeMethods.DwmGetWindowAttribute(windowUnderCursorHwnd, (int)NativeMethods.DwmWindowAttribute.DWMWA_EXTENDED_FRAME_BOUNDS, out NativeMethods.RECT rect12, Marshal.SizeOf(typeof(NativeMethods.RECT)));
@@ -216,10 +258,5 @@ namespace PixelRuler
         }
 
         public double Dpi { get; private set; }
-
-        private void WindowSelectionWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            Dpi = this.GetDpi();
-        }
     }
 }

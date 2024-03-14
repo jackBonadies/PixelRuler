@@ -25,6 +25,7 @@ using System.Drawing;
 using PixelRuler;
 using System.Reflection;
 using WpfScreenHelper;
+using PixelRuler.Common;
 
 namespace PixelRuler
 {
@@ -173,25 +174,6 @@ namespace PixelRuler
             }
         }
 
-        public static Drawing.Bitmap CaptureScreen(Rect? bounds = null)
-        {
-            if(bounds == null)
-            {
-                var pixelWidth = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width;
-                var pixelHeight = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height;
-                bounds = new Rect(0, 0, pixelWidth, pixelHeight);
-            }
-
-            var boundsVal = bounds.Value;
-
-            var screenBounds = new Drawing.Size((int)boundsVal.Width, (int)boundsVal.Height);//System.Windows.Forms.Screen.PrimaryScreen.Bounds;
-            var screenshot = new Drawing.Bitmap(screenBounds.Width, screenBounds.Height);// PixelFormat.Format32bppArgb);
-            using (Drawing.Graphics g = Drawing.Graphics.FromImage(screenshot))
-            {
-                g.CopyFromScreen((int)boundsVal.X, (int)boundsVal.Y, 0, 0, screenBounds, Drawing.CopyPixelOperation.SourceCopy);
-            }
-            return screenshot;
-        }
 
         protected override void OnDpiChanged(DpiScale oldDpi, DpiScale newDpi)
         {
@@ -237,19 +219,19 @@ namespace PixelRuler
             base.OnClosing(e);
         }
 
-        public async void NewWindowedScreenshot(ScreenshotMode mode, bool newWindow)
+        public async Task<bool> NewWindowedScreenshot(ScreenshotMode mode, bool newWindow)
         {
             this.Hide();
-            var wsw = new WindowSelectionWindow(mode);
+            var wsw = new WindowSelectionWindow(mode, this.ViewModel.Settings);
             var res = wsw.ShowDialog();
             Bitmap bmp = null;
             if(res is true)
             {
-                bmp = CaptureScreen(wsw.SelectedRectWin);
+                bmp = UiUtils.CaptureScreen(wsw.SelectedRectWin);
                 this.ViewModel.Image = bmp;
                 mainCanvas.SetImage(this.ViewModel.ImageSource);
             }
-            
+
             if(res is true && newWindow)
             {
                 if(wsw.SelectedRectCanvas.Width * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width && 
@@ -283,6 +265,7 @@ namespace PixelRuler
             {
                 this.WindowState = WindowState.Normal;
             }
+            return res != null ? res.Value : false;
         }
 
         public async void NewFullScreenshot(bool alreadyRunning)
@@ -295,12 +278,12 @@ namespace PixelRuler
                 await Task.Run(new Action(async () =>
                 {
                 //    await Task.Delay(1000);
-                    bmp = CaptureScreen();
+                    bmp = UiUtils.CaptureScreen();
                 })).ConfigureAwait(true);
             }
             else
             {
-                bmp = CaptureScreen();
+                bmp = UiUtils.CaptureScreen();
             }
             this.ViewModel.Image = bmp;
             mainCanvas.SetImage(this.ViewModel.ImageSource);

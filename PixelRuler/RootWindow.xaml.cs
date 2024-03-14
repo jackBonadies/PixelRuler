@@ -39,8 +39,15 @@ namespace PixelRuler
         private void NewScreenshotRegionLogic(ScreenshotMode mode, bool newWindow)
         {
             MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(this.Settings));
-            mainWindow.NewWindowedScreenshot(mode, newWindow);
-            mainWindow.Show();
+            bool res = mainWindow.NewWindowedScreenshot(mode, newWindow).Result;
+            if (res)
+            {
+                mainWindow.Show();
+            }
+            else
+            {
+                mainWindow.Close();
+            }
         }
 
         public RelayCommandFull NewScreenshotRegionCommand { get; init; }

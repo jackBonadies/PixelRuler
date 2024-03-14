@@ -5,77 +5,139 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PixelRuler"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="Select Window"
     Width="800"
     Height="450"
     Background="Transparent"
     Cursor="Cross"
     mc:Ignorable="d">
-    <Canvas x:Name="canv" Background="#01FFFFFF">
-        <Canvas.RenderTransform>
-            <TransformGroup>
-                <ScaleTransform x:Name="reverseDpiTransform" CenterX="0" CenterY="0" ScaleX="1" ScaleY="1" />
-                <SkewTransform />
-                <RotateTransform />
-                <TranslateTransform />
-            </TransformGroup>
-        </Canvas.RenderTransform>
 
-        <Rectangle
-            x:Name="rectSelectionOutline"
-            Panel.ZIndex="100"
-            SnapsToDevicePixels="True"
-            Stroke="Red"
-            StrokeThickness="1" />
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <local:MainCanvas x:Name="canv" Grid.Row="1" />
+        <Canvas x:Name="overlayCanvas" Background="#01FFFFFF">
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform x:Name="reverseDpiTransform" CenterX="0" CenterY="0" ScaleX="1" ScaleY="1" />
+                    <SkewTransform />
+                    <RotateTransform />
+                    <TranslateTransform />
+                </TransformGroup>
+            </Canvas.RenderTransform>
+            <Rectangle
+                x:Name="rectSelectionOutline"
+                Panel.ZIndex="100"
+                SnapsToDevicePixels="True"
+                Stroke="Red"
+                StrokeThickness="1" />
+            <Line
+                x:Name="vertIndicator"
+                Panel.ZIndex="100"
+                SnapsToDevicePixels="True"
+                Stroke="Red"
+                StrokeDashArray="6 6"
+                StrokeThickness="1" />
+            <Line
+                x:Name="horzIndicator"
+                Panel.ZIndex="100"
+                SnapsToDevicePixels="True"
+                Stroke="Red"
+                StrokeDashArray="6 6"
+                StrokeThickness="1" />
+            <!--  Combined Geomtry - responsible for the dimming around selected window  -->
+            <Path
+                x:Name="blurBackground"
+                Canvas.Left="0"
+                Canvas.Top="0"
+                Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}"
+                Height="{Binding Height, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}"
+                Fill="#80000000"
+                Stroke="#80000000"
+                StrokeThickness="0">
+                <Path.Data>
+                    <CombinedGeometry GeometryCombineMode="Exclude">
+                        <CombinedGeometry.Geometry1>
+                            <RectangleGeometry x:Name="blurRectGeometry" Rect="0,0,250,250" />
+                        </CombinedGeometry.Geometry1>
+                        <!--  Hole where there is no dark dim  -->
+                        <CombinedGeometry.Geometry2>
+                            <RectangleGeometry x:Name="innerRectGeometry" Rect="50,50,25,25" />
+                        </CombinedGeometry.Geometry2>
+                    </CombinedGeometry>
+                </Path.Data>
+            </Path>
 
-        <Line
-            x:Name="vertIndicator"
-            Panel.ZIndex="100"
-            SnapsToDevicePixels="True"
-            Stroke="Red"
-            StrokeDashArray="6 6"
-            StrokeThickness="1" />
-        <Line
-            x:Name="horzIndicator"
-            Panel.ZIndex="100"
-            SnapsToDevicePixels="True"
-            Stroke="Red"
-            StrokeDashArray="6 6"
-            StrokeThickness="1" />
+            <Rectangle
+                x:Name="rect"
+                Canvas.Left="500"
+                Canvas.Top="50"
+                Width="0"
+                Height="0"
+                RadiusX="4"
+                RadiusY="4"
+                Stroke="Red"
+                StrokeThickness="4" />
 
-        <!--  Combined Geomtry - responsible for the dimming around selected window  -->
-        <Path
-            x:Name="blurBackground"
-            Canvas.Left="0"
-            Canvas.Top="0"
-            Width="{Binding Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}"
-            Height="{Binding Height, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}"
-            Fill="#80000000"
-            Stroke="#80000000"
-            StrokeThickness="0">
-            <Path.Data>
-                <CombinedGeometry GeometryCombineMode="Exclude">
-                    <CombinedGeometry.Geometry1>
-                        <RectangleGeometry x:Name="blurRectGeometry" Rect="0,0,250,250" />
-                    </CombinedGeometry.Geometry1>
-                    <!--  Hole where there is no dark dim  -->
-                    <CombinedGeometry.Geometry2>
-                        <RectangleGeometry x:Name="innerRectGeometry" Rect="50,50,25,25" />
-                    </CombinedGeometry.Geometry2>
-                </CombinedGeometry>
-            </Path.Data>
-        </Path>
+        </Canvas>
+        <Border
+            Margin="0,14,0,0"
+            Padding="8,3,8,3"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Background="White"
+            BorderBrush="Gray"
+            BorderThickness="1"
+            CornerRadius="5">
+            <StackPanel Orientation="Horizontal">
+                <ToggleButton
+                    Width="34"
+                    Height="34"
+                    Padding="0"
+                    BorderBrush="Transparent">
+                    <ToggleButton.Resources>
+                        <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
+                        <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
+                    </ToggleButton.Resources>
+                    <TextBlock
+                        Padding="0"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="20"
+                        Text="&#xEF20;" />
+                </ToggleButton>
+                <Separator Width="2" Visibility="Hidden" />
+                <ToggleButton
+                    Width="34"
+                    Height="34"
+                    Padding="0"
+                    BorderBrush="Transparent">
+                    <ToggleButton.Resources>
+                        <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
+                        <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
+                    </ToggleButton.Resources>
+                    <TextBlock
+                        Padding="0"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="20"
+                        Text="&#xEF20;" />
+                </ToggleButton>
+                <Separator Width="2" Visibility="Hidden" />
+                <ToggleButton
+                    Width="34"
+                    Height="34"
+                    Padding="0"
+                    BorderBrush="Transparent">
+                    <ToggleButton.Resources>
+                        <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
+                        <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
+                    </ToggleButton.Resources>
+                    <TextBlock
+                        Padding="0"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="20"
+                        Text="&#xEF20;" />
+                </ToggleButton>
+            </StackPanel>
+        </Border>
+    </Grid>
 
-        <Rectangle
-            x:Name="rect"
-            Canvas.Left="500"
-            Canvas.Top="50"
-            Width="0"
-            Height="0"
-            RadiusX="4"
-            RadiusY="4"
-            Stroke="Red"
-            StrokeThickness="4" />
-
-    </Canvas>
 </Window>

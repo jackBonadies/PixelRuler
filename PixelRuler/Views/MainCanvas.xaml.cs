@@ -108,7 +108,11 @@ namespace PixelRuler
 
         private void MainCanvas_Loaded(object sender, RoutedEventArgs e)
         {
-            if(this.ViewModel.ShowGridLines)
+            if (DesignerProperties.GetIsInDesignMode(this))
+            {
+                return;
+            }
+            if (this.ViewModel.ShowGridLines)
             {
                 this.gridLineTop.SetZoom(1);
                 this.gridLineLeft.SetZoom(1);
@@ -680,7 +684,7 @@ namespace PixelRuler
                 var prvm = DataContext as PixelRulerViewModel;
                 if (prvm == null)
                 {
-                    throw new Exception("No View Model on Main Canvas");
+                    //throw new Exception("No View Model on Main Canvas");
                 }
                 return prvm;
             }
