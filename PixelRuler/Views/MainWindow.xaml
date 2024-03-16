@@ -11,6 +11,8 @@
     Title="PixelRuler"
     Width="1800"
     Height="800"
+    MinWidth="300"
+    MinHeight="300"
     d:DataContext="{d:DesignInstance Type=local:PixelRulerViewModel,
                                      IsDesignTimeCreatable=True}"
     Icon="/Assets/PixelRulerIcon1.ico"
@@ -283,6 +285,11 @@
 
         </DockPanel>
 
+        <DockPanel
+            x:Name="bottomPanel"
+            Grid.Row="2"
+            Height="24"
+            Background="{DynamicResource PanelColor}" />
 
     </Grid>
 </local:ThemeWindow>

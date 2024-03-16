@@ -89,16 +89,52 @@ namespace PixelRuler
                             //}
                             Application.Current.Dispatcher.Invoke(() =>
                             {
-                                var mainViewModel = new PixelRulerViewModel(settingsViewModel);
-                                MainWindow mainWindow = new MainWindow(mainViewModel);
-                                mainWindow.NewFullScreenshot(false);
-                                mainWindow.Show();
+                                switch(args)
+                                {
+                                    case "screenshot":
+                                        App.NewFullscreenshotLogic(this.settingsViewModel, true);
+                                        break;
+                                    case "windowed":
+                                        App.NewScreenshotRegionLogic(this.settingsViewModel, ScreenshotMode.Window, true);
+                                        break;
+                                    default:
+                                        if(string.IsNullOrEmpty(args))
+                                        {
+                                            App.NewFullscreenshotLogic(this.settingsViewModel, true);
+                                        }
+                                        else
+                                        {
+                                            App.OpenFileLogic(this.settingsViewModel, true, args);
+                                        }
+                                        break;
+                                }
                             });
 
                             Console.WriteLine($"Received args from second instance: {args}");
                         }
                 }
             }
+        }
+
+        public static void OpenFileLogic(SettingsViewModel settingsViewModel, bool newWindow, string filePath)
+        {
+            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(settingsViewModel));
+            mainWindow.SetImage(filePath);
+            mainWindow.Show();
+        }
+
+        public static void NewFullscreenshotLogic(SettingsViewModel settingsViewModel, bool newWindow)
+        {
+            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(settingsViewModel));
+            mainWindow.NewFullScreenshot(newWindow);
+            mainWindow.Show();
+        }
+
+        public static void NewScreenshotRegionLogic(SettingsViewModel settingsViewModel, ScreenshotMode mode, bool newWindow)
+        {
+            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(settingsViewModel));
+            mainWindow.NewWindowedScreenshot(mode, newWindow);
+            mainWindow.Show();
         }
 
         static void PipeClient(string[] args)

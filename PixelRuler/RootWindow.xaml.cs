@@ -30,28 +30,13 @@ namespace PixelRuler
         public RootViewModel(SettingsViewModel? settingsViewModel = null) 
         {
             Settings = settingsViewModel;
-            this.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewScreenshotFullLogic(true); }, Settings.FullscreenScreenshotShortcut, "New Full Screenshot");
-            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { NewScreenshotRegionLogic(ScreenshotMode.Window, true); }, Settings.WindowedScreenshotShortcut, "New Windowed Screenshot");
-            this.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { NewScreenshotRegionLogic(ScreenshotMode.RegionRect, true); }, Key.N, ModifierKeys.Control, "New Region Screenshot");
-
-        }
-
-        private void NewScreenshotRegionLogic(ScreenshotMode mode, bool newWindow)
-        {
-            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(this.Settings));
-            mainWindow.NewWindowedScreenshot(mode, newWindow);
-            mainWindow.Show();
+            this.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { App.NewFullscreenshotLogic(this.Settings, true); }, Settings.FullscreenScreenshotShortcut, "New Full Screenshot");
+            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { App.NewScreenshotRegionLogic(this.Settings, ScreenshotMode.Window, true); }, Settings.WindowedScreenshotShortcut, "New Windowed Screenshot");
+            this.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { App.NewScreenshotRegionLogic(this.Settings, ScreenshotMode.RegionRect, true); }, Key.N, ModifierKeys.Control, "New Region Screenshot");
         }
 
         public RelayCommandFull NewScreenshotRegionCommand { get; init; }
         public RelayCommandFull NewScreenshotWindowedCommand { get; init; }
-
-        private void NewScreenshotFullLogic(bool newWindow)
-        {
-            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(this.Settings));
-            mainWindow.NewFullScreenshot(false);
-            mainWindow.Show();
-        }
         public RelayCommandFull NewScreenshotFullCommand { get; init; } 
         public SettingsViewModel Settings { get; set; }
 
