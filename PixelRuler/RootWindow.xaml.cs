@@ -30,8 +30,8 @@ namespace PixelRuler
         public RootViewModel(SettingsViewModel? settingsViewModel = null) 
         {
             Settings = settingsViewModel;
-            this.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewScreenshotFullLogic(true); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
-            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { NewScreenshotRegionLogic(ScreenshotMode.Window, true); }, Key.N, ModifierKeys.Control, "New Windowed Screenshot");
+            this.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewScreenshotFullLogic(true); }, Settings.FullscreenScreenshotShortcut, "New Full Screenshot");
+            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { NewScreenshotRegionLogic(ScreenshotMode.Window, true); }, Settings.WindowedScreenshotShortcut, "New Windowed Screenshot");
             this.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { NewScreenshotRegionLogic(ScreenshotMode.RegionRect, true); }, Key.N, ModifierKeys.Control, "New Region Screenshot");
 
         }
@@ -84,6 +84,16 @@ namespace PixelRuler
             this.ShowInTaskbar = false;
             this.DataContextChanged += RootWindow_DataContextChanged;
             this.notifyIcon.Menu.DataContext = rootViewModel;
+            this.notifyIcon.Menu.IsVisibleChanged += Menu_IsVisibleChanged;
+        }
+
+        private void Menu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // TODO: header text binding only updates on explicit
+            //   MenuItem.GetBindingExpression(MenuItem.HeaderProperty).UpdateTarget() call
+            // This hack fixes that.
+            this.notifyIcon.Menu.DataContext = null;
+            this.notifyIcon.Menu.DataContext = this.DataContext;
         }
 
         public RootViewModel RootViewModel { get; init; }

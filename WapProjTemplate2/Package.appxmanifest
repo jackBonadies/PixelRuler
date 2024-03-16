@@ -39,6 +39,26 @@
         <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png"  Square71x71Logo="Images\SmallTile.png" Square310x310Logo="Images\LargeTile.png"/>
         <uap:SplashScreen Image="Images\SplashScreen.png" />
       </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="pixelruler_association">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.bmp</uap:FileType>
+              <uap:FileType>.gif</uap:FileType>
+              <uap:FileType>.webp</uap:FileType>
+              <uap:FileType>.jpe</uap:FileType>
+              <uap:FileType>.jpeg</uap:FileType>
+              <uap:FileType>.jpg</uap:FileType>
+              <uap:FileType>.jxr</uap:FileType>
+              <uap:FileType>.png</uap:FileType>
+              <uap:FileType>.tif</uap:FileType>
+              <uap:FileType>.tiff</uap:FileType>            
+            </uap:SupportedFileTypes>
+            <uap:DisplayName>PixelRuler</uap:DisplayName>
+            <uap:EditFlags OpenIsSafe="true"/>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+      </Extensions>
     </Application>
   </Applications>
 

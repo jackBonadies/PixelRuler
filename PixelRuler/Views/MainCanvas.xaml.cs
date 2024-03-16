@@ -114,7 +114,7 @@ namespace PixelRuler
                 this.gridLineLeft.SetZoom(1);
             }
             this.gridLineCorner.Width = UiUtils.GetBorderPixelSize(this.GetDpi());
-            this.gridLineCorner.Height = UiUtils.GetBorderPixelSize(this.GetDpi());
+            this.gridLineCorner.Height = UiUtils.GetBorderPixelSize(this.GetDpi()) + 1 / this.GetDpi();
 
             SetImageLocation(this.innerCanvas, mainImage);
         }

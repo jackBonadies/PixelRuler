@@ -62,7 +62,6 @@ namespace PixelRuler.Views
             this.Loaded += Gridline_Loaded;
 
             currentMousePosTick = new GuidelineTick(this, null, GuidelineTick.GridlineTickType.CurrentMarker);
-
         }
 
         public void ShowCurrentPosIndicator()
@@ -86,20 +85,21 @@ namespace PixelRuler.Views
 
         private void SetBorder()
         {
-            var line = new Line()
-            {
-                X1 = 0,
-                X2 = 20000,
-                Y1 = 1,
-                Y2 = 1,
-                Stroke = new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
-                StrokeThickness = 1,
-            };
-            RenderOptions.SetEdgeMode(line, EdgeMode.Aliased);
-            this.canvas.Children.Add(line);
-            Canvas.SetLeft(line, 0);
-            Canvas.SetTop(line, 0);
-            Canvas.SetZIndex(line, 10);
+            Line line;
+            //line = new Line()
+            //{
+            //    X1 = 0,
+            //    X2 = 20000,
+            //    Y1 = 1,
+            //    Y2 = 1,
+            //    Stroke = new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
+            //    StrokeThickness = 1,
+            //};
+            //RenderOptions.SetEdgeMode(line, EdgeMode.Aliased);
+            //this.canvas.Children.Add(line);
+            //Canvas.SetLeft(line, 0);
+            //Canvas.SetTop(line, 0);
+            //Canvas.SetZIndex(line, 10);
 
             line = new Line()
             {

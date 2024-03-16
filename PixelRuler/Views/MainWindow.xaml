@@ -115,6 +115,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <local:MainCanvas x:Name="mainCanvas" Grid.Row="1" />
