@@ -73,7 +73,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool GlobalShortcutsEnabled {
             get {
                 return ((bool)(this["GlobalShortcutsEnabled"]));
@@ -157,7 +157,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("66")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6")]
         public int GlobalShortcutWindowModifiers {
             get {
                 return ((int)(this["GlobalShortcutWindowModifiers"]));
