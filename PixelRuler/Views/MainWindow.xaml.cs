@@ -219,7 +219,14 @@ namespace PixelRuler
             base.OnClosing(e);
         }
 
-        public async Task<bool> NewWindowedScreenshot(ScreenshotMode mode, bool newWindow)
+        public void SetImage(string imagePath)
+        {
+            var bmp = System.Drawing.Bitmap.FromFile(imagePath);
+            this.ViewModel.Image = bmp as System.Drawing.Bitmap;
+            mainCanvas.SetImage(this.ViewModel.ImageSource);
+        }
+
+        public async void NewWindowedScreenshot(ScreenshotMode mode, bool newWindow)
         {
             this.Hide();
             var wsw = new WindowSelectionWindow(mode, this.ViewModel.Settings);
@@ -268,10 +275,10 @@ namespace PixelRuler
             return res != null ? res.Value : false;
         }
 
-        public async void NewFullScreenshot(bool alreadyRunning)
+        public async void NewFullScreenshot(bool newWindow)
         {
             Bitmap bmp = null;
-            if (alreadyRunning)
+            if (!newWindow)
             {
                 this.Hide();
                 await Task.Delay(200);

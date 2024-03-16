@@ -135,8 +135,8 @@
     </Application.Resources>
     <JumpList.JumpList>
         <JumpList>
-            <JumpTask Title="New Fullscreen Screenshot" />
-            <JumpTask Title="New Windowed Screenshot" />
+            <JumpTask Title="New Fullscreen Screenshot" Arguments="fullscreen" />
+            <JumpTask Title="New Windowed Screenshot" Arguments="windowed" />
         </JumpList>
     </JumpList.JumpList>
 </Application>

@@ -15,7 +15,7 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="GlobalShortcutsEnabled" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="GlobalShortcutFullscreenKey" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">59</Value>
@@ -36,7 +36,7 @@
       <Value Profile="(Default)">87</Value>
     </Setting>
     <Setting Name="GlobalShortcutWindowModifiers" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">66</Value>
+      <Value Profile="(Default)">6</Value>
     </Setting>
   </Settings>
 </SettingsFile>

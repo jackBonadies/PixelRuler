@@ -335,21 +335,48 @@ namespace PixelRuler
     public class RelayCommandFull : RelayCommand
     {
         private static readonly Dictionary<ModifierKeys, string> modifierKeysToText = new Dictionary<ModifierKeys, string>()
-            {
-                {ModifierKeys.None, ""},
-                {ModifierKeys.Control, "Ctrl+"},
-                {ModifierKeys.Shift, "Shift+"},
-                {ModifierKeys.Control|ModifierKeys.Shift, "Ctrl+Shift+"},
-                {ModifierKeys.Control|ModifierKeys.Alt, "Ctrl+Alt+"},
-                {ModifierKeys.Control|ModifierKeys.Shift|ModifierKeys.Alt, "Ctrl+Shift+Alt+"},
-                {ModifierKeys.Windows, "Win+"}
-            };
+        {
+            {ModifierKeys.None, ""},
+            {ModifierKeys.Control, "Ctrl+"},
+            {ModifierKeys.Shift, "Shift+"},
+            {ModifierKeys.Control|ModifierKeys.Shift, "Ctrl+Shift+"},
+            {ModifierKeys.Control|ModifierKeys.Alt, "Ctrl+Alt+"},
+            {ModifierKeys.Control|ModifierKeys.Shift|ModifierKeys.Alt, "Ctrl+Shift+Alt+"},
+            {ModifierKeys.Windows, "Win+"}
+        };
+
+        /// <summary>
+        /// Bound shortcut (in case keys are rebound)
+        /// </summary>
+        private ShortcutInfo? shortcutInfo;
 
         public RelayCommandFull(Action<object?> action, Key key, ModifierKeys modifiers, string toolTipText) : base(action)
         {
             this.key = key;
             this.modifiers = modifiers;
             this.toolTipTextBase = toolTipText;
+        }
+
+        /// <summary>
+        /// Relay command bound to the ShortcutInfo (for rebinding keys)
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="shortcutInfo"></param>
+        /// <param name="toolTipText"></param>
+        public RelayCommandFull(Action<object?> action, ShortcutInfo shortcutInfo, string toolTipText = null) : base(action)
+        {
+            this.shortcutInfo = shortcutInfo;
+            this.shortcutInfo.PropertyChanged += ShortcutInfo_PropertyChanged;
+            this.key = shortcutInfo.Key;
+            this.modifiers = shortcutInfo.Modifiers;
+            this.toolTipTextBase = toolTipText ?? shortcutInfo.CommandName;
+        }
+
+        private void ShortcutInfo_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            _ = shortcutInfo ?? throw new ArgumentNullException(nameof(shortcutInfo));
+            this.Key = shortcutInfo.Key;
+            this.Modifiers = shortcutInfo.Modifiers;
         }
 
         private Key key;
@@ -404,7 +431,8 @@ namespace PixelRuler
                 if (key != Key.None)
                 {
                     var modifiersText = modifierKeysToText[modifiers];
-                    return $"{toolTipTextBase} ({modifiersText}{key})";
+                    var keyName = KeyboardHelper.GetFriendlyName(key);
+                    return $"{toolTipTextBase} ({modifiersText}{keyName})";
                 }
                 return toolTipTextBase;
             }

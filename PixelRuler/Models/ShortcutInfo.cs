@@ -22,6 +22,14 @@ namespace PixelRuler
             this.DefaultModifiers = defaultModifiers;
         }
 
+        public bool IsGlobal
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public void Clear()
         {
             this.Key = Key.None;
