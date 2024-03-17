@@ -379,6 +379,7 @@ namespace PixelRuler
             {
                 this.key = value;
                 OnPropertyChanged();
+                OnPropertyChanged("ToolTipTextShortcut");
                 OnPropertyChanged("ToolTipTextFull");
             }
         }
@@ -394,6 +395,7 @@ namespace PixelRuler
             {
                 this.modifiers = value;
                 OnPropertyChanged();
+                OnPropertyChanged("ToolTipTextShortcut");
                 OnPropertyChanged("ToolTipTextFull");
             }
         }
@@ -409,6 +411,7 @@ namespace PixelRuler
             {
                 this.toolTipTextBase = value;
                 OnPropertyChanged();
+                OnPropertyChanged("ToolTipTextShortcut");
                 OnPropertyChanged("ToolTipTextFull");
             }
         }
@@ -424,6 +427,20 @@ namespace PixelRuler
                     return $"{toolTipTextBase} ({modifiersText}{keyName})";
                 }
                 return toolTipTextBase;
+            }
+        }
+
+        public string ToolTipTextShortcut
+        {
+            get
+            {
+                if (key != Key.None)
+                {
+                    var modifiersText = KeyboardHelper.GetModifierKeyName(modifiers);
+                    var keyName = KeyboardHelper.GetFriendlyName(key);
+                    return $"{modifiersText}{keyName}";
+                }
+                return string.Empty;
             }
         }
     }
