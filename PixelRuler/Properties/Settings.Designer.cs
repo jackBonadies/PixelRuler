@@ -85,7 +85,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("44")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int GlobalShortcutFullscreenKey {
             get {
                 return ((int)(this["GlobalShortcutFullscreenKey"]));
@@ -97,7 +97,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int GlobalShortcutFullscreenModifiers {
             get {
                 return ((int)(this["GlobalShortcutFullscreenModifiers"]));
@@ -145,7 +145,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("44")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int GlobalShortcutWindowKey {
             get {
                 return ((int)(this["GlobalShortcutWindowKey"]));
@@ -157,7 +157,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int GlobalShortcutWindowModifiers {
             get {
                 return ((int)(this["GlobalShortcutWindowModifiers"]));
@@ -169,7 +169,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int GlobalShortcutRegionKey {
             get {
                 return ((int)(this["GlobalShortcutRegionKey"]));
@@ -181,7 +181,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int GlobalShortcutRegionModifiers {
             get {
                 return ((int)(this["GlobalShortcutRegionModifiers"]));
@@ -193,7 +193,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("46")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int GlobalShortcutQuickColorKey {
             get {
                 return ((int)(this["GlobalShortcutQuickColorKey"]));
@@ -205,7 +205,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int GlobalShortcutQuickColorModifiers {
             get {
                 return ((int)(this["GlobalShortcutQuickColorModifiers"]));
@@ -217,7 +217,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("56")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int GlobalShortcutQuickMeasureKey {
             get {
                 return ((int)(this["GlobalShortcutQuickMeasureKey"]));
@@ -229,7 +229,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("12")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int GlobalShortcutQuickMeasureModifiers {
             get {
                 return ((int)(this["GlobalShortcutQuickMeasureModifiers"]));

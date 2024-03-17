@@ -37,27 +37,33 @@ namespace PixelRuler
 
             WindowedRegionScreenshotShortcut = new ShortcutInfo(
                 "Region Screenshot",
-                App.WINDOWED_HOTKEY_ID,
+                App.REGION_WINDOWED_HOTKEY_ID,
                 (Key)Properties.Settings.Default.GlobalShortcutRegionKey,
                 (ModifierKeys)Properties.Settings.Default.GlobalShortcutRegionModifiers,
                 Key.PrintScreen,
                 ModifierKeys.Shift);
 
             QuickMeasureShortcut = new ShortcutInfo(
-             "Quick Measure",
-             App.WINDOWED_HOTKEY_ID,
-             (Key)Properties.Settings.Default.GlobalShortcutQuickMeasureKey,
-             (ModifierKeys)Properties.Settings.Default.GlobalShortcutQuickMeasureModifiers,
-             Key.PrintScreen,
-             ModifierKeys.Shift);
+                "Quick Measure",
+                App.QUICK_MEASURE_HOTKEY_ID,
+                (Key)Properties.Settings.Default.GlobalShortcutQuickMeasureKey,
+                (ModifierKeys)Properties.Settings.Default.GlobalShortcutQuickMeasureModifiers,
+                Key.M,
+                ModifierKeys.Windows | ModifierKeys.Shift);
 
             QuickColorShortcut = new ShortcutInfo(
-             "Quick Color",
-             App.WINDOWED_HOTKEY_ID,
-             (Key)Properties.Settings.Default.GlobalShortcutQuickColorKey,
-             (ModifierKeys)Properties.Settings.Default.GlobalShortcutQuickColorModifiers,
-             Key.PrintScreen,
-             ModifierKeys.Shift);
+                "Quick Color",
+                App.QUICK_COLOR_HOTKEY_ID,
+                (Key)Properties.Settings.Default.GlobalShortcutQuickColorKey,
+                (ModifierKeys)Properties.Settings.Default.GlobalShortcutQuickColorModifiers,
+                Key.C,
+                ModifierKeys.Windows | ModifierKeys.Shift);
+
+            GlobalShortcuts.Add(WindowedScreenshotShortcut);
+            GlobalShortcuts.Add(WindowedRegionScreenshotShortcut);
+            GlobalShortcuts.Add(FullscreenScreenshotShortcut);
+            GlobalShortcuts.Add(QuickMeasureShortcut);
+            GlobalShortcuts.Add(QuickColorShortcut);
 
             clearShortcutCommand = new RelayCommand((object? o) =>
             {
@@ -85,6 +91,8 @@ namespace PixelRuler
         }
 
         public event EventHandler<ShortcutInfo> EditShortcutCommandEvent;
+
+        public ObservableCollection<ShortcutInfo> GlobalShortcuts { get; set; } = new ObservableCollection<ShortcutInfo>();
 
         private RelayCommand editShortcutCommand;
         public RelayCommand EditShortcutCommand
