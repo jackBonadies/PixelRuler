@@ -35,6 +35,21 @@
                         <wpfui:SymbolIcon Symbol="CameraAdd24" />
                     </wpfui:MenuItem.Icon>
                 </wpfui:MenuItem>
+                <wpfui:MenuItem Command="{Binding QuickMeasureCommand}" Header="{Binding QuickMeasureCommand.ToolTipTextFull}">
+                    <wpfui:MenuItem.Icon>
+                        <wpfui:SymbolIcon Symbol="CameraAdd24" />
+                    </wpfui:MenuItem.Icon>
+                </wpfui:MenuItem>
+                <wpfui:MenuItem Command="{Binding QuickColorCommand}" Header="{Binding QuickColorCommand.ToolTipTextFull}">
+                    <wpfui:MenuItem.Icon>
+                        <wpfui:SymbolIcon Symbol="CameraAdd24" />
+                    </wpfui:MenuItem.Icon>
+                </wpfui:MenuItem>
+                <wpfui:MenuItem Command="{Binding SettingsCommand}" Header="{Binding SettingsCommand.ToolTipTextFull}">
+                    <wpfui:MenuItem.Icon>
+                        <wpfui:SymbolIcon Symbol="CameraAdd24" />
+                    </wpfui:MenuItem.Icon>
+                </wpfui:MenuItem>
                 <wpfui:MenuItem Click="MenuItemExit_Click" Header="Exit">
                     <wpfui:MenuItem.Icon>
                         <wpfui:SymbolIcon Symbol="ArrowExit20" />

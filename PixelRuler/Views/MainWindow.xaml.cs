@@ -57,7 +57,7 @@ namespace PixelRuler
             this.IsVisibleChanged += MainWindow_IsVisibleChanged;
 
             this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
-            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(ScreenshotMode.Window, false); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
+            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(OverlayMode.Window, false); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
             this.ViewModel.CopyCanvasContents = new RelayCommandFull((object? o) => { CopyContents(); }, Key.C, ModifierKeys.Control, "Copy Elements");
             this.ViewModel.PasteCanvasContents = new RelayCommandFull((object? o) => { this.mainCanvas.PasteCopiedData(); }, Key.V, ModifierKeys.Control, "Paste Elements");
 
@@ -226,12 +226,18 @@ namespace PixelRuler
             mainCanvas.SetImage(this.ViewModel.ImageSource);
         }
 
-        public async void NewWindowedScreenshot(ScreenshotMode mode, bool newWindow)
+        public async Task<bool> NewWindowedScreenshot(OverlayMode mode, bool newWindow)
         {
             this.Hide();
             var wsw = new WindowSelectionWindow(mode, this.ViewModel.Settings);
             var res = wsw.ShowDialog();
             Bitmap bmp = null;
+
+            if (res is not true)
+            {
+                return false;
+            }
+
             if(res is true)
             {
                 bmp = UiUtils.CaptureScreen(wsw.SelectedRectWin);

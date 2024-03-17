@@ -18,10 +18,12 @@ using System.Windows.Shapes;
 
 namespace PixelRuler
 {
-    public enum ScreenshotMode
+    public enum OverlayMode
     {
         Window = 0,
         RegionRect = 1,
+        QuickMeasure = 2,
+        QuickColor = 3,
     }
 
     // TODO own class
@@ -31,20 +33,20 @@ namespace PixelRuler
         {
             Settings = settingsViewModel;
             this.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { App.NewFullscreenshotLogic(this.Settings, true); }, Settings.FullscreenScreenshotShortcut, "New Full Screenshot");
-            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { App.NewScreenshotRegionLogic(this.Settings, ScreenshotMode.Window, true); }, Settings.WindowedScreenshotShortcut, "New Windowed Screenshot");
-            this.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { App.NewScreenshotRegionLogic(this.Settings, ScreenshotMode.RegionRect, true); }, Key.N, ModifierKeys.Control, "New Region Screenshot");
+            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.Window, true); }, Settings.WindowedScreenshotShortcut, "New Windowed Screenshot");
+            this.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.RegionRect, true); }, Settings.WindowedRegionScreenshotShortcut, "New Region Screenshot");
+            this.QuickMeasureCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.QuickMeasure, true); }, Settings.QuickMeasureShortcut, "Quick Measure");
+            this.QuickColorCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.QuickColor, true); }, Settings.QuickColorShortcut, "Quick Color");
+            this.SettingsCommand = new RelayCommandFull((object? o) => { new SettingsWindow(new PixelRulerViewModel(this.Settings)).Show(); }, Settings.QuickColorShortcut, "Settings");
         }
 
-        private void NewScreenshotRegionLogic(ScreenshotMode mode, bool newWindow)
-        {
-            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(this.Settings));
-            mainWindow.NewWindowedScreenshot(mode, newWindow);
-            mainWindow.Show();
-        }
 
+        public RelayCommandFull QuickMeasureCommand { get; init; }
+        public RelayCommandFull QuickColorCommand { get; init; }
         public RelayCommandFull NewScreenshotRegionCommand { get; init; }
         public RelayCommandFull NewScreenshotWindowedCommand { get; init; }
         public RelayCommandFull NewScreenshotFullCommand { get; init; } 
+        public RelayCommandFull SettingsCommand { get; init; } 
         public SettingsViewModel Settings { get; set; }
 
 

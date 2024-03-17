@@ -95,7 +95,7 @@ namespace PixelRuler
                                         App.NewFullscreenshotLogic(this.settingsViewModel, true);
                                         break;
                                     case "windowed":
-                                        App.NewScreenshotRegionLogic(this.settingsViewModel, ScreenshotMode.Window, true);
+                                        App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.Window, true);
                                         break;
                                     default:
                                         if(string.IsNullOrEmpty(args))
@@ -130,11 +130,14 @@ namespace PixelRuler
             mainWindow.Show();
         }
 
-        public static void NewScreenshotRegionLogic(SettingsViewModel settingsViewModel, ScreenshotMode mode, bool newWindow)
+        public static void EnterScreenshotTool(SettingsViewModel settingsViewModel, OverlayMode mode, bool newWindow)
         {
             MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(settingsViewModel));
-            mainWindow.NewWindowedScreenshot(mode, newWindow);
-            mainWindow.Show();
+            var res = mainWindow.NewWindowedScreenshot(mode, newWindow).Result;
+            if(res)
+            {
+                mainWindow.Show();
+            }
         }
 
         static void PipeClient(string[] args)

@@ -18,7 +18,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="GlobalShortcutFullscreenKey" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">59</Value>
+      <Value Profile="(Default)">44</Value>
     </Setting>
     <Setting Name="GlobalShortcutFullscreenModifiers" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">6</Value>
@@ -33,10 +33,28 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="GlobalShortcutWindowKey" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">87</Value>
+      <Value Profile="(Default)">44</Value>
     </Setting>
     <Setting Name="GlobalShortcutWindowModifiers" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">6</Value>
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="GlobalShortcutRegionKey" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">30</Value>
+    </Setting>
+    <Setting Name="GlobalShortcutRegionModifiers" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="GlobalShortcutQuickColorKey" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">46</Value>
+    </Setting>
+    <Setting Name="GlobalShortcutQuickColorModifiers" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">12</Value>
+    </Setting>
+    <Setting Name="GlobalShortcutQuickMeasureKey" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">56</Value>
+    </Setting>
+    <Setting Name="GlobalShortcutQuickMeasureModifiers" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">12</Value>
     </Setting>
   </Settings>
 </SettingsFile>

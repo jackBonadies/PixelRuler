@@ -15,7 +15,10 @@
 
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <local:MainCanvas x:Name="canv" Grid.Row="1" />
-        <Canvas x:Name="overlayCanvas" Background="#01FFFFFF">
+        <Canvas
+            x:Name="overlayCanvas"
+            Background="#01FFFFFF"
+            Visibility="Collapsed">
             <Canvas.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform x:Name="reverseDpiTransform" CenterX="0" CenterY="0" ScaleX="1" ScaleY="1" />
@@ -97,6 +100,7 @@
                     <ToggleButton.Resources>
                         <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
                         <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
+                        <!--<SolidColorBrush x:Key="ToggleButtonForegroundCheckedPointerOver"  />-->
                     </ToggleButton.Resources>
                     <TextBlock
                         Padding="0"

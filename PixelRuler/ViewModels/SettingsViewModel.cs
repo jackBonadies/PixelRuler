@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using PixelRuler.Properties;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,7 +24,7 @@ namespace PixelRuler
                 App.FULLSCREEN_HOTKEY_ID,
                 (Key)Properties.Settings.Default.GlobalShortcutFullscreenKey,
                 (ModifierKeys)Properties.Settings.Default.GlobalShortcutFullscreenModifiers,
-                Key.P,
+                Key.PrintScreen,
                 ModifierKeys.Control | ModifierKeys.Shift);
 
             WindowedScreenshotShortcut = new ShortcutInfo(
@@ -31,8 +32,32 @@ namespace PixelRuler
                 App.WINDOWED_HOTKEY_ID,
                 (Key)Properties.Settings.Default.GlobalShortcutWindowKey,
                 (ModifierKeys)Properties.Settings.Default.GlobalShortcutWindowModifiers,
-                Key.W,
-                ModifierKeys.Control | ModifierKeys.Shift);
+                Key.PrintScreen,
+                ModifierKeys.Shift);
+
+            WindowedRegionScreenshotShortcut = new ShortcutInfo(
+                "Region Screenshot",
+                App.WINDOWED_HOTKEY_ID,
+                (Key)Properties.Settings.Default.GlobalShortcutRegionKey,
+                (ModifierKeys)Properties.Settings.Default.GlobalShortcutRegionModifiers,
+                Key.PrintScreen,
+                ModifierKeys.Shift);
+
+            QuickMeasureShortcut = new ShortcutInfo(
+             "Quick Measure",
+             App.WINDOWED_HOTKEY_ID,
+             (Key)Properties.Settings.Default.GlobalShortcutQuickMeasureKey,
+             (ModifierKeys)Properties.Settings.Default.GlobalShortcutQuickMeasureModifiers,
+             Key.PrintScreen,
+             ModifierKeys.Shift);
+
+            QuickColorShortcut = new ShortcutInfo(
+             "Quick Color",
+             App.WINDOWED_HOTKEY_ID,
+             (Key)Properties.Settings.Default.GlobalShortcutQuickColorKey,
+             (ModifierKeys)Properties.Settings.Default.GlobalShortcutQuickColorModifiers,
+             Key.PrintScreen,
+             ModifierKeys.Shift);
 
             clearShortcutCommand = new RelayCommand((object? o) =>
             {
@@ -333,6 +358,63 @@ namespace PixelRuler
             }
         }
 
+        private ShortcutInfo windowedRegionScreenshotShortcut;
+        public ShortcutInfo WindowedRegionScreenshotShortcut
+        {
+            get
+            {
+                return windowedRegionScreenshotShortcut;
+            }
+            set
+            {
+                if (windowedRegionScreenshotShortcut != value)
+                {
+                    windowedRegionScreenshotShortcut = value;
+                    windowedRegionScreenshotShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChanged(nameof(WindowedRegionScreenshotShortcut)); };
+                    windowedRegionScreenshotShortcut.PropertyChanged += WindowedRegionScreenshotShortcut_PropertyChanged;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private ShortcutInfo quickMeasureShortcut;
+        public ShortcutInfo QuickMeasureShortcut
+        {
+            get
+            {
+                return quickMeasureShortcut;
+            }
+            set
+            {
+                if (quickMeasureShortcut != value)
+                {
+                    quickMeasureShortcut = value;
+                    quickMeasureShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChanged(nameof(QuickMeasureShortcut)); };
+                    quickMeasureShortcut.PropertyChanged += QuickMeasureShortcut_PropertyChanged;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private ShortcutInfo quickColorShortcut;
+        public ShortcutInfo QuickColorShortcut
+        {
+            get
+            {
+                return quickColorShortcut;
+            }
+            set
+            {
+                if (quickColorShortcut != value)
+                {
+                    quickColorShortcut = value;
+                    quickColorShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChanged(nameof(QuickColorShortcut)); };
+                    quickColorShortcut.PropertyChanged += QuickColorShortcutShortcut_PropertyChanged;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private void ShortcutChanged_Invoke(object? sender)
         {
             if (sender is ShortcutInfo shortcutInfo)
@@ -349,6 +431,31 @@ namespace PixelRuler
         {
             Properties.Settings.Default.GlobalShortcutWindowKey = (int)WindowedScreenshotShortcut.Key;
             Properties.Settings.Default.GlobalShortcutWindowModifiers = (int)WindowedScreenshotShortcut.Modifiers;
+            Properties.Settings.Default.Save();
+            ShortcutChanged_Invoke(sender);
+        }
+
+        private void QuickColorShortcutShortcut_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            Properties.Settings.Default.GlobalShortcutRegionKey = (int)WindowedRegionScreenshotShortcut.Key;
+            Properties.Settings.Default.GlobalShortcutRegionModifiers = (int)WindowedRegionScreenshotShortcut.Modifiers;
+            Properties.Settings.Default.Save();
+            ShortcutChanged_Invoke(sender);
+        }
+
+
+        private void QuickMeasureShortcut_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            Properties.Settings.Default.GlobalShortcutQuickMeasureKey = (int)QuickMeasureShortcut.Key;
+            Properties.Settings.Default.GlobalShortcutQuickMeasureModifiers = (int)QuickMeasureShortcut.Modifiers;
+            Properties.Settings.Default.Save();
+            ShortcutChanged_Invoke(sender);
+        }
+
+        private void WindowedRegionScreenshotShortcut_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            Properties.Settings.Default.GlobalShortcutRegionKey = (int)WindowedRegionScreenshotShortcut.Key;
+            Properties.Settings.Default.GlobalShortcutRegionModifiers = (int)WindowedRegionScreenshotShortcut.Modifiers;
             Properties.Settings.Default.Save();
             ShortcutChanged_Invoke(sender);
         }

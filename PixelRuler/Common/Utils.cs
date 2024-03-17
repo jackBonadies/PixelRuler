@@ -334,17 +334,6 @@ namespace PixelRuler
 
     public class RelayCommandFull : RelayCommand
     {
-        private static readonly Dictionary<ModifierKeys, string> modifierKeysToText = new Dictionary<ModifierKeys, string>()
-        {
-            {ModifierKeys.None, ""},
-            {ModifierKeys.Control, "Ctrl+"},
-            {ModifierKeys.Shift, "Shift+"},
-            {ModifierKeys.Control|ModifierKeys.Shift, "Ctrl+Shift+"},
-            {ModifierKeys.Control|ModifierKeys.Alt, "Ctrl+Alt+"},
-            {ModifierKeys.Control|ModifierKeys.Shift|ModifierKeys.Alt, "Ctrl+Shift+Alt+"},
-            {ModifierKeys.Windows, "Win+"}
-        };
-
         /// <summary>
         /// Bound shortcut (in case keys are rebound)
         /// </summary>
@@ -430,7 +419,7 @@ namespace PixelRuler
             {
                 if (key != Key.None)
                 {
-                    var modifiersText = modifierKeysToText[modifiers];
+                    var modifiersText = KeyboardHelper.GetModifierKeyName(modifiers);
                     var keyName = KeyboardHelper.GetFriendlyName(key);
                     return $"{toolTipTextBase} ({modifiersText}{keyName})";
                 }
@@ -543,6 +532,28 @@ namespace PixelRuler
             return key != Key.None && modifiers != ModifierKeys.None;
         }
 
+        public static string GetModifierKeyName(ModifierKeys modifiers)
+        {
+            string modString = "";
+            if (modifiers.HasFlag(ModifierKeys.Windows))
+            {
+                modString += "Win+";
+            }
+            if (modifiers.HasFlag(ModifierKeys.Control))
+            {
+                modString += "Ctrl+";
+            }
+            if (modifiers.HasFlag(ModifierKeys.Alt))
+            {
+                modString += "Alt+";
+            }
+            if (modifiers.HasFlag(ModifierKeys.Shift))
+            {
+                modString += "Shift+";
+            }
+            return modString;
+        }
+
         public static string GetFriendlyName(Key key)
         {
             switch (key)
@@ -632,6 +643,9 @@ namespace PixelRuler
 
                 case Key.Next:
                     return "PageDown";
+
+                case Key.PrintScreen:
+                    return "PrtScr";
 
                 default:
                     return key.ToString();

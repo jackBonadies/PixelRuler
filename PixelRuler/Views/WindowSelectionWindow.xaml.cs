@@ -1,4 +1,5 @@
-﻿using PixelRuler.Common;
+﻿using PixelRuler.CanvasElements;
+using PixelRuler.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,11 +31,11 @@ namespace PixelRuler
     {
         // TODO simple viewmodel for mode and rectangle
 
-        ScreenshotMode mode;
+        OverlayMode mode;
         Rect fullBounds;
         SettingsViewModel settings;
 
-        public WindowSelectionWindow(ScreenshotMode mode, SettingsViewModel settings)
+        public WindowSelectionWindow(OverlayMode mode, SettingsViewModel settings)
         {
             this.settings = settings;
             InitializeComponent();
@@ -70,14 +71,35 @@ namespace PixelRuler
             setForMode();
         }
 
+        private bool isScreenshotMode()
+        {
+            return mode == OverlayMode.Window || mode == OverlayMode.RegionRect;
+        }
+
+        private bool isToolMode()
+        {
+            return mode == OverlayMode.QuickMeasure || mode == OverlayMode.QuickColor;
+        }
+
         private void setForMode()
         {
-            if (mode == ScreenshotMode.Window)
+            if(isToolMode())
             {
+                overlayCanvas.Visibility = Visibility.Collapsed;
+            }
+            else if(isScreenshotMode())
+            {
+                overlayCanvas.Visibility = Visibility.Visible;
+            }
+
+            if (mode == OverlayMode.Window)
+            {
+                blurBackground.Visibility = Visibility.Visible;
                 blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x80, 0, 0, 0));
             }
-            else
+            else if(mode == OverlayMode.RegionRect)
             {
+                blurBackground.Visibility = Visibility.Visible;
                 blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x30, 0, 0, 0));
 
                 horzIndicator.X1 = fullBounds.Left;
@@ -87,6 +109,14 @@ namespace PixelRuler
                 vertIndicator.X1 = vertIndicator.X2 = 300;
                 vertIndicator.Y1 = fullBounds.Top;
                 vertIndicator.Y2 = fullBounds.Bottom;
+            }
+            else if(mode == OverlayMode.QuickMeasure)
+            {
+                blurBackground.Visibility = Visibility.Collapsed;
+            }
+            else if(mode == OverlayMode.QuickColor)
+            {
+                blurBackground.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -168,7 +198,12 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (mode == ScreenshotMode.Window)
+            if (mode == OverlayMode.QuickMeasure || mode == OverlayMode.QuickColor)
+            {
+                return;
+            }
+
+            if (mode == OverlayMode.Window)
             {
                 SelectedRectCanvas = SelectWindowUnderCursor();
             }
@@ -192,7 +227,12 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (mode == ScreenshotMode.Window)
+            if (mode == OverlayMode.QuickMeasure || mode == OverlayMode.QuickColor)
+            {
+                return;
+            }
+
+            if (mode == OverlayMode.Window)
             {
                 SelectWindowUnderCursor();
             }
