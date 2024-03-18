@@ -47,8 +47,8 @@ namespace PixelRuler
             this.fullBounds = WpfScreenHelper.Screen.PrimaryScreen.Bounds;
             this.Top = fullBounds.Top;
             this.Left = fullBounds.Left; //TODO
-            this.Width = fullBounds.Width / 1.5;
-            this.Height = fullBounds.Height / 1.5;
+            this.Width = fullBounds.Width / WpfScreenHelper.Screen.PrimaryScreen.ScaleFactor;
+            this.Height = fullBounds.Height / WpfScreenHelper.Screen.PrimaryScreen.ScaleFactor;
             this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
             this.AllowsTransparency = true;

@@ -434,6 +434,17 @@ namespace PixelRuler
         {
             get
             {
+                if (this.shortcutInfo != null)
+                {
+                    if (shortcutInfo.Status == RegistrationStatus.Unregistered)
+                    {
+                        return "None";
+                    }
+                    else if(shortcutInfo.Status == RegistrationStatus.FailedRegistration)
+                    {
+                        return "None";
+                    }
+                }
                 if (key != Key.None)
                 {
                     var modifiersText = KeyboardHelper.GetModifierKeyName(modifiers);
