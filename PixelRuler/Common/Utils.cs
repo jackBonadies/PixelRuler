@@ -36,6 +36,26 @@ namespace PixelRuler
         }
     }
 
+    public class PointPositionStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is System.Windows.Point pt)
+            {
+                return $"{pt.X}, {pt.Y}px";
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new Exception("One way converter");
+        }
+    }
+
     public class ColorFormatStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

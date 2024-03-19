@@ -823,6 +823,8 @@ namespace PixelRuler
 
         private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
+            ViewModel.CurrentPosition = UiUtils.TruncatePoint(e.GetPosition(mainImage));
+
             if (ViewModel.SelectedTool == Tool.ColorPicker)
             {
                 if(colorPickBox == null)

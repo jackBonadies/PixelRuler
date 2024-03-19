@@ -433,7 +433,21 @@ namespace PixelRuler
                 OnPropertyChanged();
             }
         }
-        
+
+        private System.Windows.Point currentPosition;
+        public System.Windows.Point CurrentPosition
+        {
+            get
+            {
+                return currentPosition;
+            }
+            set
+            {
+                currentPosition = value;
+                OnPropertyChanged();
+            }
+        }
+
         public double[] AvailableZooms
         {
             get;

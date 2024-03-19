@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PixelRuler"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
@@ -51,6 +52,25 @@
             <Setter Property="Background" Value="{DynamicResource SeperatorColor}" />
         </Style>
 
+        <Style x:Key="CopyButtonStyle" TargetType="Path">
+            <Setter Property="Margin" Value="6,2,0,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Data" Value="{StaticResource CopyIconPath}" />
+            <Setter Property="Fill" Value="#303030" />
+            <Setter Property="LayoutTransform">
+                <Setter.Value>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX=".015" ScaleY=".015" />
+                        <RotateTransform Angle="180" />
+                    </TransformGroup>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransformOrigin">
+                <Setter.Value>
+                    <Point X=".5" Y=".5" />
+                </Setter.Value>
+            </Setter>
+        </Style>
         <!--<Style TargetType="ui:NumberBox" BasedOn="{StaticResource {x:Type NumberBox}}">
             <Setter Property="Margin" Value="0,0,4,0"></Setter>
         </Style>-->
@@ -289,26 +309,34 @@
             x:Name="bottomPanel"
             Grid.Row="2"
             Height="24"
-            Background="{DynamicResource PanelColor}">
+            Background="{DynamicResource PanelColor}"
+            LastChildFill="False">
             <StackPanel
                 Margin="50,0,0,0"
                 VerticalAlignment="Center"
-                DockPanel.Dock="Left"
                 Orientation="Horizontal">
                 <StackPanel
                     Width="200"
                     VerticalAlignment="Center"
                     Orientation="Horizontal">
-                    <TextBlock Text="mouse: 123" />
+                    <TextBlock
+                        Margin="0,2,2,0"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="13"
+                        Text="&#xE8B0;" />
+                    <TextBlock Text="{Binding CurrentPosition, Converter={StaticResource PointPositionStringConverter}}" />
                 </StackPanel>
 
+                <Separator Margin="0,0,2,0" BorderBrush="#20000000" />
                 <StackPanel
                     Width="200"
                     VerticalAlignment="Center"
                     Orientation="Horizontal">
-                    <TextBlock Text="size: 123 x 456" />
+                    <TextBlock Text="size: 123 × 456px" />
+                    <Path Style="{StaticResource CopyButtonStyle}" />
                 </StackPanel>
 
+                <Separator Margin="0,0,2,0" BorderBrush="#20000000" />
                 <Button Padding="0" Focusable="False">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
@@ -318,10 +346,10 @@
                                 CornerRadius="3">
                                 <StackPanel Orientation="Horizontal">
                                     <ContentPresenter />
-                                    <wpfui:SymbolIcon
+                                    <Path
                                         Name="copyIcon"
                                         Margin="3,0,0,0"
-                                        Symbol="Copy24"
+                                        Style="{StaticResource CopyButtonStyle}"
                                         Visibility="Hidden" />
                                 </StackPanel>
                             </Border>
@@ -351,17 +379,18 @@
                     </StackPanel>
                 </Button>
             </StackPanel>
-            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+            <Grid Width="100" DockPanel.Dock="Right">
                 <ComboBox
                     Height="4"
                     MinWidth="80"
+                    MinHeight="22"
                     MaxHeight="4"
                     Margin="0,0,0,0"
                     Padding="10,0,0,0"
-                    FontSize="12"
+                    VerticalContentAlignment="Center"
                     ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}"
                     Text="{Binding CurrentZoomPercent, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}" />
-            </StackPanel>
+            </Grid>
         </DockPanel>
 
     </Grid>
