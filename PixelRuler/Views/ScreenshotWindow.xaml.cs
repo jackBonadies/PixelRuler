@@ -1,5 +1,6 @@
 ﻿using PixelRuler.CanvasElements;
 using PixelRuler.Common;
+using PixelRuler.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -132,6 +133,11 @@ namespace PixelRuler
         {
         }
 
+        private void SetupScreenshowWindowViewModel(ScreenshotWindowViewModel viewModel)
+        {
+            viewModel.CloseWindowCommand = new RelayCommandFull((object? o) => this.Close(), Key.Escape, ModifierKeys.None, "Close");
+        }
+
         private void WindowSelectionWindow_Loaded(object sender, RoutedEventArgs e)
         {
             if (DesignerProperties.GetIsInDesignMode(this))
@@ -143,7 +149,8 @@ namespace PixelRuler
             canv.LayoutTransform = new ScaleTransform(1 / dpi, 1 / dpi);
 
             var bmp = UiUtils.CaptureScreen(WpfScreenHelper.Screen.PrimaryScreen.Bounds);
-            var prvm = new PixelRulerViewModel(settings);
+            var prvm = new ScreenshotWindowViewModel(settings);
+            SetupScreenshowWindowViewModel(prvm);
             this.DataContext = prvm;
             this.canv.DataContext = prvm;
             prvm.Image = bmp;

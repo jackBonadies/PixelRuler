@@ -97,13 +97,20 @@ namespace PixelRuler
 
         private void MainCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var deltaX = (e.NewSize.Width - e.PreviousSize.Width);
-            var deltaY = (e.NewSize.Height - e.PreviousSize.Height);
-            var tt = this.innerCanvas.GetTranslateTransform();
-            resizeXbucket.Add(deltaX / 2);
-            resizeYbucket.Add(deltaY / 2);
-            tt.X += resizeXbucket.GetValue();
-            tt.Y += resizeYbucket.GetValue();
+            if(e.PreviousSize == new Size(0,0))
+            {
+                return;
+            }
+            if(this.shouldCenterImage())
+            {
+                var deltaX = (e.NewSize.Width - e.PreviousSize.Width);
+                var deltaY = (e.NewSize.Height - e.PreviousSize.Height);
+                var tt = this.innerCanvas.GetTranslateTransform();
+                resizeXbucket.Add(deltaX / 2);
+                resizeYbucket.Add(deltaY / 2);
+                tt.X += resizeXbucket.GetValue();
+                tt.Y += resizeYbucket.GetValue();
+            }
         }
 
         private void MainCanvas_Loaded(object sender, RoutedEventArgs e)
@@ -482,6 +489,16 @@ namespace PixelRuler
             this.ViewModel.ClearAllMeasureElementsCommand.SetCanExecute(anyNonEmpty);
         }
 
+        private bool shouldCenterImage()
+        {
+            // dont need dpi scaled here. already reverse scaled.
+            if(this.ActualHeight <= this.ViewModel.Image.Height)
+            {
+                return false;
+            }
+            return true;
+        }
+
         private void SetImageLocation(Canvas canvas, Image image)
         {
             // image should be center or if larger than screen bounds then topleft.
@@ -490,9 +507,11 @@ namespace PixelRuler
 
             if(this.IsLoaded)
             {
-                // if (shouldCenter)
-                x += (this.ActualWidth - this.ViewModel.Image.Width) / 2.0;
-                y += (this.ActualHeight - this.ViewModel.Image.Height) / 2.0;
+                if (shouldCenterImage())
+                {
+                    x += (this.ActualWidth - this.ViewModel.Image.Width) / 2.0;
+                    y += (this.ActualHeight - this.ViewModel.Image.Height) / 2.0;
+                }
             }
             canvas.GetTranslateTransform().X = (int)Math.Round(x);
             canvas.GetTranslateTransform().Y = (int)Math.Round(y);

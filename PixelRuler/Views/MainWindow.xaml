@@ -10,8 +10,8 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="PixelRuler"
-    Width="1800"
-    Height="800"
+    Width="1000"
+    Height="700"
     MinWidth="300"
     MinHeight="300"
     d:DataContext="{d:DesignInstance Type=local:PixelRulerViewModel,

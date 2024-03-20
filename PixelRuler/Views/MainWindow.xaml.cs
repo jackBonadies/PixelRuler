@@ -251,6 +251,8 @@ namespace PixelRuler
                    wsw.SelectedRectCanvas.Height  * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height)
                 {
                     this.WindowState = WindowState.Maximized;
+                    this.Width = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width * .75;
+                    this.Height = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height * .75;
                 }
                 else
                 {
@@ -265,8 +267,8 @@ namespace PixelRuler
                     var dpiScaleFactor = wsw.Dpi;
                     this.Left = wsw.SelectedRectCanvas.Left / dpiScaleFactor - 60;
                     this.Top = wsw.SelectedRectCanvas.Top / dpiScaleFactor - 60;
-                    this.Width = Math.Max(wsw.SelectedRectCanvas.Width / dpiScaleFactor + 120, 600);
-                    this.Height = Math.Max(wsw.SelectedRectCanvas.Height / dpiScaleFactor + 120, 420);
+                    this.Width = Math.Max(wsw.SelectedRectCanvas.Width / dpiScaleFactor + 120, 730);
+                    this.Height = Math.Max(wsw.SelectedRectCanvas.Height / dpiScaleFactor + 120, 515);
                     this.WindowStartupLocation = WindowStartupLocation.Manual;
                     this.WindowState = WindowState.Normal;
                 }

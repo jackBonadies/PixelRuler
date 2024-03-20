@@ -5,13 +5,72 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PixelRuler"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:PixelRuler.ViewModels"
     xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="Select Window"
     Width="800"
     Height="450"
+    d:DataContext="{d:DesignInstance Type=viewmodels:ScreenshotWindowViewModel}"
     Background="Transparent"
     Cursor="Cross"
     mc:Ignorable="d">
+
+    <Window.InputBindings>
+        <KeyBinding
+            Key="{Binding NewScreenshotFullCommand.Key}"
+            Command="{Binding NewScreenshotFullCommand}"
+            Modifiers="{Binding NewScreenshotFullCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding BoundsMeasureSelectedCommand.Key}"
+            Command="{Binding BoundsMeasureSelectedCommand}"
+            Modifiers="{Binding BoundsMeasureSelectedCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding ColorPickerSelectedCommand.Key}"
+            Command="{Binding ColorPickerSelectedCommand}"
+            Modifiers="{Binding ColorPickerSelectedCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding RulerSelectedCommand.Key}"
+            Command="{Binding RulerSelectedCommand}"
+            Modifiers="{Binding RulerSelectedCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding ClearAllMeasureElementsCommand.Key}"
+            Command="{Binding ClearAllMeasureElementsCommand}"
+            Modifiers="{Binding ClearAllMeasureElementsCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding ZoomInCommand.Key}"
+            Command="{Binding ZoomInCommand}"
+            Modifiers="{Binding ZoomInCommand.Modifiers}" />
+        <KeyBinding
+            Key="Add"
+            Command="{Binding ZoomInCommand}"
+            Modifiers="{Binding ZoomInCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding ZoomOutCommand.Key}"
+            Command="{Binding ZoomOutCommand}"
+            Modifiers="{Binding ZoomOutCommand.Modifiers}" />
+        <KeyBinding
+            Key="Subtract"
+            Command="{Binding ZoomOutCommand}"
+            Modifiers="{Binding ZoomOutCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding FitWindowCommand.Key}"
+            Command="{Binding FitWindowCommand}"
+            Modifiers="{Binding FitWindowCommand.Modifiers}" />
+        <KeyBinding
+            Key="NumPad0"
+            Command="{Binding FitWindowCommand}"
+            Modifiers="{Binding FitWindowCommand.Modifiers}" />
+        <KeyBinding
+            Key="{Binding CloseWindowCommand.Key}"
+            Command="{Binding CloseWindowCommand}"
+            Modifiers="{Binding CloseWindowCommand.Modifiers}" />
+
+
+        <KeyBinding
+            Key="{Binding PopOutWindowCommand.Key}"
+            Command="{Binding PopOutWindowCommand}"
+            Modifiers="{Binding PopOutWindowCommand.Modifiers}" />
+    </Window.InputBindings>
 
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <local:MainCanvas x:Name="canv" Grid.Row="1" />
@@ -90,13 +149,17 @@
             Background="White"
             BorderBrush="Gray"
             BorderThickness="1"
-            CornerRadius="5">
+            CornerRadius="5"
+            Cursor="Arrow">
             <StackPanel Orientation="Horizontal">
                 <ToggleButton
                     Width="34"
                     Height="34"
                     Padding="0"
-                    BorderBrush="Transparent">
+                    BorderBrush="Transparent"
+                    Command="{Binding BoundsMeasureSelectedCommand}"
+                    IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=BoundingBox}"
+                    ToolTipService.ToolTip="{Binding BoundsMeasureSelectedCommand.ToolTipTextFull}">
                     <ToggleButton.Resources>
                         <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
                         <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
@@ -113,7 +176,10 @@
                     Width="34"
                     Height="34"
                     Padding="0"
-                    BorderBrush="Transparent">
+                    BorderBrush="Transparent"
+                    Command="{Binding RulerSelectedCommand}"
+                    IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=Ruler}"
+                    ToolTipService.ToolTip="{Binding RulerSelectedCommand.ToolTipTextFull}">
                     <ToggleButton.Resources>
                         <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
                         <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
@@ -121,15 +187,17 @@
                     <TextBlock
                         Padding="0"
                         FontFamily="Segoe MDL2 Assets"
-                        FontSize="20"
-                        Text="&#xEF20;" />
+                        FontSize="19"
+                        Text="&#xED5E;" />
                 </ToggleButton>
-                <Separator BorderBrush="#30000000" />
+                <Separator Margin="2,0,2,0" BorderBrush="#30000000" />
                 <ToggleButton
                     Width="34"
                     Height="34"
                     Padding="0"
-                    BorderBrush="Transparent">
+                    BorderBrush="Transparent"
+                    Command="{Binding PopOutWindowCommand}"
+                    ToolTip="{Binding PopOutWindowCommand.ToolTipTextFull}">
                     <ToggleButton.Resources>
                         <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
                         <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
@@ -143,12 +211,14 @@
                         </Path.LayoutTransform>
                     </Path>
                 </ToggleButton>
-                <Separator BorderBrush="#30000000" />
+                <Separator Margin="2,0,2,0" BorderBrush="#30000000" />
                 <ToggleButton
                     Width="34"
                     Height="34"
                     Padding="0"
-                    BorderBrush="Transparent">
+                    BorderBrush="Transparent"
+                    Command="{Binding CloseWindowCommand}"
+                    ToolTip="{Binding CloseWindowCommand.ToolTipTextFull}">
                     <ToggleButton.Resources>
                         <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
                         <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
