@@ -13,7 +13,7 @@ namespace PixelRuler.ViewModels
     {
         public ScreenshotWindowViewModel(SettingsViewModel? settings = null) : base(settings)
         {
-            PopOutWindowCommand = new RelayCommandFull((object? o) => { PopOutNewWindow(); }, System.Windows.Input.Key.P, System.Windows.Input.ModifierKeys.Control, "New Window");
+            PopOutWindowCommand = new RelayCommandFull((object? o) => { PopOutNewWindow(); }, System.Windows.Input.Key.P, System.Windows.Input.ModifierKeys.Control, "Open in New Window");
         }
 
         private RelayCommandFull popOutWindowCommand;
