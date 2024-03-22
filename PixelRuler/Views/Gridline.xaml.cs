@@ -74,13 +74,25 @@ namespace PixelRuler.Views
             currentMousePosTick.tickLine.Visibility = Visibility.Collapsed; 
         }
 
-        private void Gridline_Loaded(object sender, RoutedEventArgs e)
+        private void SetupForDpi()
         {
             borderSizePixels = UiUtils.GetBorderPixelSize(this.GetDpi());
 
             SetBorder();
             canvas.Width = 20000;
             canvas.Height = borderSizePixels;
+        }
+
+        private void Gridline_Loaded(object sender, RoutedEventArgs e)
+        {
+            SetupForDpi();
+        }
+
+        protected override void OnDpiChanged(DpiScale oldDpi, DpiScale newDpi)
+        {
+            SetupForDpi();
+            UpdateAll();
+            base.OnDpiChanged(oldDpi, newDpi);
         }
 
         private void SetBorder()
@@ -128,6 +140,12 @@ namespace PixelRuler.Views
             endCoor = int.MaxValue;
 
             this.Scale = scale;
+
+            UpdateAll();
+        }
+
+        private void UpdateAll()
+        {
 
             ClearCanvas();
             SetBorder();

@@ -40,6 +40,11 @@ namespace PixelRuler
             }
         }
 
+        public virtual bool IsInWindowSelection()
+        {
+            return false;
+        }
+
         public void CopyRawImageToClipboard()
         {
             if(this.ImageSource != null)

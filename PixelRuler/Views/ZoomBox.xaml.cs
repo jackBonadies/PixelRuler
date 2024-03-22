@@ -246,13 +246,13 @@ namespace PixelRuler.Views
             }
             else
             {
-                Canvas.SetLeft(this, overlayCanvasLocation.X - boxWidth / 2);
-                Canvas.SetTop(this, overlayCanvasLocation.Y + 28);// - outerBorder.ActualHeight / 2 + 156);
+                //Canvas.SetLeft(this, overlayCanvasLocation.X - boxWidth / 2);
+                //Canvas.SetTop(this, overlayCanvasLocation.Y + 28);// - outerBorder.ActualHeight / 2 + 156);
             }
 
             if(boxOffsetX is SizerPosX.Centered)
             {
-                Canvas.SetLeft(this, overlayCanvasLocation.X - boxWidth / 2);
+                Canvas.SetLeft(this, overlayCanvasLocation.X - boxWidth / 2 + 200);
             }
             else if(boxOffsetX is SizerPosX.Left)
             {
@@ -266,7 +266,7 @@ namespace PixelRuler.Views
 
             if (boxOffsetY is SizerPosY.Centered)
             {
-                Canvas.SetTop(this, overlayCanvasLocation.Y - boxHeight / 2);
+                Canvas.SetTop(this, overlayCanvasLocation.Y - boxHeight / 2 + 200);
             }
             else if (boxOffsetY is SizerPosY.Above)
             {
@@ -439,10 +439,9 @@ namespace PixelRuler.Views
             currentZoomBoxInfo = measEl;
 
             zoomCanvas.Children.Clear(); // TODO need to readd the other guidelines....
-            //this.currentLineGuideVert.Visibility = Visibility.Collapsed;
-            //this.currentLineGuideHorz.Visibility = Visibility.Collapsed;
-            //this.currentPixelIndicator.Visibility = Visibility.Collapsed;
-
+                                         //this.currentLineGuideVert.Visibility = Visibility.Collapsed;
+                                         //this.currentLineGuideHorz.Visibility = Visibility.Collapsed;
+                                         //this.currentPixelIndicator.Visibility = Visibility.Collapsed;
 
             switch (currentZoomBoxCase)
             {
@@ -478,6 +477,13 @@ namespace PixelRuler.Views
                             zoomCanvas.Children.Add(currentLineGuideVert);
                         }
                     }
+                    break;
+                case ZoomBoxCase.ScreenshotBoundSelection:
+                    // same as resizer for corner
+                    this.currentLineGuideHorz.Visibility = Visibility.Visible;
+                    zoomCanvas.Children.Add(currentLineGuideHorz);
+                    this.currentLineGuideVert.Visibility = Visibility.Visible;
+                    zoomCanvas.Children.Add(currentLineGuideVert);
                     break;
                 case ZoomBoxCase.QuickZoom:
                     ZoomCanvasElementInfo.Clear();

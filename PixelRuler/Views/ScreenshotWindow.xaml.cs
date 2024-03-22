@@ -32,15 +32,12 @@ namespace PixelRuler
     {
         // TODO simple viewmodel for mode and rectangle
 
-        OverlayMode mode;
         Rect fullBounds;
-        SettingsViewModel settings;
+        ScreenshotWindowViewModel ViewModel { get; set; }
 
         public WindowSelectionWindow(OverlayMode mode, SettingsViewModel settings)
         {
-            this.settings = settings;
             InitializeComponent();
-            this.mode = mode;
             this.Loaded += WindowSelectionWindow_Loaded;
             this.SourceInitialized += WindowSelectionWindow_SourceInitialized;
             this.WindowState = WindowState.Normal;
@@ -69,36 +66,31 @@ namespace PixelRuler
             this.rectSelectionOutline.Width = 0;
             this.rectSelectionOutline.Height = 0;
 
+            ViewModel = new ScreenshotWindowViewModel(settings);
+            ViewModel.Mode = mode;
+
             setForMode();
         }
 
-        private bool isScreenshotMode()
-        {
-            return mode == OverlayMode.Window || mode == OverlayMode.RegionRect;
-        }
 
-        private bool isToolMode()
-        {
-            return mode == OverlayMode.QuickMeasure || mode == OverlayMode.QuickColor;
-        }
 
         private void setForMode()
         {
-            if(isToolMode())
+            if(ViewModel.IsToolMode())
             {
                 overlayCanvas.Visibility = Visibility.Collapsed;
             }
-            else if(isScreenshotMode())
+            else if(ViewModel.IsInWindowSelection())
             {
                 overlayCanvas.Visibility = Visibility.Visible;
             }
 
-            if (mode == OverlayMode.Window)
+            if (ViewModel.Mode == OverlayMode.Window)
             {
                 blurBackground.Visibility = Visibility.Visible;
                 blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x80, 0, 0, 0));
             }
-            else if(mode == OverlayMode.RegionRect)
+            else if(ViewModel.Mode == OverlayMode.RegionRect)
             {
                 blurBackground.Visibility = Visibility.Visible;
                 blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x30, 0, 0, 0));
@@ -111,11 +103,11 @@ namespace PixelRuler
                 vertIndicator.Y1 = fullBounds.Top;
                 vertIndicator.Y2 = fullBounds.Bottom;
             }
-            else if(mode == OverlayMode.QuickMeasure)
+            else if(ViewModel.Mode == OverlayMode.QuickMeasure)
             {
                 blurBackground.Visibility = Visibility.Collapsed;
             }
-            else if(mode == OverlayMode.QuickColor)
+            else if(ViewModel.Mode == OverlayMode.QuickColor)
             {
                 blurBackground.Visibility = Visibility.Collapsed;
             }
@@ -146,15 +138,15 @@ namespace PixelRuler
             }
             // basically undo the TransformToDevice transform so that 100% zoom has 1 pixel : 1 pixel
             var dpi = this.GetDpi();
-            canv.LayoutTransform = new ScaleTransform(1 / dpi, 1 / dpi);
+            mainCanvas.LayoutTransform = new ScaleTransform(1 / dpi, 1 / dpi);
 
             var bmp = UiUtils.CaptureScreen(WpfScreenHelper.Screen.PrimaryScreen.Bounds);
-            var prvm = new ScreenshotWindowViewModel(settings);
-            SetupScreenshowWindowViewModel(prvm);
-            this.DataContext = prvm;
-            this.canv.DataContext = prvm;
-            prvm.Image = bmp;
-            canv.SetImage(prvm.ImageSource);
+ 
+            SetupScreenshowWindowViewModel(ViewModel);
+            this.DataContext = ViewModel;
+            mainCanvas.DataContext = ViewModel;
+            ViewModel.Image = bmp;
+            mainCanvas.SetImage(ViewModel.ImageSource);
 
             Dpi = this.GetDpi();
 
@@ -197,7 +189,7 @@ namespace PixelRuler
         private void WindowSelectionWindow_MouseDown(object sender, MouseButtonEventArgs e)
         {
             dragging = true;
-            startPoint = UiUtils.RoundPoint(e.GetPosition(this.canv));
+            startPoint = UiUtils.RoundPoint(e.GetPosition(this.mainCanvas));
             innerRectGeometry.Rect = new Rect(startPoint, startPoint);
             horzIndicator.Visibility = Visibility.Collapsed;
             vertIndicator.Visibility = Visibility.Collapsed;
@@ -205,18 +197,18 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (mode == OverlayMode.QuickMeasure || mode == OverlayMode.QuickColor)
+            if (ViewModel.Mode == OverlayMode.QuickMeasure || ViewModel.Mode == OverlayMode.QuickColor)
             {
                 return;
             }
 
-            if (mode == OverlayMode.Window)
+            if (ViewModel.Mode == OverlayMode.Window)
             {
                 SelectedRectCanvas = SelectWindowUnderCursor();
             }
             else
             {
-                SelectedRectCanvas = new Rect(startPoint, UiUtils.RoundPoint(e.GetPosition(this.canv)));
+                SelectedRectCanvas = new Rect(startPoint, UiUtils.RoundPoint(e.GetPosition(this.mainCanvas)));
             }
 
             this.DialogResult = true;
@@ -230,25 +222,30 @@ namespace PixelRuler
                 this.DialogResult = false;
                 this.Close();
             }
+
+            if (e.Key == (this.DataContext as PixelRulerViewModel).Settings.ZoomBoxQuickZoomKey)
+            {
+                this.mainCanvas.ShowZoomBox();
+            }
         }
 
         private void WindowSelectionWindow_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (mode == OverlayMode.QuickMeasure || mode == OverlayMode.QuickColor)
+            if (ViewModel.Mode == OverlayMode.QuickMeasure || ViewModel.Mode == OverlayMode.QuickColor)
             {
                 return;
             }
 
-            if (mode == OverlayMode.Window)
+            if (ViewModel.Mode == OverlayMode.Window)
             {
                 SelectWindowUnderCursor();
             }
             else
             {
-                SetCursorIndicator(e.GetPosition(this.canv));
+                SetCursorIndicator(e.GetPosition(this.mainCanvas));
                 if (dragging)
                 {
-                    innerRectGeometry.Rect = new Rect(startPoint, e.GetPosition(this.canv));
+                    innerRectGeometry.Rect = new Rect(startPoint, e.GetPosition(this.mainCanvas));
                     var minX = Math.Min(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
                     var maxX = Math.Max(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
                     var minY = Math.Min(innerRectGeometry.Rect.Top, innerRectGeometry.Rect.Bottom);

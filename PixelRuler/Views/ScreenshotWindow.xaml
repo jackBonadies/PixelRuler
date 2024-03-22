@@ -73,10 +73,11 @@
     </Window.InputBindings>
 
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <local:MainCanvas x:Name="canv" Grid.Row="1" />
+        <local:MainCanvas x:Name="mainCanvas" Grid.Row="1" />
         <Canvas
             x:Name="overlayCanvas"
             Background="#01FFFFFF"
+            IsHitTestVisible="False"
             Visibility="Collapsed">
             <Canvas.RenderTransform>
                 <TransformGroup>

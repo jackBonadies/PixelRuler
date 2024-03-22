@@ -39,5 +39,25 @@ namespace PixelRuler.ViewModels
             var mainWindow = new MainWindow(this);
             mainWindow.Show();
         }
+
+        public override bool IsInWindowSelection()
+        {
+            return IsScreenshotMode();
+        }
+
+        public bool IsScreenshotMode()
+        {
+            return Mode == OverlayMode.Window || Mode == OverlayMode.RegionRect;
+        }
+
+        public bool IsToolMode()
+        {
+            return Mode == OverlayMode.QuickMeasure || Mode == OverlayMode.QuickColor;
+        }
+
+        public OverlayMode Mode
+        {
+            get; set;
+        }
     }
 }

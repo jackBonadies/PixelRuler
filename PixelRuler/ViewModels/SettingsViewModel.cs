@@ -90,9 +90,11 @@ namespace PixelRuler
             });
         }
 
-        public event EventHandler<ShortcutInfo> EditShortcutCommandEvent;
+        public Key ZoomBoxQuickZoomKey { get; set; } = Key.Space;
 
         public ObservableCollection<ShortcutInfo> GlobalShortcuts { get; set; } = new ObservableCollection<ShortcutInfo>();
+
+        public event EventHandler<ShortcutInfo> EditShortcutCommandEvent;
 
         private RelayCommand editShortcutCommand;
         public RelayCommand EditShortcutCommand

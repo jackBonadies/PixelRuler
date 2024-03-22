@@ -124,10 +124,22 @@ namespace PixelRuler
                 this.gridLineTop.SetZoom(1);
                 this.gridLineLeft.SetZoom(1);
             }
-            this.gridLineCorner.Width = UiUtils.GetBorderPixelSize(this.GetDpi());
-            this.gridLineCorner.Height = UiUtils.GetBorderPixelSize(this.GetDpi()) + 1 / this.GetDpi();
+
+            SetupForDpi();
 
             SetImageLocation(this.innerCanvas, mainImage);
+        }
+
+        protected override void OnDpiChanged(DpiScale oldDpi, DpiScale newDpi)
+        {
+            SetupForDpi();
+            base.OnDpiChanged(oldDpi, newDpi);
+        }
+
+        private void SetupForDpi()
+        {
+            this.gridLineCorner.Width = UiUtils.GetBorderPixelSize(this.GetDpi());
+            this.gridLineCorner.Height = UiUtils.GetBorderPixelSize(this.GetDpi()) + 1 / this.GetDpi();
         }
 
         private void OverlayCanvas_MouseLeave(object sender, MouseEventArgs e)
@@ -137,7 +149,7 @@ namespace PixelRuler
 
         private void OverlayCanvas_MouseEnter(object sender, MouseEventArgs e)
         {
-            if(KeyUtil.IsCtrlDown())
+            if (Keyboard.IsKeyDown(this.ViewModel.Settings.ZoomBoxQuickZoomKey))
             {
                 zoomBox.Show(null, e, ZoomBoxCase.QuickZoom);
             }
@@ -405,7 +417,7 @@ namespace PixelRuler
         {
             if(this.ViewModel.ShowGridLines)
             {
-                Canvas.SetLeft(this.innerCanvas, UiUtils.GetBorderPixelSize(this.GetDpi()));
+                Canvas.SetLeft(this.innerCanvas, UiUtils.GetBorderPixelSize(this.GetDpi())); //TODO dpi changed
                 Canvas.SetTop(this.innerCanvas, UiUtils.GetBorderPixelSize(this.GetDpi()));
                 this.gridLineCorner.Visibility = Visibility.Visible;
                 this.gridLineTop.Visibility = Visibility.Visible;
@@ -668,7 +680,7 @@ namespace PixelRuler
         {
             this.Focus();
             this.mainImage.Focus();
-            if (e.ChangedButton == MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left && !ViewModel.IsInWindowSelection())
             {
                 this.ToolDown(e);
             }
@@ -1116,7 +1128,7 @@ namespace PixelRuler
 
         public void ShowZoomBox()
         {
-            this.zoomBox.Show(null, null, ZoomBoxCase.QuickZoom);
+            this.zoomBox.Show(null, null, ViewModel.IsInWindowSelection() ? ZoomBoxCase.ScreenshotBoundSelection : ZoomBoxCase.QuickZoom);
         }
 
         public void HideZoomBox()

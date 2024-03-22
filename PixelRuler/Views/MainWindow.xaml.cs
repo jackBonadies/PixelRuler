@@ -155,7 +155,8 @@ namespace PixelRuler
 
             }
 #endif
-            if (e.Key == Key.Space)
+            // todo move to canvas??
+            if (e.Key == this.ViewModel.Settings.ZoomBoxQuickZoomKey)
             {
                 mainCanvas.ShowZoomBox();
             }
@@ -177,6 +178,7 @@ namespace PixelRuler
 
         protected override void OnDpiChanged(DpiScale oldDpi, DpiScale newDpi)
         {
+            SetupForDpi();
             base.OnDpiChanged(oldDpi, newDpi);
         }
 
@@ -187,13 +189,17 @@ namespace PixelRuler
         }
 
 
-
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private void SetupForDpi()
         {
             var dpi = this.GetDpi();
 
             // basically undo the TransformToDevice transform so that 100% zoom has 1 pixel : 1 pixel
             mainCanvas.LayoutTransform = new ScaleTransform(1 / dpi, 1 / dpi);
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            SetupForDpi();
             mainCanvas.Panning += MainCanvas_Panning;
         }
 

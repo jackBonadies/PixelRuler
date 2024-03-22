@@ -140,6 +140,7 @@ namespace PixelRuler
         QuickZoom = 1,
         Resizer = 2,
         ColorPicker = 3,
+        ScreenshotBoundSelection = 4,
     }
 
     [AttributeUsage(AttributeTargets.Field)]
