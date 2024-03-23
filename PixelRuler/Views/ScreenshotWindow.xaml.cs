@@ -1,6 +1,7 @@
 ﻿using PixelRuler.CanvasElements;
 using PixelRuler.Common;
 using PixelRuler.ViewModels;
+using PixelRuler.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -188,6 +190,10 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if(e.ChangedButton != MouseButton.Left)
+            {
+                return;
+            }
             dragging = true;
             startPoint = UiUtils.RoundPoint(e.GetPosition(this.mainCanvas));
             innerRectGeometry.Rect = new Rect(startPoint, startPoint);
@@ -202,6 +208,13 @@ namespace PixelRuler
                 return;
             }
 
+            if(e.ChangedButton != MouseButton.Left)
+            {
+                return;
+            }
+
+            //mainContent.Visibility = Visibility.Collapsed;
+
             if (ViewModel.Mode == OverlayMode.Window)
             {
                 SelectedRectCanvas = SelectWindowUnderCursor();
@@ -211,9 +224,24 @@ namespace PixelRuler
                 SelectedRectCanvas = new Rect(startPoint, UiUtils.RoundPoint(e.GetPosition(this.mainCanvas)));
             }
 
-            this.DialogResult = true;
-            this.Close();
+            void AfterScreenshot(AfterScreenshotAction a)
+            {
+                this.AfterScreenshotValue = a;
+                this.DialogResult = true;
+                this.Close();
+            }
+
+            if(System.Windows.Input.Keyboard.IsKeyDown(this.ViewModel.Settings.PromptKey))
+            {
+                Views.AfterScreenshot.ShowOptions(this, AfterScreenshot);
+            }
+            else
+            {
+                AfterScreenshot(AfterScreenshotAction.ViewInPixelRulerWindow);
+            }
         }
+
+        public AfterScreenshotAction AfterScreenshotValue { get; set; }
 
         private void WindowSelectionWindow_KeyDown(object sender, KeyEventArgs e)
         {

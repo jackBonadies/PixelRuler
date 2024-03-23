@@ -537,6 +537,7 @@ namespace PixelRuler
         }
 
         public ZoomViewModel ZoomViewModel { get; set; } = new ZoomViewModel();
+        public Key PromptKey { get; private set; } = Key.LeftShift;
     }
 
     public enum ZoomMode

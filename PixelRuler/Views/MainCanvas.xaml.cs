@@ -408,7 +408,7 @@ namespace PixelRuler
             SetClearAllMeasurementsEnabledState();
             SetShowGridLineState();
 
-            zoomBox = new ZoomBox(this, 256, this.ViewModel.Settings.ZoomViewModel);
+            zoomBox = new ZoomBox(this, 256, this.ViewModel);
             Canvas.SetZIndex(zoomBox, 1200);
             this.overlayCanvas.Children.Add(zoomBox);
         }

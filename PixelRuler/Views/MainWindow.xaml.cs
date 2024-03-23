@@ -26,6 +26,7 @@ using PixelRuler;
 using System.Reflection;
 using WpfScreenHelper;
 using PixelRuler.Common;
+using PixelRuler.Views;
 
 namespace PixelRuler
 {
@@ -244,7 +245,13 @@ namespace PixelRuler
                 return false;
             }
 
-            if(res is true)
+            if(wsw.AfterScreenshotValue is AfterScreenshotAction.Cancel)
+            {
+                return false;
+            }
+
+
+            if (res is true)
             {
                 bmp = UiUtils.CaptureScreen(wsw.SelectedRectWin);
                 this.ViewModel.Image = bmp;

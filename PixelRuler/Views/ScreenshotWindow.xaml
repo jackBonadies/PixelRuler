@@ -72,7 +72,10 @@
             Modifiers="{Binding PopOutWindowCommand.Modifiers}" />
     </Window.InputBindings>
 
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Grid
+        x:Name="mainContent"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch">
         <local:MainCanvas x:Name="mainCanvas" Grid.Row="1" />
         <Canvas
             x:Name="overlayCanvas"
@@ -147,11 +150,14 @@
             Padding="8,3,8,3"
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
-            Background="White"
-            BorderBrush="Gray"
+            Background="#303030"
+            BorderBrush="#606060"
             BorderThickness="1"
             CornerRadius="5"
             Cursor="Arrow">
+            <!--<Border.Resources>
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Resources/Theme/Light.xaml" />
+            </Border.Resources>-->
             <StackPanel Orientation="Horizontal">
                 <ToggleButton
                     Width="34"
@@ -205,8 +211,8 @@
                     </ToggleButton.Resources>
                     <Path
                         Data="{StaticResource PopOutIconPath}"
-                        Fill="#303030"
-                        Stroke="#303030">
+                        Fill="{DynamicResource TextFillColorPrimaryBrush}"
+                        Stroke="{DynamicResource TextFillColorPrimaryBrush}">
                         <Path.LayoutTransform>
                             <ScaleTransform ScaleX=".5" ScaleY=".5" />
                         </Path.LayoutTransform>
@@ -228,7 +234,7 @@
                         <Border
                             Width="1.5"
                             Height="24"
-                            Background="#303030"
+                            Background="{DynamicResource TextFillColorPrimaryBrush}"
                             CornerRadius=".75">
                             <Border.LayoutTransform>
                                 <RotateTransform Angle="45" />
@@ -237,7 +243,7 @@
                         <Border
                             Width="1.5"
                             Height="24"
-                            Background="#303030"
+                            Background="{DynamicResource TextFillColorPrimaryBrush}"
                             CornerRadius=".75">
                             <Border.LayoutTransform>
                                 <RotateTransform Angle="-45" />
@@ -246,8 +252,8 @@
                     </Grid>
                     <!--<Path
                         Data="M8.4375 6.4375C7.92566 6.4375 7.42177 6.64073 7.03125 7.03125C6.2502 7.8123 6.2502 9.0627 7.03125 9.84375L21.1875 24L7.03125 38.1562C6.2502 38.9373 6.2502 40.1877 7.03125 40.9688C7.8123 41.7498 9.0627 41.7498 9.84375 40.9688L24 26.8125L38.1562 40.9688C38.9373 41.7498 40.1877 41.7498 40.9688 40.9688C41.7498 40.1877 41.7498 38.9373 40.9688 38.1562L26.8125 24L40.9688 9.84375C41.7498 9.0627 41.7498 7.8123 40.9688 7.03125C40.5782 6.64073 40.0743 6.4375 39.5625 6.4375C39.0507 6.4375 38.5468 6.64073 38.1562 7.03125L24 21.1875L9.84375 7.03125C9.45323 6.64073 8.94934 6.4375 8.4375 6.4375Z"
-                        Fill="#303030"
-                        Stroke="#303030">
+                        Fill="{DynamicResource TextFillColorPrimaryBrush}"
+                        Stroke="{DynamicResource TextFillColorPrimaryBrush}">
                         <Path.LayoutTransform>
                             <ScaleTransform ScaleX=".45" ScaleY=".45" />
                         </Path.LayoutTransform>

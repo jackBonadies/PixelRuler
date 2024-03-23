@@ -17,7 +17,7 @@
 
             <local:PercentFormatStringConverter x:Key="PercentFormatStringConverter" />
             <local:ColorFormatStringConverter x:Key="ColorFormatStringConverter" />
-            <local:ColorDisplayColorConverter x:Key="ColorDisplayColorConverter" />
+            <local:DrawingColorToWpfBrushConverter x:Key="DrawingColorToWpfBrushConverter" />
             <local:PointPositionStringConverter x:Key="PointPositionStringConverter" />
             <local:ColorConverter x:Key="ColorConverter" />
             <local:EnumToBoolCheckedStickyConverter x:Key="EnumToBoolCheckedStickyConverter" />
