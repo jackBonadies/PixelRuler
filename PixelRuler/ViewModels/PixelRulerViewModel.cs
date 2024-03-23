@@ -434,10 +434,15 @@ namespace PixelRuler
             }
             set
             {
-                selectedTool = value;
-                OnPropertyChanged();
+                if(selectedTool != value)
+                {
+                    selectedTool = value;
+                    SelectedToolChanged?.Invoke(this, EventArgs.Empty);
+                    OnPropertyChanged();
+                }
             }
         }
+        public event EventHandler<EventArgs>? SelectedToolChanged;
 
         private System.Windows.Point currentPosition;
         public System.Windows.Point CurrentPosition

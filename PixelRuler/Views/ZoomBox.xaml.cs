@@ -34,9 +34,10 @@ namespace PixelRuler.Views
         private VisualBrush zoomboxBrush;
         private int borderThickness = -1;
 
-        public ZoomBox(MainCanvas owningCanvas, double windowSize, ZoomViewModel zoomViewModel)
+        public ZoomBox(MainCanvas owningCanvas, double windowSize, PixelRulerViewModel mainViewModel)
         {
-            this.DataContext = this.zoomViewModel = zoomViewModel;
+            this.DataContext = mainViewModel;
+            this.zoomViewModel = mainViewModel.Settings.ZoomViewModel;
             Visual visualForBrush = useCanvas ? owningCanvas.innerCanvas : owningCanvas.mainImage;
             
             InitializeComponent();
@@ -252,7 +253,7 @@ namespace PixelRuler.Views
 
             if(boxOffsetX is SizerPosX.Centered)
             {
-                Canvas.SetLeft(this, overlayCanvasLocation.X - boxWidth / 2 + 200);
+                Canvas.SetLeft(this, overlayCanvasLocation.X - boxWidth / 2);
             }
             else if(boxOffsetX is SizerPosX.Left)
             {
@@ -266,7 +267,7 @@ namespace PixelRuler.Views
 
             if (boxOffsetY is SizerPosY.Centered)
             {
-                Canvas.SetTop(this, overlayCanvasLocation.Y - boxHeight / 2 + 200);
+                Canvas.SetTop(this, overlayCanvasLocation.Y - boxHeight / 2);
             }
             else if (boxOffsetY is SizerPosY.Above)
             {
@@ -442,6 +443,7 @@ namespace PixelRuler.Views
                                          //this.currentLineGuideVert.Visibility = Visibility.Collapsed;
                                          //this.currentLineGuideHorz.Visibility = Visibility.Collapsed;
                                          //this.currentPixelIndicator.Visibility = Visibility.Collapsed;
+            colorDisplay.Visibility = currentZoomBoxCase == ZoomBoxCase.ColorPicker ? Visibility.Visible : Visibility.Collapsed;  
 
             switch (currentZoomBoxCase)
             {

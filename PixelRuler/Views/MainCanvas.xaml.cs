@@ -401,6 +401,7 @@ namespace PixelRuler
         {
             this.ViewModel.ImageSourceChanged += ViewModel_ImageSourceChanged;
             this.ViewModel.ZoomChanged += SelectedZoomChanged;
+            this.ViewModel.SelectedToolChanged += ViewModel_SelectedToolChanged;
             this.ViewModel.ClearAllMeasureElements += ClearAllMeasureElements;
             this.ViewModel.DeleteAllSelectedElements += DeleteAllSelectedMeasureElements;
             this.ViewModel.AllElementsSelected += AllElementsSelected;
@@ -411,6 +412,28 @@ namespace PixelRuler
             zoomBox = new ZoomBox(this, 256, this.ViewModel);
             Canvas.SetZIndex(zoomBox, 1200);
             this.overlayCanvas.Children.Add(zoomBox);
+            this.SetCursor();
+        }
+
+        private void ViewModel_SelectedToolChanged(object? sender, EventArgs e)
+        {
+            this.SetCursor();
+        }
+
+        private void SetCursor()
+        {
+            switch(ViewModel.SelectedTool)
+            {
+                case Tool.BoundingBox:
+                case Tool.Ruler:
+                    this.Cursor = Cursors.Cross;
+                    break;
+                case Tool.ColorPicker:
+                    this.Cursor = this.FindResource("EyeDropperCursor") as Cursor;
+                    break;
+                default:
+                    throw new Exception("Unknown Tool");
+            }
         }
 
         private void SetShowGridLineState()
@@ -610,18 +633,6 @@ namespace PixelRuler
 
         private void MainCanvas_MouseEnter(object sender, MouseEventArgs e)
         {
-            switch(ViewModel.SelectedTool)
-            {
-                case Tool.BoundingBox:
-                case Tool.Ruler:
-                    this.Cursor = Cursors.Cross;
-                    break;
-                case Tool.ColorPicker:
-                    this.Cursor = this.FindResource("EyeDropperCursor") as Cursor;
-                    break;
-                default:
-                    throw new Exception("Unknown Tool");
-            }
             gridLineLeft.ShowCurrentPosIndicator();
             gridLineTop.ShowCurrentPosIndicator();
         }

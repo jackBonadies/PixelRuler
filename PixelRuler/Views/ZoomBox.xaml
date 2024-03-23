@@ -7,7 +7,7 @@
     xmlns:main="clr-namespace:PixelRuler"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,
-                                     Type=main:ZoomViewModel}"
+                                     Type=main:PixelRulerViewModel}"
     mc:Ignorable="d">
     <UserControl.Effect>
         <DropShadowEffect
@@ -17,8 +17,9 @@
     </UserControl.Effect>
     <Border
         x:Name="outerBorder"
+        Background="LightGray"
         BorderBrush="LightGray"
-        BorderThickness="{Binding BorderThickness}"
+        BorderThickness="{Binding Settings.ZoomViewModel.BorderThickness}"
         CornerRadius="4">
         <Grid>
             <Border
@@ -29,6 +30,29 @@
                 x:Name="zoomCanvas"
                 Width="100"
                 Height="100" />
+            <Border
+                x:Name="colorDisplay"
+                Width="170"
+                Height="48"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Background="LightGray"
+                CornerRadius="4, 0, 0, 0">
+                <StackPanel Orientation="Horizontal">
+                    <Border
+                        Width="42"
+                        Height="42"
+                        Margin="3,1,0,0"
+                        Background="{Binding Color, Converter={StaticResource DrawingColorToWpfBrushConverter}}"
+                        CornerRadius="3" />
+                    <TextBlock
+                        Margin="4,0,0,0"
+                        VerticalAlignment="Center"
+                        FontSize="30"
+                        FontWeight="SemiBold"
+                        Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}}" />
+                </StackPanel>
+            </Border>
         </Grid>
     </Border>
 </UserControl>
