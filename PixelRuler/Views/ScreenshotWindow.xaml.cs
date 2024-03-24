@@ -43,6 +43,7 @@ namespace PixelRuler
             this.Loaded += WindowSelectionWindow_Loaded;
             this.SourceInitialized += WindowSelectionWindow_SourceInitialized;
             this.WindowState = WindowState.Normal;
+            this.ShowInTaskbar = false;
 
             this.fullBounds = WpfScreenHelper.Screen.PrimaryScreen.Bounds;
             this.Top = fullBounds.Top;
@@ -69,6 +70,7 @@ namespace PixelRuler
             this.rectSelectionOutline.Height = 0;
 
             ViewModel = new ScreenshotWindowViewModel(settings);
+            ViewModel.FullscreenScreenshotMode = true;
             ViewModel.Mode = mode;
 
             setForMode();

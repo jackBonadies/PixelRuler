@@ -897,6 +897,8 @@ namespace PixelRuler
                 tt.X = Math.Round((origX + totalAmountToMoveX));
                 tt.Y = Math.Round((origY + totalAmountToMoveY));
 
+                applyConstraints();
+
                 Panning?.Invoke(this, EventArgs.Empty);
 
                 var ocp = e.GetPosition(this.overlayCanvas);
@@ -940,19 +942,34 @@ namespace PixelRuler
 
         public event EventHandler<EventArgs> Panning;
 
-        private Point applyConstraints(Point mouseEndPoint)
+        private void applyConstraints()
         {
-            var roundedEndPoint = UiUtils.RoundPoint(mouseEndPoint);
-            if(currentMeasurementElement is BoundingBoxElement)
+            if(!this.ViewModel.FullscreenScreenshotMode)
             {
-                var diffX = Math.Abs(currentMeasurementElement.StartPoint.X - roundedEndPoint.X);
-                var diffY = Math.Abs(currentMeasurementElement.StartPoint.Y - roundedEndPoint.Y);
-                var newX = currentMeasurementElement.StartPoint.X + diffX;
-                var newY = currentMeasurementElement.StartPoint.Y + diffY;
-                return new Point(newX, newY);
+                return;
             }
-            return roundedEndPoint;
+            var tt = this.innerCanvas.GetTranslateTransform();
+
+            tt.X = Math.Min(tt.X, -10000 * this.CanvasScaleTransform.ScaleX);
+            tt.Y = Math.Min(tt.Y, -10000 * this.CanvasScaleTransform.ScaleX);
+
+            tt.X = Math.Max(tt.X, (-10000 * this.CanvasScaleTransform.ScaleX - (this.mainImage.ActualWidth * this.CanvasScaleTransform.ScaleX - this.ActualWidth)));
+            tt.Y = Math.Max(tt.Y, (-10000 * this.CanvasScaleTransform.ScaleX - (this.mainImage.ActualHeight * this.CanvasScaleTransform.ScaleX - this.ActualHeight)));
         }
+
+        //private Point applyConstraints(Point mouseEndPoint)
+        //{
+        //    var roundedEndPoint = UiUtils.RoundPoint(mouseEndPoint);
+        //    if(currentMeasurementElement is BoundingBoxElement)
+        //    {
+        //        var diffX = Math.Abs(currentMeasurementElement.StartPoint.X - roundedEndPoint.X);
+        //        var diffY = Math.Abs(currentMeasurementElement.StartPoint.Y - roundedEndPoint.Y);
+        //        var newX = currentMeasurementElement.StartPoint.X + diffX;
+        //        var newY = currentMeasurementElement.StartPoint.Y + diffY;
+        //        return new Point(newX, newY);
+        //    }
+        //    return roundedEndPoint;
+        //}
 
         private bool isPanning = false;
 
@@ -1066,6 +1083,7 @@ namespace PixelRuler
 
             EffectiveZoomChanged?.Invoke(this, st.ScaleX);
             UpdateForZoomChange(); // TODO will the event be lagged?
+            applyConstraints();
         }
 
         public double EffectiveZoomPercent
@@ -1087,7 +1105,12 @@ namespace PixelRuler
 
         private double clampScale(double scale)
         {
-            return Math.Max(Math.Min(scale, App.MaxZoomPercent * .01), App.MinZoomPercent * .01);
+            var minZoomPercent = App.MinZoomPercent;
+            if (this.ViewModel.FullscreenScreenshotMode)
+            {
+                minZoomPercent = 100;
+            }
+            return Math.Max(Math.Min(scale, App.MaxZoomPercent * .01), minZoomPercent * .01);
         }
 
         private void UpdateForZoomChange()

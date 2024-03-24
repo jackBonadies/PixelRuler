@@ -150,8 +150,8 @@
             Padding="8,3,8,3"
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
-            Background="#303030"
-            BorderBrush="#606060"
+            Background="{DynamicResource ToolPanelBackground}"
+            BorderBrush="{DynamicResource ToolPanelBorder}"
             BorderThickness="1"
             CornerRadius="5"
             Cursor="Arrow">

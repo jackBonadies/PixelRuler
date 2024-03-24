@@ -33,23 +33,27 @@
             <Border
                 x:Name="colorDisplay"
                 Width="170"
-                Height="48"
+                Height="46"
+                Margin="0,0,-3,-3"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 Background="LightGray"
-                CornerRadius="4, 0, 0, 0">
+                CornerRadius="4, 0, 4, 0">
                 <StackPanel Orientation="Horizontal">
                     <Border
-                        Width="42"
-                        Height="42"
-                        Margin="3,1,0,0"
+                        Width="40"
+                        Height="40"
+                        Margin="3,0,0,0"
                         Background="{Binding Color, Converter={StaticResource DrawingColorToWpfBrushConverter}}"
+                        BorderBrush="#90303030"
+                        BorderThickness="1"
                         CornerRadius="3" />
                     <TextBlock
                         Margin="4,0,0,0"
                         VerticalAlignment="Center"
-                        FontSize="30"
+                        FontSize="26"
                         FontWeight="SemiBold"
+                        Foreground="#303030"
                         Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}}" />
                 </StackPanel>
             </Border>

@@ -289,6 +289,13 @@ namespace PixelRuler.Views
                     ZoomWindowSize,
                     ZoomWindowSize);
 
+            //TODO: this is just bottom Y.. among other things.
+            var outOfBoundY = Canvas.GetTop(this) + boxHeight - this.owningCanvas.ActualHeight;
+            if(outOfBoundY > 0)
+            {
+                Canvas.SetTop(this, Canvas.GetTop(this) - outOfBoundY);
+            }
+
 
             // left have to offset by width/2
             var pixelSize = TotalZoom;

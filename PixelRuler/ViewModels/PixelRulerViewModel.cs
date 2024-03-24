@@ -40,6 +40,11 @@ namespace PixelRuler
             }
         }
 
+        /// <summary>
+        /// Whether in fullscreen screenshow window mode (QuickTool or Screenshot Selection)
+        /// </summary>
+        public bool FullscreenScreenshotMode { get; set; } = false;
+
         public virtual bool IsInWindowSelection()
         {
             return false;
