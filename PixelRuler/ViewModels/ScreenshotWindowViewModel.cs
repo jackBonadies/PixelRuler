@@ -36,8 +36,15 @@ namespace PixelRuler.ViewModels
         public void PopOutNewWindow()
         {
             CloseWindowCommand.Execute(null);
+            this.TransferFromScreenshotWindow();
             var mainWindow = new MainWindow(this);
             mainWindow.Show();
+        }
+
+        private void TransferFromScreenshotWindow()
+        {
+            this.Mode = OverlayMode.None;
+            this.FullscreenScreenshotMode = false;
         }
 
         public override bool IsInWindowSelection()

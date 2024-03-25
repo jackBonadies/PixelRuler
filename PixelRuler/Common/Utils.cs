@@ -119,6 +119,36 @@ namespace PixelRuler
         }
     }
 
+    public class WidthHeightDisplayConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            double width = (double)values[0];
+            double height = (double)values[1];
+            if (width > 0 && height > 0)
+            {
+                return $"size: {width} × {height}px";
+            }
+            else if (width > 0)
+            {
+                return $"size: {width}px";
+            }
+            else if (height > 0)
+            {
+                return $"size: {height}px";
+            }
+            else
+            {
+                return $"size: 0px";
+            }
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new Exception("One way converter");
+        }
+    }
+
     public class DisplayKeysMultiConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)

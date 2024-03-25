@@ -21,6 +21,7 @@ namespace PixelRuler
 {
     public enum OverlayMode
     {
+        None = -1,
         Window = 0,
         RegionRect = 1,
         QuickMeasure = 2,
