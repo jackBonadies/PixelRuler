@@ -81,6 +81,12 @@ namespace PixelRuler
             this.DataContextChanged += RootWindow_DataContextChanged;
             this.notifyIcon.Menu.DataContext = rootViewModel;
             this.notifyIcon.Menu.IsVisibleChanged += Menu_IsVisibleChanged;
+            this.Loaded += RootWindow_Loaded;
+        }
+
+        private void RootWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.Hide();
         }
 
         private void Menu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
