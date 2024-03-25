@@ -15,11 +15,24 @@ namespace PixelRuler
         public ShortcutInfo(string name, int hotKeyID, Key key, ModifierKeys modifiers, Key defaultKey, ModifierKeys defaultModifiers)
         {
             this.CommandName = name;
+            if(key == Key.None)
+            {
+                key = defaultKey;
+                modifiers = defaultModifiers;
+            }
             this.Key = key;
             this.Modifiers = modifiers;
             this.HotKeyId = hotKeyID;
             this.DefaultKey = defaultKey;
             this.DefaultModifiers = defaultModifiers;
+        }
+
+        public bool IsGlobal
+        {
+            get
+            {
+                return true;
+            }
         }
 
         public void Clear()

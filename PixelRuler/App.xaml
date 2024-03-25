@@ -17,7 +17,8 @@
 
             <local:PercentFormatStringConverter x:Key="PercentFormatStringConverter" />
             <local:ColorFormatStringConverter x:Key="ColorFormatStringConverter" />
-            <local:ColorDisplayColorConverter x:Key="ColorDisplayColorConverter" />
+            <local:DrawingColorToWpfBrushConverter x:Key="DrawingColorToWpfBrushConverter" />
+            <local:PointPositionStringConverter x:Key="PointPositionStringConverter" />
             <local:ColorConverter x:Key="ColorConverter" />
             <local:EnumToBoolCheckedStickyConverter x:Key="EnumToBoolCheckedStickyConverter" />
             <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
@@ -33,6 +34,24 @@
             <SolidColorBrush x:Key="IsPressedColor">#EFEFF6</SolidColorBrush>
             <SolidColorBrush x:Key="ToggledHighlightColor">#80B9EE</SolidColorBrush>
             <SolidColorBrush x:Key="AnnotationColor">#EE4B2B</SolidColorBrush>
+
+            <CombinedGeometry x:Key="CopyIconPath" GeometryCombineMode="Union">
+                <CombinedGeometry.Geometry1>
+                    M768 832a128 128 0 0 1-128 128H192A128 128 0 0 1 64 832V384a128 128 0 0 1 128-128v64a64 64 0 0 0-64 64v448a64 64 0 0 0 64 64h448a64 64 0 0 0 64-64h64z
+                </CombinedGeometry.Geometry1>
+                <CombinedGeometry.Geometry2>
+                    M384 128a64 64 0 0 0-64 64v448a64 64 0 0 0 64 64h448a64 64 0 0 0 64-64V192a64 64 0 0 0-64-64H384zm0-64h448a128 128 0 0 1 128 128v448a128 128 0 0 1-128 128H384a128 128 0 0 1-128-128V192A128 128 0 0 1 384 64z
+                </CombinedGeometry.Geometry2>
+            </CombinedGeometry>
+
+            <CombinedGeometry x:Key="PopOutIconPath" GeometryCombineMode="Union">
+                <CombinedGeometry.Geometry1>
+                    M27,33H5a2,2,0,0,1-2-2V9A2,2,0,0,1,5,7H15V9H5V31H27V21h2V31A2,2,0,0,1,27,33Z
+                </CombinedGeometry.Geometry1>
+                <CombinedGeometry.Geometry2>
+                    M18,3a1,1,0,0,0,0,2H29.59L15.74,18.85a1,1,0,1,0,1.41,1.41L31,6.41V18a1,1,0,0,0,2,0V3Z
+                </CombinedGeometry.Geometry2>
+            </CombinedGeometry>
 
             <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
@@ -135,8 +154,8 @@
     </Application.Resources>
     <JumpList.JumpList>
         <JumpList>
-            <JumpTask Title="New Fullscreen Screenshot" />
-            <JumpTask Title="New Windowed Screenshot" />
+            <JumpTask Title="New Fullscreen Screenshot" Arguments="fullscreen" />
+            <JumpTask Title="New Windowed Screenshot" Arguments="windowed" />
         </JumpList>
     </JumpList.JumpList>
 </Application>

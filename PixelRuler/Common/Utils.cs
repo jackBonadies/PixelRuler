@@ -16,13 +16,33 @@ using System.Windows.Media;
 
 namespace PixelRuler
 {
-    public class ColorDisplayColorConverter : IValueConverter
+    public class DrawingColorToWpfBrushConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value is System.Drawing.Color color)
             {
                 return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B));
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new Exception("One way converter");
+        }
+    }
+
+    public class PointPositionStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is System.Windows.Point pt)
+            {
+                return $"{pt.X}, {pt.Y}px";
             }
             else
             {
@@ -99,6 +119,36 @@ namespace PixelRuler
         }
     }
 
+    public class WidthHeightDisplayConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            double width = (double)values[0];
+            double height = (double)values[1];
+            if (width > 0 && height > 0)
+            {
+                return $"size: {width} × {height}px";
+            }
+            else if (width > 0)
+            {
+                return $"size: {width}px";
+            }
+            else if (height > 0)
+            {
+                return $"size: {height}px";
+            }
+            else
+            {
+                return $"size: 0px";
+            }
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new Exception("One way converter");
+        }
+    }
+
     public class DisplayKeysMultiConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -172,9 +222,6 @@ namespace PixelRuler
 
     public class ColorConverter : IValueConverter
     {
-
-
-
         /// <summary>
         /// Drawing Color to WPF Media Color
         /// </summary>
@@ -334,22 +381,38 @@ namespace PixelRuler
 
     public class RelayCommandFull : RelayCommand
     {
-        private static readonly Dictionary<ModifierKeys, string> modifierKeysToText = new Dictionary<ModifierKeys, string>()
-            {
-                {ModifierKeys.None, ""},
-                {ModifierKeys.Control, "Ctrl+"},
-                {ModifierKeys.Shift, "Shift+"},
-                {ModifierKeys.Control|ModifierKeys.Shift, "Ctrl+Shift+"},
-                {ModifierKeys.Control|ModifierKeys.Alt, "Ctrl+Alt+"},
-                {ModifierKeys.Control|ModifierKeys.Shift|ModifierKeys.Alt, "Ctrl+Shift+Alt+"},
-                {ModifierKeys.Windows, "Win+"}
-            };
+        /// <summary>
+        /// Bound shortcut (in case keys are rebound)
+        /// </summary>
+        private ShortcutInfo? shortcutInfo;
 
         public RelayCommandFull(Action<object?> action, Key key, ModifierKeys modifiers, string toolTipText) : base(action)
         {
             this.key = key;
             this.modifiers = modifiers;
             this.toolTipTextBase = toolTipText;
+        }
+
+        /// <summary>
+        /// Relay command bound to the ShortcutInfo (for rebinding keys)
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="shortcutInfo"></param>
+        /// <param name="toolTipText"></param>
+        public RelayCommandFull(Action<object?> action, ShortcutInfo shortcutInfo, string toolTipText = null) : base(action)
+        {
+            this.shortcutInfo = shortcutInfo;
+            this.shortcutInfo.PropertyChanged += ShortcutInfo_PropertyChanged;
+            this.key = shortcutInfo.Key;
+            this.modifiers = shortcutInfo.Modifiers;
+            this.toolTipTextBase = toolTipText ?? shortcutInfo.CommandName;
+        }
+
+        private void ShortcutInfo_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            _ = shortcutInfo ?? throw new ArgumentNullException(nameof(shortcutInfo));
+            this.Key = shortcutInfo.Key;
+            this.Modifiers = shortcutInfo.Modifiers;
         }
 
         private Key key;
@@ -363,6 +426,7 @@ namespace PixelRuler
             {
                 this.key = value;
                 OnPropertyChanged();
+                OnPropertyChanged("ToolTipTextShortcut");
                 OnPropertyChanged("ToolTipTextFull");
             }
         }
@@ -378,6 +442,7 @@ namespace PixelRuler
             {
                 this.modifiers = value;
                 OnPropertyChanged();
+                OnPropertyChanged("ToolTipTextShortcut");
                 OnPropertyChanged("ToolTipTextFull");
             }
         }
@@ -393,6 +458,7 @@ namespace PixelRuler
             {
                 this.toolTipTextBase = value;
                 OnPropertyChanged();
+                OnPropertyChanged("ToolTipTextShortcut");
                 OnPropertyChanged("ToolTipTextFull");
             }
         }
@@ -403,10 +469,36 @@ namespace PixelRuler
             {
                 if (key != Key.None)
                 {
-                    var modifiersText = modifierKeysToText[modifiers];
-                    return $"{toolTipTextBase} ({modifiersText}{key})";
+                    var modifiersText = KeyboardHelper.GetModifierKeyName(modifiers);
+                    var keyName = KeyboardHelper.GetFriendlyName(key);
+                    return $"{toolTipTextBase} ({modifiersText}{keyName})";
                 }
                 return toolTipTextBase;
+            }
+        }
+
+        public string ToolTipTextShortcut
+        {
+            get
+            {
+                if (this.shortcutInfo != null)
+                {
+                    if (shortcutInfo.Status == RegistrationStatus.Unregistered)
+                    {
+                        return "None";
+                    }
+                    else if(shortcutInfo.Status == RegistrationStatus.FailedRegistration)
+                    {
+                        return "None";
+                    }
+                }
+                if (key != Key.None)
+                {
+                    var modifiersText = KeyboardHelper.GetModifierKeyName(modifiers);
+                    var keyName = KeyboardHelper.GetFriendlyName(key);
+                    return $"{modifiersText}{keyName}";
+                }
+                return string.Empty;
             }
         }
     }
@@ -515,6 +607,28 @@ namespace PixelRuler
             return key != Key.None && modifiers != ModifierKeys.None;
         }
 
+        public static string GetModifierKeyName(ModifierKeys modifiers)
+        {
+            string modString = "";
+            if (modifiers.HasFlag(ModifierKeys.Windows))
+            {
+                modString += "Win+";
+            }
+            if (modifiers.HasFlag(ModifierKeys.Control))
+            {
+                modString += "Ctrl+";
+            }
+            if (modifiers.HasFlag(ModifierKeys.Alt))
+            {
+                modString += "Alt+";
+            }
+            if (modifiers.HasFlag(ModifierKeys.Shift))
+            {
+                modString += "Shift+";
+            }
+            return modString;
+        }
+
         public static string GetFriendlyName(Key key)
         {
             switch (key)
@@ -604,6 +718,9 @@ namespace PixelRuler
 
                 case Key.Next:
                     return "PageDown";
+
+                case Key.PrintScreen:
+                    return "PrtScr";
 
                 default:
                     return key.ToString();

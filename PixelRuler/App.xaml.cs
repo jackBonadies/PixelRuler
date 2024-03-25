@@ -89,15 +89,54 @@ namespace PixelRuler
                             //}
                             Application.Current.Dispatcher.Invoke(() =>
                             {
-                                var mainViewModel = new PixelRulerViewModel(settingsViewModel);
-                                MainWindow mainWindow = new MainWindow(mainViewModel);
-                                mainWindow.NewFullScreenshot(false);
-                                mainWindow.Show();
+                                switch(args)
+                                {
+                                    case "screenshot":
+                                        App.NewFullscreenshotLogic(this.settingsViewModel, true);
+                                        break;
+                                    case "windowed":
+                                        App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.Window, true);
+                                        break;
+                                    default:
+                                        if(string.IsNullOrEmpty(args))
+                                        {
+                                            App.NewFullscreenshotLogic(this.settingsViewModel, true);
+                                        }
+                                        else
+                                        {
+                                            App.OpenFileLogic(this.settingsViewModel, true, args);
+                                        }
+                                        break;
+                                }
                             });
 
                             Console.WriteLine($"Received args from second instance: {args}");
                         }
                 }
+            }
+        }
+
+        public static void OpenFileLogic(SettingsViewModel settingsViewModel, bool newWindow, string filePath)
+        {
+            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(settingsViewModel));
+            mainWindow.SetImage(filePath);
+            mainWindow.Show();
+        }
+
+        public static void NewFullscreenshotLogic(SettingsViewModel settingsViewModel, bool newWindow)
+        {
+            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(settingsViewModel));
+            mainWindow.NewFullScreenshot(newWindow);
+            mainWindow.Show();
+        }
+
+        public static void EnterScreenshotTool(SettingsViewModel settingsViewModel, OverlayMode mode, bool newWindow)
+        {
+            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(settingsViewModel));
+            var res = mainWindow.NewWindowedScreenshot(mode, newWindow).Result;
+            if(res)
+            {
+                mainWindow.Show();
             }
         }
 
@@ -159,6 +198,9 @@ namespace PixelRuler
 
         public const int FULLSCREEN_HOTKEY_ID = 8000;
         public const int WINDOWED_HOTKEY_ID = 8001;
+        public const int REGION_WINDOWED_HOTKEY_ID = 8002;
+        public const int QUICK_MEASURE_HOTKEY_ID = 8003;
+        public const int QUICK_COLOR_HOTKEY_ID = 8004;
 
         public const string AnnotationColorKey = "AnnotationColor";
 

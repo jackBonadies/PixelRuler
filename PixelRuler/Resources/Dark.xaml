@@ -2,6 +2,8 @@
     <SolidColorBrush x:Key="SeperatorColor">#2D2D2D</SolidColorBrush>
     <SolidColorBrush x:Key="PanelColor">#202020</SolidColorBrush>
     <SolidColorBrush x:Key="ColorBorderColor">#33ffffff</SolidColorBrush>
+    <SolidColorBrush x:Key="ToolPanelBackground" Color="#303030" />
+    <SolidColorBrush x:Key="ToolPanelBorder" Color="#606060" />
     <Color x:Key="StrongErrorColor">#FF5555</Color>
     <SolidColorBrush x:Key="StrongErrorBrush" Color="{DynamicResource StrongErrorColor}" />
 </ResourceDictionary>

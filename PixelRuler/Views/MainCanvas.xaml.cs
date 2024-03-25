@@ -88,18 +88,58 @@ namespace PixelRuler
             this.gridLineLeft.MouseLeftButtonUp += GridLine_LeftButtonUp;
 
             this.Loaded += MainCanvas_Loaded;
+            this.SizeChanged += MainCanvas_SizeChanged;
 
+        }
+
+        private IntBucket resizeXbucket = new IntBucket();
+        private IntBucket resizeYbucket = new IntBucket();
+
+        private void MainCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(e.PreviousSize == new Size(0,0))
+            {
+                return;
+            }
+            if(this.shouldCenterImage())
+            {
+                var deltaX = (e.NewSize.Width - e.PreviousSize.Width);
+                var deltaY = (e.NewSize.Height - e.PreviousSize.Height);
+                var tt = this.innerCanvas.GetTranslateTransform();
+                resizeXbucket.Add(deltaX / 2);
+                resizeYbucket.Add(deltaY / 2);
+                tt.X += resizeXbucket.GetValue();
+                tt.Y += resizeYbucket.GetValue();
+            }
         }
 
         private void MainCanvas_Loaded(object sender, RoutedEventArgs e)
         {
-            if(this.ViewModel.ShowGridLines)
+            if (DesignerProperties.GetIsInDesignMode(this))
+            {
+                return;
+            }
+            if (this.ViewModel.ShowGridLines)
             {
                 this.gridLineTop.SetZoom(1);
                 this.gridLineLeft.SetZoom(1);
             }
+
+            SetupForDpi();
+
+            SetImageLocation(this.innerCanvas, mainImage);
+        }
+
+        protected override void OnDpiChanged(DpiScale oldDpi, DpiScale newDpi)
+        {
+            SetupForDpi();
+            base.OnDpiChanged(oldDpi, newDpi);
+        }
+
+        private void SetupForDpi()
+        {
             this.gridLineCorner.Width = UiUtils.GetBorderPixelSize(this.GetDpi());
-            this.gridLineCorner.Height = UiUtils.GetBorderPixelSize(this.GetDpi());
+            this.gridLineCorner.Height = UiUtils.GetBorderPixelSize(this.GetDpi()) + 1 / this.GetDpi();
         }
 
         private void OverlayCanvas_MouseLeave(object sender, MouseEventArgs e)
@@ -109,7 +149,7 @@ namespace PixelRuler
 
         private void OverlayCanvas_MouseEnter(object sender, MouseEventArgs e)
         {
-            if(KeyUtil.IsCtrlDown())
+            if (Keyboard.IsKeyDown(this.ViewModel.Settings.ZoomBoxQuickZoomKey))
             {
                 zoomBox.Show(null, e, ZoomBoxCase.QuickZoom);
             }
@@ -361,6 +401,7 @@ namespace PixelRuler
         {
             this.ViewModel.ImageSourceChanged += ViewModel_ImageSourceChanged;
             this.ViewModel.ZoomChanged += SelectedZoomChanged;
+            this.ViewModel.SelectedToolChanged += ViewModel_SelectedToolChanged;
             this.ViewModel.ClearAllMeasureElements += ClearAllMeasureElements;
             this.ViewModel.DeleteAllSelectedElements += DeleteAllSelectedMeasureElements;
             this.ViewModel.AllElementsSelected += AllElementsSelected;
@@ -368,16 +409,38 @@ namespace PixelRuler
             SetClearAllMeasurementsEnabledState();
             SetShowGridLineState();
 
-            zoomBox = new ZoomBox(this, 256, this.ViewModel.Settings.ZoomViewModel);
+            zoomBox = new ZoomBox(this, 256, this.ViewModel);
             Canvas.SetZIndex(zoomBox, 1200);
             this.overlayCanvas.Children.Add(zoomBox);
+            this.SetCursor();
+        }
+
+        private void ViewModel_SelectedToolChanged(object? sender, EventArgs e)
+        {
+            this.SetCursor();
+        }
+
+        private void SetCursor()
+        {
+            switch(ViewModel.SelectedTool)
+            {
+                case Tool.BoundingBox:
+                case Tool.Ruler:
+                    this.Cursor = Cursors.Cross;
+                    break;
+                case Tool.ColorPicker:
+                    this.Cursor = this.FindResource("EyeDropperCursor") as Cursor;
+                    break;
+                default:
+                    throw new Exception("Unknown Tool");
+            }
         }
 
         private void SetShowGridLineState()
         {
             if(this.ViewModel.ShowGridLines)
             {
-                Canvas.SetLeft(this.innerCanvas, UiUtils.GetBorderPixelSize(this.GetDpi()));
+                Canvas.SetLeft(this.innerCanvas, UiUtils.GetBorderPixelSize(this.GetDpi())); //TODO dpi changed
                 Canvas.SetTop(this.innerCanvas, UiUtils.GetBorderPixelSize(this.GetDpi()));
                 this.gridLineCorner.Visibility = Visibility.Visible;
                 this.gridLineTop.Visibility = Visibility.Visible;
@@ -461,15 +524,37 @@ namespace PixelRuler
             this.ViewModel.ClearAllMeasureElementsCommand.SetCanExecute(anyNonEmpty);
         }
 
-        private static void SetImageLocation(Canvas canvas, Image image)
+        private bool shouldCenterImage()
+        {
+            // dont need dpi scaled here. already reverse scaled.
+            if(this.ActualHeight <= this.ViewModel.Image.Height)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private void SetImageLocation(Canvas canvas, Image image)
         {
             // image should be center or if larger than screen bounds then topleft.
-            canvas.GetTranslateTransform().X = -Canvas.GetLeft(image);
-            canvas.GetTranslateTransform().Y = -Canvas.GetTop(image);
+            double x = -Canvas.GetLeft(image);
+            double y = -Canvas.GetTop(image);
+
+            if(this.IsLoaded)
+            {
+                if (shouldCenterImage())
+                {
+                    x += (this.ActualWidth - this.ViewModel.Image.Width) / 2.0;
+                    y += (this.ActualHeight - this.ViewModel.Image.Height) / 2.0;
+                }
+            }
+            canvas.GetTranslateTransform().X = (int)Math.Round(x);
+            canvas.GetTranslateTransform().Y = (int)Math.Round(y);
         }
 
         private void ViewModel_ImageSourceChanged(object? sender, EventArgs e)
         {
+            // happens before Loaded... cant get this.ActualHeight...
             SetImageLocation(innerCanvas, mainImage);    
         }
 
@@ -548,18 +633,6 @@ namespace PixelRuler
 
         private void MainCanvas_MouseEnter(object sender, MouseEventArgs e)
         {
-            switch(ViewModel.SelectedTool)
-            {
-                case Tool.BoundingBox:
-                case Tool.Ruler:
-                    this.Cursor = Cursors.Cross;
-                    break;
-                case Tool.ColorPicker:
-                    this.Cursor = this.FindResource("EyeDropperCursor") as Cursor;
-                    break;
-                default:
-                    throw new Exception("Unknown Tool");
-            }
             gridLineLeft.ShowCurrentPosIndicator();
             gridLineTop.ShowCurrentPosIndicator();
         }
@@ -618,7 +691,7 @@ namespace PixelRuler
         {
             this.Focus();
             this.mainImage.Focus();
-            if (e.ChangedButton == MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left && !ViewModel.IsInWindowSelection())
             {
                 this.ToolDown(e);
             }
@@ -653,7 +726,7 @@ namespace PixelRuler
                 var prvm = DataContext as PixelRulerViewModel;
                 if (prvm == null)
                 {
-                    throw new Exception("No View Model on Main Canvas");
+                    //throw new Exception("No View Model on Main Canvas");
                 }
                 return prvm;
             }
@@ -792,6 +865,8 @@ namespace PixelRuler
 
         private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
         {
+            ViewModel.CurrentPosition = UiUtils.TruncatePoint(e.GetPosition(mainImage));
+
             if (ViewModel.SelectedTool == Tool.ColorPicker)
             {
                 if(colorPickBox == null)
@@ -821,6 +896,8 @@ namespace PixelRuler
 
                 tt.X = Math.Round((origX + totalAmountToMoveX));
                 tt.Y = Math.Round((origY + totalAmountToMoveY));
+
+                applyConstraints();
 
                 Panning?.Invoke(this, EventArgs.Empty);
 
@@ -865,19 +942,34 @@ namespace PixelRuler
 
         public event EventHandler<EventArgs> Panning;
 
-        private Point applyConstraints(Point mouseEndPoint)
+        private void applyConstraints()
         {
-            var roundedEndPoint = UiUtils.RoundPoint(mouseEndPoint);
-            if(currentMeasurementElement is BoundingBoxElement)
+            if(!this.ViewModel.FullscreenScreenshotMode)
             {
-                var diffX = Math.Abs(currentMeasurementElement.StartPoint.X - roundedEndPoint.X);
-                var diffY = Math.Abs(currentMeasurementElement.StartPoint.Y - roundedEndPoint.Y);
-                var newX = currentMeasurementElement.StartPoint.X + diffX;
-                var newY = currentMeasurementElement.StartPoint.Y + diffY;
-                return new Point(newX, newY);
+                return;
             }
-            return roundedEndPoint;
+            var tt = this.innerCanvas.GetTranslateTransform();
+
+            tt.X = Math.Min(tt.X, -10000 * this.CanvasScaleTransform.ScaleX);
+            tt.Y = Math.Min(tt.Y, -10000 * this.CanvasScaleTransform.ScaleX);
+
+            tt.X = Math.Max(tt.X, (-10000 * this.CanvasScaleTransform.ScaleX - (this.mainImage.ActualWidth * this.CanvasScaleTransform.ScaleX - this.ActualWidth)));
+            tt.Y = Math.Max(tt.Y, (-10000 * this.CanvasScaleTransform.ScaleX - (this.mainImage.ActualHeight * this.CanvasScaleTransform.ScaleX - this.ActualHeight)));
         }
+
+        //private Point applyConstraints(Point mouseEndPoint)
+        //{
+        //    var roundedEndPoint = UiUtils.RoundPoint(mouseEndPoint);
+        //    if(currentMeasurementElement is BoundingBoxElement)
+        //    {
+        //        var diffX = Math.Abs(currentMeasurementElement.StartPoint.X - roundedEndPoint.X);
+        //        var diffY = Math.Abs(currentMeasurementElement.StartPoint.Y - roundedEndPoint.Y);
+        //        var newX = currentMeasurementElement.StartPoint.X + diffX;
+        //        var newY = currentMeasurementElement.StartPoint.Y + diffY;
+        //        return new Point(newX, newY);
+        //    }
+        //    return roundedEndPoint;
+        //}
 
         private bool isPanning = false;
 
@@ -991,6 +1083,7 @@ namespace PixelRuler
 
             EffectiveZoomChanged?.Invoke(this, st.ScaleX);
             UpdateForZoomChange(); // TODO will the event be lagged?
+            applyConstraints();
         }
 
         public double EffectiveZoomPercent
@@ -1012,7 +1105,12 @@ namespace PixelRuler
 
         private double clampScale(double scale)
         {
-            return Math.Max(Math.Min(scale, App.MaxZoomPercent * .01), App.MinZoomPercent * .01);
+            var minZoomPercent = App.MinZoomPercent;
+            if (this.ViewModel.FullscreenScreenshotMode)
+            {
+                minZoomPercent = 100;
+            }
+            return Math.Max(Math.Min(scale, App.MaxZoomPercent * .01), minZoomPercent * .01);
         }
 
         private void UpdateForZoomChange()
@@ -1064,7 +1162,7 @@ namespace PixelRuler
 
         public void ShowZoomBox()
         {
-            this.zoomBox.Show(null, null, ZoomBoxCase.QuickZoom);
+            this.zoomBox.Show(null, null, ViewModel.IsInWindowSelection() ? ZoomBoxCase.ScreenshotBoundSelection : ZoomBoxCase.QuickZoom);
         }
 
         public void HideZoomBox()

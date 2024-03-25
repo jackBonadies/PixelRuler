@@ -109,16 +109,15 @@
         <views:Gridline
             x:Name="gridLineTop"
             Canvas.Left="-10000"
+            Canvas.Top="0"
             SnapsToDevicePixels="True"
             UseLayoutRounding="False" />
         <Rectangle
             x:Name="gridLineCorner"
             Canvas.Left="0"
-            Canvas.Top="1"
+            Canvas.Top="0"
             Fill="#202020"
             RenderOptions.EdgeMode="Aliased"
-            SnapsToDevicePixels="True"
-            Stroke="#909090"
-            StrokeThickness="1" />
+            SnapsToDevicePixels="True" />
     </Canvas>
 </UserControl>

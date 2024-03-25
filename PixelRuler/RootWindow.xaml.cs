@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PixelRuler.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -18,10 +19,13 @@ using System.Windows.Shapes;
 
 namespace PixelRuler
 {
-    public enum ScreenshotMode
+    public enum OverlayMode
     {
+        None = -1,
         Window = 0,
         RegionRect = 1,
+        QuickMeasure = 2,
+        QuickColor = 3,
     }
 
     // TODO own class
@@ -30,29 +34,21 @@ namespace PixelRuler
         public RootViewModel(SettingsViewModel? settingsViewModel = null) 
         {
             Settings = settingsViewModel;
-            this.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewScreenshotFullLogic(); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
-            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { NewScreenshotRegionLogic(ScreenshotMode.Window); }, Key.N, ModifierKeys.Control, "New Windowed Screenshot");
-            this.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { NewScreenshotRegionLogic(ScreenshotMode.RegionRect); }, Key.N, ModifierKeys.Control, "New Region Screenshot");
-
+            this.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { App.NewFullscreenshotLogic(this.Settings, true); }, Settings.FullscreenScreenshotShortcut, "New Full Screenshot");
+            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.Window, true); }, Settings.WindowedScreenshotShortcut, "New Windowed Screenshot");
+            this.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.RegionRect, true); }, Settings.WindowedRegionScreenshotShortcut, "New Region Screenshot");
+            this.QuickMeasureCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.QuickMeasure, true); }, Settings.QuickMeasureShortcut, "Quick Measure");
+            this.QuickColorCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.QuickColor, true); }, Settings.QuickColorShortcut, "Quick Color");
+            this.SettingsCommand = new RelayCommandFull((object? o) => { new SettingsWindow(new PixelRulerViewModel(this.Settings)).Show(); }, Key.None, ModifierKeys.None, "Settings");
         }
 
-        private void NewScreenshotRegionLogic(ScreenshotMode mode)
-        {
-            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(this.Settings));
-            mainWindow.NewWindowedScreenshot(mode);
-            mainWindow.Show();
-        }
 
+        public RelayCommandFull QuickMeasureCommand { get; init; }
+        public RelayCommandFull QuickColorCommand { get; init; }
         public RelayCommandFull NewScreenshotRegionCommand { get; init; }
         public RelayCommandFull NewScreenshotWindowedCommand { get; init; }
-
-        private void NewScreenshotFullLogic()
-        {
-            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(this.Settings));
-            mainWindow.NewFullScreenshot(false);
-            mainWindow.Show();
-        }
         public RelayCommandFull NewScreenshotFullCommand { get; init; } 
+        public RelayCommandFull SettingsCommand { get; init; } 
         public SettingsViewModel Settings { get; set; }
 
 
@@ -84,6 +80,16 @@ namespace PixelRuler
             this.ShowInTaskbar = false;
             this.DataContextChanged += RootWindow_DataContextChanged;
             this.notifyIcon.Menu.DataContext = rootViewModel;
+            this.notifyIcon.Menu.IsVisibleChanged += Menu_IsVisibleChanged;
+        }
+
+        private void Menu_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // TODO: header text binding only updates on explicit
+            //   MenuItem.GetBindingExpression(MenuItem.HeaderProperty).UpdateTarget() call
+            // This hack fixes that.
+            this.notifyIcon.Menu.DataContext = null;
+            this.notifyIcon.Menu.DataContext = this.DataContext;
         }
 
         public RootViewModel RootViewModel { get; init; }
@@ -152,10 +158,10 @@ namespace PixelRuler
         {
             if (this.SettingsViewModel.GlobalShortcutsEnabled)
             {
-                var fullscreenShortcut = this.SettingsViewModel.FullscreenScreenshotShortcut;
-                RegisterShortcut(fullscreenShortcut);
-                var windowedShortcut = this.SettingsViewModel.WindowedScreenshotShortcut;
-                RegisterShortcut(windowedShortcut);
+                foreach(var shortcut in this.SettingsViewModel.GlobalShortcuts)
+                {
+                    RegisterShortcut(shortcut);
+                }
             }
         }
 
@@ -182,10 +188,11 @@ namespace PixelRuler
         private void UnregisterHotKeys()
         {
             var helper = new WindowInteropHelper(this);
-            this.SettingsViewModel.FullscreenScreenshotShortcut.Status = RegistrationStatus.Unregistered;
-            NativeMethods.UnregisterHotKey(helper.Handle, this.SettingsViewModel.FullscreenScreenshotShortcut.HotKeyId);
-            this.SettingsViewModel.WindowedScreenshotShortcut.Status = RegistrationStatus.Unregistered;
-            NativeMethods.UnregisterHotKey(helper.Handle, this.SettingsViewModel.WindowedScreenshotShortcut.HotKeyId);
+            foreach (var shortcut in this.SettingsViewModel.GlobalShortcuts)
+            {
+                shortcut.Status = RegistrationStatus.Unregistered;
+                NativeMethods.UnregisterHotKey(helper.Handle, shortcut.HotKeyId);
+            }
         }
 
         private void ReregisterShortcut(ShortcutInfo shortcut)
@@ -198,21 +205,31 @@ namespace PixelRuler
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             const int WM_HOTKEY = 0x0312;
-            switch (msg)
+            if (msg == WM_HOTKEY)
             {
-                case WM_HOTKEY:
-                    switch (wParam.ToInt32())
-                    {
-                        case App.FULLSCREEN_HOTKEY_ID:
-                            //NewFullScreenshot(true);
-                            handled = true;
-                            break;
-                        case App.WINDOWED_HOTKEY_ID:
-                            //NewWindowedScreenshot();
-                            handled = true;
-                            break;
-                    }
-                    break;
+                switch (wParam.ToInt32())
+                {
+                    case App.FULLSCREEN_HOTKEY_ID:
+                        App.NewFullscreenshotLogic(this.RootViewModel.Settings, true);
+                        handled = true;
+                        break;
+                    case App.WINDOWED_HOTKEY_ID:
+                        App.EnterScreenshotTool(this.RootViewModel.Settings, OverlayMode.Window, true);
+                        handled = true;
+                        break;
+                    case App.REGION_WINDOWED_HOTKEY_ID:
+                        App.EnterScreenshotTool(this.RootViewModel.Settings, OverlayMode.RegionRect, true);
+                        handled = true;
+                        break;
+                    case App.QUICK_MEASURE_HOTKEY_ID:
+                        App.EnterScreenshotTool(this.RootViewModel.Settings, OverlayMode.QuickMeasure, true);
+                        handled = true;
+                        break;
+                    case App.QUICK_COLOR_HOTKEY_ID:
+                        App.EnterScreenshotTool(this.RootViewModel.Settings, OverlayMode.QuickColor, true);
+                        handled = true;
+                        break;
+                }
             }
             return IntPtr.Zero;
         }

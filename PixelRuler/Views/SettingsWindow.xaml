@@ -261,29 +261,40 @@
                                 IsChecked="{Binding GlobalShortcutsEnabled, Mode=TwoWay}" />
                         </Grid>
                     </ui:CardExpander.Header>
-                    <StackPanel
+                    <ItemsControl
                         Margin="0,0,0,0"
                         HorizontalAlignment="Stretch"
                         Background="Transparent"
+                        ItemsSource="{Binding GlobalShortcuts}"
                         MouseUp="CardExpanderContent_MouseUp">
-                        <StackPanel.Resources>
-                            <Style TargetType="StackPanel">
+                        <ItemsControl.Style>
+                            <Style TargetType="ItemsControl">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding GlobalShortcutsEnabled}" Value="False">
                                         <Setter Property="Opacity" Value=".5" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-
-                        </StackPanel.Resources>
-                        <local:ShortcutInfoView DataContext="{Binding FullscreenScreenshotShortcut}" IsEnabled="{Binding DataContext.GlobalShortcutsEnabled, RelativeSource={RelativeSource AncestorType=Window}}" />
-                        <Rectangle
-                            Height="1"
-                            HorizontalAlignment="Stretch"
-                            Fill="{DynamicResource CardBorderBrush}"
-                            SnapsToDevicePixels="True" />
-                        <local:ShortcutInfoView DataContext="{Binding WindowedScreenshotShortcut}" IsEnabled="{Binding DataContext.GlobalShortcutsEnabled, RelativeSource={RelativeSource AncestorType=Window}}" />
-                    </StackPanel>
+                        </ItemsControl.Style>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Vertical">
+                                    <local:ShortcutInfoView DataContext="{Binding}" IsEnabled="{Binding DataContext.GlobalShortcutsEnabled, RelativeSource={RelativeSource AncestorType=Window}}" />
+                                    <Rectangle
+                                        Height="1"
+                                        HorizontalAlignment="Stretch"
+                                        Fill="{DynamicResource CardBorderBrush}"
+                                        SnapsToDevicePixels="True"
+                                        Visibility="{Binding IsLastItem, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverted}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </ui:CardExpander>
 
 

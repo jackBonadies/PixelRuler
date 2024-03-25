@@ -62,7 +62,6 @@ namespace PixelRuler.Views
             this.Loaded += Gridline_Loaded;
 
             currentMousePosTick = new GuidelineTick(this, null, GuidelineTick.GridlineTickType.CurrentMarker);
-
         }
 
         public void ShowCurrentPosIndicator()
@@ -75,7 +74,7 @@ namespace PixelRuler.Views
             currentMousePosTick.tickLine.Visibility = Visibility.Collapsed; 
         }
 
-        private void Gridline_Loaded(object sender, RoutedEventArgs e)
+        private void SetupForDpi()
         {
             borderSizePixels = UiUtils.GetBorderPixelSize(this.GetDpi());
 
@@ -84,22 +83,35 @@ namespace PixelRuler.Views
             canvas.Height = borderSizePixels;
         }
 
+        private void Gridline_Loaded(object sender, RoutedEventArgs e)
+        {
+            SetupForDpi();
+        }
+
+        protected override void OnDpiChanged(DpiScale oldDpi, DpiScale newDpi)
+        {
+            SetupForDpi();
+            UpdateAll();
+            base.OnDpiChanged(oldDpi, newDpi);
+        }
+
         private void SetBorder()
         {
-            var line = new Line()
-            {
-                X1 = 0,
-                X2 = 20000,
-                Y1 = 1,
-                Y2 = 1,
-                Stroke = new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
-                StrokeThickness = 1,
-            };
-            RenderOptions.SetEdgeMode(line, EdgeMode.Aliased);
-            this.canvas.Children.Add(line);
-            Canvas.SetLeft(line, 0);
-            Canvas.SetTop(line, 0);
-            Canvas.SetZIndex(line, 10);
+            Line line;
+            //line = new Line()
+            //{
+            //    X1 = 0,
+            //    X2 = 20000,
+            //    Y1 = 1,
+            //    Y2 = 1,
+            //    Stroke = new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
+            //    StrokeThickness = 1,
+            //};
+            //RenderOptions.SetEdgeMode(line, EdgeMode.Aliased);
+            //this.canvas.Children.Add(line);
+            //Canvas.SetLeft(line, 0);
+            //Canvas.SetTop(line, 0);
+            //Canvas.SetZIndex(line, 10);
 
             line = new Line()
             {
@@ -128,6 +140,12 @@ namespace PixelRuler.Views
             endCoor = int.MaxValue;
 
             this.Scale = scale;
+
+            UpdateAll();
+        }
+
+        private void UpdateAll()
+        {
 
             ClearCanvas();
             SetBorder();

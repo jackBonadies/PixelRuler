@@ -24,6 +24,9 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using PixelRuler;
 using System.Reflection;
+using WpfScreenHelper;
+using PixelRuler.Common;
+using PixelRuler.Views;
 
 namespace PixelRuler
 {
@@ -52,9 +55,10 @@ namespace PixelRuler
             //}
 
             this.Loaded += MainWindow_Loaded;
+            this.IsVisibleChanged += MainWindow_IsVisibleChanged;
 
             this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
-            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(ScreenshotMode.Window); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
+            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(OverlayMode.Window, false); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
             this.ViewModel.CopyCanvasContents = new RelayCommandFull((object? o) => { CopyContents(); }, Key.C, ModifierKeys.Control, "Copy Elements");
             this.ViewModel.PasteCanvasContents = new RelayCommandFull((object? o) => { this.mainCanvas.PasteCopiedData(); }, Key.V, ModifierKeys.Control, "Paste Elements");
 
@@ -64,6 +68,21 @@ namespace PixelRuler
 
             var handle = new WindowInteropHelper(this).Handle;
 
+            this.SizeChanged += MainWindow_SizeChanged;
+
+        }
+
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //var deltaX = (e.NewSize.Width - e.PreviousSize.Width);
+            //var deltaY = (e.NewSize.Height - e.PreviousSize.Height);
+            //var tt = this.mainCanvas.innerCanvas.GetTranslateTransform();
+            //tt.X += deltaX / 2;
+            //tt.Y += deltaY / 2;
+        }
+
+        private void MainWindow_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
         }
 
         private void CopyContents()
@@ -137,7 +156,8 @@ namespace PixelRuler
 
             }
 #endif
-            if (e.Key == Key.Space)
+            // todo move to canvas??
+            if (e.Key == this.ViewModel.Settings.ZoomBoxQuickZoomKey)
             {
                 mainCanvas.ShowZoomBox();
             }
@@ -156,28 +176,10 @@ namespace PixelRuler
             }
         }
 
-        public static Drawing.Bitmap CaptureScreen(Rect? bounds = null)
-        {
-            if(bounds == null)
-            {
-                var pixelWidth = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width;
-                var pixelHeight = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height;
-                bounds = new Rect(0, 0, pixelWidth, pixelHeight);
-            }
-
-            var boundsVal = bounds.Value;
-
-            var screenBounds = new Drawing.Size((int)boundsVal.Width, (int)boundsVal.Height);//System.Windows.Forms.Screen.PrimaryScreen.Bounds;
-            var screenshot = new Drawing.Bitmap(screenBounds.Width, screenBounds.Height);// PixelFormat.Format32bppArgb);
-            using (Drawing.Graphics g = Drawing.Graphics.FromImage(screenshot))
-            {
-                g.CopyFromScreen((int)boundsVal.X, (int)boundsVal.Y, 0, 0, screenBounds, Drawing.CopyPixelOperation.SourceCopy);
-            }
-            return screenshot;
-        }
 
         protected override void OnDpiChanged(DpiScale oldDpi, DpiScale newDpi)
         {
+            SetupForDpi();
             base.OnDpiChanged(oldDpi, newDpi);
         }
 
@@ -188,13 +190,17 @@ namespace PixelRuler
         }
 
 
-
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private void SetupForDpi()
         {
             var dpi = this.GetDpi();
 
             // basically undo the TransformToDevice transform so that 100% zoom has 1 pixel : 1 pixel
             mainCanvas.LayoutTransform = new ScaleTransform(1 / dpi, 1 / dpi);
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            SetupForDpi();
             mainCanvas.Panning += MainCanvas_Panning;
         }
 
@@ -220,17 +226,65 @@ namespace PixelRuler
             base.OnClosing(e);
         }
 
-        public async void NewWindowedScreenshot(ScreenshotMode mode)
+        public void SetImage(string imagePath)
+        {
+            var bmp = System.Drawing.Bitmap.FromFile(imagePath);
+            this.ViewModel.Image = bmp as System.Drawing.Bitmap;
+            mainCanvas.SetImage(this.ViewModel.ImageSource);
+        }
+
+        public async Task<bool> NewWindowedScreenshot(OverlayMode mode, bool newWindow)
         {
             this.Hide();
-            var wsw = new WindowSelectionWindow(mode);
+            var wsw = new WindowSelectionWindow(mode, this.ViewModel.Settings);
             var res = wsw.ShowDialog();
             Bitmap bmp = null;
-            if(res is true)
+
+            if (res is not true)
             {
-                bmp = CaptureScreen(wsw.SelectedRect);
+                return false;
+            }
+
+            if(wsw.AfterScreenshotValue is AfterScreenshotAction.Cancel)
+            {
+                return false;
+            }
+
+
+            if (res is true)
+            {
+                bmp = UiUtils.CaptureScreen(wsw.SelectedRectWin);
                 this.ViewModel.Image = bmp;
                 mainCanvas.SetImage(this.ViewModel.ImageSource);
+            }
+
+            if(res is true && newWindow)
+            {
+                if(wsw.SelectedRectCanvas.Width * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width && 
+                   wsw.SelectedRectCanvas.Height  * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height)
+                {
+                    this.WindowState = WindowState.Maximized;
+                    this.Width = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width * .75;
+                    this.Height = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height * .75;
+                }
+                else
+                {
+                    // set reasonable size
+                    // Left, Top, Width, Height are all dpi independent values, must translate. 
+                    // should be close to where the snip was done (if applicable)
+                    // should have some min size
+                    // no part of it should be offscreen
+                    // if close to max then maximize.
+                    Rect workArea = SystemParameters.WorkArea;
+                    //WpfScreenHelper.Screen.PrimaryScreen.WorkingArea
+                    var dpiScaleFactor = wsw.Dpi;
+                    this.Left = wsw.SelectedRectCanvas.Left / dpiScaleFactor - 60;
+                    this.Top = wsw.SelectedRectCanvas.Top / dpiScaleFactor - 60;
+                    this.Width = Math.Max(wsw.SelectedRectCanvas.Width / dpiScaleFactor + 120, 730);
+                    this.Height = Math.Max(wsw.SelectedRectCanvas.Height / dpiScaleFactor + 120, 515);
+                    this.WindowStartupLocation = WindowStartupLocation.Manual;
+                    this.WindowState = WindowState.Normal;
+                }
             }
 
             this.Show();
@@ -239,24 +293,25 @@ namespace PixelRuler
             {
                 this.WindowState = WindowState.Normal;
             }
+            return res != null ? res.Value : false;
         }
 
-        public async void NewFullScreenshot(bool alreadyRunning)
+        public async void NewFullScreenshot(bool newWindow)
         {
             Bitmap bmp = null;
-            if (alreadyRunning)
+            if (!newWindow)
             {
                 this.Hide();
                 await Task.Delay(200);
                 await Task.Run(new Action(async () =>
                 {
                 //    await Task.Delay(1000);
-                    bmp = CaptureScreen();
+                    bmp = UiUtils.CaptureScreen();
                 })).ConfigureAwait(true);
             }
             else
             {
-                bmp = CaptureScreen();
+                bmp = UiUtils.CaptureScreen();
             }
             this.ViewModel.Image = bmp;
             mainCanvas.SetImage(this.ViewModel.ImageSource);

@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using WpfScreenHelper;
+using System.Windows.Media;
 
 namespace PixelRuler.Common
 {
@@ -57,6 +59,26 @@ namespace PixelRuler.Common
             var roundX = Math.Round(mousePos.X);
             var roundY = Math.Round(mousePos.Y);
             return new Point(roundX, roundY);
+        }
+
+        public static System.Drawing.Bitmap CaptureScreen(Rect? bounds = null)
+        {
+            if (bounds == null)
+            {
+                var pixelWidth = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width;
+                var pixelHeight = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height;
+                bounds = new Rect(0, 0, pixelWidth, pixelHeight);
+            }
+
+            var boundsVal = bounds.Value;
+
+            var screenBounds = new System.Drawing.Size((int)boundsVal.Width, (int)boundsVal.Height);//System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+            var screenshot = new System.Drawing.Bitmap(screenBounds.Width, screenBounds.Height);// PixelFormat.Format32bppArgb);
+            using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(screenshot))
+            {
+                g.CopyFromScreen((int)boundsVal.X, (int)boundsVal.Y, 0, 0, screenBounds, System.Drawing.CopyPixelOperation.SourceCopy);
+            }
+            return screenshot;
         }
     }
 }

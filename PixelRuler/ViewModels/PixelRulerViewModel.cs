@@ -40,6 +40,16 @@ namespace PixelRuler
             }
         }
 
+        /// <summary>
+        /// Whether in fullscreen screenshow window mode (QuickTool or Screenshot Selection)
+        /// </summary>
+        public bool FullscreenScreenshotMode { get; set; } = false;
+
+        public virtual bool IsInWindowSelection()
+        {
+            return false;
+        }
+
         public void CopyRawImageToClipboard()
         {
             if(this.ImageSource != null)
@@ -99,7 +109,7 @@ namespace PixelRuler
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private void OnPropertyChanged([CallerMemberName] string? name = null)
+        protected void OnPropertyChanged([CallerMemberName] string? name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
@@ -429,11 +439,30 @@ namespace PixelRuler
             }
             set
             {
-                selectedTool = value;
+                if(selectedTool != value)
+                {
+                    selectedTool = value;
+                    SelectedToolChanged?.Invoke(this, EventArgs.Empty);
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public event EventHandler<EventArgs>? SelectedToolChanged;
+
+        private System.Windows.Point currentPosition;
+        public System.Windows.Point CurrentPosition
+        {
+            get
+            {
+                return currentPosition;
+            }
+            set
+            {
+                currentPosition = value;
                 OnPropertyChanged();
             }
         }
-        
+
         public double[] AvailableZooms
         {
             get;

@@ -73,7 +73,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool GlobalShortcutsEnabled {
             get {
                 return ((bool)(this["GlobalShortcutsEnabled"]));
@@ -85,7 +85,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("59")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int GlobalShortcutFullscreenKey {
             get {
                 return ((int)(this["GlobalShortcutFullscreenKey"]));
@@ -97,7 +97,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int GlobalShortcutFullscreenModifiers {
             get {
                 return ((int)(this["GlobalShortcutFullscreenModifiers"]));
@@ -145,7 +145,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("87")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int GlobalShortcutWindowKey {
             get {
                 return ((int)(this["GlobalShortcutWindowKey"]));
@@ -157,13 +157,85 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("66")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int GlobalShortcutWindowModifiers {
             get {
                 return ((int)(this["GlobalShortcutWindowModifiers"]));
             }
             set {
                 this["GlobalShortcutWindowModifiers"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int GlobalShortcutRegionKey {
+            get {
+                return ((int)(this["GlobalShortcutRegionKey"]));
+            }
+            set {
+                this["GlobalShortcutRegionKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int GlobalShortcutRegionModifiers {
+            get {
+                return ((int)(this["GlobalShortcutRegionModifiers"]));
+            }
+            set {
+                this["GlobalShortcutRegionModifiers"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int GlobalShortcutQuickColorKey {
+            get {
+                return ((int)(this["GlobalShortcutQuickColorKey"]));
+            }
+            set {
+                this["GlobalShortcutQuickColorKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int GlobalShortcutQuickColorModifiers {
+            get {
+                return ((int)(this["GlobalShortcutQuickColorModifiers"]));
+            }
+            set {
+                this["GlobalShortcutQuickColorModifiers"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int GlobalShortcutQuickMeasureKey {
+            get {
+                return ((int)(this["GlobalShortcutQuickMeasureKey"]));
+            }
+            set {
+                this["GlobalShortcutQuickMeasureKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int GlobalShortcutQuickMeasureModifiers {
+            get {
+                return ((int)(this["GlobalShortcutQuickMeasureModifiers"]));
+            }
+            set {
+                this["GlobalShortcutQuickMeasureModifiers"] = value;
             }
         }
     }
