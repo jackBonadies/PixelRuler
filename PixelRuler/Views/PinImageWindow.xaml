@@ -1,0 +1,80 @@
+﻿<Window
+    x:Class="PixelRuler.Views.PinImageWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PixelRuler.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="PinImageWindow"
+    Width="800"
+    Height="450"
+    AllowsTransparency="True"
+    Background="Transparent"
+    MouseEnter="Window_MouseEnter"
+    Topmost="True"
+    WindowStyle="None"
+    mc:Ignorable="d">
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            CaptionHeight="0"
+            CornerRadius="0"
+            GlassFrameThickness="0"
+            ResizeBorderThickness="0" />
+    </WindowChrome.WindowChrome>
+    <Border
+        x:Name="border"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Background="#303030"
+        BorderBrush="White"
+        BorderThickness="3"
+        ClipToBounds="True"
+        CornerRadius="6"
+        UseLayoutRounding="True">
+        <Border.LayoutTransform>
+            <ScaleTransform ScaleX=".8" ScaleY=".8" />
+        </Border.LayoutTransform>
+        <Image
+            x:Name="mainImage"
+            FocusVisualStyle="{x:Null}"
+            Focusable="True"
+            RenderOptions.BitmapScalingMode="NearestNeighbor"
+            SnapsToDevicePixels="True"
+            Source="{Binding ImageSource}"
+            Stretch="None">
+            <Image.Clip>
+                <RectangleGeometry RadiusX="4.5" RadiusY="4.5">
+                    <RectangleGeometry.Rect>
+                        <Rect
+                            Width="100"
+                            Height="100"
+                            X="0"
+                            Y="0" />
+                    </RectangleGeometry.Rect>
+                </RectangleGeometry>
+            </Image.Clip>
+        </Image>
+        <Border.Resources>
+            <BeginStoryboard x:Key="fadeOut" x:Name="fadeOutAnim">
+                <Storyboard x:Name="fadeOutStory">
+                    <DoubleAnimationUsingKeyFrames
+                        Storyboard.TargetName="border"
+                        Storyboard.TargetProperty="Opacity"
+                        Duration="0:0:5">
+                        <LinearDoubleKeyFrame KeyTime="0" Value="0" />
+                        <LinearDoubleKeyFrame KeyTime="0:0:1" Value="1" />
+                        <LinearDoubleKeyFrame KeyTime="0:0:3" Value="1" />
+                        <LinearDoubleKeyFrame KeyTime="0:0:4" Value="0" />
+                    </DoubleAnimationUsingKeyFrames>
+                    <!--<DoubleAnimation
+                        BeginTime="0:0:2"
+                        Storyboard.TargetName="border"
+                        Storyboard.TargetProperty="Opacity"
+                        From="1"
+                        To="0"
+                        Duration="0:0:1" />-->
+                </Storyboard>
+            </BeginStoryboard>
+        </Border.Resources>
+    </Border>
+</Window>

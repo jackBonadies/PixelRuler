@@ -80,5 +80,6 @@ namespace PixelRuler.Views
         Cancel = 0,
         ViewInPixelRulerWindow = 1,
         SaveAs = 2,
+        Pin = 3,
     }
 }

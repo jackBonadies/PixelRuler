@@ -17,7 +17,7 @@
     </UserControl.Effect>
     <Border
         x:Name="outerBorder"
-        Background="LightGray"
+        Background="#303030"
         BorderBrush="LightGray"
         BorderThickness="{Binding Settings.ZoomViewModel.BorderThickness}"
         CornerRadius="4">

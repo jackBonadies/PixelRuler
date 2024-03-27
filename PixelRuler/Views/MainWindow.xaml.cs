@@ -251,6 +251,13 @@ namespace PixelRuler
                 return false;
             }
 
+            //if(wsw.AfterScreenshotValue is AfterScreenshotAction.Pin)
+            //{
+                var pinWindow = new PinImageWindow();
+                pinWindow.DataContext = this.ViewModel;
+                pinWindow.Show();
+            //}
+
 
             if (res is true)
             {
