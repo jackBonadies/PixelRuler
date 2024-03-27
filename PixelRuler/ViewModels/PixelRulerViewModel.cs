@@ -138,8 +138,12 @@ namespace PixelRuler
             }
             set
             {
-                imageSource = value;
-                ImageSourceChanged?.Invoke(this, EventArgs.Empty);
+                if(imageSource != value)
+                {
+                    imageSource = value;
+                    OnPropertyChanged();
+                    ImageSourceChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 

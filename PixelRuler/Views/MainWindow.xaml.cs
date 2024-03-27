@@ -236,6 +236,7 @@ namespace PixelRuler
         public async Task<bool> NewWindowedScreenshot(OverlayMode mode, bool newWindow)
         {
             this.Hide();
+            await Task.Delay(this.ViewModel.Settings.ScreenshotDelayMs);
             var wsw = new WindowSelectionWindow(mode, this.ViewModel.Settings);
             var res = wsw.ShowDialog();
             Bitmap bmp = null;

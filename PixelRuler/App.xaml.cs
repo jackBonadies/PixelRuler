@@ -130,10 +130,10 @@ namespace PixelRuler
             mainWindow.Show();
         }
 
-        public static void EnterScreenshotTool(SettingsViewModel settingsViewModel, OverlayMode mode, bool newWindow)
+        public static async Task EnterScreenshotTool(SettingsViewModel settingsViewModel, OverlayMode mode, bool newWindow)
         {
             MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(settingsViewModel));
-            var res = mainWindow.NewWindowedScreenshot(mode, newWindow).Result;
+            var res = await mainWindow.NewWindowedScreenshot(mode, newWindow);
             if(res)
             {
                 mainWindow.Show();
