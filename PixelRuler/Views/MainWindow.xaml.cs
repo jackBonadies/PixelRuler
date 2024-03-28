@@ -251,12 +251,6 @@ namespace PixelRuler
                 return false;
             }
 
-            //if(wsw.AfterScreenshotValue is AfterScreenshotAction.Pin)
-            //{
-                var pinWindow = new PinImageWindow();
-                pinWindow.DataContext = this.ViewModel;
-                pinWindow.Show();
-            //}
 
 
             if (res is true)
@@ -265,6 +259,13 @@ namespace PixelRuler
                 this.ViewModel.Image = bmp;
                 mainCanvas.SetImage(this.ViewModel.ImageSource);
             }
+
+            //if(wsw.AfterScreenshotValue is AfterScreenshotAction.Pin)
+            //{
+                var pinWindow = new PinImageWindow();
+                pinWindow.DataContext = this.ViewModel;
+                pinWindow.Show();
+            //}
 
             if(res is true && newWindow)
             {

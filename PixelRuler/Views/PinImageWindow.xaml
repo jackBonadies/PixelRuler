@@ -11,6 +11,7 @@
     AllowsTransparency="True"
     Background="Transparent"
     MouseEnter="Window_MouseEnter"
+    SizeToContent="WidthAndHeight"
     Topmost="True"
     WindowStyle="None"
     mc:Ignorable="d">
@@ -43,7 +44,10 @@
             Source="{Binding ImageSource}"
             Stretch="None">
             <Image.Clip>
-                <RectangleGeometry RadiusX="4.5" RadiusY="4.5">
+                <RectangleGeometry
+                    x:Name="rectGeom"
+                    RadiusX="4.5"
+                    RadiusY="4.5">
                     <RectangleGeometry.Rect>
                         <Rect
                             Width="100"
