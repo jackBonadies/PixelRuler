@@ -146,6 +146,7 @@
 
         </Canvas>
         <Border
+            Name="toolPanel"
             Margin="0,14,0,0"
             Padding="8,3,8,3"
             HorizontalAlignment="Center"
@@ -155,6 +156,23 @@
             BorderThickness="1"
             CornerRadius="5"
             Cursor="Arrow">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="translateTransform" Y="-60" />
+            </Border.RenderTransform>
+            <Border.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                Storyboard.TargetName="translateTransform"
+                                Storyboard.TargetProperty="Y"
+                                From="-56"
+                                To="0"
+                                Duration="0:0:.2" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Border.Triggers>
             <!--<Border.Resources>
                 <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Resources/Theme/Light.xaml" />
             </Border.Resources>-->

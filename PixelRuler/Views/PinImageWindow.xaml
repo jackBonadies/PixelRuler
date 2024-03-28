@@ -8,6 +8,7 @@
     Title="PinImageWindow"
     Width="800"
     Height="450"
+    d:DataContext="{d:DesignInstance Type=local:PinViewModel}"
     AllowsTransparency="True"
     Background="Transparent"
     MouseEnter="Window_MouseEnter"
@@ -22,63 +23,177 @@
             GlassFrameThickness="0"
             ResizeBorderThickness="0" />
     </WindowChrome.WindowChrome>
-    <Border
-        x:Name="border"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center"
-        Background="#303030"
-        BorderBrush="White"
-        BorderThickness="3"
-        ClipToBounds="True"
-        CornerRadius="6"
-        UseLayoutRounding="True">
-        <Border.LayoutTransform>
-            <ScaleTransform ScaleX=".8" ScaleY=".8" />
-        </Border.LayoutTransform>
-        <Image
-            x:Name="mainImage"
-            FocusVisualStyle="{x:Null}"
-            Focusable="True"
-            RenderOptions.BitmapScalingMode="NearestNeighbor"
-            SnapsToDevicePixels="True"
-            Source="{Binding ImageSource}"
-            Stretch="None">
-            <Image.Clip>
-                <RectangleGeometry
-                    x:Name="rectGeom"
-                    RadiusX="4.5"
-                    RadiusY="4.5">
-                    <RectangleGeometry.Rect>
-                        <Rect
-                            Width="100"
-                            Height="100"
-                            X="0"
-                            Y="0" />
-                    </RectangleGeometry.Rect>
-                </RectangleGeometry>
-            </Image.Clip>
-        </Image>
-        <Border.Resources>
-            <BeginStoryboard x:Key="fadeOut" x:Name="fadeOutAnim">
-                <Storyboard x:Name="fadeOutStory">
-                    <DoubleAnimationUsingKeyFrames
-                        Storyboard.TargetName="border"
-                        Storyboard.TargetProperty="Opacity"
-                        Duration="0:0:5">
-                        <LinearDoubleKeyFrame KeyTime="0" Value="0" />
-                        <LinearDoubleKeyFrame KeyTime="0:0:1" Value="1" />
-                        <LinearDoubleKeyFrame KeyTime="0:0:3" Value="1" />
-                        <LinearDoubleKeyFrame KeyTime="0:0:4" Value="0" />
-                    </DoubleAnimationUsingKeyFrames>
-                    <!--<DoubleAnimation
+    <Grid>
+        <Border
+            x:Name="border"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            d:Height="400"
+            d:Width="600"
+            Background="#303030"
+            BorderBrush="White"
+            BorderThickness="3"
+            ClipToBounds="True"
+            CornerRadius="6"
+            UseLayoutRounding="True">
+            <Border.LayoutTransform>
+                <ScaleTransform ScaleX=".8" ScaleY=".8" />
+            </Border.LayoutTransform>
+            <Grid>
+                <Image
+                    x:Name="mainImage"
+                    FocusVisualStyle="{x:Null}"
+                    Focusable="True"
+                    RenderOptions.BitmapScalingMode="NearestNeighbor"
+                    SnapsToDevicePixels="True"
+                    Source="{Binding MainViewModel.ImageSource}"
+                    Stretch="None">
+                    <Image.Clip>
+                        <RectangleGeometry
+                            x:Name="rectGeom"
+                            RadiusX="4.5"
+                            RadiusY="4.5">
+                            <RectangleGeometry.Rect>
+                                <Rect
+                                    Width="100"
+                                    Height="100"
+                                    X="0"
+                                    Y="0" />
+                            </RectangleGeometry.Rect>
+                        </RectangleGeometry>
+                    </Image.Clip>
+                </Image>
+                <Border
+                    x:Name="gripBorder"
+                    Width="80"
+                    Height="18"
+                    Margin="0,-1,0,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Background="White"
+                    BorderThickness="0"
+                    CornerRadius="0, 0, 4, 4"
+                    Visibility="Collapsed">
+                    <Border.Resources>
+                        <Storyboard x:Key="MoveBorderStoryboard">
+                            <DoubleAnimation
+                                Storyboard.TargetName="gripBorderTranslateTransform"
+                                Storyboard.TargetProperty="Y"
+                                From="-18"
+                                To="0"
+                                Duration="0:0:.05" />
+                        </Storyboard>
+                    </Border.Resources>
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="gripBorderTranslateTransform" Y="-20" />
+                    </Border.RenderTransform>
+                    <Border
+                        Width="30"
+                        Height="2"
+                        Margin="0,-1,0,0"
+                        VerticalAlignment="Center"
+                        Background="Gray"
+                        CornerRadius="1" />
+                </Border>
+            </Grid>
+            <Border.Resources>
+                <BeginStoryboard x:Key="fadeOut" x:Name="fadeOutAnim">
+                    <Storyboard x:Name="fadeOutStory">
+                        <DoubleAnimationUsingKeyFrames
+                            Storyboard.TargetName="border"
+                            Storyboard.TargetProperty="Opacity"
+                            Duration="0:0:5">
+                            <LinearDoubleKeyFrame KeyTime="0" Value="0" />
+                            <LinearDoubleKeyFrame KeyTime="0:0:1" Value="1" />
+                            <LinearDoubleKeyFrame KeyTime="0:0:3" Value="1" />
+                            <LinearDoubleKeyFrame KeyTime="0:0:4" Value="0" />
+                        </DoubleAnimationUsingKeyFrames>
+                        <!--<DoubleAnimation
                         BeginTime="0:0:2"
                         Storyboard.TargetName="border"
                         Storyboard.TargetProperty="Opacity"
                         From="1"
                         To="0"
                         Duration="0:0:1" />-->
+                    </Storyboard>
+                </BeginStoryboard>
+            </Border.Resources>
+        </Border>
+        <Border
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            BorderBrush="Red"
+            BorderThickness="10"
+            Cursor="Cross"
+            MouseEnter="Border_MouseEnter"
+            MouseLeftButtonDown="Border_MouseLeftButtonDown"
+            MouseLeftButtonUp="Border_MouseLeftButtonUp"
+            MouseMove="Border_MouseMove" />
+        <Button
+            x:Name="closeButton"
+            Margin="0,5,5,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Command="{Binding CloseCommand}"
+            Cursor="Hand"
+            Opacity="0"
+            ToolTip="test">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        Name="closeBorder"
+                        Background="#C0ffffff"
+                        CornerRadius="4">
+                        <Grid
+                            Width="30"
+                            Height="29"
+                            Opacity="1">
+                            <Border
+                                Width="1.3"
+                                Height="24"
+                                Background="Black"
+                                CornerRadius=".5">
+                                <Border.LayoutTransform>
+                                    <RotateTransform Angle="45" />
+                                </Border.LayoutTransform>
+                            </Border>
+                            <Border
+                                Width="1.3"
+                                Height="24"
+                                Background="Black"
+                                CornerRadius=".5">
+                                <Border.LayoutTransform>
+                                    <RotateTransform Angle="-45" />
+                                </Border.LayoutTransform>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="closeBorder" Property="Background" Value="#d0ff2222" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="closeBorder" Property="Background" Value="#d0ff4444" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+            <Button.Resources>
+                <Storyboard x:Key="buttonFadeIn">
+                    <DoubleAnimation
+                        Storyboard.TargetProperty="Opacity"
+                        From="0"
+                        To="1"
+                        Duration="0:0:.15" />
                 </Storyboard>
-            </BeginStoryboard>
-        </Border.Resources>
-    </Border>
+                <Storyboard x:Key="buttonFadeOut">
+                    <DoubleAnimation
+                        Storyboard.TargetProperty="Opacity"
+                        From="1"
+                        To="0"
+                        Duration="0:0:.15" />
+                </Storyboard>
+            </Button.Resources>
+        </Button>
+    </Grid>
 </Window>

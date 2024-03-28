@@ -263,7 +263,7 @@ namespace PixelRuler
             //if(wsw.AfterScreenshotValue is AfterScreenshotAction.Pin)
             //{
                 var pinWindow = new PinImageWindow();
-                pinWindow.DataContext = this.ViewModel;
+                pinWindow.ViewModel = new PinViewModel(this.ViewModel);
                 pinWindow.Show();
             //}
 
