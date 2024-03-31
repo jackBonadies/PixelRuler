@@ -12,6 +12,8 @@ namespace PixelRuler.ViewModels
 {
     public class PathInfoEditViewModel : ViewModelBase
     {
+        public DateTime DummyDateTime = DateTime.Now;
+
         public PathInfoEditViewModel(PathSaveInfo pathSaveInfo)
         {
             PathSaveInfo = pathSaveInfo;
@@ -20,7 +22,8 @@ namespace PixelRuler.ViewModels
                 var token = tokenObj as PathSaveInfoToken;
                 this.FilePattern += token.DefaultInsert;
             });
-            FilePatternChanged += PathInfoEditViewModel_FilePatternChanged;
+            FileNameChanged += PathInfoEditViewModel_FilePatternChanged;
+            SetEvaluatedFilePattern();
         }
 
         private string evaluatedFilePattern;
@@ -51,6 +54,7 @@ namespace PixelRuler.ViewModels
                 if(PathSaveInfo.Extension != value)
                 {
                     PathSaveInfo.Extension = value;
+                    FileNameChanged?.Invoke(this, EventArgs.Empty);
                     OnPropertyChanged();
                 }
             }
@@ -58,7 +62,12 @@ namespace PixelRuler.ViewModels
 
         private void PathInfoEditViewModel_FilePatternChanged(object? sender, EventArgs e)
         {
-            EvaluatedFilePattern = this.PathSaveInfo.Evaluate(new ScreenshotInfo() { DateTime = DateTime.Now, Height = 1080, Width = 1920 }, false, true);
+            SetEvaluatedFilePattern();
+        }
+
+        private void SetEvaluatedFilePattern()
+        {
+            EvaluatedFilePattern = this.PathSaveInfo.Evaluate(new ScreenshotInfo() { DateTime = DummyDateTime, Height = 1080, Width = 1920, ProcessName = "PixelRuler", WindowTitle = "Settings" }, false, true);
         }
 
         public string? DisplayName
@@ -93,7 +102,7 @@ namespace PixelRuler.ViewModels
             }
         }
 
-        private event EventHandler<EventArgs>? FilePatternChanged;
+        private event EventHandler<EventArgs>? FileNameChanged;
 
         public string? FilePattern
         {
@@ -106,7 +115,7 @@ namespace PixelRuler.ViewModels
                 if(PathSaveInfo.FilePattern != value)
                 {
                     PathSaveInfo.FilePattern = value;
-                    FilePatternChanged?.Invoke(this, EventArgs.Empty);
+                    FileNameChanged?.Invoke(this, EventArgs.Empty);
                     OnPropertyChanged();
                 }
             }

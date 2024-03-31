@@ -6,7 +6,10 @@
     xmlns:local="clr-namespace:PixelRuler.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pixelruler="clr-namespace:PixelRuler"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:viewmodels="clr-namespace:PixelRuler.ViewModels"
+    Margin="0"
+    Padding="0"
     d:DataContext="{d:DesignInstance Type=viewmodels:PathInfoEditViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="400"
@@ -34,11 +37,16 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+        <Style x:Key="SmallHeader" TargetType="Label">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Margin" Value="0,0,0,-4" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
-        <Label>Display Name:</Label>
+        <Label Style="{StaticResource SmallHeader}">Display Name</Label>
         <TextBox d:Text="My Folder (1)" Text="{Binding DisplayName}" />
-        <Label>Folder</Label>
+        <Label Style="{StaticResource SmallHeader}">Folder</Label>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -58,11 +66,21 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Vertical">
-                <Label>File Pattern</Label>
+                <Label Style="{StaticResource SmallHeader}">File Pattern</Label>
                 <TextBox d:Text="Screenshot_{datetime:YY_MM_dd_hhmmss}" Text="{Binding FilePattern, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <ui:RichTextBox Width="1000" />
+                <RichTextBox>
+                    <FlowDocument>
+                        <Paragraph>
+                            <Run Text="This is some text." />
+                            <Run Foreground="Red" Text=" And this text is red." />
+                            <Run Text=" While this is the default color again." />
+                        </Paragraph>
+                    </FlowDocument>
+                </RichTextBox>
             </StackPanel>
             <StackPanel Grid.Column="2" Orientation="Vertical">
-                <Label>File Type</Label>
+                <Label Style="{StaticResource SmallHeader}">File Type</Label>
                 <StackPanel Orientation="Horizontal">
                     <ComboBox
                         Width="100"
@@ -72,10 +90,15 @@
             </StackPanel>
         </Grid>
         <Label Margin="10,0,0,0" Opacity=".9">
-            <TextBlock Text="{Binding EvaluatedFilePattern}" />
+            <TextBlock x:Name="evaluatedFilePatternBlock" Text="{Binding EvaluatedFilePattern}" />
         </Label>
 
-        <Label>Available Parameters:</Label>
+        <Label
+            Margin="0,14,0,0"
+            FontWeight="SemiBold"
+            Style="{StaticResource SmallHeader}">
+            Available Parameters:
+        </Label>
         <ItemsControl
             x:Name="MyListBox"
             Margin="0"
@@ -100,6 +123,7 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
+        <TextBlock Margin="16,0,16,0" Text="testing testing hint text testing" />
 
 
     </StackPanel>

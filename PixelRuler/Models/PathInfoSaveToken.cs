@@ -74,9 +74,20 @@ namespace PixelRuler.Models
                 case PathTokenType.Height:
                     return info.Height.ToString($"D{formatString}");
                 case PathTokenType.WindowTitle:
-                    return info.WindowTitle.ToString();
+                    return info.WindowTitle?.ToString() ?? string.Empty;
                 case PathTokenType.ProcessName:
-                    return info.ProcessName.ToString();
+                    return info.ProcessName?.ToString() ?? string.Empty;
+                case PathTokenType.RandomGuid:
+                    return Guid.NewGuid().ToString();
+                case PathTokenType.RandomNum:
+                    int numDigits = 10;
+                    if(int.TryParse(formatString, out int result))
+                    {
+                        numDigits = result;
+                    }
+                    var max = Math.Pow(10, numDigits) - 1;
+                    long randomNum = new Random().NextInt64((long)max);
+                    return randomNum.ToString($"D{numDigits}");
                 default:
                     throw new NotImplementedException();
             }
