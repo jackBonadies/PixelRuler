@@ -273,6 +273,30 @@ namespace PixelRuler
         }
     }
 
+    public class BoolToVisibilityInvertConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool bVal)
+            {
+                if(bVal)
+                {
+                    return Visibility.Collapsed;
+                }
+                else
+                {
+                    return Visibility.Visible;
+                }
+            }
+            throw new Exception("Unexpected type in BoolToVisibilityInvertConverter");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new Exception("One way converter");
+        }
+    }
+
     public class BoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

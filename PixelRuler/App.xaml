@@ -22,6 +22,7 @@
             <local:ColorConverter x:Key="ColorConverter" />
             <local:EnumToBoolCheckedStickyConverter x:Key="EnumToBoolCheckedStickyConverter" />
             <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <local:BoolToVisibilityInvertConverter x:Key="BoolToVisibilityInvertConverter" />
             <local:EnumToOptionConverter x:Key="EnumToOptionConverter" />
             <local:EnumToOptionsCollectionConverter x:Key="EnumToOptionsCollectionConverter" />
             <local:DoubleNaNZeroBlankConverter x:Key="DoubleNaNZeroBlankConverter" />

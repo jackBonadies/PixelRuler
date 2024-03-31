@@ -68,7 +68,7 @@
             <StackPanel Grid.Column="0" Orientation="Vertical">
                 <Label Style="{StaticResource SmallHeader}">File Pattern</Label>
                 <TextBox d:Text="Screenshot_{datetime:YY_MM_dd_hhmmss}" Text="{Binding FilePattern, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <ui:RichTextBox Width="1000" />
+                <ui:RichTextBox Width="100" />
                 <RichTextBox>
                     <FlowDocument>
                         <Paragraph>

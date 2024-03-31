@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:PixelRuler"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:views="clr-namespace:PixelRuler.Views"
     Title="Settings"
     Padding="0,0,0,0"
     d:DataContext="{d:DesignInstance Type=local:SettingsViewModel,
@@ -338,6 +339,62 @@
                     <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding StartAtSystemStartup, Mode=TwoWay}" />
                 </ui:CardControl>
 
+
+                <views:PathInfoDisplayView DataContext="{Binding DefaultPathSaveInfo}" />
+
+                <ui:CardControl Margin="0,0,0,12">
+                    <ui:CardControl.Header>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ui:TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                FontTypography="Body"
+                                Text="Default Save Target" />
+                            <ui:TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Margin="0,0,6,0"
+                                Text="Folder:" />
+                            <ui:TextBlock
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="C:\\test\\test\\test\\testing" />
+                            <ui:TextBlock
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Margin="0,0,6,0"
+                                VerticalAlignment="Center"
+                                Text="File Pattern:"
+                                TextAlignment="Center" />
+                            <ui:TextBlock
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="testing_{helloworld:test}" />
+
+                        </Grid>
+                    </ui:CardControl.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Button>test</Button>
+                        <Button>test</Button>
+                    </StackPanel>
+                </ui:CardControl>
+
+
+
                 <ui:TextBlock
                     Margin="0,24,0,8"
                     FontTypography="BodyStrong"
@@ -366,6 +423,6 @@
                 <!--  global shortcut  -->
             </StackPanel>
         </ui:PassiveScrollViewer>
-        <ContentPresenter x:Name="RootContentDialog" />
+        <ContentPresenter x:Name="RootContentDialog" Margin="-204,283,204,-283" />
     </Grid>
 </local:ThemeWindow>

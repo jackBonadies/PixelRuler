@@ -1,4 +1,6 @@
 ﻿using PixelRuler.Models;
+using PixelRuler.ViewModels;
+using PixelRuler.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,14 +33,18 @@ namespace PixelRuler
 
             this.DataContext = viewModel.Settings;
             viewModel.Settings.EditShortcutCommandEvent += Settings_EditShortcutCommandEvent;
+            viewModel.Settings.EditSavePathCommandEvent += Settings_EditSavePathCommandEvent;
 
             InitializeComponent();
         }
 
-        private async void Settings_EditShortcutCommandEvent(object? sender, ShortcutInfo shortcutInfo)
+        private async void Settings_EditSavePathCommandEvent(object? sender, PathSaveInfo e)
         {
-            var pendingShortcutInfo = new PendingShortcutInfo(shortcutInfo);
-            var diagContents = new ConfigureShortcutView(pendingShortcutInfo);
+            //new PathInfoEdit
+            var pathInfoEditViewModel = new PathInfoEditViewModel(e);
+
+            var diagContents = new PathInfoEditView();
+            diagContents.DataContext = pathInfoEditViewModel;
             var contentDialog = new ContentDialog(RootContentDialog)
             {
                 Title = "Set Shortcut",
@@ -46,7 +52,7 @@ namespace PixelRuler
                 CloseButtonText = "Cancel",
                 PrimaryButtonText = "Save",
             };
-            contentDialog.SetBinding(ContentDialog.IsPrimaryButtonEnabledProperty, new Binding("IsValid") { Source = pendingShortcutInfo });
+            //contentDialog.SetBinding(ContentDialog.IsPrimaryButtonEnabledProperty, new Binding("IsValid") { Source = pendingShortcutInfo });
             contentDialog.Loaded += (object o, RoutedEventArgs e) => diagContents.Focus();
 
             var result = await contentDialog.ShowAsync();
@@ -56,7 +62,36 @@ namespace PixelRuler
                 case ContentDialogResult.None: // cancel
                     break;
                 case ContentDialogResult.Primary:
-                    pendingShortcutInfo.UpdateShortcut();
+                    //pendingShortcutInfo.UpdateShortcut();
+                    break;
+            }
+        }
+
+        private async void Settings_EditShortcutCommandEvent(object? sender, ShortcutInfo shortcutInfo)
+        {
+            //new PathInfoEdit
+            var pathInfoEditViewModel = new PathInfoEditViewModel((this.DataContext as SettingsViewModel).DefaultPathSaveInfo);
+
+            var diagContents = new PathInfoEditView();
+            diagContents.DataContext = pathInfoEditViewModel;
+            var contentDialog = new ContentDialog(RootContentDialog)
+            {
+                Title = "Set Shortcut",
+                Content = diagContents,
+                CloseButtonText = "Cancel",
+                PrimaryButtonText = "Save",
+            };
+            //contentDialog.SetBinding(ContentDialog.IsPrimaryButtonEnabledProperty, new Binding("IsValid") { Source = pendingShortcutInfo });
+            contentDialog.Loaded += (object o, RoutedEventArgs e) => diagContents.Focus();
+
+            var result = await contentDialog.ShowAsync();
+
+            switch (result)
+            {
+                case ContentDialogResult.None: // cancel
+                    break;
+                case ContentDialogResult.Primary:
+                    //pendingShortcutInfo.UpdateShortcut();
                     break;
             }
         }

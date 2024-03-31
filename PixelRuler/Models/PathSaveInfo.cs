@@ -1,4 +1,5 @@
-﻿using PixelRuler.ViewModels;
+﻿using PixelRuler.Common;
+using PixelRuler.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,6 +26,8 @@ namespace PixelRuler.Models
             FilePattern = filePattern;
             Extension = extension;
         }
+
+        public bool IsDefault { get; set; }
 
         public string? DisplayName { get; set; }
 
