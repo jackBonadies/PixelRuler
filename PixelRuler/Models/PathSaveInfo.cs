@@ -1,6 +1,7 @@
 ﻿using PixelRuler.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -43,7 +44,10 @@ namespace PixelRuler.Models
             public int length = -1;
         }
 
-        public string Evaluate(ScreenshotInfo info, bool withDirectory = false, bool withExtension = false)
+        public string Evaluate(
+            ScreenshotInfo info, 
+            bool withDirectory = false, 
+            bool withExtension = false)
         {
             string filePatternEvaluated = FilePattern.ToString();
             var matches = tokenRegex.Matches(filePatternEvaluated);
@@ -94,7 +98,8 @@ namespace PixelRuler.Models
 
             return filePatternEvaluated;
         }
-        
+
+
         private static readonly Regex tokenRegex = new Regex(@"\{([^}:]+)(?::(.*?))?\}", RegexOptions.Compiled);
 
 

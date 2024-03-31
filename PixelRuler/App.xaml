@@ -28,6 +28,7 @@
             <local:DoubleShouldShowPlaceholderConverter x:Key="DoubleShouldShowPlaceholderConverter" />
             <local:DisplayKeysConverter x:Key="DisplayKeysConverter" />
             <local:DisplayKeysMultiConverter x:Key="DisplayKeysMultiConverter" />
+            <local:DebugConverter x:Key="DebugConverter" />
 
             <SolidColorBrush x:Key="BarColor">#F1F3F9</SolidColorBrush>
             <SolidColorBrush x:Key="IsToggledOnColor">#E8EAF0</SolidColorBrush>

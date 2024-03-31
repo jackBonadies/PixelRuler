@@ -1,5 +1,7 @@
 ﻿using Microsoft.Win32;
+using PixelRuler.Models;
 using PixelRuler.Properties;
+using PixelRuler.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,6 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -88,6 +91,44 @@ namespace PixelRuler
                     throw new Exception("Unexpected Type");
                 }
             });
+
+            RestorePathInfos();
+        }
+
+        private void RestoreDefaultPathInfo()
+        {
+            var defaultPathInfoString = Properties.Settings.Default.DefaultPathInfo;
+
+            if(string.IsNullOrEmpty(defaultPathInfoString))
+            {
+                DefaultPathSaveInfo = new PathSaveInfo("Default", "%USERPROFILE%\\Pictures\\Screenshots\\PixelRuler", "Screenshot {datetime:yyyy_MM_dd_HHmmss}", "png");
+
+            }
+            else
+            {
+                DefaultPathSaveInfo = JsonSerializer.Deserialize(defaultPathInfoString, typeof(PathSaveInfo)) as PathSaveInfo;
+            }
+        }
+
+        private void RestoreAdditionalPathInfos()
+        {
+            var additionalPathInfosString = Properties.Settings.Default.AdditionalPathInfos;
+
+            if(string.IsNullOrEmpty(additionalPathInfosString))
+            {
+                AdditionalPathSaveInfos = new List<PathSaveInfo>();
+
+            }
+            else
+            {
+                AdditionalPathSaveInfos = JsonSerializer.Deserialize(additionalPathInfosString, typeof(List<PathSaveInfo>)) as List<PathSaveInfo>;
+            }
+        }
+
+        private void RestorePathInfos()
+        {
+            RestoreDefaultPathInfo();
+            RestoreAdditionalPathInfos();
         }
 
         public Key ZoomBoxQuickZoomKey { get; set; } = Key.Space;
@@ -212,8 +253,6 @@ namespace PixelRuler
             }
         }
 
-
-
         public bool CloseToTray
         {
             get
@@ -243,7 +282,6 @@ namespace PixelRuler
                 App.Current.ShutdownMode = ShutdownMode.OnLastWindowClose;
             }
         }
-
 
         public ColorAnnotationsBundle AnnotationsColor
         {
@@ -299,6 +337,10 @@ namespace PixelRuler
             new ColorAnnotationsBundle("White","#FFFFFF".ToWinFormColorFromRgbHex(), System.Drawing.Color.Black),
             new ColorAnnotationsBundle("Black","#000000".ToWinFormColorFromRgbHex()),
         };
+
+        public PathSaveInfo DefaultPathSaveInfo { get; set; }
+
+        public List<PathSaveInfo> AdditionalPathSaveInfos { get; set; }
 
         public bool GlobalShortcutsEnabled
         {
