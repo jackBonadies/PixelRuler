@@ -56,6 +56,11 @@ namespace PixelRuler.Views
                 var menuItem4 = new MenuItemCustom() { Header = "Save", InputGestureText="S" };
                 menuItem4.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, null); };
 
+                contextMenu.Items.Add(menuItem1);
+                contextMenu.Items.Add(menuItem2);
+                contextMenu.Items.Add(menuItem3);
+                contextMenu.Items.Add(menuItem4);
+
                 int i = 0;
                 foreach(var saveDest in settings.AdditionalPathSaveInfos)
                 {
@@ -64,11 +69,6 @@ namespace PixelRuler.Views
                     menuItem.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, i); };
                     contextMenu.Items.Add(menuItem);
                 }
-
-                contextMenu.Items.Add(menuItem1);
-                contextMenu.Items.Add(menuItem2);
-                contextMenu.Items.Add(menuItem3);
-                contextMenu.Items.Add(menuItem4);
 
                 return contextMenu;
             }

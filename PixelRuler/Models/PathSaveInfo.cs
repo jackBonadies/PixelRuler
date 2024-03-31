@@ -19,13 +19,15 @@ namespace PixelRuler.Models
             
         }
 
-        public PathSaveInfo(string displayName, string baseDirectory, string filePattern, string extension)
+        public PathSaveInfo(string displayName, string baseDirectory, string filePattern, string extension, bool enabled = true)
         {
             DisplayName = displayName;
             BaseDirectory = baseDirectory;
             FilePattern = filePattern;
             Extension = extension;
+            Enabled = enabled;
         }
+        public bool Enabled { get; set; }
 
         public bool IsDefault { get; set; }
 

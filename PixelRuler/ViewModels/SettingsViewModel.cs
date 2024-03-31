@@ -129,10 +129,12 @@ namespace PixelRuler
         {
             var additionalPathInfosString = Properties.Settings.Default.AdditionalPathInfos;
 
-            if(string.IsNullOrEmpty(additionalPathInfosString))
+            if (string.IsNullOrEmpty(additionalPathInfosString))
             {
-                AdditionalPathSaveInfos = new List<PathSaveInfo>();
-
+                AdditionalPathSaveInfos = new List<PathSaveInfo>()
+                {
+                    new PathSaveInfo("UI Examples", "%USERPROFILE%\\Pictures\\UI_Examples", "Screenshot {datetime:yyyy_MM_dd_HHmmss}", "png", false)
+                };
             }
             else
             {

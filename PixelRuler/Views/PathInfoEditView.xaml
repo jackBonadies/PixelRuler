@@ -68,16 +68,6 @@
             <StackPanel Grid.Column="0" Orientation="Vertical">
                 <Label Style="{StaticResource SmallHeader}">File Pattern</Label>
                 <TextBox d:Text="Screenshot_{datetime:YY_MM_dd_hhmmss}" Text="{Binding FilePattern, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <ui:RichTextBox Width="100" />
-                <RichTextBox>
-                    <FlowDocument>
-                        <Paragraph>
-                            <Run Text="This is some text." />
-                            <Run Foreground="Red" Text=" And this text is red." />
-                            <Run Text=" While this is the default color again." />
-                        </Paragraph>
-                    </FlowDocument>
-                </RichTextBox>
             </StackPanel>
             <StackPanel Grid.Column="2" Orientation="Vertical">
                 <Label Style="{StaticResource SmallHeader}">File Type</Label>
