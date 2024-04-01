@@ -21,6 +21,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="6" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
@@ -39,9 +40,9 @@
             Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityInvertConverter}}" />
         <ui:TextBlock
             Grid.Row="0"
-            Grid.Column="1"
+            Grid.Column="2"
             FontTypography="Body"
-            Text="Default Save Target"
+            Text="{Binding DisplayName}"
             Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityInvertConverter}}" />
         <ui:TextBlock
             Grid.Row="1"
@@ -50,19 +51,17 @@
             Text="Folder:" />
         <ui:TextBlock
             Grid.Row="1"
-            Grid.Column="1"
+            Grid.Column="2"
             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
             Text="{Binding BaseDirectory}" />
         <ui:TextBlock
             Grid.Row="2"
             Grid.Column="0"
             Margin="0,0,6,0"
-            VerticalAlignment="Center"
-            Text="File Pattern:"
-            TextAlignment="Center" />
+            Text="File Pattern:" />
         <ui:TextBlock
             Grid.Row="2"
-            Grid.Column="1"
+            Grid.Column="2"
             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
             Text="{Binding FilePattern}" />
 

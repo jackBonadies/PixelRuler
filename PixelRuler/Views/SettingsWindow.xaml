@@ -352,30 +352,14 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Vertical">
-                                <ui:CardControl BorderThickness="0">
-                                    <ui:CardControl.Header>
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
-                                            <ui:TextBlock
-                                                Grid.Row="0"
-                                                FontTypography="Body"
-                                                Text="Start at Windows Startup" />
-                                            <ui:TextBlock
-                                                Grid.Row="1"
-                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                Text="Starts service at Windows Startup." />
-                                        </Grid>
-                                    </ui:CardControl.Header>
-                                    <ui:Button
-                                        Grid.Column="1"
-                                        Appearance="Primary"
-                                        Content="Add New Destination" />
-                                </ui:CardControl>
+                                <ui:TextBlock
+                                    Grid.Row="0"
+                                    Margin="16,6,16,6"
+                                    FontTypography="Body"
+                                    Text="Additional Save Directories" />
                                 <Rectangle
                                     Height="1"
                                     HorizontalAlignment="Stretch"
@@ -385,7 +369,6 @@
                             </StackPanel>
                             <ItemsControl
                                 Grid.Row="1"
-                                Margin="0,0,0,0"
                                 HorizontalAlignment="Stretch"
                                 Background="Transparent"
                                 ItemsSource="{Binding AdditionalPathSaveInfos}"
@@ -398,7 +381,19 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Vertical">
-                                            <views:PathInfoDisplayContentView DataContext="{Binding}" />
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Name="spacerRight" Width="16" />
+                                                </Grid.ColumnDefinitions>
+                                                <views:PathInfoDisplayContentView
+                                                    Grid.Column="0"
+                                                    Margin="16,6,16,6"
+                                                    DataContext="{Binding}" />
+                                                <ui:Button Grid.Column="1" Content="Edit" />
+
+                                            </Grid>
                                             <Rectangle
                                                 Height="1"
                                                 HorizontalAlignment="Stretch"
@@ -409,49 +404,42 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
+                            <StackPanel Grid.Row="2" HorizontalAlignment="Stretch">
+                                <Button
+                                    Grid.Column="1"
+                                    Padding="5"
+                                    HorizontalAlignment="Stretch">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border
+                                                Name="mainBorder"
+                                                Background="#10000000"
+                                                CornerRadius="0,0,3.5,3.5"
+                                                Cursor="Hand">
+                                                <TextBlock
+                                                    Padding="{TemplateBinding Padding}"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center">
+                                                    <Run
+                                                        FontFamily="Segoe MDL2 Assets"
+                                                        FontSize="12"
+                                                        Text="&#xF8AA;" />
+                                                    <Run Text="Add New Destination Folder" />
+                                                </TextBlock>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="mainBorder" Property="Background" Value="Red" />
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter TargetName="mainBorder" Property="Background" Value="Blue" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </StackPanel>
                         </Grid>
-                        <!--<Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ui:TextBlock
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="2"
-                                FontTypography="Body"
-                                Text="Default Save Target" />
-                            <ui:TextBlock
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Margin="0,0,6,0"
-                                Text="Folder:" />
-                            <ui:TextBlock
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                Text="C:\\test\\test\\test\\testing" />
-                            <ui:TextBlock
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                Margin="0,0,6,0"
-                                VerticalAlignment="Center"
-                                Text="File Pattern:"
-                                TextAlignment="Center" />
-                            <ui:TextBlock
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                Text="testing_{helloworld:test}" />
-
-                        </Grid>-->
                     </ui:CardControl.Header>
                 </ui:CardControl>
 
