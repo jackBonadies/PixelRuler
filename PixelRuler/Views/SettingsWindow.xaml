@@ -360,108 +360,89 @@
                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                     Text="Additional Save Directories" />
 
-                <ui:CardControl Margin="0,0,0,12" Padding="0">
-                    <ui:CardControl.Header>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <StackPanel Orientation="Vertical">
-                                <ui:TextBlock
-                                    Grid.Row="0"
-                                    Margin="16,6,16,6"
-                                    FontTypography="Body"
-                                    Text="Additional Save Directories" />
-                                <Rectangle
-                                    Height="1"
-                                    HorizontalAlignment="Stretch"
-                                    Fill="{DynamicResource CardBorderBrush}"
-                                    SnapsToDevicePixels="True"
-                                    Visibility="{Binding IsLastItem, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverted}" />
-                            </StackPanel>
-                            <ItemsControl
-                                Grid.Row="1"
-                                HorizontalAlignment="Stretch"
-                                Background="Transparent"
-                                ItemsSource="{Binding AdditionalPathSaveInfos}"
-                                MouseUp="CardExpanderContent_MouseUp">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Vertical" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Vertical">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Name="spacerRight" Width="16" />
-                                                </Grid.ColumnDefinitions>
-                                                <views:PathInfoDisplayContentView
-                                                    Grid.Column="0"
-                                                    Margin="16,6,16,6"
-                                                    DataContext="{Binding}" />
-                                                <ui:Button
-                                                    Grid.Column="1"
-                                                    Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}"
-                                                    CommandParameter="{Binding}"
-                                                    Content="Edit" />
+                <ItemsControl
+                    Grid.Row="1"
+                    HorizontalAlignment="Stretch"
+                    Background="Transparent"
+                    ItemsSource="{Binding AdditionalPathSaveInfos}"
+                    MouseUp="CardExpanderContent_MouseUp">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ui:CardControl Margin="0,0,0,12" Padding="0">
+                                <ui:CardControl.Header>
+                                    <StackPanel Orientation="Vertical">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Name="spacerRight" Width="16" />
+                                            </Grid.ColumnDefinitions>
+                                            <views:PathInfoDisplayContentView
+                                                Grid.Column="0"
+                                                Margin="16,10,16,10"
+                                                DataContext="{Binding}" />
+                                            <ui:Button
+                                                Grid.Column="1"
+                                                Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}"
+                                                CommandParameter="{Binding}"
+                                                Content="Edit" />
 
-                                            </Grid>
-                                            <Rectangle
-                                                Height="1"
-                                                HorizontalAlignment="Stretch"
-                                                Fill="{DynamicResource CardBorderBrush}"
-                                                SnapsToDevicePixels="True"
-                                                Visibility="{Binding IsLastItem, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverted}" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            <StackPanel Grid.Row="2" HorizontalAlignment="Stretch">
-                                <Button
-                                    Grid.Column="1"
-                                    Padding="5"
-                                    HorizontalAlignment="Stretch">
-                                    <Button.Template>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border
-                                                Name="mainBorder"
-                                                Background="#10000000"
-                                                CornerRadius="0,0,3.5,3.5"
-                                                Cursor="Hand">
-                                                <TextBlock
-                                                    Padding="{TemplateBinding Padding}"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center">
-                                                    <Run
-                                                        FontFamily="Segoe MDL2 Assets"
-                                                        FontSize="12"
-                                                        Text="&#xF8AA;" />
-                                                    <Run Text="Add New Destination Folder" />
-                                                </TextBlock>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="mainBorder" Property="Background" Value="Red" />
-                                                </Trigger>
-                                                <Trigger Property="IsPressed" Value="True">
-                                                    <Setter TargetName="mainBorder" Property="Background" Value="Blue" />
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Button.Template>
-                                </Button>
-                            </StackPanel>
-                        </Grid>
+                                        </Grid>
+                                        <Rectangle
+                                            Height="1"
+                                            HorizontalAlignment="Stretch"
+                                            Fill="{DynamicResource CardBorderBrush}"
+                                            SnapsToDevicePixels="True"
+                                            Visibility="{Binding IsLastItem, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverted}" />
+                                    </StackPanel>
+                                </ui:CardControl.Header>
+                            </ui:CardControl>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <ui:CardControl Padding="0">
+                    <ui:CardControl.Header>
+                        <ui:Button
+                            Grid.Column="1"
+                            Padding="10"
+                            HorizontalAlignment="Stretch">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border
+                                        Name="mainBorder"
+                                        Background="#10000000"
+                                        CornerRadius="3.5,3.5,3.5,3.5"
+                                        Cursor="Hand">
+                                        <TextBlock
+                                            Padding="{TemplateBinding Padding}"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+                                            <Run
+                                                FontFamily="Segoe MDL2 Assets"
+                                                FontSize="12"
+                                                Text="&#xF8AA;" />
+                                            <Run Text="Add New Destination Folder" />
+                                        </TextBlock>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="mainBorder" Property="Background" Value="Red" />
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter TargetName="mainBorder" Property="Background" Value="Blue" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </ui:Button>
                     </ui:CardControl.Header>
                 </ui:CardControl>
-
-
 
                 <ui:TextBlock
                     Margin="0,24,0,8"

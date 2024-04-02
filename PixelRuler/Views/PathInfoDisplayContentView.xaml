@@ -15,51 +15,54 @@
     <Grid>
         <Grid.Resources>
             <Thickness x:Key="Spacing" Bottom="4" />
+            <Style x:Key="PropertyHeader" TargetType="{x:Type ui:TextBlock}">
+                <Setter Property="FontSize" Value="10" />
+                <Setter Property="Opacity" Value=".7" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+            </Style>
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="6" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
         <ui:TextBlock
             Grid.Row="0"
             Grid.Column="0"
-            FontTypography="Body"
-            Text="Display Name:"
+            Style="{StaticResource PropertyHeader}"
+            Text="Display Name"
             Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityInvertConverter}}" />
         <ui:TextBlock
-            Grid.Row="0"
-            Grid.Column="2"
+            Grid.Row="1"
+            Grid.Column="0"
             Margin="{StaticResource Spacing}"
+            d:Text="UI_Examples"
             FontTypography="Body"
             Text="{Binding DisplayName}"
             Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityInvertConverter}}" />
         <ui:TextBlock
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="0"
-            Margin="{StaticResource Spacing}"
+            Style="{StaticResource PropertyHeader}"
             Text="Folder" />
         <ui:TextBlock
-            Grid.Row="1"
-            Grid.Column="2"
-            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+            Grid.Row="3"
+            Grid.Column="0"
+            Margin="{StaticResource Spacing}"
+            d:Text="C:\\tmp\\test\\test"
             Text="{Binding BaseDirectory}" />
         <ui:TextBlock
-            Grid.Row="2"
+            Grid.Row="4"
             Grid.Column="0"
-            Margin="0,0,6,0"
+            Style="{StaticResource PropertyHeader}"
             Text="File Pattern" />
         <ui:TextBlock
-            Grid.Row="2"
-            Grid.Column="2"
-            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+            Grid.Row="5"
+            Grid.Column="0"
+            d:Text="tempfilepattern_{datetime}"
             Text="{Binding FilePattern}" />
 
     </Grid>
