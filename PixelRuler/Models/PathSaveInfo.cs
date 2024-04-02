@@ -27,6 +27,12 @@ namespace PixelRuler.Models
             Extension = extension;
             Enabled = enabled;
         }
+
+        public PathSaveInfo Clone()
+        {
+            return this.MemberwiseClone() as PathSaveInfo;
+        }
+
         public bool Enabled { get; set; }
 
         public bool IsDefault { get; set; }
@@ -38,16 +44,6 @@ namespace PixelRuler.Models
         public string? FilePattern { get; set; }
 
         public string? Extension { get; set; }
-
-        public class PathEvaluationException : Exception
-        {
-            public PathEvaluationException(string message) : base(message) 
-            { 
-            }
-
-            public int startIndex = -1;
-            public int length = -1;
-        }
 
         public string Evaluate(
             ScreenshotInfo info, 
@@ -109,4 +105,14 @@ namespace PixelRuler.Models
 
 
     }
+
+        public class PathEvaluationException : Exception
+        {
+            public PathEvaluationException(string message) : base(message) 
+            { 
+            }
+
+            public int startIndex = -1;
+            public int length = -1;
+        }
 }

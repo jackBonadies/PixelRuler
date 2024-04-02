@@ -39,10 +39,11 @@ namespace PixelRuler
             InitializeComponent();
         }
 
-        private async void Settings_EditSavePathCommandEvent(object? sender, PathSaveInfo e)
+        private async void Settings_EditSavePathCommandEvent(object? sender, PathSaveInfo pathSaveInfo)
         {
             //new PathInfoEdit
-            var pathInfoEditViewModel = new PathInfoEditViewModel(e);
+            var pending = pathSaveInfo.Clone();
+            var pathInfoEditViewModel = new PathInfoEditViewModel(pending);
 
             var diagContents = new PathInfoEditView();
             diagContents.DataContext = pathInfoEditViewModel;
@@ -58,11 +59,14 @@ namespace PixelRuler
 
             var result = await contentDialog.ShowAsync();
 
+
             switch (result)
             {
                 case ContentDialogResult.None: // cancel
                     break;
                 case ContentDialogResult.Primary:
+                    (this.DataContext as SettingsViewModel).UpdatePathInfo(pathSaveInfo, pending);
+
                     //pendingShortcutInfo.UpdateShortcut();
                     break;
             }
@@ -70,19 +74,17 @@ namespace PixelRuler
 
         private async void Settings_EditShortcutCommandEvent(object? sender, ShortcutInfo shortcutInfo)
         {
-            //new PathInfoEdit
-            var pathInfoEditViewModel = new PathInfoEditViewModel((this.DataContext as SettingsViewModel).DefaultPathSaveInfo);
-
-            var diagContents = new PathInfoEditView();
-            diagContents.DataContext = pathInfoEditViewModel;
+            var pendingShortcutInfo = new PendingShortcutInfo(shortcutInfo);
+            var diagContents = new ConfigureShortcutView(pendingShortcutInfo);
             var contentDialog = new ContentDialog(RootContentDialog)
             {
                 Title = "Set Shortcut",
                 Content = diagContents,
                 CloseButtonText = "Cancel",
                 PrimaryButtonText = "Save",
+                HorizontalAlignment = HorizontalAlignment.Stretch
             };
-            //contentDialog.SetBinding(ContentDialog.IsPrimaryButtonEnabledProperty, new Binding("IsValid") { Source = pendingShortcutInfo });
+            contentDialog.SetBinding(ContentDialog.IsPrimaryButtonEnabledProperty, new Binding("IsValid") { Source = pendingShortcutInfo });
             contentDialog.Loaded += (object o, RoutedEventArgs e) => diagContents.Focus();
 
             var result = await contentDialog.ShowAsync();
@@ -92,7 +94,7 @@ namespace PixelRuler
                 case ContentDialogResult.None: // cancel
                     break;
                 case ContentDialogResult.Primary:
-                    //pendingShortcutInfo.UpdateShortcut();
+                    pendingShortcutInfo.UpdateShortcut();
                     break;
             }
         }

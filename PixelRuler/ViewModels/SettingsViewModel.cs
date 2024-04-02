@@ -15,6 +15,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Windows.Networking.Vpn;
 using Wpf.Ui.Controls;
 
 namespace PixelRuler
@@ -131,14 +132,14 @@ namespace PixelRuler
 
             if (string.IsNullOrEmpty(additionalPathInfosString))
             {
-                AdditionalPathSaveInfos = new List<PathSaveInfo>()
+                AdditionalPathSaveInfos = new ObservableCollection<PathSaveInfo>()
                 {
-                    new PathSaveInfo("UI Examples", "%USERPROFILE%\\Pictures\\UI_Examples", "Screenshot {datetime:yyyy_MM_dd_HHmmss}", "png", false)
+                    new PathSaveInfo("UI Examples", "%USERPROFILE%\\Pictures\\UI_Examples", "Screenshot {datetime:yyyy_MM_dd_HHmmss}", "png", false),
                 };
             }
             else
             {
-                AdditionalPathSaveInfos = JsonSerializer.Deserialize(additionalPathInfosString, typeof(List<PathSaveInfo>)) as List<PathSaveInfo>;
+                AdditionalPathSaveInfos = new ObservableCollection<PathSaveInfo>(JsonSerializer.Deserialize(additionalPathInfosString, typeof(List<PathSaveInfo>)) as List<PathSaveInfo>);
             }
         }
 
@@ -146,6 +147,27 @@ namespace PixelRuler
         {
             RestoreDefaultPathInfo();
             RestoreAdditionalPathInfos();
+        }
+
+        private void SaveDefaultPathInfo()
+        {
+            var pathSaveInfoString = JsonSerializer.Serialize(DefaultPathSaveInfo, typeof(PathSaveInfo));
+            Properties.Settings.Default.DefaultPathInfo = pathSaveInfoString;
+            Properties.Settings.Default.Save();
+        }
+
+        private void SaveAdditionalPathInfos()
+        {
+            var additionalPathSaveInfosList = AdditionalPathSaveInfos.ToList();
+            var pathSaveInfoString = JsonSerializer.Serialize(additionalPathSaveInfosList, typeof(List<PathSaveInfo>));
+            Properties.Settings.Default.AdditionalPathInfos = pathSaveInfoString;
+            Properties.Settings.Default.Save();
+        }
+
+        private void SavePathInfos()
+        {
+            SaveDefaultPathInfo();
+            SaveAdditionalPathInfos();
         }
 
         public Key ZoomBoxQuickZoomKey { get; set; } = Key.Space;
@@ -335,9 +357,10 @@ namespace PixelRuler
             new ColorAnnotationsBundle("Black","#000000".ToWinFormColorFromRgbHex()),
         };
 
-        public PathSaveInfo DefaultPathSaveInfo { get; set; }
+        [ObservableProperty]
+        private PathSaveInfo defaultPathSaveInfo;
 
-        public List<PathSaveInfo> AdditionalPathSaveInfos { get; set; }
+        public ObservableCollection<PathSaveInfo> AdditionalPathSaveInfos { get; set; }
 
         public bool GlobalShortcutsEnabled
         {
@@ -571,6 +594,28 @@ namespace PixelRuler
             ThemeManager.UpdateForThemeChanged(this.DayNightMode);
             this.UpdateCloseToTrayChanged();
 
+        }
+
+        public void UpdatePathInfo(PathSaveInfo pathSaveInfo, PathSaveInfo pending)
+        {
+            if (this.DefaultPathSaveInfo == pathSaveInfo)
+            {
+                this.DefaultPathSaveInfo = pending;
+                OnPropertyChanged(nameof(DefaultPathSaveInfo));
+            }
+            else
+            {
+                for (int i = 0; i < AdditionalPathSaveInfos.Count; i++)
+                {
+                    if (this.AdditionalPathSaveInfos[i] == pathSaveInfo)
+                    {
+                        this.AdditionalPathSaveInfos[i] = pending;
+                        OnPropertyChanged(nameof(AdditionalPathSaveInfos));
+                    }
+                }
+            }
+            SavePathInfos();
+            // SAVE TODO
         }
 
         public ZoomViewModel ZoomViewModel { get; set; } = new ZoomViewModel();

@@ -1,8 +1,10 @@
-﻿using PixelRuler.Common;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using PixelRuler.Common;
 using PixelRuler.Models;
 using PixelRuler.Views;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -10,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace PixelRuler.ViewModels
 {
-    public class PathInfoEditViewModel : ViewModelBase
+    public partial class PathInfoEditViewModel : ObservableObject
     {
         public DateTime DummyDateTime = DateTime.Now;
 
@@ -22,26 +24,39 @@ namespace PixelRuler.ViewModels
                 var token = tokenObj as PathSaveInfoToken;
                 this.FilePattern += token.DefaultInsert;
             });
+            TokenEnterCommand = new RelayCommand((object? tokenObj) =>
+            {
+                var token = tokenObj as PathSaveInfoToken;
+                this.TokenHintText = token.HelperText;
+            });
+            TokenLeaveCommand = new RelayCommand((object? tokenObj) =>
+            {
+                this.TokenHintText = string.Empty;
+            });
+
             FileNameChanged += PathInfoEditViewModel_FilePatternChanged;
             SetEvaluatedFilePattern();
         }
 
-        private string evaluatedFilePattern;
-        public string EvaluatedFilePattern
+        private string evaluatedFilePatternDisplay;
+        public string EvaluatedFilePatternDisplay
         {
             get
             {
-                return evaluatedFilePattern;
+                return evaluatedFilePatternDisplay;
             }
             set
             {
-                if(evaluatedFilePattern != value)
+                if(evaluatedFilePatternDisplay != value)
                 {
-                    evaluatedFilePattern = value;
+                    evaluatedFilePatternDisplay = value;
                     OnPropertyChanged();
                 }
             }
         }
+
+        [ObservableProperty]
+        public bool filePatternHasError;
 
         public string Extension
         {
@@ -67,7 +82,16 @@ namespace PixelRuler.ViewModels
 
         private void SetEvaluatedFilePattern()
         {
-            EvaluatedFilePattern = this.PathSaveInfo.Evaluate(new ScreenshotInfo() { DateTime = DummyDateTime, Height = 1080, Width = 1920, ProcessName = "PixelRuler", WindowTitle = "Settings" }, false, true);
+            try
+            {
+                EvaluatedFilePatternDisplay = this.PathSaveInfo.Evaluate(new ScreenshotInfo() { DateTime = DummyDateTime, Height = 1080, Width = 1920, ProcessName = "PixelRuler", WindowTitle = "Settings" }, false, true);
+                FilePatternHasError = false;
+            }
+            catch(Exception e)
+            {
+                EvaluatedFilePatternDisplay = e.Message;
+                FilePatternHasError = true;
+            }
         }
 
         public string? DisplayName
@@ -120,6 +144,13 @@ namespace PixelRuler.ViewModels
                 }
             }
         }
+
+        public RelayCommand TokenEnterCommand { get; set; } 
+
+        public RelayCommand TokenLeaveCommand { get; set; }
+
+        [ObservableProperty]
+        public string tokenHintText;
 
         public PathSaveInfo PathSaveInfo { get; set; } 
 

@@ -41,6 +41,8 @@ namespace PixelRuler.Models
             }
         }
     }
+    // TODO: on hover over token show it inserted in grey at that location (note: requires RichTextBox)
+    // TODO: UI columns first..
 
     public static class PathSaveInfoUtil
     {
@@ -52,8 +54,8 @@ namespace PixelRuler.Models
                 new PathSaveInfoToken(PathTokenType.DateTime, "datetime", "datetime_format", FormatSpecifierType.DateTime, "Date and Time ex. {datetime:yyyy_MM_dd} -> 2024_03_30", "yyyy_MM_dd_HHmmss"),
                 new PathSaveInfoToken(PathTokenType.Width, "width", "min_digits", FormatSpecifierType.Integer, "Screenshot Width ex. {width:4} -> 0800", "4"),
                 new PathSaveInfoToken(PathTokenType.Height, "height", "min_digits", FormatSpecifierType.Integer, "Screenshot Height ex. {height:4} -> 0600", "4"),
-                new PathSaveInfoToken(PathTokenType.UnixTimeSec, "unixtime_s", "", FormatSpecifierType.None, "Epoch Unix Timestamp in seconds ex. {unixtime_s} -> 1711832151", ""),
-                new PathSaveInfoToken(PathTokenType.UnixTimeMs, "unixtime_ms", "", FormatSpecifierType.None, "Epoch Unix Timestamp in seconds ex. {unixtime_s} -> 1711832151543", ""),
+                new PathSaveInfoToken(PathTokenType.UnixTimeSec, "unixtime_s", "", FormatSpecifierType.None, "Epoch Unix Timestamp in Seconds ex. {unixtime_s} -> 1711832151", ""),
+                new PathSaveInfoToken(PathTokenType.UnixTimeMs, "unixtime_ms", "", FormatSpecifierType.None, "Epoch Unix Timestamp in Milliseconds ex. {unixtime_s} -> 1711832151543", ""),
                 new PathSaveInfoToken(PathTokenType.RandomNum, "random_num", "length", FormatSpecifierType.Integer, "Random Number ex. {random_num:6} -> 849288", "8"),
                 new PathSaveInfoToken(PathTokenType.RandomGuid, "random_guid", "", FormatSpecifierType.None, "Random GUID ex. {random_guid} -> b1b9261b-0ba5-4315-87f6-a00fd89565e7", ""),
                 new PathSaveInfoToken(PathTokenType.WindowTitle, "window_title", "", FormatSpecifierType.None, "Window Title ex. {window_title} -> GitHub - Firefox", ""),
@@ -68,7 +70,14 @@ namespace PixelRuler.Models
             switch (pathToken)
             {
                 case PathTokenType.DateTime:
-                    return info.DateTime.ToString(formatString);
+                    try
+                    {
+                        return info.DateTime.ToString(formatString);
+                    }
+                    catch (FormatException)
+                    {
+                        throw new PathEvaluationException("Invalid Format String for {datetime}");
+                    }
                 case PathTokenType.Width:
                     return info.Width.ToString($"D{formatString}");
                 case PathTokenType.Height:
@@ -86,8 +95,15 @@ namespace PixelRuler.Models
                         numDigits = result;
                     }
                     var max = Math.Pow(10, numDigits) - 1;
-                    long randomNum = new Random().NextInt64((long)max);
-                    return randomNum.ToString($"D{numDigits}");
+                    try
+                    {
+                        long randomNum = new Random().NextInt64((long)max);
+                        return randomNum.ToString($"D{numDigits}");
+                    }
+                    catch
+                    {
+                        throw new PathEvaluationException("Invalid Format String for {random_num}: Out of Range");
+                    }
                 default:
                     throw new NotImplementedException();
             }

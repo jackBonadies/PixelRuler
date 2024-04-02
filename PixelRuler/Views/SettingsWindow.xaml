@@ -9,12 +9,13 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:views="clr-namespace:PixelRuler.Views"
     Title="Settings"
+    Width="700"
     Padding="0,0,0,0"
     d:DataContext="{d:DesignInstance Type=local:SettingsViewModel,
                                      IsDesignTimeCreatable=True}"
     Background="{DynamicResource ApplicationBackgroundBrush}"
     ResizeMode="NoResize"
-    SizeToContent="WidthAndHeight"
+    SizeToContent="Height"
     mc:Ignorable="d">
     <local:ThemeWindow.Resources>
 
@@ -344,7 +345,20 @@
                 </ui:CardControl>
 
 
+
+                <ui:TextBlock
+                    Margin="0,0,0,8"
+                    FontTypography="BodyStrong"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="Default Save Directory" />
+
                 <views:PathInfoDisplayView DataContext="{Binding DefaultPathSaveInfo}" />
+
+                <ui:TextBlock
+                    Margin="0,0,0,8"
+                    FontTypography="BodyStrong"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="Additional Save Directories" />
 
                 <ui:CardControl Margin="0,0,0,12" Padding="0">
                     <ui:CardControl.Header>
@@ -391,7 +405,11 @@
                                                     Grid.Column="0"
                                                     Margin="16,6,16,6"
                                                     DataContext="{Binding}" />
-                                                <ui:Button Grid.Column="1" Content="Edit" />
+                                                <ui:Button
+                                                    Grid.Column="1"
+                                                    Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="Edit" />
 
                                             </Grid>
                                             <Rectangle
