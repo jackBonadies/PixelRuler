@@ -284,8 +284,17 @@ namespace PixelRuler
             
             if (wsw.AfterScreenshotValue is AfterScreenshotAction.Save)
             {
-                var filename = this.ViewModel.Settings.DefaultPathSaveInfo.Evaluate(this.ViewModel.ScreenshotInfo.Value, true, true);
-                this.ViewModel.SaveImage(filename);
+                string fname = string.Empty;
+                if (wsw.AfterScreenshotAdditionalArg is PathSaveInfo pathSaveInfo)
+                {
+                    fname = pathSaveInfo.Evaluate(this.ViewModel.ScreenshotInfo.Value, true, true);
+                }
+                else
+                {
+                    throw new Exception("Unexpected Arg for Save");
+                }
+
+                this.ViewModel.SaveImage(fname);
                 return false;
             }
 

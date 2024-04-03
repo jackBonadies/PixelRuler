@@ -393,12 +393,6 @@
                                                 Content="Edit" />
 
                                         </Grid>
-                                        <Rectangle
-                                            Height="1"
-                                            HorizontalAlignment="Stretch"
-                                            Fill="{DynamicResource CardBorderBrush}"
-                                            SnapsToDevicePixels="True"
-                                            Visibility="{Binding IsLastItem, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverted}" />
                                     </StackPanel>
                                 </ui:CardControl.Header>
                             </ui:CardControl>
@@ -406,43 +400,50 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <ui:CardControl Padding="0">
-                    <ui:CardControl.Header>
-                        <ui:Button
-                            Grid.Column="1"
-                            Padding="10"
-                            HorizontalAlignment="Stretch">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border
-                                        Name="mainBorder"
-                                        Background="#10000000"
-                                        CornerRadius="3.5,3.5,3.5,3.5"
-                                        Cursor="Hand">
-                                        <TextBlock
-                                            Padding="{TemplateBinding Padding}"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center">
-                                            <Run
-                                                FontFamily="Segoe MDL2 Assets"
-                                                FontSize="12"
-                                                Text="&#xF8AA;" />
-                                            <Run Text="Add New Destination Folder" />
-                                        </TextBlock>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="mainBorder" Property="Background" Value="Red" />
-                                        </Trigger>
-                                        <Trigger Property="IsPressed" Value="True">
-                                            <Setter TargetName="mainBorder" Property="Background" Value="Blue" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </ui:Button>
-                    </ui:CardControl.Header>
-                </ui:CardControl>
+                <!--<ui:CardControl Padding="0" BorderThickness="0">
+                    <ui:CardControl.Header>-->
+                <ui:Button
+                    Grid.Column="1"
+                    Padding="0"
+                    HorizontalAlignment="Stretch">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                Name="mainBorder"
+                                Background="#10000000"
+                                CornerRadius="3.5,3.5,3.5,3.5"
+                                Cursor="Hand">
+                                <ui:Button
+                                    Padding="6"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    Appearance="Primary">
+                                    <TextBlock
+                                        Margin="6"
+                                        Padding="{TemplateBinding Padding}"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                        <Run
+                                            FontFamily="Segoe MDL2 Assets"
+                                            FontSize="12"
+                                            Text="&#xF8AA;" />
+                                        <Run Text="Add New Destination Folder" />
+                                    </TextBlock>
+                                </ui:Button>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="mainBorder" Property="Background" Value="Red" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="mainBorder" Property="Background" Value="Blue" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </ui:Button>
+                <!--</ui:CardControl.Header>
+                </ui:CardControl>-->
 
                 <ui:TextBlock
                     Margin="0,24,0,8"

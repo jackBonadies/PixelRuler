@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Win32;
+using Ookii.Dialogs.Wpf;
 using PixelRuler.Common;
 using PixelRuler.Models;
 using PixelRuler.Views;
@@ -33,6 +35,17 @@ namespace PixelRuler.ViewModels
             {
                 this.TokenHintText = string.Empty;
             });
+            SelectDirectoryCommand = new RelayCommand((object? obj) =>
+            {
+                var baseDir = Environment.ExpandEnvironmentVariables(this.BaseDirectory);
+                // Ookii = Wrapper around COM Native File Open Dialog
+                var folderBrowserDialog = new VistaFolderBrowserDialog();
+                var res = folderBrowserDialog.ShowDialog();
+                if (res is true)
+                {
+                    this.BaseDirectory = folderBrowserDialog.SelectedPath;
+                }
+            });
 
             FileNameChanged += PathInfoEditViewModel_FilePatternChanged;
             SetEvaluatedFilePattern();
@@ -54,6 +67,8 @@ namespace PixelRuler.ViewModels
                 }
             }
         }
+
+        public RelayCommand SelectDirectoryCommand { get; set; }
 
         [ObservableProperty]
         public bool filePatternHasError;

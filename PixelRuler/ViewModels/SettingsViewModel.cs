@@ -615,7 +615,6 @@ namespace PixelRuler
                 }
             }
             SavePathInfos();
-            // SAVE TODO
         }
 
         public ZoomViewModel ZoomViewModel { get; set; } = new ZoomViewModel();

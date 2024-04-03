@@ -49,7 +49,7 @@ namespace PixelRuler
             diagContents.DataContext = pathInfoEditViewModel;
             var contentDialog = new ContentDialog(RootContentDialog)
             {
-                Title = "Set Shortcut",
+                Title = "Edit Save Path",
                 Content = diagContents,
                 CloseButtonText = "Cancel",
                 PrimaryButtonText = "Save",

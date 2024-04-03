@@ -54,7 +54,7 @@ namespace PixelRuler.Views
                 var menuItem3 = new MenuItemCustom() { Header = "Save As", InputGestureText="Ctrl+S" };
                 menuItem3.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.SaveAs, null); };
                 var menuItem4 = new MenuItemCustom() { Header = "Save", InputGestureText="S" };
-                menuItem4.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, null); };
+                menuItem4.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, settings.DefaultPathSaveInfo); };
 
                 contextMenu.Items.Add(menuItem1);
                 contextMenu.Items.Add(menuItem2);
@@ -66,7 +66,7 @@ namespace PixelRuler.Views
                 {
                     i++;
                     var menuItem = new MenuItemCustom() { Header = saveDest.DisplayName, InputGestureText=$"{i}" };
-                    menuItem.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, i); };
+                    menuItem.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, saveDest); };
                     contextMenu.Items.Add(menuItem);
                 }
 

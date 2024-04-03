@@ -14,6 +14,7 @@ using System.Windows.Input;
 using PixelRuler.CanvasElements;
 using System.Drawing.Imaging;
 using PixelRuler.Models;
+using System.IO;
 
 namespace PixelRuler
 {
@@ -227,6 +228,7 @@ namespace PixelRuler
 
         public void SaveImage(string fileName)
         {
+            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fileName));
             this.Image.Save(fileName, getImageFormatFromFilename(fileName));
         }
 
