@@ -45,17 +45,23 @@ namespace PixelRuler
             var pending = pathSaveInfo.Clone();
             var pathInfoEditViewModel = new PathInfoEditViewModel(pending);
 
+
             var diagContents = new PathInfoEditView();
             diagContents.DataContext = pathInfoEditViewModel;
+            diagContents.Background = new SolidColorBrush(Colors.White);
             var contentDialog = new ContentDialog(RootContentDialog)
             {
+                DialogMargin = new Thickness(60,0,60,0),
+                DialogWidth = 2000,
                 Title = "Edit Save Path",
                 Content = diagContents,
                 CloseButtonText = "Cancel",
                 PrimaryButtonText = "Save",
             };
             //contentDialog.SetBinding(ContentDialog.IsPrimaryButtonEnabledProperty, new Binding("IsValid") { Source = pendingShortcutInfo });
+            contentDialog.UseLayoutRounding = true;
             contentDialog.Loaded += (object o, RoutedEventArgs e) => diagContents.Focus();
+            contentDialog.Loaded += ContentDialogPathInfo_Loaded;
 
             var result = await contentDialog.ShowAsync();
 
@@ -70,6 +76,13 @@ namespace PixelRuler
                     //pendingShortcutInfo.UpdateShortcut();
                     break;
             }
+        }
+
+        private void ContentDialogPathInfo_Loaded(object sender, RoutedEventArgs e)
+        {
+            var border = FindChild<Border>(sender as DependencyObject, null);
+            border.MaxWidth = double.PositiveInfinity;
+            //border.Effect = null;
         }
 
         private async void Settings_EditShortcutCommandEvent(object? sender, ShortcutInfo shortcutInfo)
@@ -119,8 +132,9 @@ namespace PixelRuler
             var chev = FindChild<Grid>(res, "ChevronGrid");
             chev.Visibility = Visibility.Collapsed;
         }
+
         public static T FindChild<T>(DependencyObject parent, string childName)
-   where T : DependencyObject
+           where T : DependencyObject
         {
             if (parent == null) return null;
 
@@ -130,32 +144,30 @@ namespace PixelRuler
             for (int i = 0; i < childrenCount; i++)
             {
                 var child = VisualTreeHelper.GetChild(parent, i);
-                // If the child is not of the request child type child
-                T childType = child as T;
+                T? childType = child as T;
 
                 if (!string.IsNullOrEmpty(childName))
                 {
                     var frameworkElement = child as FrameworkElement;
-                    // If the child's name is set for search
                     if (frameworkElement != null && frameworkElement.Name == childName)
                     {
-                        // if the child's name is of the requested name
                         foundChild = (T)child;
                         break;
                     }
                 }
+                else if(childType != null)
+                {
+                    foundChild = (T)child;
+                }
 
                 if (foundChild == null)
                 {
-                    // recursively drill down the tree
                     foundChild = FindChild<T>(child, childName);
 
-                    // If the child is found, break so we do not overwrite the found child. 
                     if (foundChild != null) break;
                 }
                 else
                 {
-                    // child element found.
                     foundChild = (T)child;
                     break;
                 }
