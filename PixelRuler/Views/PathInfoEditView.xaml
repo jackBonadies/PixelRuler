@@ -21,7 +21,8 @@
             <Border
                 Name="border"
                 Padding="4,3,4,3"
-                Background="#0C000000"
+                Background="#08000000"
+                BorderBrush="#5d556C94"
                 BorderThickness="1"
                 CornerRadius="4"
                 Cursor="Hand">
@@ -29,11 +30,11 @@
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="border" Property="Background" Value="#2C000000" />
+                    <Setter TargetName="border" Property="Background" Value="#1C000000" />
                     <Setter TargetName="border" Property="BorderBrush" Value="#559CE4" />
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter TargetName="border" Property="Background" Value="#4C000000" />
+                    <Setter TargetName="border" Property="Background" Value="#2C000000" />
                     <Setter TargetName="border" Property="BorderBrush" Value="#559CE4" />
                 </Trigger>
             </ControlTemplate.Triggers>
@@ -42,11 +43,19 @@
             <Setter Property="FontSize" Value="12" />
             <Setter Property="Margin" Value="0,0,0,-4" />
             <Setter Property="FontWeight" Value="SemiBold" />
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value=".5" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
-        <Label Style="{StaticResource SmallHeader}">Display Name</Label>
-        <TextBox d:Text="My Folder (1)" Text="{Binding DisplayName}" />
+        <Label IsEnabled="{Binding PathSaveInfo.IsDefault, Converter={StaticResource InvertBoolConverter}}" Style="{StaticResource SmallHeader}">Display Name</Label>
+        <TextBox
+            d:Text="My Folder (1)"
+            IsEnabled="{Binding PathSaveInfo.IsDefault, Converter={StaticResource InvertBoolConverter}}"
+            Text="{Binding DisplayName}" />
         <Label Style="{StaticResource SmallHeader}">Folder</Label>
         <Grid>
             <Grid.ColumnDefinitions>

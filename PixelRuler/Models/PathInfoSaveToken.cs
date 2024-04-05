@@ -104,6 +104,10 @@ namespace PixelRuler.Models
                     {
                         throw new PathEvaluationException("Invalid Format String for {random_num}: Out of Range");
                     }
+                case PathTokenType.UnixTimeMs:
+                    return (Math.Round((info.DateTime - DateTime.UnixEpoch).TotalMilliseconds)).ToString();
+                case PathTokenType.UnixTimeSec:
+                    return (Math.Round((info.DateTime - DateTime.UnixEpoch).TotalSeconds)).ToString();
                 default:
                     throw new NotImplementedException();
             }

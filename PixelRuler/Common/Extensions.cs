@@ -33,6 +33,15 @@ namespace PixelRuler
             shape.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
         }
 
+        public static string SanitizeUnderscores(this string uiString)
+        {
+            if(uiString.Contains('_'))
+            {
+                return uiString.Replace("_", "__");
+            }
+            return uiString;
+        }
+
     }
 
 

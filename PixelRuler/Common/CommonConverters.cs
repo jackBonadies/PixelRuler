@@ -131,6 +131,26 @@ namespace PixelRuler
         }
     }
 
+    public class InvertBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if(value is bool bValue)
+            {
+                return !bValue;
+            }
+            throw new Exception("InvertBoolConverter only takes booleans");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if(value is bool bValue)
+            {
+                return !bValue;
+            }
+            throw new Exception("InvertBoolConverter only takes booleans");
+        }
+    }
     public class DebugConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -140,7 +160,7 @@ namespace PixelRuler
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException("One way");
+            return value;
         }
     }
 

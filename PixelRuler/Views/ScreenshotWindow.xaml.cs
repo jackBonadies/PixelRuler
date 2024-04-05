@@ -90,12 +90,13 @@ namespace PixelRuler
                 overlayCanvas.Visibility = Visibility.Visible;
             }
 
-            if (ViewModel.Mode == OverlayMode.Window)
+            if (ViewModel.Mode.IsSelectWindow())
             {
                 blurBackground.Visibility = Visibility.Visible;
                 blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x80, 0, 0, 0));
             }
-            else if (ViewModel.Mode == OverlayMode.RegionRect)
+
+            if (ViewModel.Mode.IsSelectRegion())
             {
                 blurBackground.Visibility = Visibility.Visible;
                 blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x30, 0, 0, 0));
@@ -108,7 +109,8 @@ namespace PixelRuler
                 vertIndicator.Y1 = fullBounds.Top;
                 vertIndicator.Y2 = fullBounds.Bottom;
             }
-            else if (ViewModel.Mode == OverlayMode.QuickMeasure)
+
+            if (ViewModel.Mode == OverlayMode.QuickMeasure)
             {
                 blurBackground.Visibility = Visibility.Collapsed;
             }
@@ -215,6 +217,7 @@ namespace PixelRuler
             {
                 return;
             }
+
             dragging = true;
             startPoint = UiUtils.RoundPoint(e.GetPosition(this.mainCanvas));
             innerRectGeometry.Rect = new Rect(startPoint, startPoint);
@@ -234,9 +237,7 @@ namespace PixelRuler
                 return;
             }
 
-            //mainContent.Visibility = Visibility.Collapsed;
-
-            if (ViewModel.Mode == OverlayMode.Window)
+            if (ViewModel.Mode == OverlayMode.Window || ViewModel.Mode == OverlayMode.WindowAndRegionRect && !regionOnlyMode)
             {
                 (SelectedRectCanvas, ProcessName, WindowTitle) = SelectWindowUnderCursor();
             }
@@ -287,15 +288,17 @@ namespace PixelRuler
                 return;
             }
 
-            if (ViewModel.Mode == OverlayMode.Window)
+            if (ViewModel.Mode.IsSelectWindow())
             {
                 (SelectedRectCanvas, ProcessName, WindowTitle) = SelectWindowUnderCursor();
             }
-            else
+
+            if(ViewModel.Mode.IsSelectRegion())
             {
                 SetCursorIndicator(e.GetPosition(this.mainCanvas));
                 if (dragging)
                 {
+                    EnterRegionOnlyMode();
                     innerRectGeometry.Rect = new Rect(startPoint, e.GetPosition(this.mainCanvas));
                     var minX = Math.Min(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
                     var maxX = Math.Max(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
@@ -307,6 +310,17 @@ namespace PixelRuler
                     rectSelectionOutline.Height = maxY - minY + 1;
                 }
             }
+        }
+
+        private bool regionOnlyMode = false;
+        private void EnterRegionOnlyMode()
+        {
+            if(regionOnlyMode)
+            {
+                return;
+            }
+            regionOnlyMode = true;
+            rect.Visibility = Visibility.Collapsed;
         }
 
         private void SetCursorIndicator(Point point)
