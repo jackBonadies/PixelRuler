@@ -39,11 +39,14 @@ namespace PixelRuler
             InitializeComponent();
         }
 
-        private async void Settings_EditSavePathCommandEvent(object? sender, PathSaveInfo pathSaveInfo)
+        private async void Settings_EditSavePathCommandEvent(
+            object? sender, 
+            (PathSaveInfo pathSaveInfo, bool newPath) pathInfoArgs)
         {
             //new PathInfoEdit
+            var pathSaveInfo = pathInfoArgs.pathSaveInfo;
             var pending = pathSaveInfo.Clone();
-            var pathInfoEditViewModel = new PathInfoEditViewModel(pending);
+            var pathInfoEditViewModel = new PathInfoEditViewModel(pending, pathInfoArgs.newPath);
 
 
             var diagContents = new PathInfoEditView();
@@ -53,10 +56,10 @@ namespace PixelRuler
             {
                 DialogMargin = new Thickness(60,0,60,0),
                 DialogWidth = 2000,
-                Title = "Edit Save Path",
+                Title = pathInfoArgs.newPath ? "Add Save Path" : "Edit Save Path",
                 Content = diagContents,
                 CloseButtonText = "Cancel",
-                PrimaryButtonText = "Save",
+                PrimaryButtonText = pathInfoArgs.newPath ? "Save" : "Update",
             };
             //contentDialog.SetBinding(ContentDialog.IsPrimaryButtonEnabledProperty, new Binding("IsValid") { Source = pendingShortcutInfo });
             contentDialog.UseLayoutRounding = true;
@@ -65,13 +68,19 @@ namespace PixelRuler
 
             var result = await contentDialog.ShowAsync();
 
-
             switch (result)
             {
                 case ContentDialogResult.None: // cancel
                     break;
                 case ContentDialogResult.Primary:
-                    (this.DataContext as SettingsViewModel).UpdatePathInfo(pathSaveInfo, pending);
+                    if(pathInfoArgs.newPath)
+                    {
+                        (this.DataContext as SettingsViewModel).AddPathInfo(pending);
+                    }
+                    else
+                    {
+                        (this.DataContext as SettingsViewModel).UpdatePathInfo(pathSaveInfo, pending);
+                    }
 
                     //pendingShortcutInfo.UpdateShortcut();
                     break;

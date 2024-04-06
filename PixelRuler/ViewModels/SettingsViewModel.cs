@@ -98,12 +98,19 @@ namespace PixelRuler
             {
                 if(o is PathSaveInfo pathSaveInfo)
                 {
-                    EditSavePathCommandEvent?.Invoke(this, pathSaveInfo);
+                    EditSavePathCommandEvent?.Invoke(this, (pathSaveInfo, false));
                 }
                 else
                 {
                     throw new Exception("Unexpected Type");
                 }
+            });
+
+            addSavePathInfoCommand = new RelayCommand((object? o) =>
+            {
+                var num = this.AdditionalPathSaveInfos.Count + 1;
+                var customPathSaveInfo = new PathSaveInfo($"Custom Path {num}", App.DefaultSavePath, "MyScreenshot {datetime:yyyy_MM_dd_HHmmss}", "png");
+                EditSavePathCommandEvent?.Invoke(this, (customPathSaveInfo, true));
             });
 
             RestorePathInfos();
@@ -115,8 +122,7 @@ namespace PixelRuler
 
             if(string.IsNullOrEmpty(defaultPathInfoString))
             {
-                DefaultPathSaveInfo = new PathSaveInfo("Default", "%USERPROFILE%\\Pictures\\Screenshots\\PixelRuler", "Screenshot {datetime:yyyy_MM_dd_HHmmss}", "png");
-
+                DefaultPathSaveInfo = new PathSaveInfo("Default", App.DefaultSavePath, "Screenshot {datetime:yyyy_MM_dd_HHmmss}", "png");
             }
             else
             {
@@ -177,13 +183,16 @@ namespace PixelRuler
 
         public event EventHandler<ShortcutInfo> EditShortcutCommandEvent;
 
-        public event EventHandler<PathSaveInfo> EditSavePathCommandEvent;
+        public event EventHandler<(PathSaveInfo, bool)> EditSavePathCommandEvent;
 
         [ObservableProperty]
         private RelayCommand editShortcutCommand;
 
         [ObservableProperty]
         private RelayCommand editSavePathInfoCommand;
+
+        [ObservableProperty]
+        private RelayCommand addSavePathInfoCommand;
 
         [ObservableProperty]
         private RelayCommand clearShortcutCommand;
@@ -594,6 +603,13 @@ namespace PixelRuler
             ThemeManager.UpdateForThemeChanged(this.DayNightMode);
             this.UpdateCloseToTrayChanged();
 
+        }
+
+        public void AddPathInfo(PathSaveInfo pathSaveInfo)
+        {
+            this.AdditionalPathSaveInfos.Add(pathSaveInfo);
+            OnPropertyChanged(nameof(AdditionalPathSaveInfos));
+            SavePathInfos();
         }
 
         public void UpdatePathInfo(PathSaveInfo pathSaveInfo, PathSaveInfo pending)

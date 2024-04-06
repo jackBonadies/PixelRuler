@@ -18,9 +18,10 @@ namespace PixelRuler.ViewModels
     {
         public DateTime DummyDateTime = DateTime.Now;
 
-        public PathInfoEditViewModel(PathSaveInfo pathSaveInfo)
+        public PathInfoEditViewModel(PathSaveInfo pathSaveInfo, bool newPath)
         {
             PathSaveInfo = pathSaveInfo;
+            NewPath = newPath;
             TokenInsertCommand = new RelayCommand((object? tokenObj) =>
             {
                 var token = tokenObj as PathSaveInfoToken;
@@ -168,6 +169,7 @@ namespace PixelRuler.ViewModels
         public string tokenHintText;
 
         public PathSaveInfo PathSaveInfo { get; set; } 
+        public bool NewPath { get; set; } 
 
         public List<PathSaveInfoToken> AllTokens
         {

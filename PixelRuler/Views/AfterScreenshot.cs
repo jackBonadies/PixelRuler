@@ -65,7 +65,7 @@ namespace PixelRuler.Views
                 foreach(var saveDest in settings.AdditionalPathSaveInfos)
                 {
                     i++;
-                    var menuItem = new MenuItemCustom() { Header = saveDest.DisplayName?.SanitizeUnderscores(), InputGestureText=$"{i}" };
+                    var menuItem = new MenuItemCustom() { Header = saveDest.DisplayName?.SanitizeUnderscores(), InputGestureText = $"{i}" };
                     menuItem.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, saveDest); };
                     contextMenu.Items.Add(menuItem);
                 }

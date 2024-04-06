@@ -277,6 +277,8 @@ namespace PixelRuler.Views
             {
                 Canvas.SetTop(this, overlayCanvasLocation.Y + 28);// - outerBorder.ActualHeight / 2 + 156);
             }
+                Canvas.SetLeft(this, overlayCanvasLocation.X + 14);
+                Canvas.SetTop(this, overlayCanvasLocation.Y + 14);// - outerBorder.ActualHeight / 2 + 156);
             //var transform = owningCanvas.TransformToAncestor(owningCanvas);
             //var pt = owningCanvas.innerCanvas.RenderTransform.Transform(overlayCanvasLocation);
             //var offsetX = useCanvas ? 0 : owningCanvas.CanvasTranslateTransform.X / owningCanvas.CanvasScaleTransform.ScaleX;

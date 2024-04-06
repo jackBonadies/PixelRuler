@@ -19,6 +19,20 @@ using System.Windows.Shapes;
 
 namespace PixelRuler
 {
+    public static class OverlayModeExt
+    {
+        public static bool IsSelectRegion(this OverlayMode mode)
+        {
+            return mode == OverlayMode.RegionRect || mode == OverlayMode.WindowAndRegionRect;
+        }
+
+        public static bool IsSelectWindow(this OverlayMode mode)
+        {
+            return mode == OverlayMode.Window || mode == OverlayMode.WindowAndRegionRect;
+        }
+    }
+
+
     public enum OverlayMode
     {
         None = -1,
@@ -26,6 +40,7 @@ namespace PixelRuler
         RegionRect = 1,
         QuickMeasure = 2,
         QuickColor = 3,
+        WindowAndRegionRect = 4,
     }
 
     // TODO own class
@@ -224,7 +239,7 @@ namespace PixelRuler
                         handled = true;
                         break;
                     case App.REGION_WINDOWED_HOTKEY_ID:
-                        App.EnterScreenshotTool(this.RootViewModel.Settings, OverlayMode.RegionRect, true);
+                        App.EnterScreenshotTool(this.RootViewModel.Settings, OverlayMode.WindowAndRegionRect, true);
                         handled = true;
                         break;
                     case App.QUICK_MEASURE_HOTKEY_ID:

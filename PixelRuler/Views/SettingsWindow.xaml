@@ -23,6 +23,30 @@
             <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
         </Style>
 
+
+        <ControlTemplate x:Key="SubtleButtonStyle" TargetType="Button">
+            <Border
+                Name="subtleButtonBorder"
+                Background="White"
+                BorderThickness="0"
+                CornerRadius="2">
+                <ContentPresenter
+                    Width="30"
+                    Height="30"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Content="{TemplateBinding Content}" />
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="subtleButtonBorder" Property="Background" Value="#10000000" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="subtleButtonBorder" Property="Background" Value="#20000000" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
         <!--  Nonclickable card control - the controltemplate was needed to remove Pressed and MouseOver triggers  -->
         <Style TargetType="ui:CardControl">
 
@@ -386,12 +410,107 @@
                                                 Grid.Column="0"
                                                 Margin="16,10,16,10"
                                                 DataContext="{Binding}" />
-                                            <ui:Button
-                                                Grid.Column="1"
-                                                Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}"
-                                                CommandParameter="{Binding}"
-                                                Content="Edit" />
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal">
 
+                                                <!--<ui:Button
+                                                    HorizontalContentAlignment="Center"
+                                                    VerticalContentAlignment="Center"
+                                                    Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}"
+                                                    CommandParameter="{Binding}"
+                                                    Template="{StaticResource SubtleButtonStyle}">
+                                                    <Path
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Data="{StaticResource HiddenEyeIcon}"
+                                                        Fill="#303030">
+                                                        <Path.LayoutTransform>
+                                                            <ScaleTransform ScaleX="1" ScaleY="1" />
+                                                        </Path.LayoutTransform>
+                                                    </Path>
+                                                </ui:Button>-->
+                                                <!--<ui:Button>
+                                                    <ui:Button.Content>
+                                                        <Path
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"
+                                                            Data="{StaticResource HiddenEyeIcon}"
+                                                            Fill="#303030">
+                                                            <Path.LayoutTransform>
+                                                                <ScaleTransform ScaleX="1" ScaleY="1" />
+                                                            </Path.LayoutTransform>
+                                                        </Path>
+                                                    </ui:Button.Content>
+                                                </ui:Button>-->
+                                                <ui:Button Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}" CommandParameter="{Binding}">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock VerticalAlignment="Center">
+                                                            <TextBlock.RenderTransformOrigin>
+                                                                <Point X=".5" Y=".5" />
+                                                            </TextBlock.RenderTransformOrigin>
+                                                            <TextBlock.RenderTransform>
+                                                                <ScaleTransform ScaleX=".8" ScaleY=".8" />
+                                                            </TextBlock.RenderTransform>
+                                                            <Run
+                                                                FontFamily="Segoe MDL2 Assets"
+                                                                FontSize="20"
+                                                                Text="&#xE70F;" />
+                                                        </TextBlock>
+                                                        <TextBlock Margin="4,0,0,0" VerticalAlignment="Center">
+                                                            <Run Text="Edit" />
+                                                        </TextBlock>
+                                                    </StackPanel>
+
+                                                </ui:Button>
+                                                <!--<ui:Button>
+                                                    <ui:Button.Content>
+                                                        <TextBlock
+                                                            FontFamily="Segoe MDL2 Assets"
+                                                            FontSize="16"
+                                                            Style="{StaticResource GreyOutIfDisabled}"
+                                                            Text="&#xE712;">
+                                                            <TextBlock.LayoutTransform>
+                                                                <RotateTransform Angle="90" />
+                                                            </TextBlock.LayoutTransform>
+                                                        </TextBlock>
+                                                    </ui:Button.Content>
+                                                </ui:Button>-->
+                                                <!--<ui:Button
+                                                    Grid.Column="1"
+                                                    HorizontalContentAlignment="Center"
+                                                    VerticalContentAlignment="Center"
+                                                    Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}"
+                                                    CommandParameter="{Binding}"
+                                                    Template="{StaticResource SubtleButtonStyle}">
+                                                    <Path
+                                                        Margin="0,0,0,0"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Data="{StaticResource ShownEyeIcon}"
+                                                        Fill="#303030">
+                                                        <Path.LayoutTransform>
+                                                            <ScaleTransform ScaleX="1" ScaleY="1" />
+                                                        </Path.LayoutTransform>
+                                                    </Path>
+                                                </ui:Button>
+                                                <ui:Button>
+                                                    <TextBlock
+                                                        FontFamily="Segoe MDL2 Assets"
+                                                        FontSize="20"
+                                                        Text="&#xE712;" />
+                                                </ui:Button>-->
+                                                <local:DropDownButtonCustom Margin="4,0,0,0" PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
+                                                    <local:DropDownButtonCustom.Flyout>
+                                                        <ContextMenu Width="100" Placement="Bottom">
+                                                            <MenuItem Command="{Binding}" Header="Delete" />
+                                                        </ContextMenu>
+                                                    </local:DropDownButtonCustom.Flyout>
+                                                    <!--<wpfui:SymbolIcon Symbol="MoreHorizontal48" FontSize="17.5"/>-->
+                                                    <TextBlock
+                                                        FontFamily="Segoe MDL2 Assets"
+                                                        FontSize="20"
+                                                        Text="&#xE712;" />
+                                                </local:DropDownButtonCustom>
+                                            </StackPanel>
                                         </Grid>
                                     </StackPanel>
                                 </ui:CardControl.Header>
@@ -417,7 +536,8 @@
                                     Padding="6"
                                     HorizontalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
-                                    Appearance="Primary">
+                                    Appearance="Primary"
+                                    Command="{Binding AddSavePathInfoCommand}">
                                     <TextBlock
                                         Margin="6"
                                         Padding="{TemplateBinding Padding}"
