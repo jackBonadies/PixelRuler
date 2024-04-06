@@ -27,6 +27,8 @@ using System.Reflection;
 using WpfScreenHelper;
 using PixelRuler.Common;
 using PixelRuler.Views;
+using Microsoft.Win32;
+using PixelRuler.Models;
 
 namespace PixelRuler
 {
@@ -246,18 +248,54 @@ namespace PixelRuler
                 return false;
             }
 
+
             if(wsw.AfterScreenshotValue is AfterScreenshotAction.Cancel)
             {
                 return false;
             }
 
-
-
             if (res is true)
             {
                 bmp = UiUtils.CaptureScreen(wsw.SelectedRectWin);
-                this.ViewModel.Image = bmp;
+                this.ViewModel.SetImage(bmp, wsw.ScreenshotInfo);
+                // i.e. the time the actual screenshot was taken.
                 mainCanvas.SetImage(this.ViewModel.ImageSource);
+            }
+
+            if(wsw.AfterScreenshotValue is AfterScreenshotAction.SaveAs)
+            {
+                var fullFilename = this.ViewModel.Settings.DefaultPathSaveInfo.Evaluate(this.ViewModel.ScreenshotInfo.Value, true);
+                var initDir = System.IO.Path.GetDirectoryName(fullFilename);
+                Directory.CreateDirectory(initDir);
+
+                var sfd = new SaveFileDialog();
+                sfd.InitialDirectory = initDir;
+                sfd.FileName = System.IO.Path.GetFileName(fullFilename);
+                sfd.DefaultExt = this.ViewModel.Settings.DefaultPathSaveInfo.Extension;
+                sfd.AddExtension = true;
+                sfd.Filter = "PNG|*.png|JPEG|*.jpg;*.jpeg|GIF|*.gif|BMP|*.bmp";
+                var sfdres = sfd.ShowDialog();
+                if(sfdres is true)
+                {
+                    this.ViewModel.SaveImage(sfd.FileName);
+                }
+                return false;
+            }
+            
+            if (wsw.AfterScreenshotValue is AfterScreenshotAction.Save)
+            {
+                string fname = string.Empty;
+                if (wsw.AfterScreenshotAdditionalArg is PathSaveInfo pathSaveInfo)
+                {
+                    fname = pathSaveInfo.Evaluate(this.ViewModel.ScreenshotInfo.Value, true, true);
+                }
+                else
+                {
+                    throw new Exception("Unexpected Arg for Save");
+                }
+
+                this.ViewModel.SaveImage(fname);
+                return false;
             }
 
             //if(wsw.AfterScreenshotValue is AfterScreenshotAction.Pin)
@@ -322,7 +360,7 @@ namespace PixelRuler
             {
                 bmp = UiUtils.CaptureScreen();
             }
-            this.ViewModel.Image = bmp;
+            this.ViewModel.SetImage(bmp, new ScreenshotInfo());
             mainCanvas.SetImage(this.ViewModel.ImageSource);
             this.Show();
             this.Activate();

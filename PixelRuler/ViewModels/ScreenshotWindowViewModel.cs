@@ -54,7 +54,7 @@ namespace PixelRuler.ViewModels
 
         public bool IsScreenshotMode()
         {
-            return Mode == OverlayMode.Window || Mode == OverlayMode.RegionRect;
+            return Mode == OverlayMode.Window || Mode == OverlayMode.RegionRect || Mode == OverlayMode.WindowAndRegionRect;
         }
 
         public bool IsToolMode()

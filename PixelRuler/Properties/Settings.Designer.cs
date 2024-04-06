@@ -238,5 +238,29 @@ namespace PixelRuler.Properties {
                 this["GlobalShortcutQuickMeasureModifiers"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DefaultPathInfo {
+            get {
+                return ((string)(this["DefaultPathInfo"]));
+            }
+            set {
+                this["DefaultPathInfo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AdditionalPathInfos {
+            get {
+                return ((string)(this["AdditionalPathInfos"]));
+            }
+            set {
+                this["AdditionalPathInfos"] = value;
+            }
+        }
     }
 }

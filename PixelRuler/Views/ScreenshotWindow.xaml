@@ -127,7 +127,11 @@
                         </CombinedGeometry.Geometry1>
                         <!--  Hole where there is no dark dim  -->
                         <CombinedGeometry.Geometry2>
-                            <RectangleGeometry x:Name="innerRectGeometry" Rect="50,50,25,25" />
+                            <RectangleGeometry
+                                x:Name="innerRectGeometry"
+                                RadiusX="4"
+                                RadiusY="4"
+                                Rect="50,50,25,25" />
                         </CombinedGeometry.Geometry2>
                     </CombinedGeometry>
                 </Path.Data>
@@ -142,7 +146,24 @@
                 RadiusX="4"
                 RadiusY="4"
                 Stroke="Red"
-                StrokeThickness="4" />
+                StrokeDashArray="4 4"
+                StrokeThickness="4">
+                <Rectangle.Triggers>
+                    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                    RepeatBehavior="Forever"
+                                    Storyboard.TargetName="rect"
+                                    Storyboard.TargetProperty="StrokeDashOffset"
+                                    From="0"
+                                    To="8"
+                                    Duration="0:0:1" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Rectangle.Triggers>
+            </Rectangle>
 
         </Canvas>
         <Border

@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Input;
 using PixelRuler.CanvasElements;
+using System.Drawing.Imaging;
+using PixelRuler.Models;
+using System.IO;
 
 namespace PixelRuler
 {
@@ -149,6 +152,18 @@ namespace PixelRuler
 
         public event EventHandler<EventArgs>? ImageSourceChanged;
 
+        public void SetImage(Bitmap bmp, ScreenshotInfo screenshotInfo)
+        {
+            this.Image = bmp;
+            // TODO populate timestamp if not there
+            this.ScreenshotInfo = screenshotInfo;
+        }
+
+        public ScreenshotInfo? ScreenshotInfo
+        {
+            get; set; 
+        }
+
         public static BitmapSource? ConvertToImageSource(Bitmap? bitmap)
         {
             if(bitmap == null)
@@ -188,6 +203,33 @@ namespace PixelRuler
         private void ActiveMeasureElement_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(e.PropertyName));
+        }
+
+        private ImageFormat getImageFormatFromFilename(string fileName)
+        {
+            var extIndex = fileName.LastIndexOf('.');
+            var ext = fileName.Substring(extIndex+1).ToLower();
+            switch(ext)
+            {
+                case "jpg":
+                case "jpeg":
+                    return ImageFormat.Jpeg;
+                case "png":
+                    return ImageFormat.Png;
+                case "bmp":
+                    return ImageFormat.Bmp;
+                case "gif":
+                    return ImageFormat.Gif;
+                default:
+                    throw new NotImplementedException();
+            }
+
+        }
+
+        public void SaveImage(string fileName)
+        {
+            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fileName));
+            this.Image.Save(fileName, getImageFormatFromFilename(fileName));
         }
 
         private double boundingBoxWidth;

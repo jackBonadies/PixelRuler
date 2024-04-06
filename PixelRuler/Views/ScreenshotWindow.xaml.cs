@@ -1,5 +1,6 @@
 ﻿using PixelRuler.CanvasElements;
 using PixelRuler.Common;
+using PixelRuler.Models;
 using PixelRuler.ViewModels;
 using PixelRuler.Views;
 using System;
@@ -35,7 +36,7 @@ namespace PixelRuler
         // TODO simple viewmodel for mode and rectangle
 
         Rect fullBounds;
-        ScreenshotWindowViewModel ViewModel { get; set; }
+        public ScreenshotWindowViewModel ViewModel { get; private set; }
 
         public WindowSelectionWindow(OverlayMode mode, SettingsViewModel settings)
         {
@@ -80,21 +81,22 @@ namespace PixelRuler
 
         private void setForMode()
         {
-            if(ViewModel.IsToolMode())
+            if (ViewModel.IsToolMode())
             {
                 overlayCanvas.Visibility = Visibility.Collapsed;
             }
-            else if(ViewModel.IsInWindowSelection())
+            else if (ViewModel.IsInWindowSelection())
             {
                 overlayCanvas.Visibility = Visibility.Visible;
             }
 
-            if (ViewModel.Mode == OverlayMode.Window)
+            if (ViewModel.Mode.IsSelectWindow())
             {
                 blurBackground.Visibility = Visibility.Visible;
                 blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x80, 0, 0, 0));
             }
-            else if(ViewModel.Mode == OverlayMode.RegionRect)
+
+            if (ViewModel.Mode.IsSelectRegion())
             {
                 blurBackground.Visibility = Visibility.Visible;
                 blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x30, 0, 0, 0));
@@ -107,11 +109,12 @@ namespace PixelRuler
                 vertIndicator.Y1 = fullBounds.Top;
                 vertIndicator.Y2 = fullBounds.Bottom;
             }
-            else if(ViewModel.Mode == OverlayMode.QuickMeasure)
+
+            if (ViewModel.Mode == OverlayMode.QuickMeasure)
             {
                 blurBackground.Visibility = Visibility.Collapsed;
             }
-            else if(ViewModel.Mode == OverlayMode.QuickColor)
+            else if (ViewModel.Mode == OverlayMode.QuickColor)
             {
                 blurBackground.Visibility = Visibility.Collapsed;
             }
@@ -119,7 +122,7 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Escape)
+            if (e.Key == Key.Escape)
             {
                 this.Close();
             }
@@ -145,11 +148,11 @@ namespace PixelRuler
             mainCanvas.LayoutTransform = new ScaleTransform(1 / dpi, 1 / dpi);
 
             var bmp = UiUtils.CaptureScreen(WpfScreenHelper.Screen.PrimaryScreen.Bounds);
- 
+
             SetupScreenshowWindowViewModel(ViewModel);
             this.DataContext = ViewModel;
             mainCanvas.DataContext = ViewModel;
-            ViewModel.Image = bmp;
+            this.ViewModel.SetImage(bmp, new ScreenshotInfo());
             mainCanvas.SetImage(ViewModel.ImageSource);
 
             Dpi = this.GetDpi();
@@ -166,6 +169,24 @@ namespace PixelRuler
         {
             get; private set;
         }
+
+        public ScreenshotInfo ScreenshotInfo
+        {
+            get
+            {
+                return new ScreenshotInfo()
+                {
+                    ProcessName = this.ProcessName,
+                    WindowTitle = this.WindowTitle,
+                    Width = (int)this.SelectedRectWin.Width,
+                    Height = (int)this.SelectedRectWin.Height,
+                    DateTime = DateTime.Now
+                };
+            }
+        }
+
+        public string ProcessName { get; set; }
+        public string WindowTitle { get; set; }
 
         /// <summary>
         /// Canvas Rect where 0,0 is leftmost point on virtual screen.
@@ -192,10 +213,11 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(e.ChangedButton != MouseButton.Left)
+            if (e.ChangedButton != MouseButton.Left)
             {
                 return;
             }
+
             dragging = true;
             startPoint = UiUtils.RoundPoint(e.GetPosition(this.mainCanvas));
             innerRectGeometry.Rect = new Rect(startPoint, startPoint);
@@ -210,40 +232,40 @@ namespace PixelRuler
                 return;
             }
 
-            if(e.ChangedButton != MouseButton.Left)
+            if (e.ChangedButton != MouseButton.Left)
             {
                 return;
             }
 
-            //mainContent.Visibility = Visibility.Collapsed;
-
-            if (ViewModel.Mode == OverlayMode.Window)
+            if (ViewModel.Mode == OverlayMode.Window || ViewModel.Mode == OverlayMode.WindowAndRegionRect && !regionOnlyMode)
             {
-                SelectedRectCanvas = SelectWindowUnderCursor();
+                (SelectedRectCanvas, ProcessName, WindowTitle) = SelectWindowUnderCursor();
             }
             else
             {
                 SelectedRectCanvas = new Rect(startPoint, UiUtils.RoundPoint(e.GetPosition(this.mainCanvas)));
             }
 
-            void AfterScreenshot(AfterScreenshotAction a)
+            void AfterScreenshot(AfterScreenshotAction a, object? additionalArg)
             {
                 this.AfterScreenshotValue = a;
+                this.AfterScreenshotAdditionalArg = additionalArg;
                 this.DialogResult = true;
                 this.Close();
             }
 
-            if(System.Windows.Input.Keyboard.IsKeyDown(this.ViewModel.Settings.PromptKey))
+            if (System.Windows.Input.Keyboard.IsKeyDown(this.ViewModel.Settings.PromptKey))
             {
-                Views.AfterScreenshot.ShowOptions(this, AfterScreenshot);
+                Views.AfterScreenshot.ShowOptions(this, this.ViewModel.Settings, AfterScreenshot);
             }
             else
             {
-                AfterScreenshot(AfterScreenshotAction.ViewInPixelRulerWindow);
+                AfterScreenshot(AfterScreenshotAction.ViewInPixelRulerWindow, null);
             }
         }
 
         public AfterScreenshotAction AfterScreenshotValue { get; set; }
+        public object? AfterScreenshotAdditionalArg { get; set; }
 
         private void WindowSelectionWindow_KeyDown(object sender, KeyEventArgs e)
         {
@@ -266,15 +288,17 @@ namespace PixelRuler
                 return;
             }
 
-            if (ViewModel.Mode == OverlayMode.Window)
+            if (ViewModel.Mode.IsSelectWindow())
             {
-                SelectWindowUnderCursor();
+                (SelectedRectCanvas, ProcessName, WindowTitle) = SelectWindowUnderCursor();
             }
-            else
+
+            if(ViewModel.Mode.IsSelectRegion())
             {
                 SetCursorIndicator(e.GetPosition(this.mainCanvas));
                 if (dragging)
                 {
+                    EnterRegionOnlyMode();
                     innerRectGeometry.Rect = new Rect(startPoint, e.GetPosition(this.mainCanvas));
                     var minX = Math.Min(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
                     var maxX = Math.Max(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
@@ -288,6 +312,17 @@ namespace PixelRuler
             }
         }
 
+        private bool regionOnlyMode = false;
+        private void EnterRegionOnlyMode()
+        {
+            if(regionOnlyMode)
+            {
+                return;
+            }
+            regionOnlyMode = true;
+            rect.Visibility = Visibility.Collapsed;
+        }
+
         private void SetCursorIndicator(Point point)
         {
             vertIndicator.X1 = vertIndicator.X2 = (int)Math.Round(point.X);
@@ -296,7 +331,7 @@ namespace PixelRuler
             //vertIndicator.StrokeDashOffset = point.Y; 
         }
 
-        private Rect SelectWindowUnderCursor()
+        private (Rect, string, string) SelectWindowUnderCursor()
         {
             var windowUnderCursorHwnd = NativeHelpers.GetWindowUnderPointExcludingOwn(new WindowInteropHelper(this).Handle);
 
@@ -304,10 +339,8 @@ namespace PixelRuler
 
             NativeMethods.DwmGetWindowAttribute(windowUnderCursorHwnd, (int)NativeMethods.DwmWindowAttribute.DWMWA_EXTENDED_FRAME_BOUNDS, out NativeMethods.RECT rect12, Marshal.SizeOf(typeof(NativeMethods.RECT)));
 
-            var procname = NativeHelpers.GetProcessNameFromWindowHandle(windowUnderCursorHwnd);
-
-            System.Diagnostics.Trace.WriteLine($"ProcName {procname}");
-            //System.Diagnostics.Trace.WriteLine($"Title {title}");
+            string process_name = NativeHelpers.GetProcessNameFromWindowHandle(windowUnderCursorHwnd);
+            string window_title = NativeHelpers.GetWindowTitle(windowUnderCursorHwnd);
 
             Canvas.SetLeft(this.rect, rect12.Left - this.fullBounds.Left);
             Canvas.SetTop(this.rect, rect12.Top - this.fullBounds.Top);
@@ -316,7 +349,7 @@ namespace PixelRuler
             var wpfRect = new Rect(rect12.Left - this.fullBounds.Left, rect12.Top - this.fullBounds.Top, rect12.Right - rect12.Left, rect12.Bottom - rect12.Top);
             innerRectGeometry.Rect = wpfRect;
 
-            return wpfRect;
+            return (wpfRect, process_name, window_title);
         }
 
         private void MainWindow_PreviewMouseDown(object sender, MouseButtonEventArgs e)

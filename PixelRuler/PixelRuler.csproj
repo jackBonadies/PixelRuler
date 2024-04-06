@@ -5,6 +5,7 @@
     <TargetFramework>net7.0-windows10.0.18362.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+	<UseWindowsForms>false</UseWindowsForms>
 	<ApplicationManifest>app.manifest</ApplicationManifest>
 	<ApplicationIcon>Assets/PixelRulerIcon1.ico</ApplicationIcon>
 	<PlatformTarget>AnyCPU</PlatformTarget>
@@ -26,9 +27,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
-    <PackageReference Include="WPF-UI" Version="3.0.0-preview.13" />
-    <PackageReference Include="WPF-UI.Tray" Version="3.0.0-preview.11" />
+    <PackageReference Include="WPF-UI" Version="3.0.3" />
+    <PackageReference Include="WPF-UI.Tray" Version="3.0.3" />
     <PackageReference Include="WpfScreenHelper" Version="2.1.0" />
   </ItemGroup>
 

@@ -182,6 +182,8 @@ namespace PixelRuler
             25600,
         };
 
+        public const string DefaultSavePath = "%USERPROFILE%\\Pictures\\Screenshots\\PixelRuler";
+
         public const double BorderSizeDpiIndependentUnits = 24;
 
         public static readonly int ResizeSpeedFactor = 1;

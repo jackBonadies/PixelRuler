@@ -1,5 +1,8 @@
-﻿using Microsoft.Win32;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Win32;
+using PixelRuler.Models;
 using PixelRuler.Properties;
+using PixelRuler.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,14 +11,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Windows.Networking.Vpn;
 using Wpf.Ui.Controls;
 
 namespace PixelRuler
 {
-    public class SettingsViewModel : INotifyPropertyChanged
+    public partial class SettingsViewModel : ObservableObject
     {
         public SettingsViewModel()
         {
@@ -59,7 +64,7 @@ namespace PixelRuler
                 Key.C,
                 ModifierKeys.Windows | ModifierKeys.Shift);
 
-            GlobalShortcuts.Add(WindowedScreenshotShortcut);
+            //GlobalShortcuts.Add(WindowedScreenshotShortcut);
             GlobalShortcuts.Add(WindowedRegionScreenshotShortcut);
             GlobalShortcuts.Add(FullscreenScreenshotShortcut);
             GlobalShortcuts.Add(QuickMeasureShortcut);
@@ -88,45 +93,118 @@ namespace PixelRuler
                     throw new Exception("Unexpected Type");
                 }
             });
+
+            editSavePathInfoCommand = new RelayCommand((object? o) =>
+            {
+                if(o is PathSaveInfo pathSaveInfo)
+                {
+                    EditSavePathCommandEvent?.Invoke(this, (pathSaveInfo, false));
+                }
+                else
+                {
+                    throw new Exception("Unexpected Type");
+                }
+            });
+
+            addSavePathInfoCommand = new RelayCommand((object? o) =>
+            {
+                var num = this.AdditionalPathSaveInfos.Count + 1;
+                var customPathSaveInfo = new PathSaveInfo($"Custom Path {num}", App.DefaultSavePath, "MyScreenshot {datetime:yyyy_MM_dd_HHmmss}", "png");
+                EditSavePathCommandEvent?.Invoke(this, (customPathSaveInfo, true));
+            });
+
+            RestorePathInfos();
+        }
+
+        public void DeletePathItem(PathSaveInfo pathSaveInfo)
+        {
+            this.AdditionalPathSaveInfos.Remove(pathSaveInfo);
+            OnPropertyChanged(nameof(AdditionalPathSaveInfos));
+        }
+
+        private void RestoreDefaultPathInfo()
+        {
+            var defaultPathInfoString = Properties.Settings.Default.DefaultPathInfo;
+
+            if(string.IsNullOrEmpty(defaultPathInfoString))
+            {
+                DefaultPathSaveInfo = new PathSaveInfo("Default", App.DefaultSavePath, "Screenshot {datetime:yyyy_MM_dd_HHmmss}", "png");
+            }
+            else
+            {
+                DefaultPathSaveInfo = JsonSerializer.Deserialize(defaultPathInfoString, typeof(PathSaveInfo)) as PathSaveInfo;
+                _ = DefaultPathSaveInfo ?? throw new ArgumentNullException(nameof(DefaultPathSaveInfo));
+            }
+            DefaultPathSaveInfo.IsDefault = true;
+        }
+
+        private void RestoreAdditionalPathInfos()
+        {
+            var additionalPathInfosString = Properties.Settings.Default.AdditionalPathInfos;
+
+            if (string.IsNullOrEmpty(additionalPathInfosString))
+            {
+                AdditionalPathSaveInfos = new ObservableCollection<PathSaveInfo>()
+                {
+                    new PathSaveInfo("UI Examples", "%USERPROFILE%\\Pictures\\UI_Examples", "Screenshot {datetime:yyyy_MM_dd_HHmmss}", "png", false),
+                };
+            }
+            else
+            {
+                AdditionalPathSaveInfos = new ObservableCollection<PathSaveInfo>(JsonSerializer.Deserialize(additionalPathInfosString, typeof(List<PathSaveInfo>)) as List<PathSaveInfo>);
+            }
+        }
+
+        private void RestorePathInfos()
+        {
+            RestoreDefaultPathInfo();
+            RestoreAdditionalPathInfos();
+        }
+
+        private void SaveDefaultPathInfo()
+        {
+            var pathSaveInfoString = JsonSerializer.Serialize(DefaultPathSaveInfo, typeof(PathSaveInfo));
+            Properties.Settings.Default.DefaultPathInfo = pathSaveInfoString;
+            Properties.Settings.Default.Save();
+        }
+
+        private void SaveAdditionalPathInfos()
+        {
+            var additionalPathSaveInfosList = AdditionalPathSaveInfos.ToList();
+            var pathSaveInfoString = JsonSerializer.Serialize(additionalPathSaveInfosList, typeof(List<PathSaveInfo>));
+            Properties.Settings.Default.AdditionalPathInfos = pathSaveInfoString;
+            Properties.Settings.Default.Save();
+        }
+
+        private void SavePathInfos()
+        {
+            SaveDefaultPathInfo();
+            SaveAdditionalPathInfos();
         }
 
         public Key ZoomBoxQuickZoomKey { get; set; } = Key.Space;
 
         public ObservableCollection<ShortcutInfo> GlobalShortcuts { get; set; } = new ObservableCollection<ShortcutInfo>();
 
+
         public event EventHandler<ShortcutInfo> EditShortcutCommandEvent;
 
-        private RelayCommand editShortcutCommand;
-        public RelayCommand EditShortcutCommand
-        {
-            get
-            {
-                return editShortcutCommand;
-            }
-            set
-            {
-                if(editShortcutCommand != value)
-                {
-                    editShortcutCommand = value;
-                }
-            }
-        }
+        public event EventHandler<(PathSaveInfo, bool)> EditSavePathCommandEvent;
 
+        [ObservableProperty]
+        private RelayCommand editShortcutCommand;
+
+        [ObservableProperty]
+        private RelayCommand editSavePathInfoCommand;
+
+        [ObservableProperty]
+        private RelayCommand addSavePathInfoCommand;
+
+        [ObservableProperty]
+        private RelayCommand deleteSavePathInfoCommand;
+
+        [ObservableProperty]
         private RelayCommand clearShortcutCommand;
-        public RelayCommand ClearShortcutCommand
-        {
-            get
-            {
-                return clearShortcutCommand;
-            }
-            set
-            {
-                if(clearShortcutCommand != value)
-                {
-                    clearShortcutCommand = value;
-                }
-            }
-        }
 
         public bool StartAtSystemStartup
         {
@@ -140,7 +218,7 @@ namespace PixelRuler
                 {
                     Properties.Settings.Default.StartAtWindowsStartup = value;
                     UpdateForWindowsStartupChanged();
-                    OnPropertyChanged();
+                    OnPropertyChangedAndSave();
                 }
             }
         }
@@ -174,7 +252,7 @@ namespace PixelRuler
                 if (Properties.Settings.Default.LaunchStartupAction != (int)value)
                 {
                     Properties.Settings.Default.LaunchStartupAction = (int)value;
-                    OnPropertyChanged();
+                    OnPropertyChangedAndSave();
                 }
             }
         }
@@ -190,7 +268,7 @@ namespace PixelRuler
                 if (Properties.Settings.Default.DefaultTool != (int)value)
                 {
                     Properties.Settings.Default.DefaultTool = (int)value;
-                    OnPropertyChanged();
+                    OnPropertyChangedAndSave();
                 }
             }
         }
@@ -207,12 +285,10 @@ namespace PixelRuler
                 {
                     ThemeManager.UpdateForThemeChanged(value);
                     Properties.Settings.Default.DayNightMode = (int)value;
-                    OnPropertyChanged();
+                    OnPropertyChangedAndSave();
                 }
             }
         }
-
-
 
         public bool CloseToTray
         {
@@ -226,7 +302,7 @@ namespace PixelRuler
                 {
                     Properties.Settings.Default.CloseToTray = value;
                     UpdateCloseToTrayChanged();
-                    OnPropertyChanged();
+                    OnPropertyChangedAndSave();
                 }
             }
         }
@@ -244,7 +320,6 @@ namespace PixelRuler
             }
         }
 
-
         public ColorAnnotationsBundle AnnotationsColor
         {
             get
@@ -257,7 +332,7 @@ namespace PixelRuler
                 {
                     Properties.Settings.Default.AnnotationColor = value.Key;
                     SetAnnotationColorState();
-                    OnPropertyChanged();
+                    OnPropertyChangedAndSave();
                 }
             }
         }
@@ -300,6 +375,11 @@ namespace PixelRuler
             new ColorAnnotationsBundle("Black","#000000".ToWinFormColorFromRgbHex()),
         };
 
+        [ObservableProperty]
+        private PathSaveInfo defaultPathSaveInfo;
+
+        public ObservableCollection<PathSaveInfo> AdditionalPathSaveInfos { get; set; }
+
         public bool GlobalShortcutsEnabled
         {
             get
@@ -312,7 +392,7 @@ namespace PixelRuler
                 {
                     Properties.Settings.Default.GlobalShortcutsEnabled = value;
                     GlobalShortcutsEnabledChanged?.Invoke(this, value);
-                    OnPropertyChanged();
+                    OnPropertyChangedAndSave();
                 }
             }
         }
@@ -329,10 +409,10 @@ namespace PixelRuler
                 if(fullscreenScreenshotShortcut != value)
                 {
                     fullscreenScreenshotShortcut = value;
-                    fullscreenScreenshotShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChanged(nameof(FullscreenScreenshotShortcut)); };
+                    fullscreenScreenshotShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChangedAndSave(nameof(FullscreenScreenshotShortcut)); };
                     fullscreenScreenshotShortcut.PropertyChanged += FullscreenScreenshotShortcut_PropertyChanged;
                     //TODO shortcut changed.
-                    OnPropertyChanged();
+                    OnPropertyChangedAndSave();
                 }
             }
         }
@@ -361,9 +441,9 @@ namespace PixelRuler
                 if (windowedScreenshotShortcut != value)
                 {
                     windowedScreenshotShortcut = value;
-                    windowedScreenshotShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChanged(nameof(WindowedScreenshotShortcut)); };
+                    windowedScreenshotShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChangedAndSave(nameof(WindowedScreenshotShortcut)); };
                     windowedScreenshotShortcut.PropertyChanged += WindowedScreenshotShortcut_PropertyChanged;
-                    OnPropertyChanged();
+                    OnPropertyChangedAndSave();
                 }
             }
         }
@@ -380,9 +460,9 @@ namespace PixelRuler
                 if (windowedRegionScreenshotShortcut != value)
                 {
                     windowedRegionScreenshotShortcut = value;
-                    windowedRegionScreenshotShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChanged(nameof(WindowedRegionScreenshotShortcut)); };
+                    windowedRegionScreenshotShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChangedAndSave(nameof(WindowedRegionScreenshotShortcut)); };
                     windowedRegionScreenshotShortcut.PropertyChanged += WindowedRegionScreenshotShortcut_PropertyChanged;
-                    OnPropertyChanged();
+                    OnPropertyChangedAndSave();
                 }
             }
         }
@@ -399,9 +479,9 @@ namespace PixelRuler
                 if (quickMeasureShortcut != value)
                 {
                     quickMeasureShortcut = value;
-                    quickMeasureShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChanged(nameof(QuickMeasureShortcut)); };
+                    quickMeasureShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChangedAndSave(nameof(QuickMeasureShortcut)); };
                     quickMeasureShortcut.PropertyChanged += QuickMeasureShortcut_PropertyChanged;
-                    OnPropertyChanged();
+                    OnPropertyChangedAndSave();
                 }
             }
         }
@@ -418,9 +498,9 @@ namespace PixelRuler
                 if (quickColorShortcut != value)
                 {
                     quickColorShortcut = value;
-                    quickColorShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChanged(nameof(QuickColorShortcut)); };
+                    quickColorShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChangedAndSave(nameof(QuickColorShortcut)); };
                     quickColorShortcut.PropertyChanged += QuickColorShortcutShortcut_PropertyChanged;
-                    OnPropertyChanged();
+                    OnPropertyChangedAndSave();
                 }
             }
         }
@@ -482,7 +562,7 @@ namespace PixelRuler
         //        {
         //            Properties.Settings.Default.GlobalShortcutFullscreenKey = (int)value;
         //            // GLOBAL SHORTCUT CHANGED
-        //            OnPropertyChanged();
+        //            OnPropertyChangedAndSave();
         //        }
         //    }
         //}
@@ -499,7 +579,7 @@ namespace PixelRuler
         //        {
         //            Properties.Settings.Default.GlobalShortcutFullscreenKey = (int)value;
         //            // GLOBAL SHORTCUT CHANGED
-        //            OnPropertyChanged();
+        //            OnPropertyChangedAndSave();
         //        }
         //    }
         //}
@@ -519,13 +599,11 @@ namespace PixelRuler
             }
         }
 
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string? name = null)
+        private void OnPropertyChangedAndSave([CallerMemberName] string? name = null)
         {
             Properties.Settings.Default.Save();
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            OnPropertyChanged(name);
+            //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
         public void SetState()
@@ -534,6 +612,34 @@ namespace PixelRuler
             ThemeManager.UpdateForThemeChanged(this.DayNightMode);
             this.UpdateCloseToTrayChanged();
 
+        }
+
+        public void AddPathInfo(PathSaveInfo pathSaveInfo)
+        {
+            this.AdditionalPathSaveInfos.Add(pathSaveInfo);
+            OnPropertyChanged(nameof(AdditionalPathSaveInfos));
+            SavePathInfos();
+        }
+
+        public void UpdatePathInfo(PathSaveInfo pathSaveInfo, PathSaveInfo pending)
+        {
+            if (this.DefaultPathSaveInfo == pathSaveInfo)
+            {
+                this.DefaultPathSaveInfo = pending;
+                OnPropertyChanged(nameof(DefaultPathSaveInfo));
+            }
+            else
+            {
+                for (int i = 0; i < AdditionalPathSaveInfos.Count; i++)
+                {
+                    if (this.AdditionalPathSaveInfos[i] == pathSaveInfo)
+                    {
+                        this.AdditionalPathSaveInfos[i] = pending;
+                        OnPropertyChanged(nameof(AdditionalPathSaveInfos));
+                    }
+                }
+            }
+            SavePathInfos();
         }
 
         public ZoomViewModel ZoomViewModel { get; set; } = new ZoomViewModel();

@@ -49,7 +49,7 @@ namespace PixelRuler.Views
 
         private void PinImageWindow_MouseLeave(object sender, MouseEventArgs e)
         {
-            var storyboard = gripBorder.Resources["MoveBorderStoryboard"] as Storyboard;
+            var storyboard = gripNotch.Resources["MoveBorderStoryboard"] as Storyboard;
             storyboard.Stop();
 
             storyboard = closeButton.Resources["buttonFadeOut"] as Storyboard;
@@ -59,7 +59,7 @@ namespace PixelRuler.Views
 
         private void PinImageWindow_MouseEnter(object sender, MouseEventArgs e)
         {
-            var storyboard = gripBorder.Resources["MoveBorderStoryboard"] as Storyboard;
+            var storyboard = gripNotch.Resources["MoveBorderStoryboard"] as Storyboard;
             storyboard.Begin();
 
             storyboard = closeButton.Resources["buttonFadeIn"] as Storyboard;
@@ -144,7 +144,9 @@ namespace PixelRuler.Views
 
         private void PinImageWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var img = (this.DataContext as PinViewModel).MainViewModel.Image;
+            var img = this.ViewModel.MainViewModel.Image;
+            mainImage.Width = img.Width;
+            mainImage.Height = img.Height;
             rectGeom.Rect = new Rect(0, 0, img.Width, img.Height);
         }
 
@@ -216,17 +218,17 @@ namespace PixelRuler.Views
         {
             if(isResizing)
             {
+                var t = System.Windows.Input.Mouse.GetPosition(this);
                 var newPoint = e.GetPosition(this);
                 newPoint = this.PointToScreen(newPoint);
                 var deltaPoint = newPoint - sizeStartPoint;
-                this.Width = sizeOrigWidth + deltaPoint.X;
-                this.Height = sizeOrigHeight + deltaPoint.Y;
+                this.mainImage.Width = sizeOrigWidth + deltaPoint.X;
+                this.mainImage.Height = sizeOrigHeight + deltaPoint.Y;
                 this.Background = new SolidColorBrush(Colors.Red);
             }
             else
             {
-                var border = sender as Border;
-                SetBorderCursor(border, e);
+                SetBorderCursor(gripBorder, e);
             }
         }
 
@@ -240,16 +242,20 @@ namespace PixelRuler.Views
         Point sizeStartPoint;
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var pt = e.GetPosition(border);
-            (sizeFromLeft, sizeFromTop) = getSides(border, pt);
+            var pt = e.GetPosition(gripBorder);
+            (sizeFromLeft, sizeFromTop) = getSides(gripBorder, pt);
             isResizing = true;
             var startPoint = e.GetPosition(this);
             sizeStartPoint = this.PointToScreen(startPoint);
-            this.sizeOrigHeight = this.Height;
-            this.sizeOrigWidth = this.Width;
+            this.sizeOrigHeight = this.mainImage.Height;
+            this.sizeOrigWidth = this.mainImage.Width;
             this.sizeOrigLeft = this.Left;
             this.sizeOrigTop = this.Top;
-            this.border.CaptureMouse();
+            if(!gripBorder.CaptureMouse())
+            {
+
+            }
+            e.Handled = true;
         }
 
         private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

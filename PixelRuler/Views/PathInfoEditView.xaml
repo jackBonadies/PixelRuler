@@ -1,0 +1,157 @@
+﻿<UserControl
+    x:Class="PixelRuler.Views.PathInfoEditView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:PixelRuler.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pixelruler="clr-namespace:PixelRuler"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:viewmodels="clr-namespace:PixelRuler.ViewModels"
+    Margin="0"
+    Padding="0"
+    d:DataContext="{d:DesignInstance Type=viewmodels:PathInfoEditViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <pixelruler:PathTokenDisplayConverter x:Key="PathTokenDisplayConverter" />
+        <ControlTemplate x:Key="tokenButtonTemplate" TargetType="Button">
+            <Border
+                Name="border"
+                Padding="4,3,4,3"
+                Background="#08000000"
+                BorderBrush="#5d556C94"
+                BorderThickness="1"
+                CornerRadius="4"
+                Cursor="Hand">
+                <ContentPresenter Content="{TemplateBinding Content}" />
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="border" Property="Background" Value="#1C000000" />
+                    <Setter TargetName="border" Property="BorderBrush" Value="#559CE4" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="border" Property="Background" Value="#2C000000" />
+                    <Setter TargetName="border" Property="BorderBrush" Value="#559CE4" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style x:Key="SmallHeader" TargetType="Label">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Margin" Value="0,0,0,-4" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value=".5" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical">
+        <Label IsEnabled="{Binding PathSaveInfo.IsDefault, Converter={StaticResource InvertBoolConverter}}" Style="{StaticResource SmallHeader}">Display Name</Label>
+        <TextBox
+            d:Text="My Folder (1)"
+            IsEnabled="{Binding PathSaveInfo.IsDefault, Converter={StaticResource InvertBoolConverter}}"
+            Text="{Binding DisplayName}" />
+        <Label Style="{StaticResource SmallHeader}">Folder</Label>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox
+                Grid.Column="0"
+                d:Text="%USERPROFILE%\Pictures\Screenshots\MyProject"
+                Text="{Binding BaseDirectory}" />
+            <Button
+                Grid.Column="2"
+                VerticalAlignment="Stretch"
+                Command="{Binding SelectDirectoryCommand}">
+                <TextBlock FontSize="16" Text="..." />
+            </Button>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Vertical">
+                <Label Style="{StaticResource SmallHeader}">File Pattern</Label>
+                <TextBox d:Text="Screenshot_{datetime:YY_MM_dd_hhmmss}" Text="{Binding FilePattern, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Orientation="Vertical">
+                <Label Style="{StaticResource SmallHeader}">File Type</Label>
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox
+                        Width="100"
+                        ItemsSource="{Binding AllExtensions}"
+                        SelectedItem="{Binding Extension}" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+        <Label Margin="10,0,0,0" Opacity=".9">
+            <TextBlock x:Name="evaluatedFilePatternBlock" Text="{Binding EvaluatedFilePatternDisplay}">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding FilePatternHasError}" Value="True">
+                                <Setter Property="Foreground" Value="Red" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Label>
+
+        <Label
+            Margin="0,14,0,0"
+            FontWeight="SemiBold"
+            Style="{StaticResource SmallHeader}">
+            Available Parameters:
+        </Label>
+        <ItemsControl
+            x:Name="MyListBox"
+            Margin="0"
+            Padding="0"
+            d:ItemsSource="{d:SampleData}"
+            ItemsSource="{Binding AllTokens}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <!--  TODO: column first  -->
+                    <UniformGrid Columns="2" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button
+                        Margin="5"
+                        Command="{Binding DataContext.TokenInsertCommand, RelativeSource={RelativeSource AncestorType=local:PathInfoEditView}}"
+                        CommandParameter="{Binding}"
+                        Content="{Binding Converter={StaticResource PathTokenDisplayConverter}}"
+                        Focusable="False"
+                        Template="{StaticResource tokenButtonTemplate}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseEnter">
+                                <i:InvokeCommandAction Command="{Binding DataContext.TokenEnterCommand, RelativeSource={RelativeSource AncestorType=local:PathInfoEditView}}" CommandParameter="{Binding}" />
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="MouseLeave">
+                                <i:InvokeCommandAction Command="{Binding DataContext.TokenLeaveCommand, RelativeSource={RelativeSource AncestorType=local:PathInfoEditView}}" CommandParameter="{Binding}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <TextBlock
+            Margin="16,0,16,0"
+            Foreground="DarkGray"
+            Text="{Binding TokenHintText}" />
+
+
+    </StackPanel>
+</UserControl>
