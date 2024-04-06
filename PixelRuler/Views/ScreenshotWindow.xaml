@@ -127,7 +127,11 @@
                         </CombinedGeometry.Geometry1>
                         <!--  Hole where there is no dark dim  -->
                         <CombinedGeometry.Geometry2>
-                            <RectangleGeometry x:Name="innerRectGeometry" Rect="50,50,25,25" />
+                            <RectangleGeometry
+                                x:Name="innerRectGeometry"
+                                RadiusX="4"
+                                RadiusY="4"
+                                Rect="50,50,25,25" />
                         </CombinedGeometry.Geometry2>
                     </CombinedGeometry>
                 </Path.Data>

@@ -33,6 +33,28 @@ namespace PixelRuler
             this.MaxHeight = workArea.Height - 30;
 
             this.DataContext = viewModel.Settings;
+            viewModel.Settings.DeleteSavePathInfoCommand = new RelayCommand(
+                async (object? o) =>
+                {
+                    if (o is PathSaveInfo pathSaveInfo)
+                    {
+                        // TODO remove minwidth / padding...
+                        var contentDialog = new ContentDialog(RootContentDialog)
+                        {
+                            Title = pathSaveInfo.DisplayName + ":",
+                            Content = this.Resources["DeleteConfirmation"],
+                            MinHeight = 0,
+                            CloseButtonText = "Cancel",
+                            PrimaryButtonText = "OK",
+                        };
+                        contentDialog.UseLayoutRounding = true;
+                        var res = await contentDialog.ShowAsync();
+                        if(res == ContentDialogResult.Primary)
+                        {
+                            viewModel.Settings.DeletePathItem(pathSaveInfo);
+                        }
+                    }
+                });
             viewModel.Settings.EditShortcutCommandEvent += Settings_EditShortcutCommandEvent;
             viewModel.Settings.EditSavePathCommandEvent += Settings_EditSavePathCommandEvent;
 

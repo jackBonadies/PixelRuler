@@ -23,6 +23,13 @@
             <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
         </Style>
 
+        <TextBlock
+            x:Key="DeleteConfirmation"
+            Margin="0"
+            Padding="0"
+            Background="Red">
+            Are you sure you want to delete this item?
+        </TextBlock>
 
         <ControlTemplate x:Key="SubtleButtonStyle" TargetType="Button">
             <Border
@@ -498,10 +505,27 @@
                                                         FontSize="20"
                                                         Text="&#xE712;" />
                                                 </ui:Button>-->
-                                                <local:DropDownButtonCustom Margin="4,0,0,0" PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
+                                                <local:DropDownButtonCustom
+                                                    Margin="4,0,0,0"
+                                                    PlacementTarget="{Binding RelativeSource={RelativeSource Self}}"
+                                                    Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}">
                                                     <local:DropDownButtonCustom.Flyout>
-                                                        <ContextMenu Width="100" Placement="Bottom">
-                                                            <MenuItem Command="{Binding}" Header="Delete" />
+                                                        <ContextMenu
+                                                            Width="100"
+                                                            DataContext="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}"
+                                                            Placement="Bottom">
+                                                            <MenuItem
+                                                                Command="{Binding Path=PlacementTarget.Tag.DeleteSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ContextMenu}}"
+                                                                CommandParameter="{Binding}"
+                                                                Header="Delete">
+                                                                <MenuItem.Icon>
+                                                                    <TextBlock
+                                                                        FontFamily="Segoe MDL2 Assets"
+                                                                        FontSize="14"
+                                                                        Text="&#xE74D;" />
+                                                                </MenuItem.Icon>
+                                                            </MenuItem>
+
                                                         </ContextMenu>
                                                     </local:DropDownButtonCustom.Flyout>
                                                     <!--<wpfui:SymbolIcon Symbol="MoreHorizontal48" FontSize="17.5"/>-->

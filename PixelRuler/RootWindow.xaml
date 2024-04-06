@@ -29,14 +29,14 @@
                         <wpfui:SymbolIcon Symbol="Screenshot24" />
                     </custom:MenuItemCustom.Icon>
                 </custom:MenuItemCustom>
-                <custom:MenuItemCustom
+                <!--<custom:MenuItemCustom
                     Command="{Binding NewScreenshotWindowedCommand}"
                     Header="{Binding NewScreenshotWindowedCommand.ToolTipTextBase}"
                     InputGestureText="{Binding NewScreenshotWindowedCommand.ToolTipTextShortcut}">
                     <custom:MenuItemCustom.Icon>
                         <wpfui:SymbolIcon Symbol="Window24" />
                     </custom:MenuItemCustom.Icon>
-                </custom:MenuItemCustom>
+                </custom:MenuItemCustom>-->
                 <custom:MenuItemCustom
                     Command="{Binding NewScreenshotRegionCommand}"
                     Header="{Binding NewScreenshotRegionCommand.ToolTipTextBase}"

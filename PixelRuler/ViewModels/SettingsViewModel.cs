@@ -64,7 +64,7 @@ namespace PixelRuler
                 Key.C,
                 ModifierKeys.Windows | ModifierKeys.Shift);
 
-            GlobalShortcuts.Add(WindowedScreenshotShortcut);
+            //GlobalShortcuts.Add(WindowedScreenshotShortcut);
             GlobalShortcuts.Add(WindowedRegionScreenshotShortcut);
             GlobalShortcuts.Add(FullscreenScreenshotShortcut);
             GlobalShortcuts.Add(QuickMeasureShortcut);
@@ -114,6 +114,12 @@ namespace PixelRuler
             });
 
             RestorePathInfos();
+        }
+
+        public void DeletePathItem(PathSaveInfo pathSaveInfo)
+        {
+            this.AdditionalPathSaveInfos.Remove(pathSaveInfo);
+            OnPropertyChanged(nameof(AdditionalPathSaveInfos));
         }
 
         private void RestoreDefaultPathInfo()
@@ -193,6 +199,9 @@ namespace PixelRuler
 
         [ObservableProperty]
         private RelayCommand addSavePathInfoCommand;
+
+        [ObservableProperty]
+        private RelayCommand deleteSavePathInfoCommand;
 
         [ObservableProperty]
         private RelayCommand clearShortcutCommand;
