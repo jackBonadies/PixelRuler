@@ -70,6 +70,15 @@ namespace PixelRuler.Views
                     contextMenu.Items.Add(menuItem);
                 }
 
+                int j = 0;
+                foreach(var cmdTarget in settings.CommandTargetInfos)
+                {
+                    j++;
+                    var menuItem = new MenuItemCustom() { Header = cmdTarget.DisplayName?.SanitizeUnderscores(), InputGestureText = $"{i}" };
+                    menuItem.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.CommandTarget, cmdTarget); };
+                    contextMenu.Items.Add(menuItem);
+                }
+
                 return contextMenu;
             }
             var contextMenu = CreateContextMenu();
@@ -88,5 +97,6 @@ namespace PixelRuler.Views
         Save = 2,
         SaveAs = 3,
         Pin = 4,
+        CommandTarget = 5,
     }
 }

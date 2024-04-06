@@ -262,5 +262,17 @@ namespace PixelRuler.Properties {
                 this["AdditionalPathInfos"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CommandTargets {
+            get {
+                return ((string)(this["CommandTargets"]));
+            }
+            set {
+                this["CommandTargets"] = value;
+            }
+        }
     }
 }

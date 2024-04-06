@@ -205,32 +205,6 @@ namespace PixelRuler
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(e.PropertyName));
         }
 
-        private ImageFormat getImageFormatFromFilename(string fileName)
-        {
-            var extIndex = fileName.LastIndexOf('.');
-            var ext = fileName.Substring(extIndex+1).ToLower();
-            switch(ext)
-            {
-                case "jpg":
-                case "jpeg":
-                    return ImageFormat.Jpeg;
-                case "png":
-                    return ImageFormat.Png;
-                case "bmp":
-                    return ImageFormat.Bmp;
-                case "gif":
-                    return ImageFormat.Gif;
-                default:
-                    throw new NotImplementedException();
-            }
-
-        }
-
-        public void SaveImage(string fileName)
-        {
-            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fileName));
-            this.Image.Save(fileName, getImageFormatFromFilename(fileName));
-        }
 
         private double boundingBoxWidth;
         public double ShapeWidth

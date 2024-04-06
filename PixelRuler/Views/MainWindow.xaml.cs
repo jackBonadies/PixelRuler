@@ -277,26 +277,63 @@ namespace PixelRuler
                 var sfdres = sfd.ShowDialog();
                 if(sfdres is true)
                 {
-                    this.ViewModel.SaveImage(sfd.FileName);
+                    if(this.ViewModel.Image == null)
+                    {
+                        throw new Exception("Save As - Missing Image");
+                    }
+                    ImageCommon.SaveImage(sfd.FileName, this.ViewModel.Image);
                 }
                 return false;
             }
             
+            // string savedPath 
             if (wsw.AfterScreenshotValue is AfterScreenshotAction.Save)
             {
                 string fname = string.Empty;
                 if (wsw.AfterScreenshotAdditionalArg is PathSaveInfo pathSaveInfo)
                 {
-                    fname = pathSaveInfo.Evaluate(this.ViewModel.ScreenshotInfo.Value, true, true);
+                    if(this.ViewModel.ScreenshotInfo == null)
+                    {
+                        throw new InvalidOperationException("Missing Screenshot Info");
+                    }
+                    if(this.ViewModel.Image == null)
+                    {
+                        throw new InvalidOperationException("Missing Image");
+                    }
+
+                    fname = pathSaveInfo.SaveImage(this.ViewModel.Image, this.ViewModel.ScreenshotInfo.Value);
                 }
                 else
                 {
                     throw new Exception("Unexpected Arg for Save");
                 }
-
-                this.ViewModel.SaveImage(fname);
                 return false;
             }
+
+            if (wsw.AfterScreenshotValue is AfterScreenshotAction.CommandTarget)
+            {
+                if (wsw.AfterScreenshotAdditionalArg is CommandTargetInfo cmdTargetInfo)
+                {
+                    if(this.ViewModel.ScreenshotInfo == null)
+                    {
+                        throw new InvalidOperationException("Missing Screenshot Info");
+                    }
+                    if(this.ViewModel.Image == null)
+                    {
+                        throw new InvalidOperationException("Missing Image");
+                    }
+
+                    string fname = this.ViewModel.Settings.DefaultPathSaveInfo.SaveImage(this.ViewModel.Image, this.ViewModel.ScreenshotInfo.Value);
+                    cmdTargetInfo.Execute(fname);
+                }
+                else
+                {
+                    throw new Exception("Unexpected Arg for Command Target");
+                }
+                return false;
+            }
+
+            
 
             //if(wsw.AfterScreenshotValue is AfterScreenshotAction.Pin)
             //{

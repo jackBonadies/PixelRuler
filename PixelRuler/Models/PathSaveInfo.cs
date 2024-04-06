@@ -2,6 +2,7 @@
 using PixelRuler.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,7 +31,7 @@ namespace PixelRuler.Models
 
         public PathSaveInfo Clone()
         {
-            return this.MemberwiseClone() as PathSaveInfo;
+            return (PathSaveInfo)this.MemberwiseClone();
         }
 
         public bool Enabled { get; set; }
@@ -100,19 +101,25 @@ namespace PixelRuler.Models
             return filePatternEvaluated;
         }
 
+        public string SaveImage(Bitmap bmp, ScreenshotInfo info)
+        {
+            string fname = this.Evaluate(info, true, true);
+            ImageCommon.SaveImage(fname, bmp);
+            return fname;
+        }
 
         private static readonly Regex tokenRegex = new Regex(@"\{([^}:]+)(?::(.*?))?\}", RegexOptions.Compiled);
 
 
     }
 
-        public class PathEvaluationException : Exception
-        {
-            public PathEvaluationException(string message) : base(message) 
-            { 
-            }
-
-            public int startIndex = -1;
-            public int length = -1;
+    public class PathEvaluationException : Exception
+    {
+        public PathEvaluationException(string message) : base(message) 
+        { 
         }
+
+        public int startIndex = -1;
+        public int length = -1;
+    }
 }

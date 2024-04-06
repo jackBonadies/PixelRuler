@@ -114,6 +114,7 @@ namespace PixelRuler
             });
 
             RestorePathInfos();
+            RestoreCommandTargets();
         }
 
         public void DeletePathItem(PathSaveInfo pathSaveInfo)
@@ -152,6 +153,22 @@ namespace PixelRuler
             else
             {
                 AdditionalPathSaveInfos = new ObservableCollection<PathSaveInfo>(JsonSerializer.Deserialize(additionalPathInfosString, typeof(List<PathSaveInfo>)) as List<PathSaveInfo>);
+            }
+        }
+        private void RestoreCommandTargets()
+        {
+            var commandTargetsString = Properties.Settings.Default.CommandTargets;
+
+            if (string.IsNullOrEmpty(commandTargetsString))
+            {
+                CommandTargetInfos = new ObservableCollection<CommandTargetInfo>()
+                {
+                    new CommandTargetInfo("Paint", "mspaint", "{filename}")
+                };
+            }
+            else
+            {
+                CommandTargetInfos = new ObservableCollection<CommandTargetInfo>(JsonSerializer.Deserialize(commandTargetsString, typeof(List<CommandTargetInfo>)) as List<CommandTargetInfo>);
             }
         }
 
@@ -379,6 +396,8 @@ namespace PixelRuler
         private PathSaveInfo defaultPathSaveInfo;
 
         public ObservableCollection<PathSaveInfo> AdditionalPathSaveInfos { get; set; }
+
+        public ObservableCollection<CommandTargetInfo> CommandTargetInfos { get; set; }
 
         public bool GlobalShortcutsEnabled
         {
