@@ -39,16 +39,6 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
-        <Style x:Key="SmallHeader" TargetType="Label">
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Margin" Value="0,0,0,-4" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Style.Triggers>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Opacity" Value=".5" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
         <Label IsEnabled="{Binding PathSaveInfo.IsDefault, Converter={StaticResource InvertBoolConverter}}" Style="{StaticResource SmallHeader}">Display Name</Label>

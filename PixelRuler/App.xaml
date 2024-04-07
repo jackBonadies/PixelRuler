@@ -38,6 +38,17 @@
             <SolidColorBrush x:Key="ToggledHighlightColor">#80B9EE</SolidColorBrush>
             <SolidColorBrush x:Key="AnnotationColor">#EE4B2B</SolidColorBrush>
 
+            <Style x:Key="SmallHeader" TargetType="Label">
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Margin" Value="0,0,0,-4" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Opacity" Value=".5" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
             <CombinedGeometry x:Key="CopyIconPath" GeometryCombineMode="Union">
                 <CombinedGeometry.Geometry1>
                     M768 832a128 128 0 0 1-128 128H192A128 128 0 0 1 64 832V384a128 128 0 0 1 128-128v64a64 64 0 0 0-64 64v448a64 64 0 0 0 64 64h448a64 64 0 0 0 64-64h64z

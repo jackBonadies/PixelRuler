@@ -57,8 +57,54 @@ namespace PixelRuler
                 });
             viewModel.Settings.EditShortcutCommandEvent += Settings_EditShortcutCommandEvent;
             viewModel.Settings.EditSavePathCommandEvent += Settings_EditSavePathCommandEvent;
+            viewModel.Settings.EditCommandTargetCommandEvent += Settings_EditCommandTargetCommandEvent;
 
             InitializeComponent();
+        }
+
+        private async void Settings_EditCommandTargetCommandEvent(object? sender, (CommandTargetInfo, bool) commandTargetArgs)
+        {
+            //new PathInfoEdit
+            var cmdTargetInfo = commandTargetArgs.Item1;
+            var pending = cmdTargetInfo.Clone();
+            var pathInfoEditViewModel = new CommandTargetEditViewModel(pending, commandTargetArgs.Item2);
+
+            var diagContents = new CommandTargetEditView();
+            diagContents.DataContext = pathInfoEditViewModel;
+            diagContents.Background = new SolidColorBrush(Colors.White);
+            var contentDialog = new ContentDialog(RootContentDialog)
+            {
+                DialogMargin = new Thickness(60,0,60,0),
+                DialogWidth = 2000,
+                Title = commandTargetArgs.Item2 ? "Add Save Path" : "Edit Save Path",
+                Content = diagContents,
+                CloseButtonText = "Cancel",
+                PrimaryButtonText = commandTargetArgs.Item2 ? "Save" : "Update",
+            };
+            //contentDialog.SetBinding(ContentDialog.IsPrimaryButtonEnabledProperty, new Binding("IsValid") { Source = pendingShortcutInfo });
+            contentDialog.UseLayoutRounding = true;
+            contentDialog.Loaded += (object o, RoutedEventArgs e) => diagContents.Focus();
+            contentDialog.Loaded += ContentDialogPathInfo_Loaded;
+
+            var result = await contentDialog.ShowAsync();
+
+            switch (result)
+            {
+                case ContentDialogResult.None: // cancel
+                    break;
+                case ContentDialogResult.Primary:
+                    if(commandTargetArgs.Item2)
+                    {
+                        (this.DataContext as SettingsViewModel).AddCommandTargetInfo(pending);
+                    }
+                    else
+                    {
+                        (this.DataContext as SettingsViewModel).UpdateCommandTargetInfo(cmdTargetInfo, pending);
+                    }
+
+                    //pendingShortcutInfo.UpdateShortcut();
+                    break;
+            }
         }
 
         private async void Settings_EditSavePathCommandEvent(
@@ -69,7 +115,6 @@ namespace PixelRuler
             var pathSaveInfo = pathInfoArgs.pathSaveInfo;
             var pending = pathSaveInfo.Clone();
             var pathInfoEditViewModel = new PathInfoEditViewModel(pending, pathInfoArgs.newPath);
-
 
             var diagContents = new PathInfoEditView();
             diagContents.DataContext = pathInfoEditViewModel;

@@ -35,11 +35,19 @@ namespace PixelRuler.Models
 
         public string CommandArgs { get; set; } = string.Empty;
 
+        public string FullCommandString
+        {
+            get
+            {
+                return $"{CommandExe} {CommandArgs}";
+            }
+        }
+
         private string EvaluateArgs(string filename)
         {
             if (CommandArgs.Contains("{filename}"))
             {
-                return CommandArgs.Replace("{filename}", $"\"{filename}\"");
+                return CommandArgs.Replace("{filename}", $"{filename}");
             }
             return CommandArgs;
         }

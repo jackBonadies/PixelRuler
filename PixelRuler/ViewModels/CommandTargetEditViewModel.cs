@@ -1,0 +1,85 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Win32;
+using Ookii.Dialogs.Wpf;
+using PixelRuler.Common;
+using PixelRuler.Models;
+using PixelRuler.Views;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PixelRuler.ViewModels
+{
+    public partial class CommandTargetEditViewModel : ObservableObject
+    {
+
+        public CommandTargetEditViewModel(CommandTargetInfo commandTargetInfo, bool newEntry)
+        {
+            CommandTargetInfo = commandTargetInfo;
+            NewEntry = newEntry;
+            SelectExecutableCommand = new RelayCommand((object? obj) =>
+            {
+                var ofd = new OpenFileDialog();
+                ofd.DefaultExt = ".exe";
+                bool? res = ofd.ShowDialog();
+            });
+        }
+
+        public RelayCommand SelectExecutableCommand { get; set; }
+
+        public string? ExecutableName
+        {
+            get
+            {
+                return CommandTargetInfo.CommandExe;
+            }
+            set
+            {
+                if(CommandTargetInfo.CommandExe != value)
+                {
+                    CommandTargetInfo.CommandExe = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string? CommandArgs
+        {
+            get
+            {
+                return CommandTargetInfo.CommandArgs;
+            }
+            set
+            {
+                if(CommandTargetInfo.CommandArgs != value)
+                {
+                    CommandTargetInfo.CommandArgs = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string? DisplayName
+        {
+            get
+            {
+                return CommandTargetInfo.DisplayName;
+            }
+            set
+            {
+                if(CommandTargetInfo.DisplayName != value)
+                {
+                    CommandTargetInfo.DisplayName = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public CommandTargetInfo CommandTargetInfo { get; set; } 
+        public bool NewEntry { get; set; } 
+    }
+}
