@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace PixelRuler.ViewModels
 {
-    public partial class PathInfoEditViewModel : ObservableObject
+    public partial class PathInfoEditViewModel : ObservableObject, IDataErrorInfo
     {
         public DateTime DummyDateTime = DateTime.Now;
 
@@ -190,6 +190,23 @@ namespace PixelRuler.ViewModels
             }
         }
 
-        public RelayCommand TokenInsertCommand { get; private set; } 
+        public RelayCommand TokenInsertCommand { get; private set; }
+
+        public string Error => string.Empty;
+
+        public string this[string columnName]
+        {
+            get
+            {
+                if(columnName == nameof(DisplayName))
+                {
+                    if(string.IsNullOrWhiteSpace(DisplayName))
+                    {
+                        return "Display Name cannot be blank.";
+                    }
+                }
+                return string.Empty;
+            }
+        }
     }
 }

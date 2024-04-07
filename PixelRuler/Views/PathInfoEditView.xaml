@@ -2,6 +2,7 @@
     x:Class="PixelRuler.Views.PathInfoEditView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:custom="clr-namespace:PixelRuler.CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:PixelRuler.Views"
@@ -42,10 +43,10 @@
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
         <Label IsEnabled="{Binding PathSaveInfo.IsDefault, Converter={StaticResource InvertBoolConverter}}" Style="{StaticResource SmallHeader}">Display Name</Label>
-        <TextBox
+        <custom:TextBoxWithValidation
             d:Text="My Folder (1)"
             IsEnabled="{Binding PathSaveInfo.IsDefault, Converter={StaticResource InvertBoolConverter}}"
-            Text="{Binding DisplayName}" />
+            Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
         <Label Style="{StaticResource SmallHeader}">Folder</Label>
         <Grid>
             <Grid.ColumnDefinitions>

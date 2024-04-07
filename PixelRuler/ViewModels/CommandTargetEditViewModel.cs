@@ -14,9 +14,8 @@ using System.Threading.Tasks;
 
 namespace PixelRuler.ViewModels
 {
-    public partial class CommandTargetEditViewModel : ObservableObject
+    public partial class CommandTargetEditViewModel : ObservableObject, IDataErrorInfo
     {
-
         public CommandTargetEditViewModel(CommandTargetInfo commandTargetInfo, bool newEntry)
         {
             CommandTargetInfo = commandTargetInfo;
@@ -24,10 +23,15 @@ namespace PixelRuler.ViewModels
             SelectExecutableCommand = new RelayCommand((object? obj) =>
             {
                 var ofd = new OpenFileDialog();
-                ofd.DefaultExt = ".exe";
+                ofd.Filter = "Exe|*.exe";
                 bool? res = ofd.ShowDialog();
+                if(res is true)
+                {
+                    ExecutableName = ofd.FileName;
+                }
             });
         }
+
 
         public RelayCommand SelectExecutableCommand { get; set; }
 
@@ -47,7 +51,7 @@ namespace PixelRuler.ViewModels
             }
         }
 
-        public string? CommandArgs
+        public string CommandArgs
         {
             get
             {
@@ -80,6 +84,29 @@ namespace PixelRuler.ViewModels
         }
 
         public CommandTargetInfo CommandTargetInfo { get; set; } 
-        public bool NewEntry { get; set; } 
+        public bool NewEntry { get; set; }
+        public string this[string columnName]
+        {
+            get
+            {
+                if(columnName == nameof(DisplayName))
+                {
+                    if(string.IsNullOrWhiteSpace(DisplayName))
+                    {
+                        return "Display Name cannot be blank.";
+                    }
+                }
+                else if(columnName == nameof(ExecutableName))
+                {
+                    if(string.IsNullOrWhiteSpace(ExecutableName))
+                    {
+                        return "Command cannot be blank.";
+                    }
+                }
+                return string.Empty;
+            }
+        }
+
+        public string Error => string.Empty;
     }
 }
