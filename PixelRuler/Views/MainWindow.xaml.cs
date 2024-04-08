@@ -60,7 +60,8 @@ namespace PixelRuler
             this.IsVisibleChanged += MainWindow_IsVisibleChanged;
 
             this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
-            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(OverlayMode.Window, false); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
+            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewFullScreenshot(false); }, Key.N, ModifierKeys.Control | ModifierKeys.Shift, "New Full Screenshot");
+            this.ViewModel.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(OverlayMode.WindowAndRegionRect, false); }, Key.N, ModifierKeys.Control, "New Region Screenshot");
             this.ViewModel.CopyCanvasContents = new RelayCommandFull((object? o) => { CopyContents(); }, Key.C, ModifierKeys.Control, "Copy Elements");
             this.ViewModel.PasteCanvasContents = new RelayCommandFull((object? o) => { this.mainCanvas.PasteCopiedData(); }, Key.V, ModifierKeys.Control, "Paste Elements");
 
@@ -264,25 +265,7 @@ namespace PixelRuler
 
             if(wsw.AfterScreenshotValue is AfterScreenshotAction.SaveAs)
             {
-                var fullFilename = this.ViewModel.Settings.DefaultPathSaveInfo.Evaluate(this.ViewModel.ScreenshotInfo.Value, true);
-                var initDir = System.IO.Path.GetDirectoryName(fullFilename);
-                Directory.CreateDirectory(initDir);
-
-                var sfd = new SaveFileDialog();
-                sfd.InitialDirectory = initDir;
-                sfd.FileName = System.IO.Path.GetFileName(fullFilename);
-                sfd.DefaultExt = this.ViewModel.Settings.DefaultPathSaveInfo.Extension;
-                sfd.AddExtension = true;
-                sfd.Filter = "PNG|*.png|JPEG|*.jpg;*.jpeg|GIF|*.gif|BMP|*.bmp";
-                var sfdres = sfd.ShowDialog();
-                if(sfdres is true)
-                {
-                    if(this.ViewModel.Image == null)
-                    {
-                        throw new Exception("Save As - Missing Image");
-                    }
-                    ImageCommon.SaveImage(sfd.FileName, this.ViewModel.Image);
-                }
+                this.ViewModel.SaveAs();
                 return false;
             }
             

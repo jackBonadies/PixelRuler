@@ -15,13 +15,16 @@ using PixelRuler.CanvasElements;
 using System.Drawing.Imaging;
 using PixelRuler.Models;
 using System.IO;
+using Microsoft.Win32;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace PixelRuler
 {
     /// <summary>
     /// Per window view model
     /// </summary>
-    public class PixelRulerViewModel : INotifyPropertyChanged
+    public partial class PixelRulerViewModel : ObservableObject
     {
         public PixelRulerViewModel(SettingsViewModel? settingsViewModel = null)
         {
@@ -110,13 +113,6 @@ namespace PixelRuler
             OnPropertyChanged(nameof(CurrentZoomPercent));
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string? name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         private Bitmap? mainImage;
         public Bitmap? Image
         {
@@ -200,9 +196,33 @@ namespace PixelRuler
             }
         }
 
+        [RelayCommand]
+        public void SaveAs()
+        {
+            var fullFilename = this.Settings.DefaultPathSaveInfo.Evaluate(this.ScreenshotInfo.Value, true);
+            var initDir = System.IO.Path.GetDirectoryName(fullFilename);
+            Directory.CreateDirectory(initDir);
+
+            var sfd = new SaveFileDialog();
+            sfd.InitialDirectory = initDir;
+            sfd.FileName = System.IO.Path.GetFileName(fullFilename);
+            sfd.DefaultExt = this.Settings.DefaultPathSaveInfo.Extension;
+            sfd.AddExtension = true;
+            sfd.Filter = "PNG|*.png|JPEG|*.jpg;*.jpeg|GIF|*.gif|BMP|*.bmp";
+            var sfdres = sfd.ShowDialog();
+            if(sfdres is true)
+            {
+                if(this.Image == null)
+                {
+                    throw new Exception("Save As - Missing Image");
+                }
+                ImageCommon.SaveImage(sfd.FileName, this.Image);
+            }
+        }
+
         private void ActiveMeasureElement_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(e.PropertyName));
+            OnPropertyChanged(e.PropertyName);
         }
 
 
@@ -271,56 +291,17 @@ namespace PixelRuler
             }
         }
 
+        [ObservableProperty]
+        public RelayCommandFull newScreenshotRegionCommand;
+
+        [ObservableProperty]
         private RelayCommandFull newScreenshotFullCommand;
-        public RelayCommandFull NewScreenshotFullCommand
-        {
-            get
-            {
-                return newScreenshotFullCommand;
-            }
-            set
-            {
-                if (newScreenshotFullCommand != value)
-                {
-                    newScreenshotFullCommand = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
 
+        [ObservableProperty]
         private RelayCommandFull pasteCanvasContents;
-        public RelayCommandFull PasteCanvasContents
-        {
-            get
-            {
-                return pasteCanvasContents;
-            }
-            set
-            {
-                if (pasteCanvasContents != value)
-                {
-                    pasteCanvasContents = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
 
+        [ObservableProperty]
         private RelayCommandFull copyCanvasContents;
-        public RelayCommandFull CopyCanvasContents
-        {
-            get
-            {
-                return copyCanvasContents;
-            }
-            set
-            {
-                if(copyCanvasContents != value)
-                {
-                    copyCanvasContents = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
 
         public RelayCommandFull CopyRawImageToClipboardCommand { get; set; }
 
@@ -431,6 +412,27 @@ namespace PixelRuler
             get; set;
         }
 
+        [RelayCommand]
+        public void ToggleShowGridLines()
+        {
+            ShowGridLines = !ShowGridLines;
+        }
+
+        [RelayCommand]
+        public void OpenImageFile()
+        {
+            var ofd = new OpenFileDialog();
+            ofd.Filter = "PNG|*.png|JPEG|*.jpg;*.jpeg|GIF|*.gif|BMP|*.bmp";
+            bool? res = ofd.ShowDialog();
+            if(res is true)
+            {
+                var bmp = System.Drawing.Bitmap.FromFile(ofd.FileName);
+                this.Image = bmp as System.Drawing.Bitmap;
+                this.ImageUpdated?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler<EventArgs> ImageUpdated;
         public event EventHandler<EventArgs> ShowGridLinesChanged;
         private bool showGridlines = false;
         public bool ShowGridLines

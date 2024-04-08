@@ -41,7 +41,7 @@ namespace PixelRuler
                 }
             }
 
-            m = new Mutex(true, "Global\\PixelRuler_SingleProcess_Global", out bool createdNew);
+            singleProcessMutex = new Mutex(true, "Global\\PixelRuler_SingleProcess_Global", out bool createdNew);
             if(createdNew)
             {
                 Task.Run(() => PipeServer());
@@ -62,18 +62,17 @@ namespace PixelRuler
 
         }
 
-        private Mutex m;
+        private Mutex singleProcessMutex = null!;
 
-        private SettingsViewModel settingsViewModel;
+        private SettingsViewModel settingsViewModel = null!;
 
-
-        private const string pipeName = "PR_GUID12_pipe";
+        private const string pipe_name = "PixelRuler_0c87c02590af41bda768a872ddd91ee3";
 
         void PipeServer()
         {
             while(true)
             {
-                using (var server = new NamedPipeServerStream(pipeName))
+                using (var server = new NamedPipeServerStream(pipe_name))
                 {
                         server.WaitForConnection();
                         using (var sr = new StreamReader(server))
@@ -142,7 +141,7 @@ namespace PixelRuler
 
         static void PipeClient(string[] args)
         {
-            using (var client = new NamedPipeClientStream(pipeName))
+            using (var client = new NamedPipeClientStream(pipe_name))
             {
                 client.Connect();
                 using (var sw = new StreamWriter(client))

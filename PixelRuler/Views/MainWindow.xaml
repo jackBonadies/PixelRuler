@@ -46,11 +46,10 @@
             <Setter Property="Margin" Value="10" />
         </Style>
 
-        <Style x:Key="SeperatorStyle" TargetType="Border">
-            <Setter Property="Margin" Value="10,0,10,0" />
-            <Setter Property="Width" Value="2" />
-            <Setter Property="Height" Value="28" />
-            <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Style x:Key="SeparatorStyle" TargetType="Border">
+            <Setter Property="Margin" Value="4,0,4,0" />
+            <Setter Property="Width" Value="1" />
+            <Setter Property="Height" Value="24" />
             <Setter Property="Background" Value="{DynamicResource SeperatorColor}" />
         </Style>
 
@@ -89,6 +88,10 @@
             Key="{Binding NewScreenshotFullCommand.Key}"
             Command="{Binding NewScreenshotFullCommand}"
             Modifiers="{Binding NewScreenshotFullCommand.Modifiers}" />
+        <KeyBinding
+            Key="O"
+            Command="{Binding OpenImageFileCommand}"
+            Modifiers="Ctrl" />
         <KeyBinding
             Key="{Binding BoundsMeasureSelectedCommand.Key}"
             Command="{Binding BoundsMeasureSelectedCommand}"
@@ -133,6 +136,10 @@
             Key="{Binding CloseWindowCommand.Key}"
             Command="{Binding CloseWindowCommand}"
             Modifiers="{Binding CloseWindowCommand.Modifiers}" />
+        <KeyBinding
+            Key="S"
+            Command="{Binding SaveAsCommand}"
+            Modifiers="Ctrl" />
     </Window.InputBindings>
 
 
@@ -154,25 +161,128 @@
             <!--  Left Panel  -->
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                 <StackPanel Width="10" />
-                <Button Command="{Binding NewScreenshotFullCommand}" ToolTipService.ToolTip="{Binding NewScreenshotFullCommand.ToolTipTextFull}">
-                    <wpfui:SymbolIcon
-                        FontSize="17"
-                        RenderTransformOrigin="0.5,0.5"
-                        Symbol="CameraAdd48">
-                        <wpfui:SymbolIcon.RenderTransform>
-                            <TransformGroup>
-                                <ScaleTransform ScaleX="1.15" ScaleY="1.15" />
-                                <SkewTransform />
-                                <RotateTransform />
-                                <TranslateTransform />
-                            </TransformGroup>
-                        </wpfui:SymbolIcon.RenderTransform>
+                <Menu>
+                    <Menu.Resources>
+                        <Style TargetType="AccessText">
+                            <Setter Property="FontSize" Value="14" />
+                        </Style>
+                    </Menu.Resources>
+                    <ui:MenuItem Margin="0" Padding="0">
+                        <ui:MenuItem.Header>
+                            <AccessText Margin="0,-6,0,-6" Text="_File" />
+                        </ui:MenuItem.Header>
+                        <MenuItem Command="{Binding NewScreenshotRegionCommand}" InputGestureText="Ctrl+N">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="SelectObject24" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <AccessText Text="New _Region Screenshot" />
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Command="{Binding NewScreenshotFullCommand}" InputGestureText="Ctrl+Shift+N">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="Screenshot24" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <AccessText Text="New _Fullscreen Screenshot" />
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Command="{Binding OpenImageFileCommand}" InputGestureText="Ctrl+O">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="Folder24" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <AccessText Text="Open" />
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+S">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="Save24" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <AccessText Text="Save As..." />
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Command="{Binding CloseWindowCommand}" InputGestureText="Ctrl+W">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="ArrowExit20" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <AccessText Text="Close" />
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </ui:MenuItem>
+                    <ui:MenuItem Margin="0" Padding="0">
+                        <ui:MenuItem.Header>
+                            <AccessText Margin="0,-6,0,-6" Text="_Edit" />
+                        </ui:MenuItem.Header>
+                        <MenuItem Command="{Binding SelectAllElementsCommand}" InputGestureText="Ctrl+A">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="SelectAllOn24" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <AccessText Text="Select All" />
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Command="{Binding ClearAllMeasureElementsCommand}" InputGestureText="Shift+C">
+                            <MenuItem.Icon>
+                                <TextBlock
+                                    FontFamily="Segoe MDL2 Assets"
+                                    FontSize="16"
+                                    Style="{StaticResource GreyOutIfDisabled}"
+                                    Text="&#xED62;" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <AccessText Text="Clear All" />
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </ui:MenuItem>
+                    <ui:MenuItem Margin="0" Padding="0">
+                        <ui:MenuItem.Header>
+                            <AccessText Margin="0,-6,0,-6" Text="_View" />
+                        </ui:MenuItem.Header>
+                        <MenuItem Command="{Binding ToggleShowGridLinesCommand}" InputGestureText="G">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="Checkmark24" Visibility="{Binding ShowGridLines, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Hidden}" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <AccessText Text="_Gridlines" />
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Command="{Binding FitWindowCommand}" InputGestureText="Ctrl+0">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="ZoomFit24" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <AccessText Text="Fit to Window" />
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Command="{Binding ZoomInCommand}" InputGestureText="Ctrl++">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="ZoomIn24" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <AccessText Text="Zoom In" />
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Command="{Binding ZoomOutCommand}" InputGestureText="Ctrl+-">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="ZoomOut24" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <AccessText Text="Zoom Out" />
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </ui:MenuItem>
+                </Menu>
 
-                    </wpfui:SymbolIcon>
-                    <!--<TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE722;" FontSize="17" />-->
-                </Button>
-
-                <Border Style="{StaticResource SeperatorStyle}" />
+                <Border
+                    Margin="4,0,10,0"
+                    Style="{StaticResource SeparatorStyle}"
+                    UseLayoutRounding="True" />
 
                 <ToggleButton
                     Command="{Binding BoundsMeasureSelectedCommand}"
@@ -205,7 +315,7 @@
                         Text="&#xEF3C;" />
                 </ToggleButton>
 
-                <Border Style="{StaticResource SeperatorStyle}" />
+                <Border Style="{StaticResource SeparatorStyle}" />
 
                 <Button Command="{Binding ClearAllMeasureElementsCommand}" ToolTipService.ToolTip="{Binding ClearAllMeasureElementsCommand.ToolTipTextFull}">
                     <TextBlock

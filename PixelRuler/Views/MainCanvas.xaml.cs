@@ -406,6 +406,7 @@ namespace PixelRuler
             this.ViewModel.DeleteAllSelectedElements += DeleteAllSelectedMeasureElements;
             this.ViewModel.AllElementsSelected += AllElementsSelected;
             this.ViewModel.ShowGridLinesChanged += ViewModel_ShowGridLinesChanged;
+            this.ViewModel.ImageUpdated += ViewModel_ImageUpdated;
             SetClearAllMeasurementsEnabledState();
             SetShowGridLineState();
 
@@ -413,6 +414,11 @@ namespace PixelRuler
             Canvas.SetZIndex(zoomBox, 1200);
             this.overlayCanvas.Children.Add(zoomBox);
             this.SetCursor();
+        }
+
+        private void ViewModel_ImageUpdated(object? sender, EventArgs e)
+        {
+            this.SetImage(this.ViewModel.ImageSource);
         }
 
         private void ViewModel_SelectedToolChanged(object? sender, EventArgs e)
@@ -1126,7 +1132,7 @@ namespace PixelRuler
             }
         }
 
-        internal void SetImage(BitmapSource img)
+        internal void SetImage(BitmapSource? img)
         {
             this.ViewModel.CurrentZoomPercent = 100;
             this.mainImage.Source = img;
