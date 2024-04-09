@@ -246,7 +246,7 @@ namespace PixelRuler
         private RelayCommand addSavePathInfoCommand;
 
         [ObservableProperty]
-        private RelayCommand deleteSavePathInfoCommand;
+        private RelayCommand? deleteSavePathInfoCommand;
 
         [ObservableProperty]
         private RelayCommand editCommandTargetCommand;

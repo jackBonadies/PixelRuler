@@ -54,7 +54,7 @@ namespace PixelRuler
             this.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.WindowAndRegionRect, true); }, Settings.WindowedRegionScreenshotShortcut, "New Region Screenshot");
             this.QuickMeasureCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.QuickMeasure, true); }, Settings.QuickMeasureShortcut, "Quick Measure");
             this.QuickColorCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.QuickColor, true); }, Settings.QuickColorShortcut, "Quick Color");
-            this.SettingsCommand = new RelayCommandFull((object? o) => { new SettingsWindow(new PixelRulerViewModel(this.Settings)).Show(); }, Key.None, ModifierKeys.None, "Settings");
+            this.SettingsCommand = new RelayCommandFull((object? o) => { App.ShowSettingsWindowSingleInstance(this.Settings); }, Key.None, ModifierKeys.None, "Settings");
         }
 
 

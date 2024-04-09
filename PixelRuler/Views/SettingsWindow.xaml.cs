@@ -27,13 +27,39 @@ namespace PixelRuler
     /// </summary>
     public partial class SettingsWindow : ThemeWindow
     {
-        public SettingsWindow(PixelRulerViewModel viewModel)
+        public SettingsWindow(SettingsViewModel viewModel)
         {
             var workArea = SystemParameters.WorkArea;
             this.MaxHeight = workArea.Height - 30;
 
-            this.DataContext = viewModel.Settings;
-            viewModel.Settings.DeleteSavePathInfoCommand = new RelayCommand(
+            this.DataContext = viewModel;
+            InitializeComponent();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            BindToViewModel(false);
+            base.OnClosed(e);
+        }
+
+        public SettingsViewModel ViewModel
+        {
+            get
+            {
+                var settings = this.DataContext as SettingsViewModel;
+                if(settings == null)
+                {
+                    throw new Exception("No View Model");
+                }
+                return settings;
+            }
+        }
+
+        private void BindToViewModel(bool bind)
+        {
+            if(bind)
+            {
+                this.ViewModel.DeleteSavePathInfoCommand = new RelayCommand(
                 async (object? o) =>
                 {
                     if (o is PathSaveInfo pathSaveInfo)
@@ -49,17 +75,23 @@ namespace PixelRuler
                         };
                         contentDialog.UseLayoutRounding = true;
                         var res = await contentDialog.ShowAsync();
-                        if(res == ContentDialogResult.Primary)
+                        if (res == ContentDialogResult.Primary)
                         {
-                            viewModel.Settings.DeletePathItem(pathSaveInfo);
+                            ViewModel.DeletePathItem(pathSaveInfo);
                         }
                     }
                 });
-            viewModel.Settings.EditShortcutCommandEvent += Settings_EditShortcutCommandEvent;
-            viewModel.Settings.EditSavePathCommandEvent += Settings_EditSavePathCommandEvent;
-            viewModel.Settings.EditCommandTargetCommandEvent += Settings_EditCommandTargetCommandEvent;
-
-            InitializeComponent();
+                ViewModel.EditShortcutCommandEvent += Settings_EditShortcutCommandEvent;
+                ViewModel.EditSavePathCommandEvent += Settings_EditSavePathCommandEvent;
+                ViewModel.EditCommandTargetCommandEvent += Settings_EditCommandTargetCommandEvent;
+            }
+            else
+            {
+                this.ViewModel.DeleteSavePathInfoCommand = null;
+                ViewModel.EditShortcutCommandEvent -= Settings_EditShortcutCommandEvent;
+                ViewModel.EditSavePathCommandEvent -= Settings_EditSavePathCommandEvent;
+                ViewModel.EditCommandTargetCommandEvent -= Settings_EditCommandTargetCommandEvent;
+            }
         }
 
         private async void Settings_EditCommandTargetCommandEvent(object? sender, (CommandTargetInfo, bool) commandTargetArgs)

@@ -167,6 +167,17 @@ namespace PixelRuler
 
         }
 
+        public static void ShowSettingsWindowSingleInstance(SettingsViewModel settings)
+        {
+            var settingsWindow = App.Current.Windows.OfType<SettingsWindow>().FirstOrDefault();
+            if (settingsWindow != null)
+            {
+                settingsWindow.Activate();
+                return;
+            }
+            new SettingsWindow(settings).Show();
+        }
+
         public static readonly double[] ZoomSelections = new double[]
         {
             50,

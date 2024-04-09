@@ -415,10 +415,7 @@ namespace PixelRuler
 
         private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var settingsWindow = new SettingsWindow(this.ViewModel);
-            settingsWindow.Owner = this;
-            settingsWindow.ShowDialog();
+            App.ShowSettingsWindowSingleInstance(this.ViewModel.Settings);
         }
-
     }
 }
