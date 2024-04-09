@@ -13,6 +13,7 @@
     d:DataContext="{d:DesignInstance Type=viewmodels:ScreenshotWindowViewModel}"
     Background="Transparent"
     Cursor="Cross"
+    Focusable="True"
     mc:Ignorable="d">
 
     <Window.InputBindings>
