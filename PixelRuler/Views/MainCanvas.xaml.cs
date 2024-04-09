@@ -399,14 +399,8 @@ namespace PixelRuler
 
         private void MainCanvas_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            this.ViewModel.ImageSourceChanged += ViewModel_ImageSourceChanged;
-            this.ViewModel.ZoomChanged += SelectedZoomChanged;
-            this.ViewModel.SelectedToolChanged += ViewModel_SelectedToolChanged;
-            this.ViewModel.ClearAllMeasureElements += ClearAllMeasureElements;
-            this.ViewModel.DeleteAllSelectedElements += DeleteAllSelectedMeasureElements;
-            this.ViewModel.AllElementsSelected += AllElementsSelected;
-            this.ViewModel.ShowGridLinesChanged += ViewModel_ShowGridLinesChanged;
-            this.ViewModel.ImageUpdated += ViewModel_ImageUpdated;
+            Bind(true);
+
             SetClearAllMeasurementsEnabledState();
             SetShowGridLineState();
 
@@ -414,6 +408,32 @@ namespace PixelRuler
             Canvas.SetZIndex(zoomBox, 1200);
             this.overlayCanvas.Children.Add(zoomBox);
             this.SetCursor();
+        }
+
+        public void Bind(bool bind)
+        {
+            if(bind)
+            {
+                this.ViewModel.ImageSourceChanged += ViewModel_ImageSourceChanged;
+                this.ViewModel.ZoomChanged += SelectedZoomChanged;
+                this.ViewModel.SelectedToolChanged += ViewModel_SelectedToolChanged;
+                this.ViewModel.ClearAllMeasureElements += ClearAllMeasureElements;
+                this.ViewModel.DeleteAllSelectedElements += DeleteAllSelectedMeasureElements;
+                this.ViewModel.AllElementsSelected += AllElementsSelected;
+                this.ViewModel.ShowGridLinesChanged += ViewModel_ShowGridLinesChanged;
+                this.ViewModel.ImageUpdated += ViewModel_ImageUpdated;
+            }
+            else
+            {
+                this.ViewModel.ImageSourceChanged -= ViewModel_ImageSourceChanged;
+                this.ViewModel.ZoomChanged -= SelectedZoomChanged;
+                this.ViewModel.SelectedToolChanged -= ViewModel_SelectedToolChanged;
+                this.ViewModel.ClearAllMeasureElements -= ClearAllMeasureElements;
+                this.ViewModel.DeleteAllSelectedElements -= DeleteAllSelectedMeasureElements;
+                this.ViewModel.AllElementsSelected -= AllElementsSelected;
+                this.ViewModel.ShowGridLinesChanged -= ViewModel_ShowGridLinesChanged;
+                this.ViewModel.ImageUpdated -= ViewModel_ImageUpdated;
+            }
         }
 
         private void ViewModel_ImageUpdated(object? sender, EventArgs e)
@@ -527,7 +547,6 @@ namespace PixelRuler
                     break;
                 }
             }
-            this.ViewModel.ClearAllMeasureElementsCommand.SetCanExecute(anyNonEmpty);
         }
 
         private bool shouldCenterImage()

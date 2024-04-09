@@ -37,9 +37,16 @@ namespace PixelRuler
     /// </summary>
     public partial class MainWindow : ThemeWindow
     {
+        protected override void OnClosed(EventArgs e)
+        {
+            HookUpUICommands(false);
+            this.ViewModel.Cleanup();
+            this.mainCanvas.Bind(false);
+            base.OnClosed(e);
+        }
+
         public MainWindow(PixelRulerViewModel prvm)
         {
-
             this.DataContext = prvm;
 
             InitializeComponent();
@@ -55,15 +62,11 @@ namespace PixelRuler
             //    this.Left = int.MinValue;
             //    this.ShowInTaskbar = false;
             //}
+            HookUpUICommands(true);
 
             this.Loaded += MainWindow_Loaded;
             this.IsVisibleChanged += MainWindow_IsVisibleChanged;
 
-            this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
-            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewFullScreenshot(false); }, Key.N, ModifierKeys.Control | ModifierKeys.Shift, "New Full Screenshot");
-            this.ViewModel.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(OverlayMode.WindowAndRegionRect, false); }, Key.N, ModifierKeys.Control, "New Region Screenshot");
-            this.ViewModel.CopyCanvasContents = new RelayCommandFull((object? o) => { CopyContents(); }, Key.C, ModifierKeys.Control, "Copy Elements");
-            this.ViewModel.PasteCanvasContents = new RelayCommandFull((object? o) => { this.mainCanvas.PasteCopiedData(); }, Key.V, ModifierKeys.Control, "Paste Elements");
 
             this.KeyDown += MainWindow_KeyDown;
             this.KeyUp += MainWindow_KeyUp;
@@ -72,7 +75,26 @@ namespace PixelRuler
             var handle = new WindowInteropHelper(this).Handle;
 
             this.SizeChanged += MainWindow_SizeChanged;
+        }
 
+        private void HookUpUICommands(bool bind)
+        {
+            if(bind)
+            {
+                this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
+                this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewFullScreenshot(false); }, Key.N, ModifierKeys.Control | ModifierKeys.Shift, "New Full Screenshot");
+                this.ViewModel.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(OverlayMode.WindowAndRegionRect, false); }, Key.N, ModifierKeys.Control, "New Region Screenshot");
+                this.ViewModel.CopyCanvasContents = new RelayCommandFull((object? o) => { CopyContents(); }, Key.C, ModifierKeys.Control, "Copy Elements");
+                this.ViewModel.PasteCanvasContents = new RelayCommandFull((object? o) => { this.mainCanvas.PasteCopiedData(); }, Key.V, ModifierKeys.Control, "Paste Elements");
+            }
+            else
+            {
+                this.ViewModel.CloseWindowCommand = null!;
+                this.ViewModel.NewScreenshotFullCommand = null!;
+                this.ViewModel.NewScreenshotRegionCommand = null!;
+                this.ViewModel.CopyCanvasContents = null!;
+                this.ViewModel.PasteCanvasContents = null!;
+            }
         }
 
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
