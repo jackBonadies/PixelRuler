@@ -46,11 +46,14 @@ namespace PixelRuler
             this.WindowState = WindowState.Normal;
             this.ShowInTaskbar = false;
 
-            this.fullBounds = WpfScreenHelper.Screen.PrimaryScreen.Bounds;
+            this.fullBounds = UiUtils.GetFullBounds(WpfScreenHelper.Screen.AllScreens);
+
+            var scaleFactor = WpfScreenHelper.Screen.PrimaryScreen.ScaleFactor;
+
             this.Top = fullBounds.Top;
-            this.Left = fullBounds.Left; //TODO
-            this.Width = fullBounds.Width / WpfScreenHelper.Screen.PrimaryScreen.ScaleFactor;
-            this.Height = fullBounds.Height / WpfScreenHelper.Screen.PrimaryScreen.ScaleFactor;
+            this.Left = fullBounds.Left / scaleFactor;
+            this.Width = fullBounds.Width / scaleFactor;
+            this.Height = fullBounds.Height / scaleFactor;
             this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
             this.AllowsTransparency = true;
@@ -66,7 +69,9 @@ namespace PixelRuler
             this.MouseUp += WindowSelectionWindow_MouseUp;
             this.MouseDown += WindowSelectionWindow_MouseDown;
 
-            this.blurRectGeometry.Rect = fullBounds; // offset i.e. it needs to start at 0..
+            var copyFullBounds = fullBounds;
+            copyFullBounds.Offset(-fullBounds.Left, -fullBounds.Top);
+            this.blurRectGeometry.Rect = copyFullBounds; // offset i.e. it needs to start at 0..
             this.rectSelectionOutline.Width = 0;
             this.rectSelectionOutline.Height = 0;
 
@@ -74,6 +79,31 @@ namespace PixelRuler
             ViewModel.FullscreenScreenshotMode = true;
             ViewModel.Mode = mode;
 
+            double xOffset = -fullBounds.Left;
+            double yOffset = -fullBounds.Top;
+
+            foreach(var screen in WpfScreenHelper.Screen.AllScreens)
+            {
+                // cannot use WpfBounds bc it will scale for that screens DPI. 
+                // but our window will scale our DPI (which may be different than
+                // the particular screen)
+
+                // we still do per screen dpi scaling.  so if the window dpi is 1.5 but 
+                //   a secondary monitor is 1 then scale things down.
+                var individualScale = screen.ScaleFactor / scaleFactor;
+
+                var left = (screen.Bounds.Left + xOffset) / scaleFactor;
+                var top = (screen.WpfBounds.Top + yOffset) / scaleFactor;
+                var perScreenPanel = new ScreenshotSelectionPerScreenPanel()
+                {
+                    Width = (screen.Bounds.Width / scaleFactor) / individualScale,
+                    Height = (screen.Bounds.Height / scaleFactor) / individualScale,
+                    Margin = new Thickness(left, top, 0, 0),
+                };
+                perScreenPanel.perScreenDpiScaleTransform.ScaleX = individualScale;
+                perScreenPanel.perScreenDpiScaleTransform.ScaleY = individualScale;
+                this.mainContent.Children.Add(perScreenPanel);
+            }
             setForMode();
         }
 
@@ -101,13 +131,13 @@ namespace PixelRuler
                 blurBackground.Visibility = Visibility.Visible;
                 blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x30, 0, 0, 0));
 
-                horzIndicator.X1 = fullBounds.Left;
-                horzIndicator.X2 = fullBounds.Right;
+                horzIndicator.X1 = 0;
+                horzIndicator.X2 = fullBounds.Right - fullBounds.Left;
                 horzIndicator.Y1 = horzIndicator.Y2 = 300;
 
                 vertIndicator.X1 = vertIndicator.X2 = 300;
-                vertIndicator.Y1 = fullBounds.Top;
-                vertIndicator.Y2 = fullBounds.Bottom;
+                vertIndicator.Y1 = 0;
+                vertIndicator.Y2 = fullBounds.Bottom - fullBounds.Top;
             }
 
             if (ViewModel.Mode == OverlayMode.QuickMeasure)
@@ -147,7 +177,7 @@ namespace PixelRuler
             var dpi = this.GetDpi();
             mainCanvas.LayoutTransform = new ScaleTransform(1 / dpi, 1 / dpi);
 
-            var bmp = UiUtils.CaptureScreen(WpfScreenHelper.Screen.PrimaryScreen.Bounds);
+            var bmp = UiUtils.CaptureScreen(UiUtils.GetFullBounds(WpfScreenHelper.Screen.AllScreens));
 
             SetupScreenshowWindowViewModel(ViewModel);
             this.DataContext = ViewModel;

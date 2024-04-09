@@ -79,7 +79,6 @@
                 <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
             </Style>
 
-
             <Style x:Key="GreyOutIfDisabled" TargetType="TextBlock">
                 <Setter Property="Opacity" Value="1" />
                 <Style.Triggers>
