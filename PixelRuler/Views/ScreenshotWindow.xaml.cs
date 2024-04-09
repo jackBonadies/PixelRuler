@@ -100,14 +100,16 @@ namespace PixelRuler
                     Height = (screen.Bounds.Height / scaleFactor) / individualScale,
                     Margin = new Thickness(left, top, 0, 0),
                 };
+                perScreenPanel.Bounds = new Rect(left, top, screen.Bounds.Width / scaleFactor, screen.Bounds.Height / scaleFactor);
                 perScreenPanel.perScreenDpiScaleTransform.ScaleX = individualScale;
                 perScreenPanel.perScreenDpiScaleTransform.ScaleY = individualScale;
+                PerScreenPanels.Add(perScreenPanel);
                 this.mainContent.Children.Add(perScreenPanel);
             }
             setForMode();
         }
 
-
+        public List<ScreenshotSelectionPerScreenPanel> PerScreenPanels { get; init; } = new List<ScreenshotSelectionPerScreenPanel>();
 
         private void setForMode()
         {
@@ -313,6 +315,12 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_PreviewMouseMove(object sender, MouseEventArgs e)
         {
+            var pos = e.GetPosition(this);
+            foreach(var perScreenPanel in PerScreenPanels)
+            {
+                perScreenPanel.HandleMouse(pos);
+            }
+
             if (ViewModel.Mode == OverlayMode.QuickMeasure || ViewModel.Mode == OverlayMode.QuickColor)
             {
                 return;

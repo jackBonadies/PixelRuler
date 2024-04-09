@@ -13,6 +13,7 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     Background="Transparent"
+    IsHitTestVisible="False"
     mc:Ignorable="d">
     <UserControl.RenderTransform>
         <ScaleTransform x:Name="perScreenDpiScaleTransform" ScaleX=".5" ScaleY=".5" />
@@ -20,7 +21,7 @@
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="MouseEnter">
             <BeginStoryboard>
-                <Storyboard>
+                <Storyboard x:Name="enterTransform">
                     <DoubleAnimation
                         Storyboard.TargetName="translateTransform"
                         Storyboard.TargetProperty="Y"
@@ -32,7 +33,7 @@
         </EventTrigger>
         <EventTrigger RoutedEvent="MouseLeave">
             <BeginStoryboard>
-                <Storyboard>
+                <Storyboard x:Name="leaveTransform">
                     <DoubleAnimation
                         Storyboard.TargetName="translateTransform"
                         Storyboard.TargetProperty="Y"

@@ -24,5 +24,27 @@ namespace PixelRuler.Views
         {
             InitializeComponent();
         }
+
+        public bool IsMouseEnteredVirtual
+        {
+            get; set;
+        }
+
+        public Rect Bounds { get; set; }
+
+        internal void HandleMouse(Point pos)
+        {
+            bool inside = Bounds.Contains(pos);
+            if (!IsMouseEnteredVirtual && inside)
+            {
+                IsMouseEnteredVirtual = true;
+                this.enterTransform.Begin();
+            }
+            else if(IsMouseEnteredVirtual && !inside)
+            {
+                IsMouseEnteredVirtual = false;
+                this.leaveTransform.Begin();
+            }
+        }
     }
 }
