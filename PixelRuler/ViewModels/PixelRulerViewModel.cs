@@ -432,6 +432,20 @@ namespace PixelRuler
             }
         }
 
+        public void Cleanup()
+        {
+            BoundsMeasureSelectedCommand = null!;
+            ColorPickerSelectedCommand = null!;
+            RulerSelectedCommand = null!;
+            ZoomInCommand = null!;
+            ZoomOutCommand = null!;
+            FitWindowCommand = null!;
+            ClearAllMeasureElementsCommand = null!;
+            DeleteAllSelectedCommand = null!;
+            SelectAllElementsCommand = null!;
+            CopyRawImageToClipboardCommand = null!;
+        }
+
         public event EventHandler<EventArgs> ImageUpdated;
         public event EventHandler<EventArgs> ShowGridLinesChanged;
         private bool showGridlines = false;
