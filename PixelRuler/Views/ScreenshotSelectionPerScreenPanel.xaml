@@ -12,38 +12,28 @@
     d:DataContext="{d:DesignInstance Type=vm:ScreenshotWindowViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    Background="Transparent"
-    IsHitTestVisible="False"
     mc:Ignorable="d">
     <UserControl.RenderTransform>
         <ScaleTransform x:Name="perScreenDpiScaleTransform" ScaleX=".5" ScaleY=".5" />
     </UserControl.RenderTransform>
-    <UserControl.Triggers>
-        <EventTrigger RoutedEvent="MouseEnter">
-            <BeginStoryboard>
-                <Storyboard x:Name="enterTransform">
-                    <DoubleAnimation
-                        Storyboard.TargetName="translateTransform"
-                        Storyboard.TargetProperty="Y"
-                        From="-56"
-                        To="0"
-                        Duration="0:0:.1" />
-                </Storyboard>
-            </BeginStoryboard>
-        </EventTrigger>
-        <EventTrigger RoutedEvent="MouseLeave">
-            <BeginStoryboard>
-                <Storyboard x:Name="leaveTransform">
-                    <DoubleAnimation
-                        Storyboard.TargetName="translateTransform"
-                        Storyboard.TargetProperty="Y"
-                        From="0"
-                        To="-56"
-                        Duration="0:0:.1" />
-                </Storyboard>
-            </BeginStoryboard>
-        </EventTrigger>
-    </UserControl.Triggers>
+    <UserControl.Resources>
+        <Storyboard x:Key="enterTransform" x:Name="enterTransform">
+            <DoubleAnimation
+                Storyboard.TargetName="translateTransform"
+                Storyboard.TargetProperty="Y"
+                From="-56"
+                To="0"
+                Duration="0:0:.1" />
+        </Storyboard>
+        <Storyboard x:Key="leaveTransform" x:Name="leaveTransform">
+            <DoubleAnimation
+                Storyboard.TargetName="translateTransform"
+                Storyboard.TargetProperty="Y"
+                From="0"
+                To="-56"
+                Duration="0:0:.1" />
+        </Storyboard>
+    </UserControl.Resources>
     <Grid Name="gridTopLevel">
         <Border
             Name="toolPanel"

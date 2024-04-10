@@ -113,6 +113,15 @@ namespace PixelRuler
             OnPropertyChanged(nameof(CurrentZoomPercent));
         }
 
+        public Bitmap CropImage(Rect rect)
+        {
+            _ = Image ?? throw new Exception("No Image to Crop");
+            // we may be outside bounds i.e. if a window is partially occluded.
+            var imageBounds = new Rect(0, 0, Image.Width, Image.Height);
+            rect.Intersect(imageBounds);
+            return Image.Clone(rect.ToRectangle(), this.Image.PixelFormat);
+        }
+
         private Bitmap? mainImage;
         public Bitmap? Image
         {

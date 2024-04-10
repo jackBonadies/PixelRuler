@@ -41,6 +41,19 @@ namespace PixelRuler
             }
             return uiString;
         }
+    }
+
+    public static class RectExtensions
+    {
+        /// <summary>
+        /// SysWin Rect to Drawing Rect
+        /// </summary>
+        public static System.Drawing.Rectangle ToRectangle(this System.Windows.Rect rect)
+        {
+            return new System.Drawing.Rectangle(
+                new System.Drawing.Point((int)rect.Left, (int)rect.Top),
+                new System.Drawing.Size((int)rect.Size.Width, (int)rect.Size.Height));
+        }
 
     }
 

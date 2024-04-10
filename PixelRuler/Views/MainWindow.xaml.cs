@@ -279,8 +279,8 @@ namespace PixelRuler
 
             if (res is true)
             {
-                bmp = UiUtils.CaptureScreen(wsw.SelectedRectWin);
-                this.ViewModel.SetImage(bmp, wsw.ScreenshotInfo);
+                var bmpCropped = wsw.ViewModel.CropImage(wsw.SelectedRectWin);
+                this.ViewModel.SetImage(bmpCropped, wsw.ScreenshotInfo);
                 // i.e. the time the actual screenshot was taken.
                 mainCanvas.SetImage(this.ViewModel.ImageSource);
             }

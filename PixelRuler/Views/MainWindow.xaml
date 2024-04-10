@@ -285,6 +285,7 @@
                     UseLayoutRounding="True" />
 
                 <ToggleButton
+                    Margin="0,0,3,0"
                     Command="{Binding BoundsMeasureSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=BoundingBox}"
                     ToolTipService.ToolTip="{Binding BoundsMeasureSelectedCommand.ToolTipTextFull}">
@@ -295,6 +296,7 @@
                 </ToggleButton>
 
                 <ToggleButton
+                    Margin="3,0,3,0"
                     Command="{Binding RulerSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=Ruler}"
                     ToolTipService.ToolTip="{Binding RulerSelectedCommand.ToolTipTextFull}">
@@ -305,7 +307,7 @@
                 </ToggleButton>
 
                 <ToggleButton
-                    Margin="0,0,0,0"
+                    Margin="3,0,3,0"
                     Command="{Binding ColorPickerSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=ColorPicker}"
                     ToolTipService.ToolTip="{Binding ColorPickerSelectedCommand.ToolTipTextFull}">
@@ -315,9 +317,12 @@
                         Text="&#xEF3C;" />
                 </ToggleButton>
 
-                <Border Style="{StaticResource SeparatorStyle}" />
+                <Border Style="{StaticResource SeparatorStyle}" Visibility="Collapsed" />
 
-                <Button Command="{Binding ClearAllMeasureElementsCommand}" ToolTipService.ToolTip="{Binding ClearAllMeasureElementsCommand.ToolTipTextFull}">
+                <Button
+                    Command="{Binding ClearAllMeasureElementsCommand}"
+                    ToolTipService.ToolTip="{Binding ClearAllMeasureElementsCommand.ToolTipTextFull}"
+                    Visibility="Collapsed">
                     <TextBlock
                         FontFamily="Segoe MDL2 Assets"
                         FontSize="17"
@@ -336,7 +341,8 @@
                     Padding="10,6,0,6"
                     FontSize="12"
                     ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}"
-                    Text="{Binding CurrentZoomPercent, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}" />
+                    Text="{Binding CurrentZoomPercent, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}"
+                    Visibility="Collapsed" />
                 <local:DropDownButtonCustom Margin="0,0,6,0" PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
                     <local:DropDownButtonCustom.Flyout>
                         <ContextMenu Width="100" Placement="Bottom">
@@ -352,7 +358,10 @@
             </StackPanel>
 
             <!--  Center Panel  -->
-            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+            <StackPanel
+                HorizontalAlignment="Center"
+                Orientation="Horizontal"
+                Visibility="Collapsed">
 
                 <TextBlock
                     Margin="0,0,4,0"

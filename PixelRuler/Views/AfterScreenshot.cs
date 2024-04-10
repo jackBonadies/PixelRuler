@@ -1,4 +1,5 @@
-﻿using PixelRuler.CustomControls;
+﻿using PixelRuler.Common;
+using PixelRuler.CustomControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,13 +48,13 @@ namespace PixelRuler.Views
                 contextMenu.ContextMenuClosing += ContextMenu_ContextMenuClosing;
                 contextMenu.PreviewKeyDown += ContextMenu_PreviewKeyDown;
 
-                var menuItem1 = new MenuItemCustom() { Header = "View", InputGestureText="Enter" };
+                var menuItem1 = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("View"), InputGestureText="Enter" };
                 menuItem1.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.ViewInPixelRulerWindow, null); };
-                var menuItem2 = new MenuItemCustom() { Header = "Cancel", InputGestureText="Escape" };
+                var menuItem2 = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Cancel"), InputGestureText="Escape" };
                 menuItem2.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Cancel, null); };
-                var menuItem3 = new MenuItemCustom() { Header = "Save As", InputGestureText="Ctrl+S" };
+                var menuItem3 = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save As"), InputGestureText="Ctrl+S" };
                 menuItem3.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.SaveAs, null); };
-                var menuItem4 = new MenuItemCustom() { Header = "Save", InputGestureText="S" };
+                var menuItem4 = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save"), InputGestureText="S" };
                 menuItem4.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, settings.DefaultPathSaveInfo); };
 
                 contextMenu.Items.Add(menuItem1);
@@ -65,7 +66,7 @@ namespace PixelRuler.Views
                 foreach(var saveDest in settings.AdditionalPathSaveInfos)
                 {
                     i++;
-                    var menuItem = new MenuItemCustom() { Header = saveDest.DisplayName?.SanitizeUnderscores(), InputGestureText = $"{i}" };
+                    var menuItem = new MenuItemCustom() { Header = UiUtils.CreateTextBlock(saveDest.DisplayName?.SanitizeUnderscores()), InputGestureText = $"{i}" };
                     menuItem.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, saveDest); };
                     contextMenu.Items.Add(menuItem);
                 }
@@ -74,7 +75,7 @@ namespace PixelRuler.Views
                 foreach(var cmdTarget in settings.CommandTargetInfos)
                 {
                     j++;
-                    var menuItem = new MenuItemCustom() { Header = cmdTarget.DisplayName?.SanitizeUnderscores(), InputGestureText = $"{i}" };
+                    var menuItem = new MenuItemCustom() { Header = UiUtils.CreateTextBlock(cmdTarget.DisplayName?.SanitizeUnderscores()), InputGestureText = $"{i}" };
                     menuItem.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.CommandTarget, cmdTarget); };
                     contextMenu.Items.Add(menuItem);
                 }
