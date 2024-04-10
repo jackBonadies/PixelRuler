@@ -34,6 +34,8 @@ namespace PixelRuler
 
             this.DataContext = viewModel;
             InitializeComponent();
+
+            this.BindToViewModel(true);
         }
 
         protected override void OnClosed(EventArgs e)
