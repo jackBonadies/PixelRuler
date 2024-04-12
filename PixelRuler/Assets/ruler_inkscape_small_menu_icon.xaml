@@ -1,0 +1,111 @@
+<?xml version="1.0" ?>
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    <DrawingGroup x:Key="Layer_1">
+        <DrawingGroup.ClipGeometry>
+            <RectangleGeometry Rect="0.0,0.0,135.46666,135.46667"/>
+        </DrawingGroup.ClipGeometry>
+        <DrawingGroup Transform="0.76915067,-0.76915067,0.76915067,0.76915067,-90.513633,77.329546">
+            <DrawingGroup Transform="0.7071067811865476,-0.7071067811865475,0.7071067811865475,0.7071067811865476,0.0,0.0">
+                <GeometryDrawing>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#ff000000" LineJoin="Round" Thickness="3.40537" DashCap="Flat"/>
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="-1.9310231,94.715439,20.691963,1.7562468" RadiusX="0.36336145" RadiusY="0.36336145"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ff000000">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="-1.9310231,94.715439,20.691963,1.7562468" RadiusX="0.36336145" RadiusY="0.36336145"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+            <DrawingGroup Transform="0.7071067811865476,-0.7071067811865475,0.7071067811865475,0.7071067811865476,0.0,0.0">
+                <GeometryDrawing>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#ff000000" LineJoin="Round" Thickness="3.19491" DashCap="Flat"/>
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="42.725494,94.610207,16.264339,1.9667064" RadiusX="0.40690482" RadiusY="0.40690482"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ff000000">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="42.725494,94.610207,16.264339,1.9667064" RadiusX="0.40690482" RadiusY="0.40690482"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+            <DrawingGroup Transform="0.7071067811865476,0.7071067811865475,-0.7071067811865475,0.7071067811865476,0.0,0.0">
+                <GeometryDrawing>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#ff000000" LineJoin="Round" Thickness="3.40537" DashCap="Flat"/>
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="134.67287,-58.884605,20.691963,1.7562468" RadiusX="0.36336145" RadiusY="0.36336145"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ff000000">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="134.67287,-58.884605,20.691963,1.7562468" RadiusX="0.36336145" RadiusY="0.36336145"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+            <DrawingGroup Transform="0.7071067811865476,0.7071067811865475,-0.7071067811865475,0.7071067811865476,0.0,0.0">
+                <GeometryDrawing>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#ff000000" LineJoin="Round" Thickness="3.19491" DashCap="Flat"/>
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="94.610207,-58.989834,16.264339,1.9667064" RadiusX="0.40690482" RadiusY="0.40690482"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Brush="#ff000000">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="94.610207,-58.989834,16.264339,1.9667064" RadiusX="0.40690482" RadiusY="0.40690482"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+            <DrawingGroup Transform="0.9999998200802925,0.0005998661372760312,-0.0005998661372760312,0.9999998200802925,0.0,0.0">
+                <GeometryDrawing>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#ff000000" LineJoin="Round" Thickness="3.16212774" DashCap="Flat"/>
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="49.286358,82.470299,120.15504,38.624664" RadiusX="7.7163634" RadiusY="7.7163634"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing>
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="49.286358,82.470299,120.15504,38.624664" RadiusX="7.7163634" RadiusY="7.7163634"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+            <GeometryDrawing Brush="#ff000000">
+                <GeometryDrawing.Geometry>
+                    <PathGeometry Figures="m 83.1331 83.1338 l 0.294505 11.8352 c 0.02491 1.00055 0.850643 1.79869 1.85122 1.78985 l 2.52163 -0.02195 c 1.00059 -0.0089 1.78598 -0.821868 1.76107 -1.82243 l -0.29237 -11.7554 z" FillRule="Nonzero"/>
+                </GeometryDrawing.Geometry>
+            </GeometryDrawing>
+            <GeometryDrawing Brush="#ff000000">
+                <GeometryDrawing.Geometry>
+                    <PathGeometry Figures="m 128.564 83.1338 l 0.29453 11.8352 c 0.0249 1.00055 0.85064 1.79869 1.85122 1.78984 l 2.52162 -0.02196 c 1.00058 -0.0089 1.78599 -0.821863 1.76106 -1.82244 l -0.29237 -11.7554 z" FillRule="Nonzero"/>
+                </GeometryDrawing.Geometry>
+            </GeometryDrawing>
+            <GeometryDrawing Brush="#ff000000">
+                <GeometryDrawing.Geometry>
+                    <PathGeometry Figures="m 60.0443 83.1338 l 0.630699 20.6301 c 0.03086 1.00946 0.914631 1.8202 1.98208 1.81807 l 2.69084 -0.005 c 1.06745 -0.002 1.90229 -0.81642 1.87143 -1.82587 L 66.5919 83.2371 Z" FillRule="Nonzero"/>
+                </GeometryDrawing.Geometry>
+            </GeometryDrawing>
+            <GeometryDrawing Brush="#ff000000">
+                <GeometryDrawing.Geometry>
+                    <PathGeometry Figures="m 105.475 83.1338 l 0.6307 20.6301 c 0.0309 1.00946 0.91463 1.8202 1.98207 1.81807 l 2.69085 -0.005 c 1.06745 -0.002 1.90229 -0.81642 1.87142 -1.82588 l -0.62744 -20.514 z" FillRule="Nonzero"/>
+                </GeometryDrawing.Geometry>
+            </GeometryDrawing>
+            <GeometryDrawing Brush="#ff000000">
+                <GeometryDrawing.Geometry>
+                    <PathGeometry Figures="m 150.906 83.1338 l 0.63069 20.6301 c 0.0309 1.00945 0.91464 1.8202 1.98209 1.81806 l 2.69084 -0.005 c 1.06745 -0.002 1.90229 -0.81642 1.87142 -1.82587 l -0.62745 -20.514 z" FillRule="Nonzero"/>
+                </GeometryDrawing.Geometry>
+            </GeometryDrawing>
+        </DrawingGroup>
+    </DrawingGroup>
+    <DrawingImage Drawing="{StaticResource Layer_1}" x:Key="di_Layer_1"/>
+</ResourceDictionary>

@@ -11,6 +11,7 @@
                 <ui:ThemesDictionary Theme="Light" />
                 <local:ThemesDictionary Theme="Light" />
                 <ui:ControlsDictionary />
+                <ResourceDictionary Source="Assets/ruler_inkscape_small_menu_icon.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <!--<FrameworkElement x:Key="EyeDropperCursor" Cursor="Assets/rasterized_segoe_colorpicker_contrast.cur" />-->
