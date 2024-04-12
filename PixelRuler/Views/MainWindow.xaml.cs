@@ -277,10 +277,12 @@ namespace PixelRuler
                 return false;
             }
 
+            var snippedImage = wsw.ViewModel.CropImage(wsw.SelectedRectCanvas);
+            this.ViewModel.SetImage(snippedImage, wsw.ScreenshotInfo);
+
             if (res is true)
             {
-                var bmpCropped = wsw.ViewModel.CropImage(wsw.SelectedRectWin);
-                this.ViewModel.SetImage(bmpCropped, wsw.ScreenshotInfo);
+                // transform SelectedRectWin to ImageCoords
                 // i.e. the time the actual screenshot was taken.
                 mainCanvas.SetImage(this.ViewModel.ImageSource);
             }
