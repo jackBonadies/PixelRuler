@@ -66,16 +66,17 @@ namespace PixelRuler
                 {
                     if (o is PathSaveInfo pathSaveInfo)
                     {
-                        // TODO remove minwidth / padding...
                         var contentDialog = new ContentDialog(RootContentDialog)
                         {
-                            Title = pathSaveInfo.DisplayName + ":",
+                            Title = pathSaveInfo.DisplayName ?? string.Empty,
                             Content = this.Resources["DeleteConfirmation"],
                             MinHeight = 0,
+                            DialogHeight = 130,
                             CloseButtonText = "Cancel",
                             PrimaryButtonText = "OK",
                         };
                         contentDialog.UseLayoutRounding = true;
+                        contentDialog.Loaded += (object o, RoutedEventArgs e) => LimitPaddingForContentDialog(o, 6);
                         var res = await contentDialog.ShowAsync();
                         if (res == ContentDialogResult.Primary)
                         {
@@ -94,6 +95,12 @@ namespace PixelRuler
                 ViewModel.EditSavePathCommandEvent -= Settings_EditSavePathCommandEvent;
                 ViewModel.EditCommandTargetCommandEvent -= Settings_EditCommandTargetCommandEvent;
             }
+        }
+
+        private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
+        {
+            var border = FindChild<Border>(sender as DependencyObject, null);
+            border.MaxHeight = 200;
         }
 
         private async void Settings_EditCommandTargetCommandEvent(object? sender, (CommandTargetInfo, bool) commandTargetArgs)
@@ -118,7 +125,8 @@ namespace PixelRuler
             //contentDialog.SetBinding(ContentDialog.IsPrimaryButtonEnabledProperty, new Binding("IsValid") { Source = pendingShortcutInfo });
             contentDialog.UseLayoutRounding = true;
             contentDialog.Loaded += (object o, RoutedEventArgs e) => diagContents.Focus();
-            contentDialog.Loaded += ContentDialogPathInfo_Loaded;
+            contentDialog.Loaded += SetMaxWidthForContentDialog;
+            contentDialog.Loaded += (object o, RoutedEventArgs e) => LimitPaddingForContentDialog(o, 20);
 
             var result = await contentDialog.ShowAsync();
 
@@ -165,7 +173,7 @@ namespace PixelRuler
             //contentDialog.SetBinding(ContentDialog.IsPrimaryButtonEnabledProperty, new Binding("IsValid") { Source = pendingShortcutInfo });
             contentDialog.UseLayoutRounding = true;
             contentDialog.Loaded += (object o, RoutedEventArgs e) => diagContents.Focus();
-            contentDialog.Loaded += ContentDialogPathInfo_Loaded;
+            contentDialog.Loaded += SetMaxWidthForContentDialog;
 
             var result = await contentDialog.ShowAsync();
 
@@ -188,11 +196,18 @@ namespace PixelRuler
             }
         }
 
-        private void ContentDialogPathInfo_Loaded(object sender, RoutedEventArgs e)
+        private void LimitPaddingForContentDialog(object sender, int padding)
+        {
+            var border = FindChild<Border>(sender as DependencyObject, null);
+            ((sender as ContentDialog).Content as System.Windows.FrameworkElement).Measure(new Size(double.MaxValue, double.MaxValue));
+            var maxHeight = ((sender as ContentDialog).Content as System.Windows.FrameworkElement).DesiredSize.Height + 180 + padding;
+            border.MaxHeight = maxHeight;
+        }
+
+        private void SetMaxWidthForContentDialog(object sender, RoutedEventArgs e)
         {
             var border = FindChild<Border>(sender as DependencyObject, null);
             border.MaxWidth = double.PositiveInfinity;
-            //border.Effect = null;
         }
 
         private async void Settings_EditShortcutCommandEvent(object? sender, ShortcutInfo shortcutInfo)
