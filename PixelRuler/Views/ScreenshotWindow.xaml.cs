@@ -143,16 +143,17 @@ namespace PixelRuler
 
             if (ViewModel.Mode.IsSelectRegion())
             {
+                mainCanvas.ShowHideScreenshot(true);
                 blurBackground.Visibility = Visibility.Visible;
                 blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x30, 0, 0, 0));
 
-                horzIndicator.X1 = 0;
-                horzIndicator.X2 = fullBounds.Right - fullBounds.Left;
-                horzIndicator.Y1 = horzIndicator.Y2 = 300;
+                //horzIndicator.X1 = 0;
+                //horzIndicator.X2 = fullBounds.Right - fullBounds.Left;
+                //horzIndicator.Y1 = horzIndicator.Y2 = 300;
 
-                vertIndicator.X1 = vertIndicator.X2 = 300;
-                vertIndicator.Y1 = 0;
-                vertIndicator.Y2 = fullBounds.Bottom - fullBounds.Top;
+                //vertIndicator.X1 = vertIndicator.X2 = 300;
+                //vertIndicator.Y1 = 0;
+                //vertIndicator.Y2 = fullBounds.Bottom - fullBounds.Top;
             }
 
             if (ViewModel.Mode == OverlayMode.QuickMeasure)
@@ -264,8 +265,7 @@ namespace PixelRuler
             dragging = true;
             startPoint = UiUtils.RoundPoint(e.GetPosition(this.mainCanvas));
             innerRectGeometry.Rect = new Rect(startPoint, startPoint);
-            horzIndicator.Visibility = Visibility.Collapsed;
-            vertIndicator.Visibility = Visibility.Collapsed;
+            mainCanvas.ShowHideScreenshot(false);
         }
 
         private void WindowSelectionWindow_MouseUp(object sender, MouseButtonEventArgs e)
@@ -327,6 +327,7 @@ namespace PixelRuler
         private void WindowSelectionWindow_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             var pos = e.GetPosition(this);
+            this.mainCanvas.SetScreenshotElementPosition(e);
             foreach(var perScreenPanel in PerScreenPanels)
             {
                 perScreenPanel.HandleMouse(pos);
@@ -374,8 +375,8 @@ namespace PixelRuler
 
         private void SetCursorIndicator(Point point)
         {
-            vertIndicator.X1 = vertIndicator.X2 = (int)Math.Round(point.X);
-            horzIndicator.Y1 = horzIndicator.Y2 = (int)Math.Round(point.Y);
+            //vertIndicator.X1 = vertIndicator.X2 = (int)Math.Round(point.X);
+            //horzIndicator.Y1 = horzIndicator.Y2 = (int)Math.Round(point.Y);
             //horzIndicator.StrokeDashOffset = point.X; 
             //vertIndicator.StrokeDashOffset = point.Y; 
         }

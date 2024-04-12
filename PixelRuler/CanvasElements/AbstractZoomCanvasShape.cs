@@ -17,6 +17,8 @@ namespace PixelRuler.CanvasElements
             this.owningCanvas = owningCanvas;
         }
 
+        public abstract void AddToOwnerCanvas();
+
         /// <summary>
         /// This is so that UI elements are dpi scaled.  i.e. a circle appears twice as big on a 200% dpi screen.
         /// </summary>

@@ -9,6 +9,10 @@ using System.Windows.Media;
 
 namespace PixelRuler.CanvasElements
 {
+    /// <summary>
+    /// A class that manages its canvas shapes - adding / removing from canvas,
+    ///   updating stroke to be UI units, handling resize events.
+    /// </summary>
     public abstract class MeasurementElementZoomCanvasShape : AbstractZoomCanvasShape, INotifyPropertyChanged
     {
         public event EventHandler<MeasureElementResizeData>? Resizing;
@@ -79,8 +83,6 @@ namespace PixelRuler.CanvasElements
             el.EndPoint = data.EndPoint;
             return el;
         }
-
-        public abstract void AddToOwnerCanvas();
 
         private void HitBoxManipulate_LostMouseCapture(object sender, MouseEventArgs e)
         {

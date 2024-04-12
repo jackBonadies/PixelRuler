@@ -1140,10 +1140,8 @@ namespace PixelRuler
 
         private void UpdateForZoomChange()
         {
-            if(colorPickBox != null)
-            {
-                colorPickBox.UpdateForZoomChange();
-            }
+            colorPickBox?.UpdateForZoomChange();
+            screenshotElement?.UpdateForZoomChange();
 
             foreach(var measEl in MeasurementElements)
             {
@@ -1193,6 +1191,26 @@ namespace PixelRuler
         public void HideZoomBox()
         {
             this.zoomBox.Hide();
+        }
+
+        ScreenshotElement? screenshotElement;
+
+        public void SetScreenshotElementPosition(MouseEventArgs e)
+        {
+            if(screenshotElement == null)
+            {
+                screenshotElement = new ScreenshotElement(this.innerCanvas);
+                screenshotElement.AddToOwnerCanvas();
+            }
+            screenshotElement.SetPosition(e);
+        }
+
+        public void ShowHideScreenshot(bool show)
+        {
+            if (screenshotElement != null)
+            {
+                screenshotElement.Visible = show;
+            }
         }
     }
 }

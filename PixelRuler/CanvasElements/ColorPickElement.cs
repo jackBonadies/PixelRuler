@@ -20,8 +20,8 @@ namespace PixelRuler
         {
             this.rect = UiUtils.CreateRectangle();
             this.rect.Stroke = new SolidColorBrush(Colors.Red);
-            owningCanvas.Children.Add(rect);
             Canvas.SetZIndex(rect, App.COLOR_PICKER_INDEX);
+            AddToOwnerCanvas();
         }
 
 
@@ -46,6 +46,11 @@ namespace PixelRuler
         {
             Canvas.SetLeft(rect, point.X);
             Canvas.SetTop(rect, point.Y);
+        }
+
+        public override void AddToOwnerCanvas()
+        {
+            owningCanvas.Children.Add(rect);
         }
     }
 }
