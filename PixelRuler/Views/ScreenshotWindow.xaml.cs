@@ -69,9 +69,8 @@ namespace PixelRuler
             this.MouseUp += WindowSelectionWindow_MouseUp;
             this.MouseDown += WindowSelectionWindow_MouseDown;
 
-            var copyFullBounds = fullBounds;
-            copyFullBounds.Offset(-fullBounds.Left, -fullBounds.Top);
-            this.blurRectGeometry.Rect = copyFullBounds; // offset i.e. it needs to start at 0..
+            var imageCoorFullBounds = TranslateFromWindowsCoordinatesToImageCoordinates(fullBounds);
+            this.blurRectGeometry.Rect = imageCoorFullBounds; // offset i.e. it needs to start at 0..
             this.rectSelectionOutline.Width = 0;
             this.rectSelectionOutline.Height = 0;
 
@@ -107,7 +106,21 @@ namespace PixelRuler
                 this.mainContent.Children.Add(perScreenPanel);
             }
             setForMode();
+            CaptureImage = UiUtils.CaptureScreen(UiUtils.GetFullBounds(WpfScreenHelper.Screen.AllScreens));
         }
+
+        /// <summary>
+        /// Image always starts at 0,0. But windows coordinates might start negative
+        ///   i.e. if there is a seconary monitor to the left of the primary
+        /// </summary>
+        /// <returns></returns>
+        private Rect TranslateFromWindowsCoordinatesToImageCoordinates(Rect windowsCoordinates)
+        {
+            windowsCoordinates.Offset(new Vector(-fullBounds.Left, -fullBounds.Top));
+            return windowsCoordinates;
+        }
+
+        private System.Drawing.Bitmap CaptureImage;
 
         public List<ScreenshotSelectionPerScreenPanel> PerScreenPanels { get; init; } = new List<ScreenshotSelectionPerScreenPanel>();
 
@@ -179,12 +192,10 @@ namespace PixelRuler
             var dpi = this.GetDpi();
             mainCanvas.LayoutTransform = new ScaleTransform(1 / dpi, 1 / dpi);
 
-            var bmp = UiUtils.CaptureScreen(UiUtils.GetFullBounds(WpfScreenHelper.Screen.AllScreens));
-
             SetupScreenshowWindowViewModel(ViewModel);
             this.DataContext = ViewModel;
             mainCanvas.DataContext = ViewModel;
-            this.ViewModel.SetImage(bmp, new ScreenshotInfo());
+            this.ViewModel.SetImage(CaptureImage, new ScreenshotInfo());
             mainCanvas.SetImage(ViewModel.ImageSource);
 
             Dpi = this.GetDpi();
@@ -326,7 +337,7 @@ namespace PixelRuler
                 return;
             }
 
-            if (ViewModel.Mode.IsSelectWindow())
+            if (ViewModel.Mode.IsSelectWindow() && !regionOnlyMode)
             {
                 (SelectedRectCanvas, ProcessName, WindowTitle) = SelectWindowUnderCursor();
             }
@@ -369,22 +380,62 @@ namespace PixelRuler
             //vertIndicator.StrokeDashOffset = point.Y; 
         }
 
+        /// <summary>
+        /// Given a screenpoint on the canvas, transform it to the corresponding screenpoint 
+        ///   in windows (non zoomed / translated space)
+        /// </summary>
+        /// <param name="pt"></param>
+        /// <returns></returns>
+        private Point TransformPointFromZoomCanvas(Point pt)
+        {
+            var s = this.mainCanvas.CanvasScaleTransform;
+            var t = this.mainCanvas.CanvasTranslateTransform;
+            pt = new Point(pt.X * this.Dpi, pt.Y * this.Dpi);
+            return new Point((pt.X - t.X - 10000 * s.ScaleX) / s.ScaleX, (pt.Y - t.Y - 10000 * s.ScaleY) / s.ScaleY);
+        }
+
+        /// <summary>
+        /// Given a screenpoint on the canvas, transform it to the corresponding screenpoint 
+        ///   in windows (non zoomed / translated space)
+        /// </summary>
+        /// <param name="pt"></param>
+        /// <returns></returns>
+        private Rect TransfromRectFromOverlayCoordinatesToZoomCanvas(Rect rect)
+        {
+            var s = this.mainCanvas.CanvasScaleTransform;
+            var t = this.mainCanvas.CanvasTranslateTransform;
+
+            var x = rect.Left;
+            var y = rect.Top;
+
+            var newWidth = rect.Width * s.ScaleX;
+            var newHeight = rect.Height * s.ScaleY;
+
+            var offsetX = t.X + 10000 * s.ScaleX;
+            var offsetY = t.Y + 10000 * s.ScaleY;
+
+            return new Rect(x * s.ScaleX + offsetX, y * s.ScaleY + offsetY, newWidth, newHeight);
+        }
+
         private (Rect, string, string) SelectWindowUnderCursor()
         {
-            var windowUnderCursorHwnd = NativeHelpers.GetWindowUnderPointExcludingOwn(new WindowInteropHelper(this).Handle);
+            var pt = System.Windows.Input.Mouse.GetPosition(this);
+            pt = TransformPointFromZoomCanvas(pt);
 
-            //NativeMethods.GetWindowRect(windowUnderCursorHwnd, out NativeMethods.RECT rectWin); // includes too much window chrome..
+            var windowUnderCursorHwnd = NativeHelpers.GetWindowUnderPointExcludingOwn(new NativeMethods.POINT((int)pt.X, (int)pt.Y), new WindowInteropHelper(this).Handle);
 
             NativeMethods.DwmGetWindowAttribute(windowUnderCursorHwnd, (int)NativeMethods.DwmWindowAttribute.DWMWA_EXTENDED_FRAME_BOUNDS, out NativeMethods.RECT rect12, Marshal.SizeOf(typeof(NativeMethods.RECT)));
 
             string process_name = NativeHelpers.GetProcessNameFromWindowHandle(windowUnderCursorHwnd);
             string window_title = NativeHelpers.GetWindowTitle(windowUnderCursorHwnd);
 
-            Canvas.SetLeft(this.rect, rect12.Left - this.fullBounds.Left);
-            Canvas.SetTop(this.rect, rect12.Top - this.fullBounds.Top);
-            rect.Width = rect12.Right - rect12.Left;
-            rect.Height = rect12.Bottom - rect12.Top;
             var wpfRect = new Rect(rect12.Left - this.fullBounds.Left, rect12.Top - this.fullBounds.Top, rect12.Right - rect12.Left, rect12.Bottom - rect12.Top);
+            wpfRect = TransfromRectFromOverlayCoordinatesToZoomCanvas(wpfRect);
+
+            Canvas.SetLeft(this.rect, wpfRect.Left);
+            Canvas.SetTop(this.rect, wpfRect.Top);
+            rect.Width = wpfRect.Width;
+            rect.Height = wpfRect.Height;
             innerRectGeometry.Rect = wpfRect;
 
             return (wpfRect, process_name, window_title);

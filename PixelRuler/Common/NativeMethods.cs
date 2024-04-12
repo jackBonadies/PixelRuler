@@ -131,11 +131,8 @@ namespace PixelRuler
         /// </summary>
         /// <param name="ownWindowHandle"></param>
         /// <returns></returns>
-        public static IntPtr GetWindowUnderPointExcludingOwn(IntPtr ownWindowHandle)
+        public static IntPtr GetWindowUnderPointExcludingOwn(NativeMethods.POINT point, IntPtr ownWindowHandle)
         {
-            NativeMethods.POINT point;
-            if (NativeMethods.GetCursorPos(out point))
-            {
                 IntPtr foundWindow = NativeMethods.WindowFromPoint(point);
                 if (foundWindow == ownWindowHandle)
                 {
@@ -158,7 +155,6 @@ namespace PixelRuler
                         return foundWindow; 
                     }
                 }
-            }
             return IntPtr.Zero;
         }
 
