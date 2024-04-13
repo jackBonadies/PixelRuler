@@ -113,7 +113,27 @@ namespace PixelRuler
                 EditSavePathCommandEvent?.Invoke(this, (customPathSaveInfo, true));
             });
 
+            addCommandTargetCommand = new RelayCommand((object? o) =>
+            {
+                var num = this.CommandTargetInfos.Count + 1;
+                var customPathSaveInfo = new CommandTargetInfo($"My Command {num}", "", "\"{filename}\"");
+                EditCommandTargetCommandEvent?.Invoke(this, (customPathSaveInfo, true));
+            });
+
+            editCommandTargetCommand = new RelayCommand((object? o) =>
+            {
+                if(o is CommandTargetInfo cmdTargetInfo)
+                {
+                    EditCommandTargetCommandEvent?.Invoke(this, (cmdTargetInfo, false));
+                }
+                else
+                {
+                    throw new Exception("Unexpected Type");
+                }
+            });
+
             RestorePathInfos();
+            RestoreCommandTargets();
         }
 
         public void DeletePathItem(PathSaveInfo pathSaveInfo)
@@ -154,6 +174,22 @@ namespace PixelRuler
                 AdditionalPathSaveInfos = new ObservableCollection<PathSaveInfo>(JsonSerializer.Deserialize(additionalPathInfosString, typeof(List<PathSaveInfo>)) as List<PathSaveInfo>);
             }
         }
+        private void RestoreCommandTargets()
+        {
+            var commandTargetsString = Properties.Settings.Default.CommandTargets;
+
+            if (string.IsNullOrEmpty(commandTargetsString))
+            {
+                CommandTargetInfos = new ObservableCollection<CommandTargetInfo>()
+                {
+                    new CommandTargetInfo("Paint", "mspaint", "\"{filename}\"")
+                };
+            }
+            else
+            {
+                CommandTargetInfos = new ObservableCollection<CommandTargetInfo>(JsonSerializer.Deserialize(commandTargetsString, typeof(List<CommandTargetInfo>)) as List<CommandTargetInfo>);
+            }
+        }
 
         private void RestorePathInfos()
         {
@@ -182,6 +218,14 @@ namespace PixelRuler
             SaveAdditionalPathInfos();
         }
 
+        private void SaveCommandInfos()
+        {
+            var additionalPathSaveInfosList = CommandTargetInfos.ToList();
+            var pathSaveInfoString = JsonSerializer.Serialize(additionalPathSaveInfosList, typeof(List<CommandTargetInfo>));
+            Properties.Settings.Default.CommandTargets = pathSaveInfoString;
+            Properties.Settings.Default.Save();
+        }
+
         public Key ZoomBoxQuickZoomKey { get; set; } = Key.Space;
 
         public ObservableCollection<ShortcutInfo> GlobalShortcuts { get; set; } = new ObservableCollection<ShortcutInfo>();
@@ -190,6 +234,7 @@ namespace PixelRuler
         public event EventHandler<ShortcutInfo> EditShortcutCommandEvent;
 
         public event EventHandler<(PathSaveInfo, bool)> EditSavePathCommandEvent;
+        public event EventHandler<(CommandTargetInfo, bool)> EditCommandTargetCommandEvent;
 
         [ObservableProperty]
         private RelayCommand editShortcutCommand;
@@ -201,7 +246,16 @@ namespace PixelRuler
         private RelayCommand addSavePathInfoCommand;
 
         [ObservableProperty]
-        private RelayCommand deleteSavePathInfoCommand;
+        private RelayCommand? deleteSavePathInfoCommand;
+
+        [ObservableProperty]
+        private RelayCommand editCommandTargetCommand;
+
+        [ObservableProperty]
+        private RelayCommand addCommandTargetCommand;
+
+        [ObservableProperty]
+        private RelayCommand deleteCommandTargetCommand;
 
         [ObservableProperty]
         private RelayCommand clearShortcutCommand;
@@ -379,6 +433,8 @@ namespace PixelRuler
         private PathSaveInfo defaultPathSaveInfo;
 
         public ObservableCollection<PathSaveInfo> AdditionalPathSaveInfos { get; set; }
+
+        public ObservableCollection<CommandTargetInfo> CommandTargetInfos { get; set; }
 
         public bool GlobalShortcutsEnabled
         {
@@ -612,6 +668,26 @@ namespace PixelRuler
             ThemeManager.UpdateForThemeChanged(this.DayNightMode);
             this.UpdateCloseToTrayChanged();
 
+        }
+
+        public void AddCommandTargetInfo(CommandTargetInfo pending)
+        {
+            this.CommandTargetInfos.Add(pending);
+            OnPropertyChanged(nameof(CommandTargetInfos));
+            SaveCommandInfos();
+        }
+
+        public void UpdateCommandTargetInfo(CommandTargetInfo cmdTargetInfo, CommandTargetInfo pending)
+        {
+            for (int i = 0; i < CommandTargetInfos.Count; i++)
+            {
+                if (this.CommandTargetInfos[i] == cmdTargetInfo)
+                {
+                    this.CommandTargetInfos[i] = pending;
+                    OnPropertyChanged(nameof(CommandTargetInfos));
+                }
+            }
+            SaveCommandInfos();
         }
 
         public void AddPathInfo(PathSaveInfo pathSaveInfo)

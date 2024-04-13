@@ -327,6 +327,10 @@ namespace PixelRuler
                 {
                     return Visibility.Visible;
                 }
+                else if(parameter is "Hidden")
+                {
+                    return Visibility.Hidden;
+                }
                 else
                 {
                     return Visibility.Collapsed;

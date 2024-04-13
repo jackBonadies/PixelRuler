@@ -38,6 +38,7 @@ namespace PixelRuler.Views
         public PinImageWindow()
         {
             InitializeComponent();
+            this.SourceInitialized += PinImageWindow_SourceInitialized;
             this.DataContextChanged += PinImageWindow_DataContextChanged;
             this.MouseLeftButtonDown += PinImageWindow_PreviewMouseDown;
             this.MouseMove += PinImageWindow_PreviewMouseMove;
@@ -80,6 +81,14 @@ namespace PixelRuler.Views
                 isMoving = false;
                 this.ReleaseMouseCapture();
             }
+        }
+
+        private void PinImageWindow_SourceInitialized(object? sender, EventArgs e)
+        {
+            var dpi = this.GetDpi();
+            var scale = 1 / dpi;
+            reverseImageDpi.ScaleX = scale;
+            reverseImageDpi.ScaleY = scale;
         }
 
         private void PinImageWindow_PreviewMouseMove(object sender, MouseEventArgs e)

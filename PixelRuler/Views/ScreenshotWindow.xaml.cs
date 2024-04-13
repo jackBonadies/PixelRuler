@@ -21,6 +21,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -46,11 +47,14 @@ namespace PixelRuler
             this.WindowState = WindowState.Normal;
             this.ShowInTaskbar = false;
 
-            this.fullBounds = WpfScreenHelper.Screen.PrimaryScreen.Bounds;
+            this.fullBounds = UiUtils.GetFullBounds(WpfScreenHelper.Screen.AllScreens);
+
+            var scaleFactor = WpfScreenHelper.Screen.PrimaryScreen.ScaleFactor;
+
             this.Top = fullBounds.Top;
-            this.Left = fullBounds.Left; //TODO
-            this.Width = fullBounds.Width / WpfScreenHelper.Screen.PrimaryScreen.ScaleFactor;
-            this.Height = fullBounds.Height / WpfScreenHelper.Screen.PrimaryScreen.ScaleFactor;
+            this.Left = fullBounds.Left / scaleFactor;
+            this.Width = fullBounds.Width / scaleFactor;
+            this.Height = fullBounds.Height / scaleFactor;
             this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
             this.AllowsTransparency = true;
@@ -66,7 +70,8 @@ namespace PixelRuler
             this.MouseUp += WindowSelectionWindow_MouseUp;
             this.MouseDown += WindowSelectionWindow_MouseDown;
 
-            this.blurRectGeometry.Rect = fullBounds; // offset i.e. it needs to start at 0..
+            var imageCoorFullBounds = TranslateFromWindowsCoordinatesToImageCoordinates(fullBounds);
+            this.blurRectGeometry.Rect = imageCoorFullBounds; // offset i.e. it needs to start at 0..
             this.rectSelectionOutline.Width = 0;
             this.rectSelectionOutline.Height = 0;
 
@@ -74,10 +79,51 @@ namespace PixelRuler
             ViewModel.FullscreenScreenshotMode = true;
             ViewModel.Mode = mode;
 
+            double xOffset = -fullBounds.Left;
+            double yOffset = -fullBounds.Top;
+
+            foreach(var screen in WpfScreenHelper.Screen.AllScreens)
+            {
+                // cannot use WpfBounds bc it will scale for that screens DPI. 
+                // but our window will scale our DPI (which may be different than
+                // the particular screen)
+
+                // we still do per screen dpi scaling.  so if the window dpi is 1.5 but 
+                //   a secondary monitor is 1 then scale things down.
+                var individualScale = screen.ScaleFactor / scaleFactor;
+
+                var left = (screen.Bounds.Left + xOffset) / scaleFactor;
+                var top = (screen.WpfBounds.Top + yOffset) / scaleFactor;
+                var perScreenPanel = new ScreenshotSelectionPerScreenPanel()
+                {
+                    Width = (screen.Bounds.Width / scaleFactor) / individualScale,
+                    Height = (screen.Bounds.Height / scaleFactor) / individualScale,
+                    Margin = new Thickness(left, top, 0, 0),
+                };
+                perScreenPanel.Bounds = new Rect(left, top, screen.Bounds.Width / scaleFactor, screen.Bounds.Height / scaleFactor);
+                perScreenPanel.perScreenDpiScaleTransform.ScaleX = individualScale;
+                perScreenPanel.perScreenDpiScaleTransform.ScaleY = individualScale;
+                PerScreenPanels.Add(perScreenPanel);
+                this.mainContent.Children.Add(perScreenPanel);
+            }
             setForMode();
+            CaptureImage = UiUtils.CaptureScreen(UiUtils.GetFullBounds(WpfScreenHelper.Screen.AllScreens));
         }
 
+        /// <summary>
+        /// Image always starts at 0,0. But windows coordinates might start negative
+        ///   i.e. if there is a seconary monitor to the left of the primary
+        /// </summary>
+        /// <returns></returns>
+        private Rect TranslateFromWindowsCoordinatesToImageCoordinates(Rect windowsCoordinates)
+        {
+            windowsCoordinates.Offset(new Vector(-fullBounds.Left, -fullBounds.Top));
+            return windowsCoordinates;
+        }
 
+        private System.Drawing.Bitmap CaptureImage;
+
+        public List<ScreenshotSelectionPerScreenPanel> PerScreenPanels { get; init; } = new List<ScreenshotSelectionPerScreenPanel>();
 
         private void setForMode()
         {
@@ -101,13 +147,13 @@ namespace PixelRuler
                 blurBackground.Visibility = Visibility.Visible;
                 blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x30, 0, 0, 0));
 
-                horzIndicator.X1 = fullBounds.Left;
-                horzIndicator.X2 = fullBounds.Right;
+                horzIndicator.X1 = 0;
+                horzIndicator.X2 = fullBounds.Right - fullBounds.Left;
                 horzIndicator.Y1 = horzIndicator.Y2 = 300;
 
                 vertIndicator.X1 = vertIndicator.X2 = 300;
-                vertIndicator.Y1 = fullBounds.Top;
-                vertIndicator.Y2 = fullBounds.Bottom;
+                vertIndicator.Y1 = 0;
+                vertIndicator.Y2 = fullBounds.Bottom - fullBounds.Top;
             }
 
             if (ViewModel.Mode == OverlayMode.QuickMeasure)
@@ -147,12 +193,10 @@ namespace PixelRuler
             var dpi = this.GetDpi();
             mainCanvas.LayoutTransform = new ScaleTransform(1 / dpi, 1 / dpi);
 
-            var bmp = UiUtils.CaptureScreen(WpfScreenHelper.Screen.PrimaryScreen.Bounds);
-
             SetupScreenshowWindowViewModel(ViewModel);
             this.DataContext = ViewModel;
             mainCanvas.DataContext = ViewModel;
-            this.ViewModel.SetImage(bmp, new ScreenshotInfo());
+            this.ViewModel.SetImage(CaptureImage, new ScreenshotInfo());
             mainCanvas.SetImage(ViewModel.ImageSource);
 
             Dpi = this.GetDpi();
@@ -211,6 +255,109 @@ namespace PixelRuler
         private bool dragging = false;
         private Point startPoint;
 
+        private void playScreenshotAnimation(bool windowMode)
+        {
+            double durationSeconds = .1;
+
+            var cameraFlash = new Storyboard();
+            var flashBrush = this.Resources["FlashBrush"] as SolidColorBrush;
+            var animation = new DoubleAnimation
+            {
+                From = 0.0,
+                To = .2,
+                Duration = TimeSpan.FromSeconds(durationSeconds),
+                AutoReverse = true,
+            };
+
+            flashBrush.BeginAnimation(SolidColorBrush.OpacityProperty, animation);
+
+
+            var s = new Storyboard();
+
+            var widthRatio = (rect.Width + 10) / rect.Width;
+            var heightRatio = (rect.Height + 10) / rect.Height;
+
+            var d1 = new DoubleAnimation()
+            {
+                Duration = TimeSpan.FromSeconds(durationSeconds),
+                From = 1,
+                To = widthRatio,
+                EasingFunction = new PowerEase() { EasingMode = EasingMode.EaseOut, Power = 2 },
+                AutoReverse = true,
+            };
+            Storyboard.SetTargetProperty(d1, new PropertyPath("RenderTransform.ScaleX"));
+            Storyboard.SetTarget(d1, rect);
+            s.Children.Add(d1);
+
+            var d2 = new DoubleAnimation()
+            {
+                Duration = TimeSpan.FromSeconds(durationSeconds),
+                From = 1,
+                To = heightRatio,
+                EasingFunction = new PowerEase() { EasingMode = EasingMode.EaseOut, Power = 2 },
+                AutoReverse = true,
+            };
+            Storyboard.SetTargetProperty(d2, new PropertyPath("RenderTransform.ScaleY"));
+            Storyboard.SetTarget(d2, rect);
+            s.Children.Add(d2);
+
+            var finalVal = rect.StrokeDashOffset;
+            rect.BeginAnimation(Rectangle.StrokeDashOffsetProperty, null);
+            rect.StrokeDashOffset = finalVal;
+
+            s.Begin();
+
+
+
+
+
+            //int ms = 3000;
+
+            //var s = new Storyboard();
+
+            //var d1 = new DoubleAnimation()
+            //{
+            //    Duration = new Duration(new TimeSpan(0, 0, 0, 0, ms)),
+            //    From = rect.Width,
+            //    To = rect.Width + 16,
+            //    EasingFunction = new PowerEase() {  EasingMode = EasingMode.EaseOut, Power = 4 },
+            //};
+            //Storyboard.SetTargetProperty(d1, new PropertyPath("Width"));
+            //Storyboard.SetTarget(d1, rect);
+            //s.Children.Add(d1);
+
+
+            //var d2 = new DoubleAnimation()
+            //{
+            //    Duration = new Duration(new TimeSpan(0, 0, 0, 0, ms)),
+            //    From = rect.Height,
+            //    To = rect.Height + 16,
+            //    EasingFunction = new PowerEase() {  EasingMode = EasingMode.EaseOut, Power = 4 },
+            //};
+            //Storyboard.SetTargetProperty(d2, new PropertyPath("Height"));
+            //Storyboard.SetTarget(d2, rect);
+            //s.Children.Add(d2);
+
+
+            //var d3 = new ThicknessAnimation()
+            //{
+            //    Duration = new Duration(new TimeSpan(0, 0, 0, 0, ms)),
+            //    From = new Thickness(0),
+            //    To = new Thickness(-8,-8,0,0),
+            //    EasingFunction = new PowerEase() {  EasingMode = EasingMode.EaseOut, Power = 4 },
+            //};
+            //Storyboard.SetTargetProperty(d3, new PropertyPath("Margin"));
+            //Storyboard.SetTarget(d3, rect);
+            //s.Children.Add(d3);
+
+            //s.Begin();
+
+            //rect.BeginAnimation(Rectangle.StrokeDashOffsetProperty, null);
+            //rect.RenderTransformOrigin = new Point(.5, .5);
+            //rect.RenderTransform = new ScaleTransform(1.4, 1.4);
+
+        }
+
         private void WindowSelectionWindow_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton != MouseButton.Left)
@@ -218,8 +365,15 @@ namespace PixelRuler
                 return;
             }
 
+            //var s = this.Resources["scaleInOut"] as Storyboard;
+            //foreach(var child in s.Children)
+            //{
+            //    Storyboard.SetTarget(child, rect);
+            //}
+            //s.Begin();
             dragging = true;
-            startPoint = UiUtils.RoundPoint(e.GetPosition(this.mainCanvas));
+
+            startPoint = roundToZoomCanvasPixel(e);
             innerRectGeometry.Rect = new Rect(startPoint, startPoint);
             horzIndicator.Visibility = Visibility.Collapsed;
             vertIndicator.Visibility = Visibility.Collapsed;
@@ -240,10 +394,12 @@ namespace PixelRuler
             if (ViewModel.Mode == OverlayMode.Window || ViewModel.Mode == OverlayMode.WindowAndRegionRect && !regionOnlyMode)
             {
                 (SelectedRectCanvas, ProcessName, WindowTitle) = SelectWindowUnderCursor();
+                playScreenshotAnimation(true);
             }
             else
             {
                 SelectedRectCanvas = new Rect(startPoint, UiUtils.RoundPoint(e.GetPosition(this.mainCanvas)));
+                playScreenshotAnimation(false);
             }
 
             void AfterScreenshot(AfterScreenshotAction a, object? additionalArg)
@@ -281,25 +437,53 @@ namespace PixelRuler
             }
         }
 
+        private Point roundToZoomCanvasPixel(MouseEventArgs e)
+        {
+            var pt = e.GetPosition(this.mainCanvas.innerCanvas);
+            pt = UiUtils.RoundPoint(pt);
+            pt = this.mainCanvas.innerCanvas.TranslatePoint(pt, this.mainCanvas);
+            return pt;
+        }
+
         private void WindowSelectionWindow_PreviewMouseMove(object sender, MouseEventArgs e)
         {
+            var pos = e.GetPosition(this);
+            foreach(var perScreenPanel in PerScreenPanels)
+            {
+                perScreenPanel.HandleMouse(pos);
+            }
+
             if (ViewModel.Mode == OverlayMode.QuickMeasure || ViewModel.Mode == OverlayMode.QuickColor)
             {
                 return;
             }
 
-            if (ViewModel.Mode.IsSelectWindow())
+            if (ViewModel.Mode.IsSelectWindow() && !regionOnlyMode)
             {
                 (SelectedRectCanvas, ProcessName, WindowTitle) = SelectWindowUnderCursor();
             }
 
             if(ViewModel.Mode.IsSelectRegion())
             {
-                SetCursorIndicator(e.GetPosition(this.mainCanvas));
+                var pt = roundToZoomCanvasPixel(e);
+                SetCursorIndicator(pt);
                 if (dragging)
                 {
+                    // its possible this gets called but the mouse position doesnt actually move
+                    if (!regionOnlyMode)
+                    {
+                        // if we have not yet entered region only mode check if we have moved
+                        var newPt = e.GetPosition(this.mainCanvas);
+                        var res = startPoint - newPt;
+                        bool moved = Math.Abs(res.X) >= 1 || Math.Abs(res.Y) > 1;
+                        if (!moved)
+                        {
+                            return;
+                        }
+                    }
                     EnterRegionOnlyMode();
-                    innerRectGeometry.Rect = new Rect(startPoint, e.GetPosition(this.mainCanvas));
+                    var endPt = roundToZoomCanvasPixel(e);
+                    innerRectGeometry.Rect = new Rect(startPoint, endPt);
                     var minX = Math.Min(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
                     var maxX = Math.Max(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
                     var minY = Math.Min(innerRectGeometry.Rect.Top, innerRectGeometry.Rect.Bottom);
@@ -327,26 +511,66 @@ namespace PixelRuler
         {
             vertIndicator.X1 = vertIndicator.X2 = (int)Math.Round(point.X);
             horzIndicator.Y1 = horzIndicator.Y2 = (int)Math.Round(point.Y);
-            //horzIndicator.StrokeDashOffset = point.X; 
-            //vertIndicator.StrokeDashOffset = point.Y; 
+            horzIndicator.StrokeDashOffset = point.X; 
+            vertIndicator.StrokeDashOffset = point.Y; 
+        }
+
+        /// <summary>
+        /// Given a screenpoint on the canvas, transform it to the corresponding screenpoint 
+        ///   in windows (non zoomed / translated space)
+        /// </summary>
+        /// <param name="pt"></param>
+        /// <returns></returns>
+        private Point TransformPointFromZoomCanvas(Point pt)
+        {
+            var s = this.mainCanvas.CanvasScaleTransform;
+            var t = this.mainCanvas.CanvasTranslateTransform;
+            pt = new Point(pt.X * this.Dpi, pt.Y * this.Dpi);
+            return new Point((pt.X - t.X - 10000 * s.ScaleX) / s.ScaleX, (pt.Y - t.Y - 10000 * s.ScaleY) / s.ScaleY);
+        }
+
+        /// <summary>
+        /// Given a screenpoint on the canvas, transform it to the corresponding screenpoint 
+        ///   in windows (non zoomed / translated space)
+        /// </summary>
+        /// <param name="pt"></param>
+        /// <returns></returns>
+        private Rect TransfromRectFromOverlayCoordinatesToZoomCanvas(Rect rect)
+        {
+            var s = this.mainCanvas.CanvasScaleTransform;
+            var t = this.mainCanvas.CanvasTranslateTransform;
+
+            var x = rect.Left;
+            var y = rect.Top;
+
+            var newWidth = rect.Width * s.ScaleX;
+            var newHeight = rect.Height * s.ScaleY;
+
+            var offsetX = t.X + 10000 * s.ScaleX;
+            var offsetY = t.Y + 10000 * s.ScaleY;
+
+            return new Rect(x * s.ScaleX + offsetX, y * s.ScaleY + offsetY, newWidth, newHeight);
         }
 
         private (Rect, string, string) SelectWindowUnderCursor()
         {
-            var windowUnderCursorHwnd = NativeHelpers.GetWindowUnderPointExcludingOwn(new WindowInteropHelper(this).Handle);
+            var pt = System.Windows.Input.Mouse.GetPosition(this);
+            pt = TransformPointFromZoomCanvas(pt);
 
-            //NativeMethods.GetWindowRect(windowUnderCursorHwnd, out NativeMethods.RECT rectWin); // includes too much window chrome..
+            var windowUnderCursorHwnd = NativeHelpers.GetWindowUnderPointExcludingOwn(new NativeMethods.POINT((int)pt.X, (int)pt.Y), new WindowInteropHelper(this).Handle);
 
             NativeMethods.DwmGetWindowAttribute(windowUnderCursorHwnd, (int)NativeMethods.DwmWindowAttribute.DWMWA_EXTENDED_FRAME_BOUNDS, out NativeMethods.RECT rect12, Marshal.SizeOf(typeof(NativeMethods.RECT)));
 
             string process_name = NativeHelpers.GetProcessNameFromWindowHandle(windowUnderCursorHwnd);
             string window_title = NativeHelpers.GetWindowTitle(windowUnderCursorHwnd);
 
-            Canvas.SetLeft(this.rect, rect12.Left - this.fullBounds.Left);
-            Canvas.SetTop(this.rect, rect12.Top - this.fullBounds.Top);
-            rect.Width = rect12.Right - rect12.Left;
-            rect.Height = rect12.Bottom - rect12.Top;
             var wpfRect = new Rect(rect12.Left - this.fullBounds.Left, rect12.Top - this.fullBounds.Top, rect12.Right - rect12.Left, rect12.Bottom - rect12.Top);
+            wpfRect = TransfromRectFromOverlayCoordinatesToZoomCanvas(wpfRect);
+
+            Canvas.SetLeft(this.rect, wpfRect.Left);
+            Canvas.SetTop(this.rect, wpfRect.Top);
+            rect.Width = wpfRect.Width;
+            rect.Height = wpfRect.Height;
             innerRectGeometry.Rect = wpfRect;
 
             return (wpfRect, process_name, window_title);

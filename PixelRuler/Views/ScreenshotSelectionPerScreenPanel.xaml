@@ -1,0 +1,178 @@
+﻿<UserControl
+    x:Class="PixelRuler.Views.ScreenshotSelectionPerScreenPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PixelRuler.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pixelruler="clr-namespace:PixelRuler"
+    xmlns:vm="clr-namespace:PixelRuler.ViewModels"
+    HorizontalAlignment="Left"
+    VerticalAlignment="Top"
+    d:DataContext="{d:DesignInstance Type=vm:ScreenshotWindowViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.RenderTransform>
+        <ScaleTransform x:Name="perScreenDpiScaleTransform" ScaleX=".5" ScaleY=".5" />
+    </UserControl.RenderTransform>
+    <UserControl.Resources>
+        <Storyboard x:Key="enterTransform" x:Name="enterTransform">
+            <DoubleAnimation
+                Storyboard.TargetName="translateTransform"
+                Storyboard.TargetProperty="Y"
+                From="-56"
+                To="0"
+                Duration="0:0:.1" />
+        </Storyboard>
+        <Storyboard x:Key="leaveTransform" x:Name="leaveTransform">
+            <DoubleAnimation
+                Storyboard.TargetName="translateTransform"
+                Storyboard.TargetProperty="Y"
+                From="0"
+                To="-56"
+                Duration="0:0:.1" />
+        </Storyboard>
+    </UserControl.Resources>
+    <Grid Name="gridTopLevel">
+        <Border
+            Name="toolPanel"
+            Margin="0,14,0,0"
+            Padding="8,3,8,3"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Background="{DynamicResource ToolPanelBackground}"
+            BorderBrush="{DynamicResource ToolPanelBorder}"
+            BorderThickness="1"
+            CornerRadius="5"
+            Cursor="Arrow">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="translateTransform" Y="-60" />
+            </Border.RenderTransform>
+
+            <!--<Border.Resources>
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Resources/Theme/Light.xaml" />
+            </Border.Resources>-->
+            <StackPanel Orientation="Horizontal">
+                <ToggleButton
+                    Width="34"
+                    Height="34"
+                    Padding="0"
+                    BorderBrush="Transparent"
+                    Command="{Binding BoundsMeasureSelectedCommand}"
+                    IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=BoundingBox}"
+                    ToolTipService.ToolTip="{Binding BoundsMeasureSelectedCommand.ToolTipTextFull}">
+                    <ToggleButton.Resources>
+                        <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
+                        <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
+                    </ToggleButton.Resources>
+                    <TextBlock
+                        Padding="0"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="20"
+                        Text="&#xEF20;" />
+                </ToggleButton>
+                <Separator Width="2" Visibility="Hidden" />
+                <ToggleButton
+                    Width="34"
+                    Height="34"
+                    Padding="0"
+                    BorderBrush="Transparent"
+                    Command="{Binding RulerSelectedCommand}"
+                    IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=Ruler}"
+                    ToolTipService.ToolTip="{Binding RulerSelectedCommand.ToolTipTextFull}">
+                    <ToggleButton.Resources>
+                        <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
+                        <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
+                    </ToggleButton.Resources>
+                    <TextBlock
+                        Padding="0"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="19"
+                        Text="&#xED5E;" />
+                </ToggleButton>
+                <Separator Margin="2,0,2,0" BorderBrush="#30000000" />
+                <ToggleButton
+                    Width="34"
+                    Height="34"
+                    Padding="0"
+                    BorderBrush="Transparent"
+                    Command="{Binding PopOutWindowCommand}"
+                    ToolTip="{Binding PopOutWindowCommand.ToolTipTextFull}">
+                    <ToggleButton.Resources>
+                        <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
+                        <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
+                    </ToggleButton.Resources>
+                    <Path
+                        Data="{StaticResource PopOutIconPath}"
+                        Fill="{DynamicResource TextFillColorPrimaryBrush}"
+                        Opacity=".9"
+                        Stroke="{DynamicResource TextFillColorPrimaryBrush}">
+                        <Path.LayoutTransform>
+                            <ScaleTransform ScaleX=".5" ScaleY=".5" />
+                        </Path.LayoutTransform>
+                    </Path>
+                </ToggleButton>
+                <Separator Margin="2,0,2,0" BorderBrush="#30000000" />
+                <ToggleButton
+                    Width="34"
+                    Height="34"
+                    Padding="0"
+                    BorderBrush="Transparent"
+                    Command="{Binding CloseWindowCommand}"
+                    ToolTip="{Binding CloseWindowCommand.ToolTipTextFull}">
+                    <ToggleButton.Resources>
+                        <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
+                        <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
+                    </ToggleButton.Resources>
+                    <Grid
+                        Width="30"
+                        Height="30"
+                        Opacity="1">
+                        <Border
+                            Width="1.3"
+                            Height="24"
+                            Background="{DynamicResource TextFillColorPrimaryBrush}"
+                            CornerRadius=".5">
+                            <Border.LayoutTransform>
+                                <RotateTransform Angle="45" />
+                            </Border.LayoutTransform>
+                        </Border>
+                        <Border
+                            Width="1.3"
+                            Height="24"
+                            Background="{DynamicResource TextFillColorPrimaryBrush}"
+                            CornerRadius=".5">
+                            <Border.LayoutTransform>
+                                <RotateTransform Angle="-45" />
+                            </Border.LayoutTransform>
+                        </Border>
+                    </Grid>
+                    <!--<Path
+                        Data="M8.4375 6.4375C7.92566 6.4375 7.42177 6.64073 7.03125 7.03125C6.2502 7.8123 6.2502 9.0627 7.03125 9.84375L21.1875 24L7.03125 38.1562C6.2502 38.9373 6.2502 40.1877 7.03125 40.9688C7.8123 41.7498 9.0627 41.7498 9.84375 40.9688L24 26.8125L38.1562 40.9688C38.9373 41.7498 40.1877 41.7498 40.9688 40.9688C41.7498 40.1877 41.7498 38.9373 40.9688 38.1562L26.8125 24L40.9688 9.84375C41.7498 9.0627 41.7498 7.8123 40.9688 7.03125C40.5782 6.64073 40.0743 6.4375 39.5625 6.4375C39.0507 6.4375 38.5468 6.64073 38.1562 7.03125L24 21.1875L9.84375 7.03125C9.45323 6.64073 8.94934 6.4375 8.4375 6.4375Z"
+                        Fill="{DynamicResource TextFillColorPrimaryBrush}"
+                        Stroke="{DynamicResource TextFillColorPrimaryBrush}">
+                        <Path.LayoutTransform>
+                            <ScaleTransform ScaleX=".45" ScaleY=".45" />
+                        </Path.LayoutTransform>
+                    </Path>-->
+                </ToggleButton>
+            </StackPanel>
+        </Border>
+        <Border
+            Name="HelpPanel"
+            Margin="10"
+            Padding="30"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Background="#50000000"
+            CornerRadius="10">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Shift - Show Menu After Screenshot" />
+                <TextBlock Text="Ctrl - Constrain" />
+                <TextBlock Text="Space - Toggle Zoom" />
+                <TextBlock Text="H - Toggle Help" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

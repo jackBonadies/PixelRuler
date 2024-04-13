@@ -37,9 +37,16 @@ namespace PixelRuler
     /// </summary>
     public partial class MainWindow : ThemeWindow
     {
+        protected override void OnClosed(EventArgs e)
+        {
+            HookUpUICommands(false);
+            this.ViewModel.Cleanup();
+            this.mainCanvas.Bind(false);
+            base.OnClosed(e);
+        }
+
         public MainWindow(PixelRulerViewModel prvm)
         {
-
             this.DataContext = prvm;
 
             InitializeComponent();
@@ -55,14 +62,11 @@ namespace PixelRuler
             //    this.Left = int.MinValue;
             //    this.ShowInTaskbar = false;
             //}
+            HookUpUICommands(true);
 
             this.Loaded += MainWindow_Loaded;
             this.IsVisibleChanged += MainWindow_IsVisibleChanged;
 
-            this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
-            this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(OverlayMode.Window, false); }, Key.N, ModifierKeys.Control, "New Full Screenshot");
-            this.ViewModel.CopyCanvasContents = new RelayCommandFull((object? o) => { CopyContents(); }, Key.C, ModifierKeys.Control, "Copy Elements");
-            this.ViewModel.PasteCanvasContents = new RelayCommandFull((object? o) => { this.mainCanvas.PasteCopiedData(); }, Key.V, ModifierKeys.Control, "Paste Elements");
 
             this.KeyDown += MainWindow_KeyDown;
             this.KeyUp += MainWindow_KeyUp;
@@ -71,7 +75,26 @@ namespace PixelRuler
             var handle = new WindowInteropHelper(this).Handle;
 
             this.SizeChanged += MainWindow_SizeChanged;
+        }
 
+        private void HookUpUICommands(bool bind)
+        {
+            if(bind)
+            {
+                this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
+                this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewFullScreenshot(false); }, Key.N, ModifierKeys.Control | ModifierKeys.Shift, "New Full Screenshot");
+                this.ViewModel.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { NewWindowedScreenshot(OverlayMode.WindowAndRegionRect, false); }, Key.N, ModifierKeys.Control, "New Region Screenshot");
+                this.ViewModel.CopyCanvasContents = new RelayCommandFull((object? o) => { CopyContents(); }, Key.C, ModifierKeys.Control, "Copy Elements");
+                this.ViewModel.PasteCanvasContents = new RelayCommandFull((object? o) => { this.mainCanvas.PasteCopiedData(); }, Key.V, ModifierKeys.Control, "Paste Elements");
+            }
+            else
+            {
+                this.ViewModel.CloseWindowCommand = null!;
+                this.ViewModel.NewScreenshotFullCommand = null!;
+                this.ViewModel.NewScreenshotRegionCommand = null!;
+                this.ViewModel.CopyCanvasContents = null!;
+                this.ViewModel.PasteCanvasContents = null!;
+            }
         }
 
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -254,49 +277,70 @@ namespace PixelRuler
                 return false;
             }
 
+            var snippedImage = wsw.ViewModel.CropImage(wsw.SelectedRectCanvas);
+            this.ViewModel.SetImage(snippedImage, wsw.ScreenshotInfo);
+
             if (res is true)
             {
-                bmp = UiUtils.CaptureScreen(wsw.SelectedRectWin);
-                this.ViewModel.SetImage(bmp, wsw.ScreenshotInfo);
+                // transform SelectedRectWin to ImageCoords
                 // i.e. the time the actual screenshot was taken.
                 mainCanvas.SetImage(this.ViewModel.ImageSource);
             }
 
             if(wsw.AfterScreenshotValue is AfterScreenshotAction.SaveAs)
             {
-                var fullFilename = this.ViewModel.Settings.DefaultPathSaveInfo.Evaluate(this.ViewModel.ScreenshotInfo.Value, true);
-                var initDir = System.IO.Path.GetDirectoryName(fullFilename);
-                Directory.CreateDirectory(initDir);
-
-                var sfd = new SaveFileDialog();
-                sfd.InitialDirectory = initDir;
-                sfd.FileName = System.IO.Path.GetFileName(fullFilename);
-                sfd.DefaultExt = this.ViewModel.Settings.DefaultPathSaveInfo.Extension;
-                sfd.AddExtension = true;
-                sfd.Filter = "PNG|*.png|JPEG|*.jpg;*.jpeg|GIF|*.gif|BMP|*.bmp";
-                var sfdres = sfd.ShowDialog();
-                if(sfdres is true)
-                {
-                    this.ViewModel.SaveImage(sfd.FileName);
-                }
+                this.ViewModel.SaveAs();
                 return false;
             }
             
+            // string savedPath 
             if (wsw.AfterScreenshotValue is AfterScreenshotAction.Save)
             {
                 string fname = string.Empty;
                 if (wsw.AfterScreenshotAdditionalArg is PathSaveInfo pathSaveInfo)
                 {
-                    fname = pathSaveInfo.Evaluate(this.ViewModel.ScreenshotInfo.Value, true, true);
+                    if(this.ViewModel.ScreenshotInfo == null)
+                    {
+                        throw new InvalidOperationException("Missing Screenshot Info");
+                    }
+                    if(this.ViewModel.Image == null)
+                    {
+                        throw new InvalidOperationException("Missing Image");
+                    }
+
+                    fname = pathSaveInfo.SaveImage(this.ViewModel.Image, this.ViewModel.ScreenshotInfo.Value);
                 }
                 else
                 {
                     throw new Exception("Unexpected Arg for Save");
                 }
-
-                this.ViewModel.SaveImage(fname);
                 return false;
             }
+
+            if (wsw.AfterScreenshotValue is AfterScreenshotAction.CommandTarget)
+            {
+                if (wsw.AfterScreenshotAdditionalArg is CommandTargetInfo cmdTargetInfo)
+                {
+                    if(this.ViewModel.ScreenshotInfo == null)
+                    {
+                        throw new InvalidOperationException("Missing Screenshot Info");
+                    }
+                    if(this.ViewModel.Image == null)
+                    {
+                        throw new InvalidOperationException("Missing Image");
+                    }
+
+                    string fname = this.ViewModel.Settings.DefaultPathSaveInfo.SaveImage(this.ViewModel.Image, this.ViewModel.ScreenshotInfo.Value);
+                    cmdTargetInfo.Execute(fname);
+                }
+                else
+                {
+                    throw new Exception("Unexpected Arg for Command Target");
+                }
+                return false;
+            }
+
+            
 
             //if(wsw.AfterScreenshotValue is AfterScreenshotAction.Pin)
             //{
@@ -373,10 +417,7 @@ namespace PixelRuler
 
         private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var settingsWindow = new SettingsWindow(this.ViewModel);
-            settingsWindow.Owner = this;
-            settingsWindow.ShowDialog();
+            App.ShowSettingsWindowSingleInstance(this.ViewModel.Settings);
         }
-
     }
 }

@@ -1,7 +1,9 @@
-﻿using PixelRuler.CustomControls;
+﻿using PixelRuler.Common;
+using PixelRuler.CustomControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +11,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using Wpf.Ui.Controls;
+using Wpf.Ui.Markup;
 
 namespace PixelRuler.Views
 {
@@ -47,13 +51,20 @@ namespace PixelRuler.Views
                 contextMenu.ContextMenuClosing += ContextMenu_ContextMenuClosing;
                 contextMenu.PreviewKeyDown += ContextMenu_PreviewKeyDown;
 
-                var menuItem1 = new MenuItemCustom() { Header = "View", InputGestureText="Enter" };
+                var menuItem1 = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("View"), InputGestureText="Enter" };
                 menuItem1.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.ViewInPixelRulerWindow, null); };
-                var menuItem2 = new MenuItemCustom() { Header = "Cancel", InputGestureText="Escape" };
+                var pixelRulerIcon = new System.Windows.Controls.Image() { Width = 16, Height = 16 };
+                pixelRulerIcon.SetResourceReference(System.Windows.Controls.Image.SourceProperty, "di_Layer_1");
+                menuItem1.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, pixelRulerIcon);
+
+                var menuItem2 = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Cancel"), InputGestureText="Escape" };
                 menuItem2.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Cancel, null); };
-                var menuItem3 = new MenuItemCustom() { Header = "Save As", InputGestureText="Ctrl+S" };
+                var menuItem3 = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save As"), InputGestureText="Ctrl+S" };
+                menuItem3.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, UiUtils.CreateFontIcon("\xE792")); //new SymbolIcon { Symbol = SymbolRegular.Save24 });
+
                 menuItem3.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.SaveAs, null); };
-                var menuItem4 = new MenuItemCustom() { Header = "Save", InputGestureText="S" };
+                var menuItem4 = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save"), InputGestureText="S" };
+                menuItem4.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, UiUtils.CreateFontIcon("\xE74E")); //new SymbolIcon { Symbol = SymbolRegular.Save24 });
                 menuItem4.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, settings.DefaultPathSaveInfo); };
 
                 contextMenu.Items.Add(menuItem1);
@@ -65,8 +76,17 @@ namespace PixelRuler.Views
                 foreach(var saveDest in settings.AdditionalPathSaveInfos)
                 {
                     i++;
-                    var menuItem = new MenuItemCustom() { Header = saveDest.DisplayName?.SanitizeUnderscores(), InputGestureText = $"{i}" };
+                    var menuItem = new MenuItemCustom() { Header = UiUtils.CreateTextBlock(saveDest.DisplayName?.SanitizeUnderscores()), InputGestureText = $"{i}" };
                     menuItem.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, saveDest); };
+                    contextMenu.Items.Add(menuItem);
+                }
+
+                int j = 0;
+                foreach(var cmdTarget in settings.CommandTargetInfos)
+                {
+                    j++;
+                    var menuItem = new MenuItemCustom() { Header = UiUtils.CreateTextBlock(cmdTarget.DisplayName?.SanitizeUnderscores()), InputGestureText = $"{i}" };
+                    menuItem.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.CommandTarget, cmdTarget); };
                     contextMenu.Items.Add(menuItem);
                 }
 
@@ -88,5 +108,6 @@ namespace PixelRuler.Views
         Save = 2,
         SaveAs = 3,
         Pin = 4,
+        CommandTarget = 5,
     }
 }

@@ -36,9 +36,7 @@
             ClipToBounds="True"
             CornerRadius="6"
             UseLayoutRounding="True">
-            <Border.LayoutTransform>
-                <ScaleTransform ScaleX=".8" ScaleY=".8" />
-            </Border.LayoutTransform>
+
             <Grid>
                 <Image
                     x:Name="mainImage"
@@ -48,6 +46,9 @@
                     SnapsToDevicePixels="True"
                     Source="{Binding MainViewModel.ImageSource}"
                     Stretch="Uniform">
+                    <Image.LayoutTransform>
+                        <ScaleTransform x:Name="reverseImageDpi" ScaleX=".8" ScaleY=".8" />
+                    </Image.LayoutTransform>
                     <Image.Clip>
                         <RectangleGeometry
                             x:Name="rectGeom"

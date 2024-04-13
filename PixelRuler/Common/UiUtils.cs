@@ -9,6 +9,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using WpfScreenHelper;
 using System.Windows.Media;
+using System.Windows.Controls;
 
 namespace PixelRuler.Common
 {
@@ -30,6 +31,29 @@ namespace PixelRuler.Common
             rect.StrokeThickness = 1;
             rect.SnapsToDevicePixels = true;
             return rect;
+        }
+
+        public static TextBlock CreateTextBlock(string? text)
+        {
+            var txtBlock = new TextBlock();
+            txtBlock.Text = text;
+            return txtBlock;
+        }
+
+        public static TextBlock CreateFontIcon(string text)
+        {
+            var txtBlock = CreateTextBlock(text);
+            txtBlock.FontFamily = new FontFamily("Segoe MDL2 Assets");
+            txtBlock.FontSize = 16;
+            return txtBlock;
+        }
+
+
+        public static AccessText CreateAccessText(string? text)
+        {
+            var accessTxt = new AccessText();
+            accessTxt.Text = text;
+            return accessTxt;
         }
 
         public static int GetBorderPixelSize(double dpi)

@@ -2,7 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -401,6 +404,35 @@ namespace PixelRuler
                     return key.ToString();
 
             }
+        }
+    }
+
+    public static class ImageCommon
+    {
+        public static ImageFormat GetImageFormatFromFilename(string fileName)
+        {
+            var extIndex = fileName.LastIndexOf('.');
+            var ext = fileName.Substring(extIndex+1).ToLower();
+            switch(ext)
+            {
+                case "jpg":
+                case "jpeg":
+                    return ImageFormat.Jpeg;
+                case "png":
+                    return ImageFormat.Png;
+                case "bmp":
+                    return ImageFormat.Bmp;
+                case "gif":
+                    return ImageFormat.Gif;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public static void SaveImage(string fileName, Bitmap image)
+        {
+            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fileName));
+            image.Save(fileName, GetImageFormatFromFilename(fileName));
         }
     }
 }
