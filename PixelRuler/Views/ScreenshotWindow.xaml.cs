@@ -306,56 +306,6 @@ namespace PixelRuler
             rect.StrokeDashOffset = finalVal;
 
             s.Begin();
-
-
-
-
-
-            //int ms = 3000;
-
-            //var s = new Storyboard();
-
-            //var d1 = new DoubleAnimation()
-            //{
-            //    Duration = new Duration(new TimeSpan(0, 0, 0, 0, ms)),
-            //    From = rect.Width,
-            //    To = rect.Width + 16,
-            //    EasingFunction = new PowerEase() {  EasingMode = EasingMode.EaseOut, Power = 4 },
-            //};
-            //Storyboard.SetTargetProperty(d1, new PropertyPath("Width"));
-            //Storyboard.SetTarget(d1, rect);
-            //s.Children.Add(d1);
-
-
-            //var d2 = new DoubleAnimation()
-            //{
-            //    Duration = new Duration(new TimeSpan(0, 0, 0, 0, ms)),
-            //    From = rect.Height,
-            //    To = rect.Height + 16,
-            //    EasingFunction = new PowerEase() {  EasingMode = EasingMode.EaseOut, Power = 4 },
-            //};
-            //Storyboard.SetTargetProperty(d2, new PropertyPath("Height"));
-            //Storyboard.SetTarget(d2, rect);
-            //s.Children.Add(d2);
-
-
-            //var d3 = new ThicknessAnimation()
-            //{
-            //    Duration = new Duration(new TimeSpan(0, 0, 0, 0, ms)),
-            //    From = new Thickness(0),
-            //    To = new Thickness(-8,-8,0,0),
-            //    EasingFunction = new PowerEase() {  EasingMode = EasingMode.EaseOut, Power = 4 },
-            //};
-            //Storyboard.SetTargetProperty(d3, new PropertyPath("Margin"));
-            //Storyboard.SetTarget(d3, rect);
-            //s.Children.Add(d3);
-
-            //s.Begin();
-
-            //rect.BeginAnimation(Rectangle.StrokeDashOffsetProperty, null);
-            //rect.RenderTransformOrigin = new Point(.5, .5);
-            //rect.RenderTransform = new ScaleTransform(1.4, 1.4);
-
         }
 
         private void WindowSelectionWindow_MouseDown(object sender, MouseButtonEventArgs e)
@@ -398,7 +348,11 @@ namespace PixelRuler
             }
             else
             {
-                SelectedRectCanvas = new Rect(startPoint, UiUtils.RoundPoint(e.GetPosition(this.mainCanvas)));
+                var imageStartPt = UiUtils.RoundPoint(this.mainCanvas.TranslatePoint(startPoint, this.mainCanvas.innerCanvas));
+                var imageEndPt = UiUtils.RoundPoint(this.mainCanvas.TranslatePoint(e.GetPosition(this.mainCanvas), this.mainCanvas.innerCanvas));
+                imageStartPt.Offset(-10000, -10000);
+                imageEndPt.Offset(-10000, -10000);
+                SelectedRectCanvas = new Rect(imageStartPt, imageEndPt);
                 playScreenshotAnimation(false);
             }
 
