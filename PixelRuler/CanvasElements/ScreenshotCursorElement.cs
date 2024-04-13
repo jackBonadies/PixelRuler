@@ -11,7 +11,8 @@ using System.Windows.Shapes;
 
 namespace PixelRuler.CanvasElements
 {
-    internal class ScreenshotElement : AbstractZoomCanvasShape
+    // TODO dead code
+    public class ScreenshotCursorElement : AbstractZoomCanvasShape
     {
         private Line lineHorz;
         private Line lineVert;
@@ -30,7 +31,7 @@ namespace PixelRuler.CanvasElements
             }
         }
 
-        public ScreenshotElement(Canvas owningCanvas) : base(owningCanvas)
+        public ScreenshotCursorElement(Canvas owningCanvas) : base(owningCanvas)
         {
             lineHorz = UiUtils.CreateLine();
             lineHorz.Stroke = new SolidColorBrush(Colors.Red);

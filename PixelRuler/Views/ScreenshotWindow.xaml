@@ -130,6 +130,21 @@
                 SnapsToDevicePixels="True"
                 Stroke="Red"
                 StrokeThickness="1" />
+            <Line
+                x:Name="vertIndicator"
+                Panel.ZIndex="100"
+                SnapsToDevicePixels="True"
+                Stroke="Red"
+                StrokeDashArray="6 6"
+                StrokeThickness="1" />
+            <Line
+                x:Name="horzIndicator"
+                Panel.ZIndex="100"
+                SnapsToDevicePixels="True"
+                Stroke="Red"
+                StrokeDashArray="6 6"
+                StrokeThickness="1" />
+
             <!--  Combined Geomtry - responsible for the dimming around selected window  -->
             <Path
                 x:Name="blurBackground"

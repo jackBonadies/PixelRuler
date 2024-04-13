@@ -144,17 +144,16 @@ namespace PixelRuler
 
             if (ViewModel.Mode.IsSelectRegion())
             {
-                mainCanvas.ShowHideScreenshot(true);
                 blurBackground.Visibility = Visibility.Visible;
                 blurBackground.Fill = new SolidColorBrush(Color.FromArgb(0x30, 0, 0, 0));
 
-                //horzIndicator.X1 = 0;
-                //horzIndicator.X2 = fullBounds.Right - fullBounds.Left;
-                //horzIndicator.Y1 = horzIndicator.Y2 = 300;
+                horzIndicator.X1 = 0;
+                horzIndicator.X2 = fullBounds.Right - fullBounds.Left;
+                horzIndicator.Y1 = horzIndicator.Y2 = 300;
 
-                //vertIndicator.X1 = vertIndicator.X2 = 300;
-                //vertIndicator.Y1 = 0;
-                //vertIndicator.Y2 = fullBounds.Bottom - fullBounds.Top;
+                vertIndicator.X1 = vertIndicator.X2 = 300;
+                vertIndicator.Y1 = 0;
+                vertIndicator.Y2 = fullBounds.Bottom - fullBounds.Top;
             }
 
             if (ViewModel.Mode == OverlayMode.QuickMeasure)
@@ -256,7 +255,7 @@ namespace PixelRuler
         private bool dragging = false;
         private Point startPoint;
 
-        private void playScreenshotAnimation()
+        private void playScreenshotAnimation(bool windowMode)
         {
             double durationSeconds = .1;
 
@@ -373,9 +372,11 @@ namespace PixelRuler
             //}
             //s.Begin();
             dragging = true;
-            startPoint = UiUtils.RoundPoint(e.GetPosition(this.mainCanvas));
+
+            startPoint = roundToZoomCanvasPixel(e);
             innerRectGeometry.Rect = new Rect(startPoint, startPoint);
-            mainCanvas.ShowHideScreenshot(false);
+            horzIndicator.Visibility = Visibility.Collapsed;
+            vertIndicator.Visibility = Visibility.Collapsed;
         }
 
         private void WindowSelectionWindow_MouseUp(object sender, MouseButtonEventArgs e)
@@ -393,11 +394,12 @@ namespace PixelRuler
             if (ViewModel.Mode == OverlayMode.Window || ViewModel.Mode == OverlayMode.WindowAndRegionRect && !regionOnlyMode)
             {
                 (SelectedRectCanvas, ProcessName, WindowTitle) = SelectWindowUnderCursor();
-                playScreenshotAnimation();
+                playScreenshotAnimation(true);
             }
             else
             {
                 SelectedRectCanvas = new Rect(startPoint, UiUtils.RoundPoint(e.GetPosition(this.mainCanvas)));
+                playScreenshotAnimation(false);
             }
 
             void AfterScreenshot(AfterScreenshotAction a, object? additionalArg)
@@ -435,10 +437,17 @@ namespace PixelRuler
             }
         }
 
+        private Point roundToZoomCanvasPixel(MouseEventArgs e)
+        {
+            var pt = e.GetPosition(this.mainCanvas.innerCanvas);
+            pt = UiUtils.RoundPoint(pt);
+            pt = this.mainCanvas.innerCanvas.TranslatePoint(pt, this.mainCanvas);
+            return pt;
+        }
+
         private void WindowSelectionWindow_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             var pos = e.GetPosition(this);
-            this.mainCanvas.SetScreenshotElementPosition(e);
             foreach(var perScreenPanel in PerScreenPanels)
             {
                 perScreenPanel.HandleMouse(pos);
@@ -456,7 +465,8 @@ namespace PixelRuler
 
             if(ViewModel.Mode.IsSelectRegion())
             {
-                SetCursorIndicator(e.GetPosition(this.mainCanvas));
+                var pt = roundToZoomCanvasPixel(e);
+                SetCursorIndicator(pt);
                 if (dragging)
                 {
                     // its possible this gets called but the mouse position doesnt actually move
@@ -472,7 +482,8 @@ namespace PixelRuler
                         }
                     }
                     EnterRegionOnlyMode();
-                    innerRectGeometry.Rect = new Rect(startPoint, e.GetPosition(this.mainCanvas));
+                    var endPt = roundToZoomCanvasPixel(e);
+                    innerRectGeometry.Rect = new Rect(startPoint, endPt);
                     var minX = Math.Min(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
                     var maxX = Math.Max(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
                     var minY = Math.Min(innerRectGeometry.Rect.Top, innerRectGeometry.Rect.Bottom);
@@ -498,10 +509,10 @@ namespace PixelRuler
 
         private void SetCursorIndicator(Point point)
         {
-            //vertIndicator.X1 = vertIndicator.X2 = (int)Math.Round(point.X);
-            //horzIndicator.Y1 = horzIndicator.Y2 = (int)Math.Round(point.Y);
-            //horzIndicator.StrokeDashOffset = point.X; 
-            //vertIndicator.StrokeDashOffset = point.Y; 
+            vertIndicator.X1 = vertIndicator.X2 = (int)Math.Round(point.X);
+            horzIndicator.Y1 = horzIndicator.Y2 = (int)Math.Round(point.Y);
+            horzIndicator.StrokeDashOffset = point.X; 
+            vertIndicator.StrokeDashOffset = point.Y; 
         }
 
         /// <summary>
