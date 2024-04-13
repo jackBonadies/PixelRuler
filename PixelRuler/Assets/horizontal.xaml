@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
+    <DrawingGroup x:Key="Image">
+        <DrawingGroup.ClipGeometry>
+            <RectangleGeometry Rect="0.0,0.0,250.0,250.0" />
+        </DrawingGroup.ClipGeometry>
+        <DrawingGroup Transform="1.0,0.0,0.0,1.0,10.158173,80.58919">
+            <GeometryDrawing>
+                <GeometryDrawing.Pen>
+                    <Pen
+                        Brush="#ff000000"
+                        DashCap="Round"
+                        EndLineCap="Round"
+                        LineJoin="Round"
+                        StartLineCap="Round"
+                        Thickness="13.9994" />
+                </GeometryDrawing.Pen>
+                <GeometryDrawing.Geometry>
+                    <PathGeometry Figures="m 42.9467 10.086 l -32.21 34.3248 l 32.21 34.3248" FillRule="Nonzero" />
+                </GeometryDrawing.Geometry>
+            </GeometryDrawing>
+            <GeometryDrawing>
+                <GeometryDrawing.Pen>
+                    <Pen
+                        Brush="#ff000000"
+                        DashCap="Round"
+                        EndLineCap="Round"
+                        LineJoin="Round"
+                        StartLineCap="Round"
+                        Thickness="13.9994" />
+                </GeometryDrawing.Pen>
+                <GeometryDrawing.Geometry>
+                    <PathGeometry Figures="m 186.737 10.086 l 32.21 34.3248 l -32.21 34.3248" FillRule="Nonzero" />
+                </GeometryDrawing.Geometry>
+            </GeometryDrawing>
+            <GeometryDrawing>
+                <GeometryDrawing.Pen>
+                    <Pen
+                        Brush="#ff000000"
+                        DashCap="Round"
+                        EndLineCap="Round"
+                        LineJoin="Round"
+                        StartLineCap="Round"
+                        Thickness="14.2153" />
+                </GeometryDrawing.Pen>
+                <GeometryDrawing.Geometry>
+                    <RectangleGeometry Rect="20.270094,44.193394,190.76688,0.43482536" />
+                </GeometryDrawing.Geometry>
+            </GeometryDrawing>
+        </DrawingGroup>
+    </DrawingGroup>
+    <DrawingImage x:Key="SingleDimensionImage" Drawing="{StaticResource Image}" />
+</ResourceDictionary>

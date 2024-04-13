@@ -1,0 +1,76 @@
+<?xml version="1.0" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
+    <DrawingGroup x:Key="Image">
+        <DrawingGroup.ClipGeometry>
+            <RectangleGeometry Rect="0.0,0.0,250.0,250.0" />
+        </DrawingGroup.ClipGeometry>
+        <DrawingGroup Transform="1.0,0.0,0.0,1.0,10.158173,80.58919">
+            <DrawingGroup Transform="0.7071067811865476,0.7071067811865475,-0.7071067811865475,0.7071067811865476,-12.542862610068354,-56.89705697579058">
+                <DrawingGroup Transform="6.123031769111886e-17,-1.0,1.0,6.123031769111886e-17,178.894255,130.920025">
+                    <GeometryDrawing>
+                        <GeometryDrawing.Pen>
+                            <Pen
+                                Brush="#ff000000"
+                                DashCap="Round"
+                                EndLineCap="Round"
+                                LineJoin="Round"
+                                StartLineCap="Round"
+                                Thickness="13.9994" />
+                        </GeometryDrawing.Pen>
+                        <GeometryDrawing.Geometry>
+                            <PathGeometry Figures="M 45.0906 -51.509 L 10.7657 -17.1842 L 44.0332 16.0833" FillRule="Nonzero" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <GeometryDrawing>
+                        <GeometryDrawing.Pen>
+                            <Pen
+                                Brush="#ff000000"
+                                DashCap="Round"
+                                EndLineCap="Round"
+                                LineJoin="Round"
+                                StartLineCap="Round"
+                                Thickness="13.5855" />
+                        </GeometryDrawing.Pen>
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry Rect="21.041637,-18.773886,100.99867,1.5110319" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <DrawingGroup Transform="6.123031769111886e-17,1.0,-1.0,6.123031769111886e-17,143.111728,-169.212432">
+                    <GeometryDrawing>
+                        <GeometryDrawing.Pen>
+                            <Pen
+                                Brush="#ff000000"
+                                DashCap="Round"
+                                EndLineCap="Round"
+                                LineJoin="Round"
+                                StartLineCap="Round"
+                                Thickness="13.9994" />
+                        </GeometryDrawing.Pen>
+                        <GeometryDrawing.Geometry>
+                            <PathGeometry Figures="M 45.0906 -51.509 L 10.7657 -17.1842 L 44.0332 16.0833" FillRule="Nonzero" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <GeometryDrawing>
+                        <GeometryDrawing.Pen>
+                            <Pen
+                                Brush="#ff000000"
+                                DashCap="Round"
+                                EndLineCap="Round"
+                                LineJoin="Round"
+                                StartLineCap="Round"
+                                Thickness="13.5855" />
+                        </GeometryDrawing.Pen>
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry Rect="21.041637,-18.773886,100.99867,1.5110319" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingGroup>
+        </DrawingGroup>
+    </DrawingGroup>
+    <DrawingImage x:Key="2dimensionsAlt" Drawing="{StaticResource Image}" />
+</ResourceDictionary>
