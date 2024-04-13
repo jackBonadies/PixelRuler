@@ -272,40 +272,61 @@ namespace PixelRuler
             flashBrush.BeginAnimation(SolidColorBrush.OpacityProperty, animation);
 
 
-            var s = new Storyboard();
-
-            var widthRatio = (rect.Width + 10) / rect.Width;
-            var heightRatio = (rect.Height + 10) / rect.Height;
-
-            var d1 = new DoubleAnimation()
+            if (windowMode)
             {
-                Duration = TimeSpan.FromSeconds(durationSeconds),
-                From = 1,
-                To = widthRatio,
-                EasingFunction = new PowerEase() { EasingMode = EasingMode.EaseOut, Power = 2 },
-                AutoReverse = true,
-            };
-            Storyboard.SetTargetProperty(d1, new PropertyPath("RenderTransform.ScaleX"));
-            Storyboard.SetTarget(d1, rect);
-            s.Children.Add(d1);
+                var s = new Storyboard();
 
-            var d2 = new DoubleAnimation()
+                var widthRatio = (rect.Width + 10) / rect.Width;
+                var heightRatio = (rect.Height + 10) / rect.Height;
+
+                var d1 = new DoubleAnimation()
+                {
+                    Duration = TimeSpan.FromSeconds(durationSeconds),
+                    From = 1,
+                    To = widthRatio,
+                    EasingFunction = new PowerEase() { EasingMode = EasingMode.EaseOut, Power = 2 },
+                    AutoReverse = true,
+                };
+                Storyboard.SetTargetProperty(d1, new PropertyPath("RenderTransform.ScaleX"));
+                Storyboard.SetTarget(d1, rect);
+                s.Children.Add(d1);
+
+                var d2 = new DoubleAnimation()
+                {
+                    Duration = TimeSpan.FromSeconds(durationSeconds),
+                    From = 1,
+                    To = heightRatio,
+                    EasingFunction = new PowerEase() { EasingMode = EasingMode.EaseOut, Power = 2 },
+                    AutoReverse = true,
+                };
+                Storyboard.SetTargetProperty(d2, new PropertyPath("RenderTransform.ScaleY"));
+                Storyboard.SetTarget(d2, rect);
+                s.Children.Add(d2);
+
+                var finalVal = rect.StrokeDashOffset;
+                rect.BeginAnimation(Rectangle.StrokeDashOffsetProperty, null);
+                rect.StrokeDashOffset = finalVal;
+
+                s.Begin();
+            }
+            else
             {
-                Duration = TimeSpan.FromSeconds(durationSeconds),
-                From = 1,
-                To = heightRatio,
-                EasingFunction = new PowerEase() { EasingMode = EasingMode.EaseOut, Power = 2 },
-                AutoReverse = true,
-            };
-            Storyboard.SetTargetProperty(d2, new PropertyPath("RenderTransform.ScaleY"));
-            Storyboard.SetTarget(d2, rect);
-            s.Children.Add(d2);
+                var s = new Storyboard();
 
-            var finalVal = rect.StrokeDashOffset;
-            rect.BeginAnimation(Rectangle.StrokeDashOffsetProperty, null);
-            rect.StrokeDashOffset = finalVal;
+                var d1 = new DoubleAnimation()
+                {
+                    Duration = TimeSpan.FromSeconds(durationSeconds),
+                    From = 1,
+                    To = 6,
+                    EasingFunction = new PowerEase() { EasingMode = EasingMode.EaseOut, Power = 2 },
+                    AutoReverse = true,
+                };
+                Storyboard.SetTargetProperty(d1, new PropertyPath("StrokeThickness"));
+                Storyboard.SetTarget(d1, rectSelectionOutline);
+                s.Children.Add(d1);
 
-            s.Begin();
+                s.Begin();
+            }
         }
 
         private void WindowSelectionWindow_MouseDown(object sender, MouseButtonEventArgs e)

@@ -78,6 +78,50 @@ namespace PixelRuler
         }
     }
 
+    public class WidthHeightRotateConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            double width = (double)values[0];
+            double height = (double)values[1];
+            if(height > 0 && (width <= 0 || double.IsNaN(width)))
+            {
+                return 90D;
+            }
+            else
+            {
+                return 0D;
+            }
+        }
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new Exception("One way converter");
+        }
+    }
+    public class WidthHeightIconConverter : IMultiValueConverter
+    {
+        public DrawingImage? TwoDimensionsImage { get; set; }
+        public DrawingImage? SingleDimensionImage { get; set; }
+
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            double width = (double)values[0];
+            double height = (double)values[1];
+            if (width > 0 && height > 0)
+            {
+                return TwoDimensionsImage;
+            }
+            else
+            {
+                return SingleDimensionImage;
+            }
+        }
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new Exception("One way converter");
+        }
+    }
+
     public class WidthHeightDisplayConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -86,19 +130,19 @@ namespace PixelRuler
             double height = (double)values[1];
             if (width > 0 && height > 0)
             {
-                return $"size: {width} × {height}px";
+                return $"{width} × {height}px";
             }
             else if (width > 0)
             {
-                return $"size: {width}px";
+                return $"{width}px";
             }
             else if (height > 0)
             {
-                return $"size: {height}px";
+                return $"{height}px";
             }
             else
             {
-                return $"size: 0px";
+                return $"0px";
             }
         }
 

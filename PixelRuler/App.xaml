@@ -12,6 +12,9 @@
                 <local:ThemesDictionary Theme="Light" />
                 <ui:ControlsDictionary />
                 <ResourceDictionary Source="Assets/ruler_inkscape_small_menu_icon.xaml" />
+                <ResourceDictionary Source="Assets/horizontal.xaml" />
+                <ResourceDictionary Source="Assets/2dimensions.xaml" />
+                <ResourceDictionary Source="Assets/2dimensionsAlt.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <!--<FrameworkElement x:Key="EyeDropperCursor" Cursor="Assets/rasterized_segoe_colorpicker_contrast.cur" />-->
@@ -39,6 +42,7 @@
             <SolidColorBrush x:Key="IsPressedColor">#EFEFF6</SolidColorBrush>
             <SolidColorBrush x:Key="ToggledHighlightColor">#80B9EE</SolidColorBrush>
             <SolidColorBrush x:Key="AnnotationColor">#EE4B2B</SolidColorBrush>
+
 
             <Style x:Key="SmallHeader" TargetType="Label">
                 <Setter Property="FontSize" Value="12" />
@@ -213,6 +217,55 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <Style x:Key="CopyButtonStyle" TargetType="Path">
+                <Setter Property="Margin" Value="6,2,0,0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Data" Value="{StaticResource CopyIconPath}" />
+                <Setter Property="Opacity" Value=".8" />
+                <Setter Property="Fill" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+                <Setter Property="LayoutTransform">
+                    <Setter.Value>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX=".015" ScaleY=".015" />
+                            <RotateTransform Angle="180" />
+                        </TransformGroup>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="RenderTransformOrigin">
+                    <Setter.Value>
+                        <Point X=".5" Y=".5" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <ControlTemplate x:Key="CopyButtonTemplate" TargetType="Button">
+                <Border
+                    Name="border"
+                    Padding="5,0,5,0"
+                    CornerRadius="3">
+                    <StackPanel Orientation="Horizontal">
+                        <ContentPresenter />
+                        <Path
+                            Name="copyIcon"
+                            Margin="7,1,0,0"
+                            Style="{StaticResource CopyButtonStyle}"
+                            Visibility="Hidden" />
+                    </StackPanel>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="False">
+                        <Setter TargetName="border" Property="Background" Value="#00000000" />
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter TargetName="border" Property="Background" Value="#18000000" />
+                        <Setter TargetName="copyIcon" Property="Visibility" Value="Visible" />
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter TargetName="border" Property="Background" Value="#40000000" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
 
         </ResourceDictionary>
     </Application.Resources>

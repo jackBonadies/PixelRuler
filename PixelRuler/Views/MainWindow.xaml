@@ -2,6 +2,7 @@
     x:Class="PixelRuler.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:common="clr-namespace:PixelRuler.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PixelRuler"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -34,6 +35,11 @@
         </ControlTemplate>-->
 
         <local:WidthHeightDisplayConverter x:Key="WidthHeightDisplayConverter" />
+        <local:WidthHeightIconConverter
+            x:Key="WidthHeightIconConverter"
+            SingleDimensionImage="{StaticResource SingleDimensionImage}"
+            TwoDimensionsImage="{StaticResource 2dimensions}" />
+        <local:WidthHeightRotateConverter x:Key="WidthHeightRotateConverter" />
 
 
         <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="ui:Button">
@@ -53,26 +59,6 @@
             <Setter Property="Background" Value="{DynamicResource SeperatorColor}" />
         </Style>
 
-        <Style x:Key="CopyButtonStyle" TargetType="Path">
-            <Setter Property="Margin" Value="6,2,0,0" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Data" Value="{StaticResource CopyIconPath}" />
-            <Setter Property="Opacity" Value=".8" />
-            <Setter Property="Fill" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-            <Setter Property="LayoutTransform">
-                <Setter.Value>
-                    <TransformGroup>
-                        <ScaleTransform ScaleX=".015" ScaleY=".015" />
-                        <RotateTransform Angle="180" />
-                    </TransformGroup>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="RenderTransformOrigin">
-                <Setter.Value>
-                    <Point X=".5" Y=".5" />
-                </Setter.Value>
-            </Setter>
-        </Style>
         <!--<Style TargetType="ui:NumberBox" BasedOn="{StaticResource {x:Type NumberBox}}">
             <Setter Property="Margin" Value="0,0,4,0"></Setter>
         </Style>-->
@@ -434,68 +420,77 @@
             Background="{DynamicResource PanelColor}"
             LastChildFill="False">
             <StackPanel
-                Margin="50,0,0,0"
+                Margin="30,0,0,0"
                 VerticalAlignment="Center"
                 Orientation="Horizontal">
                 <StackPanel
-                    Width="200"
+                    Width="180"
                     VerticalAlignment="Center"
                     Orientation="Horizontal">
                     <TextBlock
                         Margin="0,2,2,0"
                         FontFamily="Segoe MDL2 Assets"
-                        FontSize="13"
+                        FontSize="14"
                         Text="&#xE8B0;" />
-                    <TextBlock Text="{Binding CurrentPosition, Converter={StaticResource PointPositionStringConverter}}" />
+                    <TextBlock
+                        Margin="2,0,0,0"
+                        FontSize="14"
+                        Text="{Binding CurrentPosition, Converter={StaticResource PointPositionStringConverter}}" />
                 </StackPanel>
 
                 <Separator Margin="0,0,2,0" BorderBrush="#20000000" />
                 <StackPanel
-                    Width="200"
+                    Width="180"
                     VerticalAlignment="Center"
                     Orientation="Horizontal">
-                    <TextBlock>
-                        <TextBlock.Text>
-                            <MultiBinding Converter="{StaticResource WidthHeightDisplayConverter}">
-                                <Binding Path="ShapeWidth" />
-                                <Binding Path="ShapeHeight" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-                    <Path Style="{StaticResource CopyButtonStyle}" />
+                    <Button
+                        Padding="0"
+                        Focusable="False"
+                        Template="{StaticResource CopyButtonTemplate}"
+                        ToolTip="Last selected region size (click to copy)">
+                        <StackPanel Orientation="Horizontal">
+                            <Image
+                                Width="13"
+                                Height="13"
+                                Opacity=".75">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource WidthHeightIconConverter}">
+                                        <Binding Path="ShapeWidth" />
+                                        <Binding Path="ShapeHeight" />
+                                    </MultiBinding>
+                                </Image.Source>
+
+                                <Image.RenderTransformOrigin>
+                                    <Point X=".5" Y=".5" />
+                                </Image.RenderTransformOrigin>
+                                <Image.RenderTransform>
+                                    <RotateTransform>
+                                        <RotateTransform.Angle>
+                                            <MultiBinding Converter="{StaticResource WidthHeightRotateConverter}">
+                                                <Binding Path="ShapeWidth" />
+                                                <Binding Path="ShapeHeight" />
+                                            </MultiBinding>
+                                        </RotateTransform.Angle>
+                                    </RotateTransform>
+                                </Image.RenderTransform>
+                            </Image>
+                            <TextBlock Margin="5,0,0,0" FontSize="14">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource WidthHeightDisplayConverter}">
+                                        <Binding Path="ShapeWidth" />
+                                        <Binding Path="ShapeHeight" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
 
                 <Separator Margin="0,0,2,0" BorderBrush="#20000000" />
-                <Button Padding="0" Focusable="False">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border
-                                Name="border"
-                                Padding="5,0,5,0"
-                                CornerRadius="3">
-                                <StackPanel Orientation="Horizontal">
-                                    <ContentPresenter />
-                                    <Path
-                                        Name="copyIcon"
-                                        Margin="3,0,0,0"
-                                        Style="{StaticResource CopyButtonStyle}"
-                                        Visibility="Hidden" />
-                                </StackPanel>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="False">
-                                    <Setter TargetName="border" Property="Background" Value="#00000000" />
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="border" Property="Background" Value="#18000000" />
-                                    <Setter TargetName="copyIcon" Property="Visibility" Value="Visible" />
-                                </Trigger>
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="border" Property="Background" Value="#40000000" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Button.Template>
+                <Button
+                    Padding="0"
+                    Focusable="False"
+                    Template="{StaticResource CopyButtonTemplate}">
                     <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                         <Border
                             Width="16"
@@ -504,7 +499,10 @@
                             BorderBrush="{DynamicResource ColorBorderColor}"
                             BorderThickness="1"
                             CornerRadius="3" />
-                        <TextBlock Margin="4,0,0,0" Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}, Mode=OneWay}" />
+                        <TextBlock
+                            Margin="5,0,0,0"
+                            FontSize="14"
+                            Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}, Mode=OneWay}" />
                     </StackPanel>
                 </Button>
             </StackPanel>

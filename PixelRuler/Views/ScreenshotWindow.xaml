@@ -127,6 +127,7 @@
             <Rectangle
                 x:Name="rectSelectionOutline"
                 Panel.ZIndex="100"
+                Fill="{StaticResource FlashBrush}"
                 SnapsToDevicePixels="True"
                 Stroke="Red"
                 StrokeThickness="1" />
