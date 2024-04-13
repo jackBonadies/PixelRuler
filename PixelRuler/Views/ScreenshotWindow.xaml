@@ -16,6 +16,39 @@
     Focusable="True"
     mc:Ignorable="d">
 
+    <Window.Resources>
+
+        <SolidColorBrush
+            x:Key="FlashBrush"
+            Opacity="0"
+            Color="White" />
+
+        <Storyboard x:Key="scaleInOut">
+            <DoubleAnimation
+                Storyboard.TargetProperty="RenderTransform.ScaleX"
+                From="1"
+                To="1.2"
+                Duration="0:0:.2" />
+            <DoubleAnimation
+                Storyboard.TargetProperty="RenderTransform.ScaleY"
+                From="1"
+                To="1.2"
+                Duration="0:0:.2" />
+            <DoubleAnimation
+                BeginTime="0:0:.2"
+                Storyboard.TargetProperty="RenderTransform.ScaleX"
+                From="1.2"
+                To="1"
+                Duration="0:0:.2" />
+            <DoubleAnimation
+                BeginTime="0:0:.2"
+                Storyboard.TargetProperty="RenderTransform.ScaleY"
+                From="1.2"
+                To="1"
+                Duration="0:0:.2" />
+        </Storyboard>
+    </Window.Resources>
+
     <Window.InputBindings>
         <KeyBinding
             Key="{Binding NewScreenshotFullCommand.Key}"
@@ -97,22 +130,6 @@
                 SnapsToDevicePixels="True"
                 Stroke="Red"
                 StrokeThickness="1" />
-            <Line
-                x:Name="vertIndicator"
-                Panel.ZIndex="100"
-                SnapsToDevicePixels="True"
-                Stroke="Red"
-                StrokeDashArray="6 6"
-                StrokeThickness="1"
-                Visibility="Collapsed" />
-            <Line
-                x:Name="horzIndicator"
-                Panel.ZIndex="100"
-                SnapsToDevicePixels="True"
-                Stroke="Red"
-                StrokeDashArray="6 6"
-                StrokeThickness="1"
-                Visibility="Collapsed" />
             <!--  Combined Geomtry - responsible for the dimming around selected window  -->
             <Path
                 x:Name="blurBackground"
@@ -146,11 +163,18 @@
                 Canvas.Top="50"
                 Width="0"
                 Height="0"
+                Fill="{DynamicResource FlashBrush}"
                 RadiusX="4"
                 RadiusY="4"
                 Stroke="Red"
                 StrokeDashArray="4 4"
                 StrokeThickness="4">
+                <Rectangle.RenderTransformOrigin>
+                    <Point X=".5" Y=".5" />
+                </Rectangle.RenderTransformOrigin>
+                <Rectangle.RenderTransform>
+                    <ScaleTransform />
+                </Rectangle.RenderTransform>
                 <Rectangle.Triggers>
                     <EventTrigger RoutedEvent="FrameworkElement.Loaded">
                         <BeginStoryboard>

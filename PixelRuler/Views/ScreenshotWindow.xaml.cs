@@ -21,6 +21,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -255,6 +256,109 @@ namespace PixelRuler
         private bool dragging = false;
         private Point startPoint;
 
+        private void playScreenshotAnimation()
+        {
+            double durationSeconds = .1;
+
+            var cameraFlash = new Storyboard();
+            var flashBrush = this.Resources["FlashBrush"] as SolidColorBrush;
+            var animation = new DoubleAnimation
+            {
+                From = 0.0,
+                To = .2,
+                Duration = TimeSpan.FromSeconds(durationSeconds),
+                AutoReverse = true,
+            };
+
+            flashBrush.BeginAnimation(SolidColorBrush.OpacityProperty, animation);
+
+
+            var s = new Storyboard();
+
+            var widthRatio = (rect.Width + 10) / rect.Width;
+            var heightRatio = (rect.Height + 10) / rect.Height;
+
+            var d1 = new DoubleAnimation()
+            {
+                Duration = TimeSpan.FromSeconds(durationSeconds),
+                From = 1,
+                To = widthRatio,
+                EasingFunction = new PowerEase() { EasingMode = EasingMode.EaseOut, Power = 2 },
+                AutoReverse = true,
+            };
+            Storyboard.SetTargetProperty(d1, new PropertyPath("RenderTransform.ScaleX"));
+            Storyboard.SetTarget(d1, rect);
+            s.Children.Add(d1);
+
+            var d2 = new DoubleAnimation()
+            {
+                Duration = TimeSpan.FromSeconds(durationSeconds),
+                From = 1,
+                To = heightRatio,
+                EasingFunction = new PowerEase() { EasingMode = EasingMode.EaseOut, Power = 2 },
+                AutoReverse = true,
+            };
+            Storyboard.SetTargetProperty(d2, new PropertyPath("RenderTransform.ScaleY"));
+            Storyboard.SetTarget(d2, rect);
+            s.Children.Add(d2);
+
+            var finalVal = rect.StrokeDashOffset;
+            rect.BeginAnimation(Rectangle.StrokeDashOffsetProperty, null);
+            rect.StrokeDashOffset = finalVal;
+
+            s.Begin();
+
+
+
+
+
+            //int ms = 3000;
+
+            //var s = new Storyboard();
+
+            //var d1 = new DoubleAnimation()
+            //{
+            //    Duration = new Duration(new TimeSpan(0, 0, 0, 0, ms)),
+            //    From = rect.Width,
+            //    To = rect.Width + 16,
+            //    EasingFunction = new PowerEase() {  EasingMode = EasingMode.EaseOut, Power = 4 },
+            //};
+            //Storyboard.SetTargetProperty(d1, new PropertyPath("Width"));
+            //Storyboard.SetTarget(d1, rect);
+            //s.Children.Add(d1);
+
+
+            //var d2 = new DoubleAnimation()
+            //{
+            //    Duration = new Duration(new TimeSpan(0, 0, 0, 0, ms)),
+            //    From = rect.Height,
+            //    To = rect.Height + 16,
+            //    EasingFunction = new PowerEase() {  EasingMode = EasingMode.EaseOut, Power = 4 },
+            //};
+            //Storyboard.SetTargetProperty(d2, new PropertyPath("Height"));
+            //Storyboard.SetTarget(d2, rect);
+            //s.Children.Add(d2);
+
+
+            //var d3 = new ThicknessAnimation()
+            //{
+            //    Duration = new Duration(new TimeSpan(0, 0, 0, 0, ms)),
+            //    From = new Thickness(0),
+            //    To = new Thickness(-8,-8,0,0),
+            //    EasingFunction = new PowerEase() {  EasingMode = EasingMode.EaseOut, Power = 4 },
+            //};
+            //Storyboard.SetTargetProperty(d3, new PropertyPath("Margin"));
+            //Storyboard.SetTarget(d3, rect);
+            //s.Children.Add(d3);
+
+            //s.Begin();
+
+            //rect.BeginAnimation(Rectangle.StrokeDashOffsetProperty, null);
+            //rect.RenderTransformOrigin = new Point(.5, .5);
+            //rect.RenderTransform = new ScaleTransform(1.4, 1.4);
+
+        }
+
         private void WindowSelectionWindow_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton != MouseButton.Left)
@@ -262,6 +366,12 @@ namespace PixelRuler
                 return;
             }
 
+            //var s = this.Resources["scaleInOut"] as Storyboard;
+            //foreach(var child in s.Children)
+            //{
+            //    Storyboard.SetTarget(child, rect);
+            //}
+            //s.Begin();
             dragging = true;
             startPoint = UiUtils.RoundPoint(e.GetPosition(this.mainCanvas));
             innerRectGeometry.Rect = new Rect(startPoint, startPoint);
@@ -283,6 +393,7 @@ namespace PixelRuler
             if (ViewModel.Mode == OverlayMode.Window || ViewModel.Mode == OverlayMode.WindowAndRegionRect && !regionOnlyMode)
             {
                 (SelectedRectCanvas, ProcessName, WindowTitle) = SelectWindowUnderCursor();
+                playScreenshotAnimation();
             }
             else
             {
@@ -348,6 +459,18 @@ namespace PixelRuler
                 SetCursorIndicator(e.GetPosition(this.mainCanvas));
                 if (dragging)
                 {
+                    // its possible this gets called but the mouse position doesnt actually move
+                    if (!regionOnlyMode)
+                    {
+                        // if we have not yet entered region only mode check if we have moved
+                        var newPt = e.GetPosition(this.mainCanvas);
+                        var res = startPoint - newPt;
+                        bool moved = Math.Abs(res.X) >= 1 || Math.Abs(res.Y) > 1;
+                        if (!moved)
+                        {
+                            return;
+                        }
+                    }
                     EnterRegionOnlyMode();
                     innerRectGeometry.Rect = new Rect(startPoint, e.GetPosition(this.mainCanvas));
                     var minX = Math.Min(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
