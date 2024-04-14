@@ -180,7 +180,47 @@ namespace PixelRuler
             }
 
             //guideLineElement.UpdateForCoordinatesChanged();
+            UpdateForGridLineChanged();
+
         }
+
+        private void UpdateForGridLineChanged()
+        {
+            distanceIndicators.ForEachExt((it => it.Clear()));
+            List<int> horzPoints = new List<int>();
+            List<int> vertPoints = new List<int>();
+            foreach(var gridLine in this.MeasurementElements.OfType<GuidelineElement>())
+            {
+                if(gridLine.IsHorizontal)
+                {
+                    vertPoints.Add(gridLine.Coordinate);
+                }
+                else
+                {
+                    horzPoints.Add(gridLine.Coordinate);
+                }
+            }
+            horzPoints.Sort();
+            vertPoints.Sort();
+
+            addDictanceIndicatorsImp(horzPoints, true);
+            addDictanceIndicatorsImp(vertPoints, false);
+        }
+
+        private void addDictanceIndicatorsImp(List<int> points, bool isHorizontal)
+        {
+            for (int i = 0; i < points.Count - 1; i++)
+            {
+                var startPt = points[i];
+                var endPt = points[i + 1];
+                var indicator = new DistanceIndicator(this.innerCanvas, isHorizontal);
+                indicator.SetDistance(new Point(startPt,startPt), new Point(endPt,endPt));
+                indicator.AddToOwnerCanvas();
+                distanceIndicators.Add(indicator);
+            }
+        }
+
+        List<DistanceIndicator> distanceIndicators = new List<DistanceIndicator>();
 
         private void GridLine_MouseLeave(object sender, MouseEventArgs e)
         {
@@ -944,7 +984,8 @@ namespace PixelRuler
                     overlayElement.UpdateForCoordinatesChanged();
                 }
 
-
+                
+                distanceIndicators.ForEachExt(updateDistanceIndicatorsPosition);
 
                 //var leftCanvasSpace = new Point(Canvas.GetLeft(mainImage), Canvas.GetTop(mainImage));
                 //var realSpaceFromCanvasSpace = innerCanvas.TranslatePoint(leftCanvasSpace, this);
@@ -962,6 +1003,19 @@ namespace PixelRuler
             {
                 var roundedPoint = UiUtils.RoundPoint(e.GetPosition(innerCanvas));
                 currentMeasurementElement.SetEndPoint(roundedPoint);
+            }
+        }
+
+        private void updateDistanceIndicatorsPosition(DistanceIndicator distanceIndicator)
+        {
+            var overlayEdge = this.TranslatePoint(new Point(50, 50), this.innerCanvas);
+            if (distanceIndicator.IsHorizontal)
+            {
+                distanceIndicator.SetDistance(new Point(distanceIndicator.StartPoint.X, overlayEdge.Y), new Point(distanceIndicator.EndPoint.X, overlayEdge.Y));
+            }
+            else
+            {
+                distanceIndicator.SetDistance(new Point(overlayEdge.X, distanceIndicator.StartPoint.Y), new Point(overlayEdge.X, distanceIndicator.EndPoint.Y));
             }
         }
 
