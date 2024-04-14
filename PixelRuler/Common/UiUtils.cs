@@ -10,6 +10,7 @@ using System.Windows.Shapes;
 using WpfScreenHelper;
 using System.Windows.Media;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace PixelRuler.Common
 {
@@ -103,6 +104,15 @@ namespace PixelRuler.Common
                 g.CopyFromScreen((int)boundsVal.X, (int)boundsVal.Y, 0, 0, screenBounds, System.Drawing.CopyPixelOperation.SourceCopy);
             }
             return screenshot;
+        }
+
+        public static bool IsMouseWithinBounds(this FrameworkElement element, MouseEventArgs e)
+        {
+            bool isWithin = e.GetPosition(element).X >= 0 &&
+                e.GetPosition(element).X < element.ActualWidth &&
+                e.GetPosition(element).Y >= 0 &&
+                e.GetPosition(element).Y < element.ActualHeight;
+            return isWithin;
         }
     }
 }
