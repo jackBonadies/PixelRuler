@@ -38,7 +38,7 @@
         <Border
             Name="toolPanel"
             Margin="0,14,0,0"
-            Padding="8,3,8,3"
+            Padding="6,3"
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
             Background="{DynamicResource ToolPanelBackground}"
@@ -61,11 +61,8 @@
                     BorderBrush="Transparent"
                     Command="{Binding BoundsMeasureSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=BoundingBox}"
+                    Style="{StaticResource SubtleButtonStyle}"
                     ToolTipService.ToolTip="{Binding BoundsMeasureSelectedCommand.ToolTipTextFull}">
-                    <ToggleButton.Resources>
-                        <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
-                        <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
-                    </ToggleButton.Resources>
                     <TextBlock
                         Padding="0"
                         FontFamily="Segoe MDL2 Assets"
@@ -80,11 +77,8 @@
                     BorderBrush="Transparent"
                     Command="{Binding RulerSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=Ruler}"
+                    Style="{StaticResource SubtleButtonStyle}"
                     ToolTipService.ToolTip="{Binding RulerSelectedCommand.ToolTipTextFull}">
-                    <ToggleButton.Resources>
-                        <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
-                        <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
-                    </ToggleButton.Resources>
                     <TextBlock
                         Padding="0"
                         FontFamily="Segoe MDL2 Assets"
@@ -98,11 +92,8 @@
                     Padding="0"
                     BorderBrush="Transparent"
                     Command="{Binding PopOutWindowCommand}"
+                    Style="{StaticResource SubtleButtonStyle}"
                     ToolTip="{Binding PopOutWindowCommand.ToolTipTextFull}">
-                    <ToggleButton.Resources>
-                        <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
-                        <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
-                    </ToggleButton.Resources>
                     <Path
                         Data="{StaticResource PopOutIconPath}"
                         Fill="{DynamicResource TextFillColorPrimaryBrush}"
@@ -120,11 +111,8 @@
                     Padding="0"
                     BorderBrush="Transparent"
                     Command="{Binding CloseWindowCommand}"
+                    Style="{StaticResource SubtleButtonStyle}"
                     ToolTip="{Binding CloseWindowCommand.ToolTipTextFull}">
-                    <ToggleButton.Resources>
-                        <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
-                        <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
-                    </ToggleButton.Resources>
                     <Grid
                         Width="30"
                         Height="30"
@@ -162,17 +150,66 @@
         <Border
             Name="HelpPanel"
             Margin="10"
-            Padding="30"
+            Padding="10"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Background="#50000000"
             CornerRadius="10">
-            <StackPanel Orientation="Vertical">
-                <TextBlock Text="Shift - Show Menu After Screenshot" />
-                <TextBlock Text="Ctrl - Constrain" />
-                <TextBlock Text="Space - Toggle Zoom" />
-                <TextBlock Text="H - Toggle Help" />
-            </StackPanel>
+            <Border.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="#a0ffffff" />
+                </Style>
+                <Style x:Key="KeyTextBlock" TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="#a0ffffff" />
+                    <Setter Property="HorizontalAlignment" Value="Right" />
+                    <Setter Property="FontWeight" Value="DemiBold" />
+                </Style>
+            </Border.Resources>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="6" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    Style="{StaticResource KeyTextBlock}"
+                    Text="Shift" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Text="Show Menu After Screenshot" />
+                <TextBlock
+                    Grid.Row="1"
+                    Style="{StaticResource KeyTextBlock}"
+                    Text="Ctrl" />
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Text="Constrain Square" />
+                <TextBlock
+                    Grid.Row="2"
+                    Style="{StaticResource KeyTextBlock}"
+                    Text="Space" />
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Text="Toggle Zoom Box" />
+                <TextBlock
+                    Grid.Row="3"
+                    Style="{StaticResource KeyTextBlock}"
+                    Text="H" />
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="2"
+                    Text="Toggle Help" />
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

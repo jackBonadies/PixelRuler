@@ -43,6 +43,10 @@ namespace PixelRuler.Views
                             contextMenu.IsOpen = false;
                             action(AfterScreenshotAction.ViewInPixelRulerWindow, null);
                             break;
+                        case Key.P:
+                            contextMenu.IsOpen = false;
+                            action(AfterScreenshotAction.Pin, null);
+                            break;
                         case Key.S:
                             contextMenu.IsOpen = false;
                             action(AfterScreenshotAction.SaveAs, null);
@@ -63,6 +67,12 @@ namespace PixelRuler.Views
                 pixelRulerIcon.SetResourceReference(System.Windows.Controls.Image.SourceProperty, "di_Layer_1");
                 menuItem1.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, pixelRulerIcon);
 
+
+                var menuItemPin = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Pin"), InputGestureText = "P" };
+                menuItemPin.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Pin, null); };
+                var pinIcon = new SymbolIcon(SymbolRegular.Pin24);
+                menuItemPin.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, pinIcon);
+
                 var menuItem2 = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Cancel"), InputGestureText="Escape" };
                 menuItem2.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Cancel, null); };
                 var menuItem3 = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save As"), InputGestureText="Ctrl+S" };
@@ -74,6 +84,7 @@ namespace PixelRuler.Views
                 menuItem4.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, settings.DefaultPathSaveInfo); };
 
                 contextMenu.Items.Add(menuItem1);
+                contextMenu.Items.Add(menuItemPin);
                 contextMenu.Items.Add(menuItem2);
                 contextMenu.Items.Add(menuItem3);
                 contextMenu.Items.Add(menuItem4);

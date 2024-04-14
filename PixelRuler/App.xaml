@@ -37,12 +37,23 @@
             <local:DisplayKeysMultiConverter x:Key="DisplayKeysMultiConverter" />
             <local:DebugConverter x:Key="DebugConverter" />
 
+            <Style
+                x:Key="SubtleButtonStyle"
+                BasedOn="{StaticResource {x:Type ToggleButton}}"
+                TargetType="ToggleButton">
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Style.Resources>
+                    <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
+                    <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
+                    <SolidColorBrush x:Key="ToggleButtonBackground" Color="#00000000" />
+                </Style.Resources>
+            </Style>
+
             <SolidColorBrush x:Key="BarColor">#F1F3F9</SolidColorBrush>
             <SolidColorBrush x:Key="IsToggledOnColor">#E8EAF0</SolidColorBrush>
             <SolidColorBrush x:Key="IsPressedColor">#EFEFF6</SolidColorBrush>
             <SolidColorBrush x:Key="ToggledHighlightColor">#80B9EE</SolidColorBrush>
             <SolidColorBrush x:Key="AnnotationColor">#EE4B2B</SolidColorBrush>
-
 
             <Style x:Key="SmallHeader" TargetType="Label">
                 <Setter Property="FontSize" Value="12" />
@@ -81,6 +92,12 @@
             </Geometry>
 
             <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            </Style>
+            <Style TargetType="AccessText">
+                <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            </Style>
+            <Style TargetType="ui:SymbolIcon">
                 <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
             </Style>
 

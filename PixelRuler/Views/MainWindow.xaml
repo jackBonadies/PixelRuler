@@ -149,7 +149,7 @@
                 <StackPanel Width="10" />
                 <Menu>
                     <Menu.Resources>
-                        <Style TargetType="AccessText">
+                        <Style BasedOn="{StaticResource {x:Type AccessText}}" TargetType="AccessText">
                             <Setter Property="FontSize" Value="14" />
                         </Style>
                     </Menu.Resources>
@@ -271,9 +271,11 @@
                     UseLayoutRounding="True" />
 
                 <ToggleButton
-                    Margin="0,0,3,0"
+                    Margin="0,0,2,0"
+                    BorderBrush="Transparent"
                     Command="{Binding BoundsMeasureSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=BoundingBox}"
+                    Style="{DynamicResource SubtleButtonStyle}"
                     ToolTipService.ToolTip="{Binding BoundsMeasureSelectedCommand.ToolTipTextFull}">
                     <TextBlock
                         FontFamily="Segoe MDL2 Assets"
@@ -281,10 +283,15 @@
                         Text="&#xEF20;" />
                 </ToggleButton>
 
+
+
+
                 <ToggleButton
-                    Margin="3,0,3,0"
+                    Margin="2,0,2,0"
+                    BorderBrush="Transparent"
                     Command="{Binding RulerSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=Ruler}"
+                    Style="{DynamicResource SubtleButtonStyle}"
                     ToolTipService.ToolTip="{Binding RulerSelectedCommand.ToolTipTextFull}">
                     <TextBlock
                         FontFamily="Segoe MDL2 Assets"
@@ -293,9 +300,11 @@
                 </ToggleButton>
 
                 <ToggleButton
-                    Margin="3,0,3,0"
+                    Margin="2,0,2,0"
+                    BorderBrush="Transparent"
                     Command="{Binding ColorPickerSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=ColorPicker}"
+                    Style="{DynamicResource SubtleButtonStyle}"
                     ToolTipService.ToolTip="{Binding ColorPickerSelectedCommand.ToolTipTextFull}">
                     <TextBlock
                         FontFamily="Segoe MDL2 Assets"

@@ -340,14 +340,15 @@ namespace PixelRuler
                 return false;
             }
 
-            
 
-            //if(wsw.AfterScreenshotValue is AfterScreenshotAction.Pin)
-            //{
+
+            if (wsw.AfterScreenshotValue is AfterScreenshotAction.Pin)
+            {
                 var pinWindow = new PinImageWindow();
                 pinWindow.ViewModel = new PinViewModel(this.ViewModel);
                 pinWindow.Show();
-            //}
+                return false;
+            }
 
             if(res is true && newWindow)
             {
