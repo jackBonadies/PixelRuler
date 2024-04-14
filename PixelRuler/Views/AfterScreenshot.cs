@@ -11,14 +11,20 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Markup;
+using WpfScreenHelper;
 
 namespace PixelRuler.Views
 {
     public static class AfterScreenshot
     {
-        public static void ShowOptions(UIElement owner, SettingsViewModel settings, Action<AfterScreenshotAction, object?> action)
+        public static void ShowOptions(
+            UIElement owner, 
+            SettingsViewModel settings, 
+            Action<AfterScreenshotAction, object?> action,
+            double dpiOverride = -1)
         {
             System.Windows.Controls.ContextMenu CreateContextMenu()
             {
@@ -95,7 +101,19 @@ namespace PixelRuler.Views
             var contextMenu = CreateContextMenu();
 
             contextMenu.Placement = PlacementMode.MousePoint; 
-            contextMenu.PlacementTarget = owner;
+            // if owner is set to screenshotwindow, context menu will always have the leftmost screens dpi..
+            // if not set it will always have primary screen dpi
+            //contextMenu.PlacementTarget = owner;
+
+            // since we have multiple screens with different dpis try to make that screens dpi
+            if (Screen.PrimaryScreen.ScaleFactor != dpiOverride)
+            {
+                contextMenu.RenderTransform = new ScaleTransform()
+                {
+                    ScaleX = dpiOverride / Screen.PrimaryScreen.ScaleFactor,
+                    ScaleY = dpiOverride / Screen.PrimaryScreen.ScaleFactor,
+                };
+            }
 
             contextMenu.IsOpen = true;
         }

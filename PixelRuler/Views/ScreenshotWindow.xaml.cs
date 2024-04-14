@@ -51,7 +51,7 @@ namespace PixelRuler
 
             var scaleFactor = WpfScreenHelper.Screen.PrimaryScreen.ScaleFactor;
 
-            this.Top = fullBounds.Top;
+            this.Top = fullBounds.Top / scaleFactor;
             this.Left = fullBounds.Left / scaleFactor;
             this.Width = fullBounds.Width / scaleFactor;
             this.Height = fullBounds.Height / scaleFactor;
@@ -94,7 +94,7 @@ namespace PixelRuler
 
                 var left = (screen.Bounds.Left + xOffset) / scaleFactor;
                 var top = (screen.WpfBounds.Top + yOffset) / scaleFactor;
-                var perScreenPanel = new ScreenshotSelectionPerScreenPanel()
+                var perScreenPanel = new ScreenshotSelectionPerScreenPanel(screen.ScaleFactor)
                 {
                     Width = (screen.Bounds.Width / scaleFactor) / individualScale,
                     Height = (screen.Bounds.Height / scaleFactor) / individualScale,
@@ -387,7 +387,18 @@ namespace PixelRuler
 
             if (System.Windows.Input.Keyboard.IsKeyDown(this.ViewModel.Settings.PromptKey))
             {
-                Views.AfterScreenshot.ShowOptions(this, this.ViewModel.Settings, AfterScreenshot);
+                double dpiToUse = -1;
+                foreach (var screenPanel in PerScreenPanels)
+                {
+                    if (screenPanel.IsMouseWithinBounds(e))
+                    {
+                        dpiToUse = screenPanel.ScaleFactor;
+                    }
+                }
+
+                Debug.Assert(dpiToUse != -1, "Failed to get DPI");
+
+                Views.AfterScreenshot.ShowOptions(this.overlayCanvas, this.ViewModel.Settings, AfterScreenshot, dpiToUse);
             }
             else
             {

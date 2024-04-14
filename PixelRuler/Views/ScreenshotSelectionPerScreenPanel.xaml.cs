@@ -23,12 +23,15 @@ namespace PixelRuler.Views
     {
         Storyboard enterTransform;
         Storyboard leaveTransform;
-        public ScreenshotSelectionPerScreenPanel()
+        public ScreenshotSelectionPerScreenPanel(double scaleFactor)
         {
             InitializeComponent();
             enterTransform = this.Resources["enterTransform"] as Storyboard ?? throw new NullReferenceException("Missing Enter Transform Storyboard");
             leaveTransform = this.Resources["leaveTransform"] as Storyboard ?? throw new NullReferenceException("Missing Leave Transform Storyboard");
+            ScaleFactor = scaleFactor;
         }
+
+        public double ScaleFactor { get; private set; }
 
         public bool IsMouseEnteredVirtual
         {
