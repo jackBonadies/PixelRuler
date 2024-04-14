@@ -542,6 +542,7 @@ namespace PixelRuler
         {
             var pt = System.Windows.Input.Mouse.GetPosition(this);
             pt = TransformPointFromZoomCanvas(pt);
+            pt.Offset(fullBounds.Left, fullBounds.Top);
 
             var windowUnderCursorHwnd = NativeHelpers.GetWindowUnderPointExcludingOwn(new NativeMethods.POINT((int)pt.X, (int)pt.Y), new WindowInteropHelper(this).Handle);
 
