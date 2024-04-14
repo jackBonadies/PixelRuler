@@ -116,14 +116,6 @@
             Background="#01FFFFFF"
             IsHitTestVisible="False"
             Visibility="Collapsed">
-            <Canvas.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform x:Name="reverseDpiTransform" CenterX="0" CenterY="0" ScaleX="1" ScaleY="1" />
-                    <SkewTransform />
-                    <RotateTransform />
-                    <TranslateTransform />
-                </TransformGroup>
-            </Canvas.RenderTransform>
             <Rectangle
                 x:Name="rectSelectionOutline"
                 Panel.ZIndex="100"

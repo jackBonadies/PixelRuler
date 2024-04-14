@@ -53,8 +53,8 @@ namespace PixelRuler
 
             this.Top = fullBounds.Top / scaleFactor;
             this.Left = fullBounds.Left / scaleFactor;
-            this.Width = fullBounds.Width / scaleFactor;
-            this.Height = fullBounds.Height / scaleFactor;
+            this.Width = fullBounds.Width / scaleFactor / 1;
+            this.Height = fullBounds.Height / scaleFactor / 1;
             this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
             this.AllowsTransparency = true;
@@ -209,7 +209,7 @@ namespace PixelRuler
         /// i.e. if second monitor is to the left of first, the leftmost
         ///      point will be 0,0 in canvas coords, but -1920 in screen coords
         /// </summary>
-        public Rect SelectedRectWin
+        public Rect SelectedRectWinCoordinates
         {
             get; private set;
         }
@@ -222,8 +222,8 @@ namespace PixelRuler
                 {
                     ProcessName = this.ProcessName,
                     WindowTitle = this.WindowTitle,
-                    Width = (int)this.SelectedRectWin.Width,
-                    Height = (int)this.SelectedRectWin.Height,
+                    Width = (int)this.SelectedRectWinCoordinates.Width,
+                    Height = (int)this.SelectedRectWinCoordinates.Height,
                     DateTime = DateTime.Now
                 };
             }
@@ -232,23 +232,25 @@ namespace PixelRuler
         public string ProcessName { get; set; }
         public string WindowTitle { get; set; }
 
+        private Rect SelectedRegionOverlayCoordinates { get; set; }
+
         /// <summary>
-        /// Canvas Rect where 0,0 is leftmost point on virtual screen.
+        /// Image Coodinate Rect where 0,0 is leftmost point on virtual screen.
         /// </summary>
-        private Rect selectedRectCanvas;
-        public Rect SelectedRectCanvas
+        private Rect selectionRegionImageCoordinates;
+        public Rect SelectedRegionImageCoordinates
         {
             get
             {
-                return selectedRectCanvas;
+                return selectionRegionImageCoordinates;
             }
             set
             {
-                if (selectedRectCanvas != value)
+                if (selectionRegionImageCoordinates != value)
                 {
-                    selectedRectCanvas = value;
+                    selectionRegionImageCoordinates = value;
                     value.Offset(fullBounds.Left, fullBounds.Top);
-                    SelectedRectWin = value;
+                    SelectedRectWinCoordinates = value;
                 }
             }
         }
@@ -329,6 +331,41 @@ namespace PixelRuler
             }
         }
 
+        /// <summary>
+        /// Perform dpi to get UI scaling value
+        /// </summary>
+        /// <returns></returns>
+        private Point ForwardDpi(Point pt)
+        {
+            var dpi = this.GetDpi();
+            return new Point(pt.X * dpi, pt.Y * dpi);
+        }
+
+        /// <summary>
+        /// The canvas is dpi aware so reverse to get pixel : pixel
+        /// </summary>
+        /// <returns></returns>
+        private Point ReverseDpi(Point pt)
+        {
+            var dpi = this.GetDpi();
+            return new Point(pt.X / dpi, pt.Y / dpi);
+        }
+
+        /// <summary>
+        /// The canvas is dpi aware so reverse to get pixel : pixel
+        /// </summary>
+        /// <returns></returns>
+        private Rect ReverseDpi(Rect rect)
+        {
+            var dpi = this.GetDpi();
+            rect = new Rect(
+                (rect.Left) / 1.5,
+                (rect.Top) / 1.5,
+                (rect.Right - rect.Left) / 1.5,
+                (rect.Bottom - rect.Top) / 1.5);
+            return rect;
+        }
+
         private void WindowSelectionWindow_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton != MouseButton.Left)
@@ -345,6 +382,7 @@ namespace PixelRuler
             dragging = true;
 
             startPoint = roundToZoomCanvasPixel(e);
+            startPoint = ReverseDpi(startPoint);
             innerRectGeometry.Rect = new Rect(startPoint, startPoint);
             horzIndicator.Visibility = Visibility.Collapsed;
             vertIndicator.Visibility = Visibility.Collapsed;
@@ -364,16 +402,17 @@ namespace PixelRuler
 
             if (ViewModel.Mode == OverlayMode.Window || ViewModel.Mode == OverlayMode.WindowAndRegionRect && !regionOnlyMode)
             {
-                (SelectedRectCanvas, ProcessName, WindowTitle) = SelectWindowUnderCursor();
+                (SelectedRegionImageCoordinates, SelectedRegionOverlayCoordinates, ProcessName, WindowTitle) = SelectWindowUnderCursor();
                 playScreenshotAnimation(true);
             }
             else
             {
-                var imageStartPt = UiUtils.RoundPoint(this.mainCanvas.TranslatePoint(startPoint, this.mainCanvas.innerCanvas));
+                var startPt = ForwardDpi(startPoint);
+                var imageStartPt = UiUtils.RoundPoint(this.mainCanvas.TranslatePoint(startPt, this.mainCanvas.innerCanvas));
                 var imageEndPt = UiUtils.RoundPoint(this.mainCanvas.TranslatePoint(e.GetPosition(this.mainCanvas), this.mainCanvas.innerCanvas));
                 imageStartPt.Offset(-10000, -10000);
                 imageEndPt.Offset(-10000, -10000);
-                SelectedRectCanvas = new Rect(imageStartPt, imageEndPt);
+                SelectedRegionImageCoordinates = new Rect(imageStartPt, imageEndPt);
                 playScreenshotAnimation(false);
             }
 
@@ -446,7 +485,7 @@ namespace PixelRuler
 
             if (ViewModel.Mode.IsSelectWindow() && !regionOnlyMode)
             {
-                (SelectedRectCanvas, ProcessName, WindowTitle) = SelectWindowUnderCursor();
+                (SelectedRegionImageCoordinates, SelectedRegionOverlayCoordinates, ProcessName, WindowTitle) = SelectWindowUnderCursor();
             }
 
             if(ViewModel.Mode.IsSelectRegion())
@@ -469,6 +508,7 @@ namespace PixelRuler
                     }
                     EnterRegionOnlyMode();
                     var endPt = roundToZoomCanvasPixel(e);
+                    endPt = ReverseDpi(endPt);
                     innerRectGeometry.Rect = new Rect(startPoint, endPt);
                     var minX = Math.Min(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
                     var maxX = Math.Max(innerRectGeometry.Rect.Left, innerRectGeometry.Rect.Right);
@@ -495,6 +535,7 @@ namespace PixelRuler
 
         private void SetCursorIndicator(Point point)
         {
+            point = ReverseDpi(point);
             vertIndicator.X1 = vertIndicator.X2 = (int)Math.Round(point.X);
             horzIndicator.Y1 = horzIndicator.Y2 = (int)Math.Round(point.Y);
             horzIndicator.StrokeDashOffset = point.X; 
@@ -512,7 +553,9 @@ namespace PixelRuler
             var s = this.mainCanvas.CanvasScaleTransform;
             var t = this.mainCanvas.CanvasTranslateTransform;
             pt = new Point(pt.X * this.Dpi, pt.Y * this.Dpi);
-            return new Point((pt.X - t.X - 10000 * s.ScaleX) / s.ScaleX, (pt.Y - t.Y - 10000 * s.ScaleY) / s.ScaleY);
+            var ptX = (pt.X - (t.X + 10000 * s.ScaleX)) / s.ScaleX;
+            var ptY = (pt.Y - (t.Y + 10000 * s.ScaleY)) / s.ScaleY;
+            return new Point(ptX, ptY);
         }
 
         /// <summary>
@@ -533,12 +576,14 @@ namespace PixelRuler
             var newHeight = rect.Height * s.ScaleY;
 
             var offsetX = t.X + 10000 * s.ScaleX;
+            offsetX /= 1.5;
             var offsetY = t.Y + 10000 * s.ScaleY;
+            offsetY /= 1.5;
 
             return new Rect(x * s.ScaleX + offsetX, y * s.ScaleY + offsetY, newWidth, newHeight);
         }
 
-        private (Rect, string, string) SelectWindowUnderCursor()
+        private (Rect, Rect, string, string) SelectWindowUnderCursor()
         {
             var pt = System.Windows.Input.Mouse.GetPosition(this);
             pt = TransformPointFromZoomCanvas(pt);
@@ -551,7 +596,8 @@ namespace PixelRuler
             string process_name = NativeHelpers.GetProcessNameFromWindowHandle(windowUnderCursorHwnd);
             string window_title = NativeHelpers.GetWindowTitle(windowUnderCursorHwnd);
 
-            var wpfRect = new Rect(rect12.Left - this.fullBounds.Left, rect12.Top - this.fullBounds.Top, rect12.Right - rect12.Left, rect12.Bottom - rect12.Top);
+            var wpfRectOffset = new Rect(rect12.Left - this.fullBounds.Left, rect12.Top - this.fullBounds.Top, rect12.Right - rect12.Left, rect12.Bottom - rect12.Top);
+            var wpfRect = ReverseDpi(wpfRectOffset);
             wpfRect = TransfromRectFromOverlayCoordinatesToZoomCanvas(wpfRect);
 
             Canvas.SetLeft(this.rect, wpfRect.Left);
@@ -560,7 +606,7 @@ namespace PixelRuler
             rect.Height = wpfRect.Height;
             innerRectGeometry.Rect = wpfRect;
 
-            return (wpfRect, process_name, window_title);
+            return (wpfRectOffset, wpfRect, process_name, window_title);
         }
 
         private void MainWindow_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -569,10 +615,6 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_SourceInitialized(object? sender, EventArgs e)
         {
-            var dpi = this.GetDpi();
-            var scale = 1 / dpi;
-            reverseDpiTransform.ScaleX = scale;
-            reverseDpiTransform.ScaleY = scale;
         }
 
         public double Dpi { get; private set; }
