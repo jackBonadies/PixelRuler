@@ -37,14 +37,6 @@ namespace PixelRuler
     /// </summary>
     public partial class MainWindow : ThemeWindow
     {
-        protected override void OnClosed(EventArgs e)
-        {
-            HookUpUICommands(false);
-            this.ViewModel.Cleanup();
-            this.mainCanvas.Bind(false);
-            base.OnClosed(e);
-        }
-
         public MainWindow(PixelRulerViewModel prvm)
         {
             this.DataContext = prvm;
@@ -75,6 +67,14 @@ namespace PixelRuler
             var handle = new WindowInteropHelper(this).Handle;
 
             this.SizeChanged += MainWindow_SizeChanged;
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            HookUpUICommands(false);
+            this.ViewModel.Cleanup();
+            this.mainCanvas.Bind(false);
+            base.OnClosed(e);
         }
 
         private void HookUpUICommands(bool bind)

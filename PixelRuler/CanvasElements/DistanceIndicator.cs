@@ -17,6 +17,7 @@ namespace PixelRuler.CanvasElements
         Line lineStart2;
         Line lineEnd1;
         Line lineEnd2;
+        SubtleLengthLabel lengthLabel;
 
         public DistanceIndicator(Canvas owningCanvas, bool isHorizontal) : base(owningCanvas)
         {
@@ -26,6 +27,7 @@ namespace PixelRuler.CanvasElements
             lineStart2 = GetLine();
             lineEnd1 = GetLine();
             lineEnd2 = GetLine();
+            lengthLabel = new SubtleLengthLabel();
             IsHorizontal = isHorizontal; 
             this.UpdateForZoomChange();
         }
@@ -95,6 +97,19 @@ namespace PixelRuler.CanvasElements
             lineEnd2.Y1 = EndPoint.Y - yPadding;
             lineEnd2.X2 = EndPoint.X - getArrowDistance() - xPadding;
             lineEnd2.Y2 = EndPoint.Y - getArrowDistance() - yPadding;
+
+            if(IsHorizontal)
+            {
+                Canvas.SetLeft(lengthLabel, (lineBody.X1 + lineBody.X2) / 2.0 - lengthLabel.ActualWidth);
+                Canvas.SetTop(lengthLabel, lineBody.Y1 + 4);
+                lengthLabel.Length = 10;
+            }
+            else
+            {
+                Canvas.SetTop(lengthLabel, (lineBody.Y1 + lineBody.Y2) / 2.0 - lengthLabel.ActualHeight);
+                Canvas.SetLeft(lengthLabel, lineBody.X1 + 4);
+                lengthLabel.Length = 10;
+            }
         }
 
         private double getArrowDistance()
@@ -115,7 +130,6 @@ namespace PixelRuler.CanvasElements
                 StrokeDashCap = PenLineCap.Round,
                 StrokeEndLineCap = PenLineCap.Round,
                 StrokeStartLineCap = PenLineCap.Round,
-                StrokeThickness = 1,
             };
             return line;
         }
@@ -127,6 +141,8 @@ namespace PixelRuler.CanvasElements
             this.owningCanvas.Children.Add(lineStart2);
             this.owningCanvas.Children.Add(lineEnd1);
             this.owningCanvas.Children.Add(lineEnd2);
+
+            this.owningCanvas.Children.Add(lengthLabel);
         }
 
         public override void Clear()
@@ -136,11 +152,22 @@ namespace PixelRuler.CanvasElements
             this.owningCanvas.Children.Remove(lineStart2);
             this.owningCanvas.Children.Remove(lineEnd1);
             this.owningCanvas.Children.Remove(lineEnd2);
+
+            this.owningCanvas.Children.Remove(lengthLabel);
         }
 
         public override void UpdateForZoomChange()
         {
-            // stroke thickness
+            lineBody.StrokeThickness = this.getUIStrokeThicknessUnit();
+            lineStart1.StrokeThickness = this.getUIStrokeThicknessUnit();
+            lineStart2.StrokeThickness = this.getUIStrokeThicknessUnit();
+            lineEnd1.StrokeThickness = this.getUIStrokeThicknessUnit();
+            lineEnd2.StrokeThickness = this.getUIStrokeThicknessUnit();
+
+            var st = lengthLabel.RenderTransform as ScaleTransform;
+            st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
+            st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
+
             SetDistance();
         }
     }

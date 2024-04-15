@@ -117,6 +117,7 @@ namespace PixelRuler.CanvasElements
         private void CloseButtonView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.Clear();
+            this.Cleared?.Invoke(this, EventArgs.Empty);
         }
 
         private void CloseButtonView_MouseLeave(object sender, MouseEventArgs e)
@@ -158,7 +159,6 @@ namespace PixelRuler.CanvasElements
 
         private void HitBoxCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-
             if (!isManipulating)
             {
                 return;
@@ -183,9 +183,13 @@ namespace PixelRuler.CanvasElements
             }
 
             SetPositionState();
+            Moved?.Invoke(this, EventArgs.Empty);
 
             e.Handled = true;
         }
+
+        public event EventHandler Moved;
+        public event EventHandler Cleared;
 
         private void HitBoxCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

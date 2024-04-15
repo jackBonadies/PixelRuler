@@ -82,6 +82,10 @@ namespace PixelRuler
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            if(values[0] == DependencyProperty.UnsetValue)
+            {
+                return 0D;
+            }
             double width = (double)values[0];
             double height = (double)values[1];
             if(height > 0 && (width <= 0 || double.IsNaN(width)))
@@ -105,6 +109,10 @@ namespace PixelRuler
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            if (values[0] == DependencyProperty.UnsetValue)
+            {
+                return null!;
+            }
             double width = (double)values[0];
             double height = (double)values[1];
             if (width > 0 && height > 0)
@@ -126,6 +134,10 @@ namespace PixelRuler
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            if (values[0] == DependencyProperty.UnsetValue)
+            {
+                return "0px";
+            }
             double width = (double)values[0];
             double height = (double)values[1];
             if (width > 0 && height > 0)

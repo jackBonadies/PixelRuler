@@ -164,6 +164,8 @@ namespace PixelRuler
             var coor = isVertical ? zoomCanvasCoor.Y : zoomCanvasCoor.X;
             var roundCoor = (int)Math.Round(coor);
             var guideLineElement = new GuidelineElement(this, roundCoor, isVertical);
+            guideLineElement.Moved += GuideLineElement_Moved;
+            guideLineElement.Cleared += GuideLineElement_Cleared;
             guideLineElement.UpdateForZoomChange();
             MeasurementElements.Add(guideLineElement);
             guideLineElement.AddToOwnerCanvas();
@@ -182,6 +184,16 @@ namespace PixelRuler
             //guideLineElement.UpdateForCoordinatesChanged();
             UpdateForGridLineChanged();
 
+        }
+
+        private void GuideLineElement_Cleared(object? sender, EventArgs e)
+        {
+            UpdateForGridLineChanged();
+        }
+
+        private void GuideLineElement_Moved(object? sender, EventArgs e)
+        {
+            UpdateForGridLineChanged();
         }
 
         private void UpdateForGridLineChanged()
@@ -209,12 +221,20 @@ namespace PixelRuler
 
         private void addDictanceIndicatorsImp(List<int> points, bool isHorizontal)
         {
+            var overlayEdge = this.TranslatePoint(new Point(50, 50), this.innerCanvas);
             for (int i = 0; i < points.Count - 1; i++)
             {
                 var startPt = points[i];
                 var endPt = points[i + 1];
                 var indicator = new DistanceIndicator(this.innerCanvas, isHorizontal);
-                indicator.SetDistance(new Point(startPt,startPt), new Point(endPt,endPt));
+                if(isHorizontal)
+                {
+                    indicator.SetDistance(new Point(startPt, overlayEdge.Y), new Point(endPt, overlayEdge.Y));
+                }
+                else
+                {
+                    indicator.SetDistance(new Point(overlayEdge.X, startPt), new Point(overlayEdge.X, endPt));
+                }
                 indicator.AddToOwnerCanvas();
                 distanceIndicators.Add(indicator);
             }
@@ -591,6 +611,10 @@ namespace PixelRuler
 
         private bool shouldCenterImage()
         {
+            if(this.ViewModel?.Image == null)
+            {
+                return false;
+            }
             // dont need dpi scaled here. already reverse scaled.
             if(this.ActualHeight <= this.ViewModel.Image.Height)
             {
@@ -1197,6 +1221,11 @@ namespace PixelRuler
             colorPickBox?.UpdateForZoomChange();
 
             foreach(var measEl in MeasurementElements)
+            {
+                measEl.UpdateForZoomChange();
+            }
+
+            foreach(var measEl in distanceIndicators)
             {
                 measEl.UpdateForZoomChange();
             }

@@ -137,6 +137,52 @@
         </Grid.RowDefinitions>
 
         <local:MainCanvas x:Name="mainCanvas" Grid.Row="1" />
+        <Border
+            Grid.Row="1"
+            Width="200"
+            Height="100"
+            Background="White"
+            BorderBrush="#18000000"
+            BorderThickness="1"
+            CornerRadius="4"
+            UseLayoutRounding="True">
+            <Border.Effect>
+                <DropShadowEffect
+                    BlurRadius="8"
+                    Direction="270"
+                    Opacity=".3"
+                    ShadowDepth="2" />
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="24" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="12" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Margin="0,0,5,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    FontSize="16">
+                    W:
+                </TextBlock>
+                <ui:NumberBox Grid.Column="1" />
+                <TextBlock
+                    Grid.Row="1"
+                    Margin="0,0,5,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    FontSize="16">
+                    H:
+                </TextBlock>
+                <ui:NumberBox Grid.Row="1" Grid.Column="1" />
+            </Grid>
+
+        </Border>
 
         <DockPanel
             x:Name="topPanel"
@@ -146,6 +192,26 @@
 
             <!--  Left Panel  -->
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                <Popup
+                    x:Name="MyPopup"
+                    AllowsTransparency="True"
+                    IsOpen="True"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=topPanel}"
+                    PopupAnimation="Slide"
+                    VerticalOffset="5">
+                    <Border
+                        Width="120"
+                        Height="100"
+                        Background="LightSkyBlue"
+                        CornerRadius="5">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="This is a popup!" />
+                    </Border>
+                </Popup>
+
                 <StackPanel Width="10" />
                 <Menu>
                     <Menu.Resources>
