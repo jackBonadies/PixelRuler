@@ -359,10 +359,10 @@ namespace PixelRuler
         {
             var dpi = this.GetDpi();
             rect = new Rect(
-                (rect.Left) / 1.5,
-                (rect.Top) / 1.5,
-                (rect.Right - rect.Left) / 1.5,
-                (rect.Bottom - rect.Top) / 1.5);
+                (rect.Left) / this.Dpi,
+                (rect.Top) / this.Dpi,
+                (rect.Right - rect.Left) / this.Dpi,
+                (rect.Bottom - rect.Top) / this.Dpi);
             return rect;
         }
 
@@ -576,9 +576,9 @@ namespace PixelRuler
             var newHeight = rect.Height * s.ScaleY;
 
             var offsetX = t.X + 10000 * s.ScaleX;
-            offsetX /= 1.5;
+            offsetX /= this.Dpi;
             var offsetY = t.Y + 10000 * s.ScaleY;
-            offsetY /= 1.5;
+            offsetY /= this.Dpi;
 
             return new Rect(x * s.ScaleX + offsetX, y * s.ScaleY + offsetY, newWidth, newHeight);
         }
