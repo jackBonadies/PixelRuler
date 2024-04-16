@@ -283,13 +283,6 @@
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
-
         </ResourceDictionary>
     </Application.Resources>
-    <JumpList.JumpList>
-        <JumpList>
-            <JumpTask Title="New Fullscreen Screenshot" Arguments="fullscreen" />
-            <JumpTask Title="New Windowed Screenshot" Arguments="windowed" />
-        </JumpList>
-    </JumpList.JumpList>
 </Application>

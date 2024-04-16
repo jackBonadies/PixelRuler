@@ -19,6 +19,8 @@
     <None Remove="Assets\rasterized_segoe_colorpicker_contrast_hotspot_offset24.cur" />
     <None Remove="PixelRulerIcon.ico" />
     <None Remove="PixelRulerIcon1.ico" />
+    <None Remove="Resources\FluentColor24Regular.ico" />
+    <None Remove="Resources\FluentRuler24Regular.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -69,6 +71,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Assets\FluentColor24Regular.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\FluentRuler24Regular.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\FluentScreenshot24Regular.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\FluentSelectObject24Regular.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\FluentSettings24Regular.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

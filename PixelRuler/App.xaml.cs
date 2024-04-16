@@ -6,12 +6,14 @@ using System.Drawing;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using System.Windows.Shell;
 using Wpf.Ui.Tray.Controls;
 
 namespace PixelRuler
@@ -29,6 +31,8 @@ namespace PixelRuler
         {
             System.Diagnostics.Trace.WriteLine("PixelRulerStartup");
             base.OnStartup(e);
+
+            SetJumpList();
 
             bool backgroundOnly = false;
 
@@ -62,6 +66,54 @@ namespace PixelRuler
 
         }
 
+        private void SetJumpList()
+        {
+            var jumpList = new JumpList();
+
+            var task = new JumpTask
+            {
+                Title = "New Region Screenshot",
+                Arguments = "--region",
+                IconResourcePath = AppDomain.CurrentDomain.BaseDirectory + "\\Assets\\FluentSelectObject24Regular.ico",
+            };
+            jumpList.JumpItems.Add(task);
+
+            task = new JumpTask
+            {
+                Title = "New Fullscreen Screenshot",
+                Arguments = "--fullscreen",
+                IconResourcePath = AppDomain.CurrentDomain.BaseDirectory + "\\Assets\\FluentScreenshot24Regular.ico",
+            };
+            jumpList.JumpItems.Add(task);
+
+            task = new JumpTask
+            {
+                Title = "Quick Measure",
+                Arguments = "--measure",
+                IconResourcePath = AppDomain.CurrentDomain.BaseDirectory + "\\Assets\\FluentRuler24Regular.ico",
+            };
+            jumpList.JumpItems.Add(task);
+
+            task = new JumpTask
+            {
+                Title = "Quick Color",
+                Arguments = "--color",
+                IconResourcePath = AppDomain.CurrentDomain.BaseDirectory + "\\Assets\\FluentColor24Regular.ico",
+            };
+            jumpList.JumpItems.Add(task);
+
+            task = new JumpTask
+            {
+                Title = "Settings",
+                Arguments = "--settings",
+                IconResourcePath = AppDomain.CurrentDomain.BaseDirectory + "\\Assets\\FluentSettings24Regular.ico",
+            };
+            jumpList.JumpItems.Add(task);
+
+            JumpList.SetJumpList(Current, jumpList);
+        }
+
+
         private Mutex singleProcessMutex = null!;
 
         private SettingsViewModel settingsViewModel = null!;
@@ -90,11 +142,21 @@ namespace PixelRuler
                             {
                                 switch(args)
                                 {
-                                    case "screenshot":
+                                    case "--fullscreen":
                                         App.NewFullscreenshotLogic(this.settingsViewModel, true);
                                         break;
-                                    case "windowed":
-                                        App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.Window, true);
+                                    case "--windowed":
+                                    case "--region":
+                                        App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.WindowAndRegionRect, true);
+                                        break;
+                                    case "--settings":
+                                        App.ShowSettingsWindowSingleInstance(this.settingsViewModel);
+                                        break;
+                                    case "--color":
+                                        App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.QuickColor, true);
+                                        break;
+                                    case "--measure":
+                                        App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.QuickMeasure, true);
                                         break;
                                     default:
                                         if(string.IsNullOrEmpty(args))

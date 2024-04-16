@@ -21,14 +21,6 @@
         TooltipText="PixelRuler">
         <tray:NotifyIcon.Menu>
             <ContextMenu>
-                <custom:MenuItemCustom
-                    Command="{Binding NewScreenshotFullCommand}"
-                    Header="{Binding NewScreenshotFullCommand.ToolTipTextBase}"
-                    InputGestureText="{Binding NewScreenshotFullCommand.ToolTipTextShortcut}">
-                    <custom:MenuItemCustom.Icon>
-                        <wpfui:SymbolIcon Symbol="Screenshot24" />
-                    </custom:MenuItemCustom.Icon>
-                </custom:MenuItemCustom>
                 <!--<custom:MenuItemCustom
                     Command="{Binding NewScreenshotWindowedCommand}"
                     Header="{Binding NewScreenshotWindowedCommand.ToolTipTextBase}"
@@ -43,6 +35,14 @@
                     InputGestureText="{Binding NewScreenshotRegionCommand.ToolTipTextShortcut}">
                     <custom:MenuItemCustom.Icon>
                         <wpfui:SymbolIcon Symbol="SelectObject24" />
+                    </custom:MenuItemCustom.Icon>
+                </custom:MenuItemCustom>
+                <custom:MenuItemCustom
+                    Command="{Binding NewScreenshotFullCommand}"
+                    Header="{Binding NewScreenshotFullCommand.ToolTipTextBase}"
+                    InputGestureText="{Binding NewScreenshotFullCommand.ToolTipTextShortcut}">
+                    <custom:MenuItemCustom.Icon>
+                        <wpfui:SymbolIcon Symbol="Screenshot24" />
                     </custom:MenuItemCustom.Icon>
                 </custom:MenuItemCustom>
                 <Separator />
