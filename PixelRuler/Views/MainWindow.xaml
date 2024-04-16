@@ -145,7 +145,8 @@
             BorderBrush="#18000000"
             BorderThickness="1"
             CornerRadius="4"
-            UseLayoutRounding="True">
+            UseLayoutRounding="True"
+            Visibility="Collapsed">
             <Border.Effect>
                 <DropShadowEffect
                     BlurRadius="8"
@@ -192,26 +193,6 @@
 
             <!--  Left Panel  -->
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                <Popup
-                    x:Name="MyPopup"
-                    AllowsTransparency="True"
-                    IsOpen="True"
-                    Placement="Bottom"
-                    PlacementTarget="{Binding ElementName=topPanel}"
-                    PopupAnimation="Slide"
-                    VerticalOffset="5">
-                    <Border
-                        Width="120"
-                        Height="100"
-                        Background="LightSkyBlue"
-                        CornerRadius="5">
-                        <TextBlock
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="This is a popup!" />
-                    </Border>
-                </Popup>
-
                 <StackPanel Width="10" />
                 <Menu>
                     <Menu.Resources>

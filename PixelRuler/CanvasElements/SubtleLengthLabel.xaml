@@ -20,7 +20,7 @@
     </UserControl.RenderTransform>
     <Border
         Padding="1,0,1,0"
-        Background="#C0ffffff"
+        Background="#303030"
         CornerRadius="3">
         <StackPanel
             HorizontalAlignment="Center"
@@ -32,7 +32,7 @@
                 HorizontalAlignment="Center"
                 d:Text="14"
                 FontSize="15"
-                Foreground="#303030"
+                Foreground="Aqua"
                 Text="{Binding Length, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}" />
         </StackPanel>
     </Border>

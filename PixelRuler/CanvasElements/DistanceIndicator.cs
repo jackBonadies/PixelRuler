@@ -98,17 +98,27 @@ namespace PixelRuler.CanvasElements
             lineEnd2.X2 = EndPoint.X - getArrowDistance() - xPadding;
             lineEnd2.Y2 = EndPoint.Y - getArrowDistance() - yPadding;
 
-            if(IsHorizontal)
+            if (IsHorizontal)
             {
-                Canvas.SetLeft(lengthLabel, (lineBody.X1 + lineBody.X2) / 2.0 - lengthLabel.ActualWidth);
-                Canvas.SetTop(lengthLabel, lineBody.Y1 + 4);
-                lengthLabel.Length = 10;
+                lengthLabel.Length = (int)(lineBody.X2 - lineBody.X1);
             }
             else
             {
-                Canvas.SetTop(lengthLabel, (lineBody.Y1 + lineBody.Y2) / 2.0 - lengthLabel.ActualHeight);
-                Canvas.SetLeft(lengthLabel, lineBody.X1 + 4);
-                lengthLabel.Length = 10;
+                lengthLabel.Length = (int)(lineBody.Y2 - lineBody.Y1);
+            }
+
+            lengthLabel.Measure(new Size(double.MaxValue, double.MaxValue)); // TODO UiUtils readonly MaxSize
+            double desiredWidth = lengthLabel.DesiredSize.Width;
+            double desiredHeight = lengthLabel.DesiredSize.Height;
+            if (IsHorizontal)
+            {
+                Canvas.SetLeft(lengthLabel, (lineBody.X1 + lineBody.X2) / 2.0 - desiredWidth / 2.0);
+                Canvas.SetTop(lengthLabel, lineBody.Y1 - desiredHeight / 2.0);
+            }
+            else
+            {
+                Canvas.SetTop(lengthLabel, (lineBody.Y1 + lineBody.Y2) / 2.0 - desiredHeight / 2.0);
+                Canvas.SetLeft(lengthLabel, lineBody.X1 - desiredWidth / 2.0);
             }
         }
 

@@ -383,7 +383,6 @@ namespace PixelRuler
 
             startPoint = roundToZoomCanvasPixel(e);
             startPoint = ReverseDpi(startPoint);
-            innerRectGeometry.Rect = new Rect(startPoint, startPoint);
             horzIndicator.Visibility = Visibility.Collapsed;
             vertIndicator.Visibility = Visibility.Collapsed;
         }
@@ -507,6 +506,7 @@ namespace PixelRuler
                         }
                     }
                     EnterRegionOnlyMode();
+                    //innerRectGeometry.Rect = new Rect(startPoint, startPoint);
                     var endPt = roundToZoomCanvasPixel(e);
                     endPt = ReverseDpi(endPt);
                     innerRectGeometry.Rect = new Rect(startPoint, endPt);
