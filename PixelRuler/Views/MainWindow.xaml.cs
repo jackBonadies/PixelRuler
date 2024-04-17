@@ -292,6 +292,12 @@ namespace PixelRuler
                 this.ViewModel.SaveAs();
                 return false;
             }
+
+            if(wsw.AfterScreenshotValue is AfterScreenshotAction.Copy)
+            {
+                this.ViewModel.CopyRawImageToClipboard();
+                return false;
+            }
             
             // string savedPath 
             if (wsw.AfterScreenshotValue is AfterScreenshotAction.Save)

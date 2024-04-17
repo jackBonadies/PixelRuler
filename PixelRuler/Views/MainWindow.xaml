@@ -240,10 +240,35 @@
                         <Separator />
                         <MenuItem Command="{Binding CloseWindowCommand}" InputGestureText="Ctrl+W">
                             <MenuItem.Icon>
-                                <ui:SymbolIcon Symbol="ArrowExit20" />
+                                <Grid
+                                    Width="30"
+                                    Height="30"
+                                    Opacity="1">
+                                    <Grid.LayoutTransform>
+                                        <ScaleTransform ScaleX=".53" ScaleY=".53" />
+                                    </Grid.LayoutTransform>
+                                    <Border
+                                        Width="1.5"
+                                        Height="30"
+                                        Background="{DynamicResource TextFillColorPrimaryBrush}"
+                                        CornerRadius=".5">
+                                        <Border.LayoutTransform>
+                                            <RotateTransform Angle="45" />
+                                        </Border.LayoutTransform>
+                                    </Border>
+                                    <Border
+                                        Width="1.5"
+                                        Height="30"
+                                        Background="{DynamicResource TextFillColorPrimaryBrush}"
+                                        CornerRadius=".5">
+                                        <Border.LayoutTransform>
+                                            <RotateTransform Angle="-45" />
+                                        </Border.LayoutTransform>
+                                    </Border>
+                                </Grid>
                             </MenuItem.Icon>
                             <MenuItem.Header>
-                                <AccessText Text="Close" />
+                                <AccessText Text="Exit" />
                             </MenuItem.Header>
                         </MenuItem>
                     </ui:MenuItem>
