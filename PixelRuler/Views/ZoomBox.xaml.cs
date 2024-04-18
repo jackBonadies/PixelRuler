@@ -101,6 +101,7 @@ namespace PixelRuler.Views
             zoomCanvas.Children.Add(currentPixelIndicator);
 
             this.Visibility = Visibility.Collapsed;
+            this.Loaded += ZoomBox_Loaded;
         }
 
         private void OnEffectiveZoomChanged(object? sender, double e)
@@ -517,6 +518,23 @@ namespace PixelRuler.Views
             }
 
             SetPositions();
+        }
+
+        private void ZoomBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            SetupForDpi();
+        }
+
+        protected override void OnDpiChanged(DpiScale oldDpi, DpiScale newDpi)
+        {
+            SetupForDpi();
+            base.OnDpiChanged(oldDpi, newDpi);
+        }
+
+        private void SetupForDpi()
+        {
+            var dpi = this.GetDpi();
+            this.LayoutTransform = new ScaleTransform(dpi, dpi);
         }
 
         private List<(MeasurementElementZoomCanvasShape, List<UIElement>)> ZoomCanvasElementInfo = new();

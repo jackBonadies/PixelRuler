@@ -26,7 +26,17 @@ namespace PixelRuler
     /// </summary>
     public partial class PixelRulerViewModel : ObservableObject
     {
-        public PixelRulerViewModel(SettingsViewModel? settingsViewModel = null)
+        public PixelRulerViewModel()
+        {
+            init();
+        }
+
+        public PixelRulerViewModel(SettingsViewModel settingsViewModel)
+        {
+            init(settingsViewModel);
+        }
+
+        private void init(SettingsViewModel? settingsViewModel = null)
         {
             BoundsMeasureSelectedCommand = new RelayCommandFull((object? o) => SelectedTool = Tool.BoundingBox, System.Windows.Input.Key.B, System.Windows.Input.ModifierKeys.None, "Bounds Measure");
             ColorPickerSelectedCommand = new RelayCommandFull((object? o) => SelectedTool = Tool.ColorPicker, System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.None, "Color Picker");
