@@ -17,20 +17,52 @@
         <ScaleTransform x:Name="perScreenDpiScaleTransform" ScaleX=".5" ScaleY=".5" />
     </UserControl.RenderTransform>
     <UserControl.Resources>
-        <Storyboard x:Key="enterTransform" x:Name="enterTransform">
+        <Storyboard x:Key="enterAnimationPanel">
             <DoubleAnimation
-                Storyboard.TargetName="translateTransform"
+                Storyboard.TargetName="translateTransformPanel"
                 Storyboard.TargetProperty="Y"
                 From="-56"
                 To="0"
                 Duration="0:0:.1" />
         </Storyboard>
-        <Storyboard x:Key="leaveTransform" x:Name="leaveTransform">
+        <Storyboard x:Key="leaveAnimationPanel">
             <DoubleAnimation
-                Storyboard.TargetName="translateTransform"
+                Storyboard.TargetName="translateTransformPanel"
                 Storyboard.TargetProperty="Y"
                 From="0"
-                To="-56"
+                To="-200"
+                Duration="0:0:.1" />
+        </Storyboard>
+        <!--<Storyboard x:Key="enterAnimationHelp">
+            <DoubleAnimation
+                Storyboard.TargetName="translateTransformHelp"
+                Storyboard.TargetProperty="Y"
+                From="-200"
+                To="0"
+                Duration="0:0:.1" />
+        </Storyboard>
+        <Storyboard x:Key="leaveAnimationHelp">
+            <DoubleAnimation
+                Storyboard.TargetName="translateTransformHelp"
+                Storyboard.TargetProperty="Y"
+                From="0"
+                To="-200"
+                Duration="0:0:.1" />
+        </Storyboard>-->
+        <Storyboard x:Key="enterAnimationHelp">
+            <DoubleAnimation
+                Storyboard.TargetName="helpPanel"
+                Storyboard.TargetProperty="Opacity"
+                From="0"
+                To="1"
+                Duration="0:0:.1" />
+        </Storyboard>
+        <Storyboard x:Key="leaveAnimationHelp">
+            <DoubleAnimation
+                Storyboard.TargetName="helpPanel"
+                Storyboard.TargetProperty="Opacity"
+                From="1"
+                To="0"
                 Duration="0:0:.1" />
         </Storyboard>
     </UserControl.Resources>
@@ -47,7 +79,7 @@
             CornerRadius="5"
             Cursor="Arrow">
             <Border.RenderTransform>
-                <TranslateTransform x:Name="translateTransform" Y="-60" />
+                <TranslateTransform x:Name="translateTransformPanel" Y="-200" />
             </Border.RenderTransform>
 
             <!--<Border.Resources>
@@ -148,13 +180,17 @@
             </StackPanel>
         </Border>
         <Border
-            Name="HelpPanel"
+            Name="helpPanel"
             Margin="10"
             Padding="10"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Background="#A0000000"
-            CornerRadius="10">
+            CornerRadius="10"
+            Opacity="0">
+            <!--<Border.RenderTransform>
+                <TranslateTransform x:Name="translateTransformHelp" Y="-60" />
+            </Border.RenderTransform>-->
             <Border.Resources>
                 <Style TargetType="TextBlock">
                     <Setter Property="Foreground" Value="#a0ffffff" />

@@ -21,13 +21,17 @@ namespace PixelRuler.Views
     /// </summary>
     public partial class ScreenshotSelectionPerScreenPanel : UserControl
     {
-        Storyboard enterTransform;
-        Storyboard leaveTransform;
+        Storyboard enterAnimationPanel;
+        Storyboard leaveAnimationPanel;
+        Storyboard enterAnimationHelp;
+        Storyboard leaveAnimationHelp;
         public ScreenshotSelectionPerScreenPanel(double scaleFactor)
         {
             InitializeComponent();
-            enterTransform = this.Resources["enterTransform"] as Storyboard ?? throw new NullReferenceException("Missing Enter Transform Storyboard");
-            leaveTransform = this.Resources["leaveTransform"] as Storyboard ?? throw new NullReferenceException("Missing Leave Transform Storyboard");
+            enterAnimationPanel = this.Resources["enterAnimationPanel"] as Storyboard ?? throw new NullReferenceException("Missing Enter Transform Storyboard");
+            leaveAnimationPanel = this.Resources["leaveAnimationPanel"] as Storyboard ?? throw new NullReferenceException("Missing Leave Transform Storyboard");
+            enterAnimationHelp = this.Resources["enterAnimationHelp"] as Storyboard ?? throw new NullReferenceException("Missing Enter Transform Storyboard");
+            leaveAnimationHelp = this.Resources["leaveAnimationHelp"] as Storyboard ?? throw new NullReferenceException("Missing Leave Transform Storyboard");
             ScaleFactor = scaleFactor;
         }
 
@@ -40,18 +44,30 @@ namespace PixelRuler.Views
 
         public Rect Bounds { get; set; }
 
+        private void enterVirtualScreenAnimation()
+        {
+            this.enterAnimationPanel.Begin();
+            this.enterAnimationHelp.Begin();
+        }
+
+        private void leaveVirtualScreenAnimation()
+        {
+            this.leaveAnimationPanel.Begin();
+            this.leaveAnimationHelp.Begin();
+        }
+
         internal void HandleMouse(Point pos)
         {
             bool inside = Bounds.Contains(pos);
             if (!IsMouseEnteredVirtual && inside)
             {
                 IsMouseEnteredVirtual = true;
-                this.enterTransform.Begin();
+                enterVirtualScreenAnimation();
             }
             else if(IsMouseEnteredVirtual && !inside)
             {
                 IsMouseEnteredVirtual = false;
-                this.leaveTransform.Begin();
+                leaveVirtualScreenAnimation();
             }
         }
     }
