@@ -73,7 +73,6 @@ namespace PixelRuler
         {
             HookUpUICommands(false);
             this.ViewModel.Cleanup();
-            this.mainCanvas.Bind(false);
             base.OnClosed(e);
         }
 

@@ -27,15 +27,18 @@ namespace PixelRuler
     /// </summary>
     public partial class MainCanvas : UserControl
     {
-        MeasurementElementZoomCanvasShape? currentMeasurementElement;
-        public ObservableCollection<MeasurementElementZoomCanvasShape> MeasurementElements { get; private set; } = new();
+        public MeasurementElementZoomCanvasShape? currentMeasurementElement;
         public ObservableCollection<IOverlayCanvasShape> OverlayCanvasElements { get; private set; } = new();
+
         ColorPickElement? colorPickBox;
         bool drawingShape;
 
         public EventHandler<double> EffectiveZoomChanged;
 
         ZoomBox zoomBox;
+
+        private IntBucket resizeXbucket = new IntBucket();
+        private IntBucket resizeYbucket = new IntBucket();
 
         public MainCanvas()
         {
@@ -63,15 +66,7 @@ namespace PixelRuler
             this.overlayCanvas.MouseEnter += OverlayCanvas_MouseEnter;
             this.overlayCanvas.MouseLeave += OverlayCanvas_MouseLeave;
 
-
-
-
             this.KeyDown += MainCanvas_KeyDown;
-
-            //this.mainCanvas.MouseLeftButtonDown += MainCanvas_MouseLeftButtonDown;
-            //this.mainCanvas.MouseLeftButtonUp += MainCanvas_MouseLeftButtonUp;
-            MeasurementElements.CollectionChanged += MeasurementElements_CollectionChanged;
-
             this.LostFocus += MainCanvas_LostFocus;
             this.LostMouseCapture += MainCanvas_LostMouseCapture;
 
@@ -89,11 +84,15 @@ namespace PixelRuler
 
             this.Loaded += MainCanvas_Loaded;
             this.SizeChanged += MainCanvas_SizeChanged;
-
+            this.Unloaded += MainCanvas_Unloaded;
         }
 
-        private IntBucket resizeXbucket = new IntBucket();
-        private IntBucket resizeYbucket = new IntBucket();
+        private void MainCanvas_Unloaded(object sender, RoutedEventArgs e)
+        {
+            // so the view model does not keep us alive.
+            this.Bind(false);
+        }
+
 
         private void MainCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -128,6 +127,8 @@ namespace PixelRuler
             SetupForDpi();
 
             SetImageLocation(this.innerCanvas, mainImage);
+
+            this.ViewModel.MeasurementElements.ForEachExt((it) => it.SetOwner(this));
         }
 
         protected override void OnDpiChanged(DpiScale oldDpi, DpiScale newDpi)
@@ -167,7 +168,7 @@ namespace PixelRuler
             guideLineElement.Moved += GuideLineElement_Moved;
             guideLineElement.Cleared += GuideLineElement_Cleared;
             guideLineElement.UpdateForZoomChange();
-            MeasurementElements.Add(guideLineElement);
+            ViewModel.MeasurementElements.Add(guideLineElement);
             guideLineElement.AddToOwnerCanvas();
             // add to gridline view.
             if(isVertical)
@@ -201,7 +202,7 @@ namespace PixelRuler
             distanceIndicators.ForEachExt((it => it.Clear()));
             List<int> horzPoints = new List<int>();
             List<int> vertPoints = new List<int>();
-            foreach(var gridLine in this.MeasurementElements.OfType<GuidelineElement>())
+            foreach(var gridLine in this.ViewModel.MeasurementElements.OfType<GuidelineElement>())
             {
                 if(gridLine.IsHorizontal)
                 {
@@ -428,7 +429,7 @@ namespace PixelRuler
         {
             get
             {
-                return this.MeasurementElements.Where(it => it.Selected);
+                return this.ViewModel.MeasurementElements.Where(it => it.Selected);
             }
         }
 
@@ -482,6 +483,8 @@ namespace PixelRuler
                 this.ViewModel.AllElementsSelected += AllElementsSelected;
                 this.ViewModel.ShowGridLinesChanged += ViewModel_ShowGridLinesChanged;
                 this.ViewModel.ImageUpdated += ViewModel_ImageUpdated;
+
+                this.ViewModel.MeasurementElements.CollectionChanged += MeasurementElements_CollectionChanged;
             }
             else
             {
@@ -493,6 +496,8 @@ namespace PixelRuler
                 this.ViewModel.AllElementsSelected -= AllElementsSelected;
                 this.ViewModel.ShowGridLinesChanged -= ViewModel_ShowGridLinesChanged;
                 this.ViewModel.ImageUpdated -= ViewModel_ImageUpdated;
+
+                this.ViewModel.MeasurementElements.CollectionChanged -= MeasurementElements_CollectionChanged;
             }
         }
 
@@ -562,7 +567,7 @@ namespace PixelRuler
             try
             {
                 selectAll = true;
-                foreach(var measEl in MeasurementElements)
+                foreach(var measEl in ViewModel.MeasurementElements)
                 {
                     measEl.Selected = true;
                 }
@@ -575,16 +580,16 @@ namespace PixelRuler
 
         private void ClearAllMeasureElements(object? sender, EventArgs e)
         {
-            foreach(var measEl in MeasurementElements)
+            foreach(var measEl in ViewModel.MeasurementElements)
             {
                 measEl.Clear();
             }
-            MeasurementElements.Clear();
+            ViewModel.MeasurementElements.Clear();
         }
 
         private void DeleteAllSelectedMeasureElements(object? sender, EventArgs e)
         {
-            var selectedItems = MeasurementElements.Where(it => it.Selected).ToList();
+            var selectedItems = ViewModel.MeasurementElements.Where(it => it.Selected).ToList();
             if(selectedItems.Contains(ViewModel.ActiveMeasureElement))
             {
                 ViewModel.ActiveMeasureElement = null;
@@ -592,14 +597,14 @@ namespace PixelRuler
             foreach (var measEl in selectedItems)
             {
                 measEl.Clear();
-                MeasurementElements.Remove(measEl);
+                ViewModel.MeasurementElements.Remove(measEl);
             }
         }
 
         private void SetClearAllMeasurementsEnabledState()
         {
             bool anyNonEmpty = false;
-            foreach (var measEl in MeasurementElements)
+            foreach (var measEl in ViewModel.MeasurementElements)
             {
                 if(!measEl.IsEmpty && measEl.FinishedDrawing)
                 {
@@ -756,7 +761,7 @@ namespace PixelRuler
                 if(currentMeasurementElement.IsEmpty)
                 {
                     currentMeasurementElement.Clear();
-                    MeasurementElements.Remove(currentMeasurementElement);
+                    ViewModel.MeasurementElements.Remove(currentMeasurementElement);
                 }
             }
             SetClearAllMeasurementsEnabledState();
@@ -848,7 +853,7 @@ namespace PixelRuler
 
         private void UnselectAll()
         {
-            foreach(var measEl in MeasurementElements)
+            foreach(var measEl in ViewModel.MeasurementElements)
             {
                 measEl.Selected = false;
             }
@@ -891,7 +896,7 @@ namespace PixelRuler
         private void AddToCanvas(MeasurementElementZoomCanvasShape el)
         {
             el.AddToOwnerCanvas();
-            MeasurementElements.Add(el);
+            ViewModel.MeasurementElements.Add(el);
             el.SelectedChanged += CurrentMeasurementElement_SelectedChanged;
             el.Moving += CurrentMeasurementElement_Moving;
             el.StartResize += CurrentMeasurementElement_StartResize;
@@ -933,7 +938,7 @@ namespace PixelRuler
                     {
                         return;
                     }
-                    var toDeselect = MeasurementElements.Where(it => it != measEl && it.Selected);
+                    var toDeselect = ViewModel.MeasurementElements.Where(it => it != measEl && it.Selected);
                     foreach(var measElToDeselect in toDeselect)
                     {
                         measElToDeselect.Selected = false;
@@ -1220,7 +1225,7 @@ namespace PixelRuler
         {
             colorPickBox?.UpdateForZoomChange();
 
-            foreach(var measEl in MeasurementElements)
+            foreach(var measEl in ViewModel.MeasurementElements)
             {
                 measEl.UpdateForZoomChange();
             }

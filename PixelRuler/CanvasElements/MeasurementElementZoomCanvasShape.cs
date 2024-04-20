@@ -51,7 +51,6 @@ namespace PixelRuler.CanvasElements
 
             hitBoxManipulate.Background = new SolidColorBrush(Color.FromArgb(40, 244, 244, 244));
 
-            this.owningCanvas.Children.Add(hitBoxManipulate);
             Canvas.SetZIndex(hitBoxManipulate, App.MANIPULATE_HITBOX_INDEX);
         }
 
@@ -92,9 +91,15 @@ namespace PixelRuler.CanvasElements
             }
         }
 
+        public override void AddToOwnerCanvas()
+        {
+            this.owningCanvas.Children.Add(hitBoxManipulate);
+        }
+
         public override void Clear()
         {
             this.owningCanvas.Children.Remove(hitBoxManipulate);
+            this.hitBoxManipulate.Children.Clear();
         }
 
 
@@ -295,6 +300,13 @@ namespace PixelRuler.CanvasElements
         }
 
         public abstract System.Collections.Generic.List<UIElement> GetZoomCanvasElements();
+
+        internal void SetOwner(MainCanvas mainCanvas)
+        {
+            this.Clear();
+            this.owningCanvas = mainCanvas.innerCanvas;
+            this.AddToOwnerCanvas();
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
     }

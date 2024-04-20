@@ -36,10 +36,11 @@ namespace PixelRuler
 
         public override void AddToOwnerCanvas()
         {
+            base.AddToOwnerCanvas();
+
             if(marching_ants)
             {
                 rect1.Stroke = brush1;
-
             }
             else
             {

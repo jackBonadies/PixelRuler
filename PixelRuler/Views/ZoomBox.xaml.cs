@@ -500,7 +500,7 @@ namespace PixelRuler.Views
                 case ZoomBoxCase.QuickZoom:
                     ZoomCanvasElementInfo.Clear();
                     // copy a version of current annotations
-                    foreach (var measurementEl in owningCanvas.MeasurementElements)
+                    foreach (var measurementEl in (this.owningCanvas.DataContext as PixelRulerViewModel).MeasurementElements)
                     {
                         // keep dictionary measElOriginal -> zoombox version
                         // update zoombox version from orig..

@@ -18,6 +18,7 @@ using System.IO;
 using Microsoft.Win32;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace PixelRuler
 {
@@ -55,6 +56,12 @@ namespace PixelRuler
                 this.SelectedTool = settingsViewModel.DefaultTool;
             }
         }
+
+        #region MainCanvasElements
+
+        public ObservableCollection<MeasurementElementZoomCanvasShape> MeasurementElements { get; private set; } = new();
+
+        #endregion MainCanvasElements
 
         /// <summary>
         /// Whether in fullscreen screenshow window mode (QuickTool or Screenshot Selection)
