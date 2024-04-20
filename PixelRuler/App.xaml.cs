@@ -57,13 +57,15 @@ namespace PixelRuler
             }
             
             settingsViewModel = new SettingsViewModel();
-            var mainViewModel = new PixelRulerViewModel(settingsViewModel);
-
             var rootWindow = new RootWindow(new RootViewModel(settingsViewModel));
             rootWindow.Show();
 
             settingsViewModel.SetState();
 
+            if(createdNew)
+            {
+                HandleArgs(string.Join(' ', e.Args), true);
+            }
         }
 
         private void SetJumpList()
@@ -129,51 +131,51 @@ namespace PixelRuler
                         server.WaitForConnection();
                         using (var sr = new StreamReader(server))
                         {
-                            string args = sr.ReadLine();
-                            //switch (args)
-                            //{
-                            //    case "focus":
-                            //        MainWindow mainWindow = new MainWindow(mainViewModel);
-                            //        mainWindow.NewFullScreenshot(false);
-                            //        mainWindow.Show();
-                            //        break;
-                            //}
+                            string? args = sr.ReadLine();
                             Application.Current.Dispatcher.Invoke(() =>
                             {
-                                switch(args)
-                                {
-                                    case "--fullscreen":
-                                        App.NewFullscreenshotLogic(this.settingsViewModel, true);
-                                        break;
-                                    case "--windowed":
-                                    case "--region":
-                                        App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.WindowAndRegionRect, true);
-                                        break;
-                                    case "--settings":
-                                        App.ShowSettingsWindowSingleInstance(this.settingsViewModel);
-                                        break;
-                                    case "--color":
-                                        App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.QuickColor, true);
-                                        break;
-                                    case "--measure":
-                                        App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.QuickMeasure, true);
-                                        break;
-                                    default:
-                                        if(string.IsNullOrEmpty(args))
-                                        {
-                                            App.NewFullscreenshotLogic(this.settingsViewModel, true);
-                                        }
-                                        else
-                                        {
-                                            App.OpenFileLogic(this.settingsViewModel, true, args);
-                                        }
-                                        break;
-                                }
+                                HandleArgs(args, false);
                             });
 
                             Console.WriteLine($"Received args from second instance: {args}");
                         }
                 }
+            }
+        }
+
+        private void HandleArgs(string? args, bool startup)
+        {
+            switch(args)
+            {
+                case "--fullscreen":
+                    App.NewFullscreenshotLogic(this.settingsViewModel, true);
+                    break;
+                case "--windowed":
+                case "--region":
+                    App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.WindowAndRegionRect, true);
+                    break;
+                case "--settings":
+                    App.ShowSettingsWindowSingleInstance(this.settingsViewModel);
+                    break;
+                case "--color":
+                    App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.QuickColor, true);
+                    break;
+                case "--measure":
+                    App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.QuickMeasure, true);
+                    break;
+                default:
+                    if(string.IsNullOrEmpty(args))
+                    {
+                        if(!startup)
+                        {
+                            App.NewFullscreenshotLogic(this.settingsViewModel, true);
+                        }
+                    }
+                    else
+                    {
+                        App.OpenFileLogic(this.settingsViewModel, true, args);
+                    }
+                    break;
             }
         }
 

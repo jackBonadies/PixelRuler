@@ -18,7 +18,14 @@ namespace PixelRuler.CustomControls
             {
                 throw new ArgumentNullException("Cannot find copy element");
             }
-            Clipboard.SetText(txtBlock.Text);
+            try
+            {
+                Clipboard.SetText(txtBlock.Text);
+            }
+            catch (Exception)
+            {
+                // occurs if Copy is spammed
+            }
             base.OnClick(); // otherwise triggers wont fire.
         }
     }

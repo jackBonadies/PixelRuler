@@ -413,7 +413,11 @@
                     ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}"
                     Text="{Binding CurrentZoomPercent, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}"
                     Visibility="Collapsed" />
-                <Button Template="{StaticResource SubtleButtonButtonStyle}">
+                <Button
+                    Width="40"
+                    Margin="0,0,6,0"
+                    Command="{Binding ShowSettingsCommand}"
+                    Template="{StaticResource SubtleButtonButtonStyle}">
                     <ui:SymbolIcon FontSize="18" Symbol="Settings32" />
                 </Button>
                 <!--<local:DropDownButtonCustom Margin="0,0,6,0" PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
@@ -596,10 +600,23 @@
                     </StackPanel>
                 </custom:CopyClipboardButton>
             </StackPanel>
-            <Grid Width="100" DockPanel.Dock="Right">
+            <StackPanel
+                Width="138"
+                HorizontalAlignment="Right"
+                DockPanel.Dock="Right"
+                Orientation="Horizontal">
+                <Button
+                    Height="22"
+                    Margin="0,0,4,0"
+                    Padding="10,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding FitWindowCommand}"
+                    ToolTip="{Binding FitWindowCommand.ToolTipTextFull}">
+                    <ui:SymbolIcon Margin="0,2,0,0" Symbol="ZoomFit16" />
+                </Button>
                 <ComboBox
                     Height="4"
-                    MinWidth="80"
+                    MinWidth="90"
                     MinHeight="22"
                     MaxHeight="4"
                     Margin="0,0,4,0"
@@ -607,7 +624,7 @@
                     VerticalContentAlignment="Center"
                     ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}"
                     Text="{Binding CurrentZoomPercent, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}" />
-            </Grid>
+            </StackPanel>
         </DockPanel>
 
     </Grid>

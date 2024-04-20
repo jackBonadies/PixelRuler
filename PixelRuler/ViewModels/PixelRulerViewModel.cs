@@ -223,6 +223,12 @@ namespace PixelRuler
         }
 
         [RelayCommand]
+        public void ShowSettings()
+        {
+            App.ShowSettingsWindowSingleInstance(this.Settings);
+        }
+
+        [RelayCommand]
         public void SaveAs()
         {
             var fullFilename = this.Settings.DefaultPathSaveInfo.Evaluate(this.ScreenshotInfo.Value, true);

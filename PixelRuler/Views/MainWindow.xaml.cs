@@ -428,10 +428,5 @@ namespace PixelRuler
                 // it will also preserve any Maximized windows
             }
         }
-
-        private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            App.ShowSettingsWindowSingleInstance(this.ViewModel.Settings);
-        }
     }
 }
