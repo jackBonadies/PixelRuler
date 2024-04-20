@@ -718,9 +718,35 @@ namespace PixelRuler
             SavePathInfos();
         }
 
+        public ScreenshotSelectionViewModel ScreenshotSelectionViewModel { get; set; } = new ScreenshotSelectionViewModel();
         public ZoomViewModel ZoomViewModel { get; set; } = new ZoomViewModel();
         public Key PromptKey { get; private set; } = Key.LeftShift;
         public int ScreenshotDelayMs { get; private set; } = 100;
+    }
+
+    public partial class ScreenshotSelectionViewModel : ObservableObject
+    {
+        [ObservableProperty]
+        bool screenshotHelpOn;
+        [ObservableProperty]
+        bool zoomBoxLocation; // TODO
+        [ObservableProperty]
+        bool zoomBoxOn; // TODO
+
+        public ScreenshotSelectionViewModel()
+        {
+            this.PropertyChanged += ScreenshotSelectionViewModel_PropertyChanged;
+        }
+
+        private void ScreenshotSelectionViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(ScreenshotHelpOn))
+            {
+                ScreenshotHelpOnChanged?.Invoke(sender, this.ScreenshotHelpOn);
+            }
+        }
+
+        public event EventHandler<bool>? ScreenshotHelpOnChanged;
     }
 
     public enum ZoomMode

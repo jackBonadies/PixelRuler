@@ -455,9 +455,15 @@ namespace PixelRuler
                 this.Close();
             }
 
-            if (e.Key == (this.DataContext as PixelRulerViewModel).Settings.ZoomBoxQuickZoomKey)
+            if (e.Key == ViewModel.Settings.ZoomBoxQuickZoomKey)
             {
                 this.mainCanvas.ShowZoomBox();
+            }
+
+            if (e.Key == Key.H)
+            {
+                var helpOn = ViewModel.Settings.ScreenshotSelectionViewModel.ScreenshotHelpOn;
+                ViewModel.Settings.ScreenshotSelectionViewModel.ScreenshotHelpOn = !helpOn;
             }
         }
 
@@ -474,7 +480,7 @@ namespace PixelRuler
             var pos = e.GetPosition(this);
             foreach(var perScreenPanel in PerScreenPanels)
             {
-                perScreenPanel.HandleMouse(pos);
+                perScreenPanel.HandleMouse(e, pos);
             }
 
             if (ViewModel.Mode == OverlayMode.QuickMeasure || ViewModel.Mode == OverlayMode.QuickColor)
