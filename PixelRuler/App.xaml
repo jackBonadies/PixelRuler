@@ -291,11 +291,20 @@
                     CornerRadius="3">
                     <StackPanel Orientation="Horizontal">
                         <ContentPresenter />
-                        <Path
-                            Name="copyIcon"
-                            Margin="7,1,0,0"
-                            Style="{StaticResource CopyButtonStyle}"
-                            Visibility="Hidden" />
+                        <Grid Name="copyIconGrid" Visibility="Hidden">
+                            <ui:SymbolIcon
+                                Name="checkmarkIcon"
+                                Margin="5,2,0,0"
+                                Filled="True"
+                                FontWeight="Bold"
+                                Opacity="0"
+                                Symbol="Checkmark32"
+                                TextBlock.Foreground="#187A35" />
+                            <Path
+                                Name="copyIcon"
+                                Margin="7,1,0,0"
+                                Style="{StaticResource CopyButtonStyle}" />
+                        </Grid>
                     </StackPanel>
                 </Border>
                 <ControlTemplate.Triggers>
@@ -304,11 +313,44 @@
                     </Trigger>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter TargetName="border" Property="Background" Value="#18000000" />
-                        <Setter TargetName="copyIcon" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="copyIconGrid" Property="Visibility" Value="Visible" />
                     </Trigger>
                     <Trigger Property="IsPressed" Value="True">
                         <Setter TargetName="border" Property="Background" Value="#40000000" />
                     </Trigger>
+                    <EventTrigger RoutedEvent="Button.Click">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <!--  Example animation: change background color on click  -->
+                                <DoubleAnimation
+                                    Storyboard.TargetName="checkmarkIcon"
+                                    Storyboard.TargetProperty="Opacity"
+                                    From="0"
+                                    To="1"
+                                    Duration="0:0:.15" />
+                                <DoubleAnimation
+                                    Storyboard.TargetName="copyIcon"
+                                    Storyboard.TargetProperty="Opacity"
+                                    From="1"
+                                    To="0"
+                                    Duration="0:0:.15" />
+                                <DoubleAnimation
+                                    BeginTime="0:0:1.5"
+                                    Storyboard.TargetName="checkmarkIcon"
+                                    Storyboard.TargetProperty="Opacity"
+                                    From="1"
+                                    To="0"
+                                    Duration="0:0:.2" />
+                                <DoubleAnimation
+                                    BeginTime="0:0:1.5"
+                                    Storyboard.TargetName="copyIcon"
+                                    Storyboard.TargetProperty="Opacity"
+                                    From="0"
+                                    To="1"
+                                    Duration="0:0:.2" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
 
