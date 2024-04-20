@@ -350,6 +350,14 @@ namespace PixelRuler
             if (wsw.AfterScreenshotValue is AfterScreenshotAction.Pin)
             {
                 var pinWindow = new PinImageWindow();
+                this.WindowStartupLocation = WindowStartupLocation.Manual;
+                var screen = wsw.GetScreenForWpfPoint(wsw.SelectedRectWinCoordinates.TopLeft);
+                if (screen == null)
+                {
+                    screen = wsw.PerScreenPanels[0];
+                }
+                pinWindow.Left = wsw.SelectedRectWinCoordinates.Left / screen.ScaleFactor;
+                pinWindow.Top = wsw.SelectedRectWinCoordinates.Top / screen.ScaleFactor;
                 pinWindow.ViewModel = new PinViewModel(this.ViewModel);
                 pinWindow.Show();
                 return false;

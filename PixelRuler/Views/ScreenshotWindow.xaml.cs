@@ -110,6 +110,18 @@ namespace PixelRuler
             CaptureImage = UiUtils.CaptureScreen(UiUtils.GetFullBounds(WpfScreenHelper.Screen.AllScreens));
         }
 
+        public ScreenshotSelectionPerScreenPanel? GetScreenForWpfPoint(Point pt)
+        {
+            foreach(var screen in PerScreenPanels)
+            {
+                if(screen.Bounds.Contains(pt))
+                {
+                    return screen;
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         /// Image always starts at 0,0. But windows coordinates might start negative
         ///   i.e. if there is a seconary monitor to the left of the primary
@@ -423,7 +435,7 @@ namespace PixelRuler
                 this.Close();
             }
 
-            if (System.Windows.Input.Keyboard.IsKeyDown(this.ViewModel.Settings.PromptKey))
+            if (true)
             {
                 double dpiToUse = -1;
                 foreach (var screenPanel in PerScreenPanels)

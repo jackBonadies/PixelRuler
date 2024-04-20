@@ -272,5 +272,79 @@ namespace PixelRuler.Views
             isResizing = false;
 
         }
+
+        private void doAnimation()
+        {
+            double durationSeconds = .2;
+            var s = new Storyboard();
+            var ca = new ColorAnimation()
+            {
+                Duration = TimeSpan.FromSeconds(durationSeconds),
+                To = System.Windows.Media.Color.FromRgb(255, 255, 255),
+                //EasingFunction = new PowerEase() { EasingMode = EasingMode.EaseOut, Power = 2 },
+                AutoReverse = true,
+            };
+            Storyboard.SetTargetProperty(ca, new PropertyPath("BorderBrush.Color"));
+            Storyboard.SetTarget(ca, mainBorder);
+            s.Children.Add(ca);
+            s.Begin();
+        }
+
+        private void pulseAnimation()
+        {
+            double durationSeconds = .13;
+            double extent = 30;
+            var s = new Storyboard();
+
+            var widthRatio = (mainBorder.ActualWidth + extent) / mainBorder.ActualWidth;
+            var heightRatio = (mainBorder.ActualHeight + extent) / mainBorder.ActualHeight;
+
+            var d1 = new DoubleAnimation()
+            {
+                Duration = TimeSpan.FromSeconds(durationSeconds),
+                From = 1,
+                To = widthRatio,
+                EasingFunction = new PowerEase() { EasingMode = EasingMode.EaseOut, Power = 2 },
+                AutoReverse = true,
+            };
+            Storyboard.SetTargetProperty(d1, new PropertyPath("RenderTransform.ScaleX"));
+            Storyboard.SetTarget(d1, mainBorder);
+            s.Children.Add(d1);
+
+            var d2 = new DoubleAnimation()
+            {
+                Duration = TimeSpan.FromSeconds(durationSeconds),
+                From = 1,
+                To = heightRatio,
+                EasingFunction = new PowerEase() { EasingMode = EasingMode.EaseOut, Power = 2 },
+                AutoReverse = true,
+            };
+            Storyboard.SetTargetProperty(d2, new PropertyPath("RenderTransform.ScaleY"));
+            Storyboard.SetTarget(d2, mainBorder);
+            s.Children.Add(d2);
+
+            //var finalVal = rect.StrokeDashOffset;
+            //rect.BeginAnimation(Rectangle.StrokeDashOffsetProperty, null);
+            //rect.StrokeDashOffset = finalVal;
+
+            s.Begin();
+            //var s = new Storyboard();
+            //new DoubleAnimation()
+            //{
+
+            //}
+
+
+        }
+
+        private void mainBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //doAnimation();
+        }
+
+        private void mainBorder_Loaded(object sender, RoutedEventArgs e)
+        {
+            doAnimation();
+        }
     }
 }

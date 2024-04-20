@@ -43,11 +43,33 @@
                 TargetType="ToggleButton">
                 <Setter Property="BorderBrush" Value="Transparent" />
                 <Style.Resources>
-                    <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="#e0e0e0" />
-                    <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="#b0b0b0" />
+                    <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="{DynamicResource SubtleMouseOverColor}" />
+                    <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="{DynamicResource SubtleMousePressedColor}" />
                     <SolidColorBrush x:Key="ToggleButtonBackground" Color="#00000000" />
                 </Style.Resources>
             </Style>
+
+            <ControlTemplate x:Key="SubtleButtonButtonStyle" TargetType="Button">
+                <Border
+                    Name="subtleButtonBorder"
+                    BorderThickness="0"
+                    CornerRadius="4">
+                    <ContentPresenter
+                        Width="30"
+                        Height="30"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Content="{TemplateBinding Content}" />
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter TargetName="subtleButtonBorder" Property="Background" Value="{DynamicResource SubtleMouseOverBrush}" />
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="True">
+                        <Setter TargetName="subtleButtonBorder" Property="Background" Value="{DynamicResource SubtleMousePressedBrush}" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
 
             <SolidColorBrush x:Key="BarColor">#F1F3F9</SolidColorBrush>
             <SolidColorBrush x:Key="IsToggledOnColor">#E8EAF0</SolidColorBrush>

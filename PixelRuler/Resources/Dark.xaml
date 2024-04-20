@@ -10,4 +10,9 @@
     <SolidColorBrush x:Key="GreenSuccess" Color="#29D45B" />
     <Color x:Key="StrongErrorColor">#FF5555</Color>
     <SolidColorBrush x:Key="StrongErrorBrush" Color="{DynamicResource StrongErrorColor}" />
+
+    <Color x:Key="SubtleMouseOverColor">#10ffffff</Color>
+    <Color x:Key="SubtleMousePressedColor">#20ffffff</Color>
+    <SolidColorBrush x:Key="SubtleMouseOverBrush" Color="{StaticResource SubtleMouseOverColor}" />
+    <SolidColorBrush x:Key="SubtleMousePressedBrush" Color="{StaticResource SubtleMousePressedColor}" />
 </ResourceDictionary>

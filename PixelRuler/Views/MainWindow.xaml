@@ -390,6 +390,7 @@
 
                 <Button
                     Command="{Binding ClearAllMeasureElementsCommand}"
+                    Template="{StaticResource SubtleButtonButtonStyle}"
                     ToolTipService.ToolTip="{Binding ClearAllMeasureElementsCommand.ToolTipTextFull}"
                     Visibility="Collapsed">
                     <TextBlock
@@ -412,18 +413,23 @@
                     ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}"
                     Text="{Binding CurrentZoomPercent, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}"
                     Visibility="Collapsed" />
-                <local:DropDownButtonCustom Margin="0,0,6,0" PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
+                <Button Template="{StaticResource SubtleButtonButtonStyle}">
+                    <ui:SymbolIcon FontSize="18" Symbol="Settings32" />
+                </Button>
+                <!--<local:DropDownButtonCustom Margin="0,0,6,0" PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
                     <local:DropDownButtonCustom.Flyout>
                         <ContextMenu Width="100" Placement="Bottom">
                             <MenuItem Click="SettingsMenuItem_Click" Header="Settings" />
                         </ContextMenu>
                     </local:DropDownButtonCustom.Flyout>
-                    <!--<wpfui:SymbolIcon Symbol="MoreHorizontal48" FontSize="17.5"/>-->
+                -->
+                <!--<wpfui:SymbolIcon Symbol="MoreHorizontal48" FontSize="17.5"/>-->
+                <!--
                     <TextBlock
                         FontFamily="Segoe MDL2 Assets"
                         FontSize="20"
                         Text="&#xE712;" />
-                </local:DropDownButtonCustom>
+                </local:DropDownButtonCustom>-->
             </StackPanel>
 
             <!--  Center Panel  -->
