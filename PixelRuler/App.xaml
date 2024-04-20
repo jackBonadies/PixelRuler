@@ -291,7 +291,7 @@
                     CornerRadius="3">
                     <StackPanel Orientation="Horizontal">
                         <ContentPresenter />
-                        <Grid Name="copyIconGrid" Visibility="Hidden">
+                        <Grid Name="copyIconGrid" Visibility="Visible">
                             <ui:SymbolIcon
                                 Name="checkmarkIcon"
                                 Margin="5,2,0,0"
@@ -299,11 +299,12 @@
                                 FontWeight="Bold"
                                 Opacity="0"
                                 Symbol="Checkmark32"
-                                TextBlock.Foreground="#187A35" />
+                                TextBlock.Foreground="{DynamicResource GreenSuccess}" />
                             <Path
                                 Name="copyIcon"
                                 Margin="7,1,0,0"
-                                Style="{StaticResource CopyButtonStyle}" />
+                                Style="{StaticResource CopyButtonStyle}"
+                                Visibility="Hidden" />
                         </Grid>
                     </StackPanel>
                 </Border>
@@ -312,11 +313,11 @@
                         <Setter TargetName="border" Property="Background" Value="#00000000" />
                     </Trigger>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter TargetName="border" Property="Background" Value="#18000000" />
-                        <Setter TargetName="copyIconGrid" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="border" Property="Background" Value="{DynamicResource HoverOverLight}" />
+                        <Setter TargetName="copyIcon" Property="Visibility" Value="Visible" />
                     </Trigger>
                     <Trigger Property="IsPressed" Value="True">
-                        <Setter TargetName="border" Property="Background" Value="#40000000" />
+                        <Setter TargetName="border" Property="Background" Value="{DynamicResource PressedLight}" />
                     </Trigger>
                     <EventTrigger RoutedEvent="Button.Click">
                         <BeginStoryboard>

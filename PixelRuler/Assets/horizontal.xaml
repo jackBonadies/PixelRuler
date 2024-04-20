@@ -11,7 +11,7 @@
             <GeometryDrawing>
                 <GeometryDrawing.Pen>
                     <Pen
-                        Brush="#ff000000"
+                        Brush="{DynamicResource TextFillColorStrongBrush}"
                         DashCap="Round"
                         EndLineCap="Round"
                         LineJoin="Round"
@@ -25,7 +25,7 @@
             <GeometryDrawing>
                 <GeometryDrawing.Pen>
                     <Pen
-                        Brush="#ff000000"
+                        Brush="{DynamicResource TextFillColorStrongBrush}"
                         DashCap="Round"
                         EndLineCap="Round"
                         LineJoin="Round"
@@ -39,7 +39,7 @@
             <GeometryDrawing>
                 <GeometryDrawing.Pen>
                     <Pen
-                        Brush="#ff000000"
+                        Brush="{DynamicResource TextFillColorStrongBrush}"
                         DashCap="Round"
                         EndLineCap="Round"
                         LineJoin="Round"

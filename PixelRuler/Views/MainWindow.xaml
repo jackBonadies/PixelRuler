@@ -290,6 +290,7 @@
                                 <TextBlock
                                     FontFamily="Segoe MDL2 Assets"
                                     FontSize="16"
+                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                     Style="{StaticResource GreyOutIfDisabled}"
                                     Text="&#xED62;" />
                             </MenuItem.Icon>
@@ -595,7 +596,7 @@
                     MinWidth="80"
                     MinHeight="22"
                     MaxHeight="4"
-                    Margin="0,0,0,0"
+                    Margin="0,0,4,0"
                     Padding="10,0,0,0"
                     VerticalContentAlignment="Center"
                     ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}"
