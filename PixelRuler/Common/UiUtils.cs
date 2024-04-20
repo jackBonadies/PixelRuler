@@ -114,5 +114,54 @@ namespace PixelRuler.Common
                 e.GetPosition(element).Y < element.ActualHeight + margin;
             return isWithin;
         }
+
+        /// <summary>
+        /// Find Child of Type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="parent"></param>
+        /// <param name="childName">Optional: specify child name</param>
+        /// <returns></returns>
+        public static T? FindChild<T>(DependencyObject? parent, string? childName = null)
+           where T : DependencyObject
+        {
+            if (parent == null) return null;
+
+            T? foundChild = null;
+
+            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childrenCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                if (!string.IsNullOrEmpty(childName))
+                {
+                    var frameworkElement = child as FrameworkElement;
+                    if (frameworkElement != null && frameworkElement.Name == childName)
+                    {
+                        foundChild = (T)child;
+                        break;
+                    }
+                }
+                else if (child is T childType)
+                {
+                    foundChild = (T)child;
+                }
+
+                if (foundChild == null)
+                {
+                    foundChild = FindChild<T>(child, childName);
+
+                    if (foundChild != null) break;
+                }
+                else
+                {
+                    foundChild = (T)child;
+                    break;
+                }
+            }
+
+            return foundChild;
+        }
     }
 }

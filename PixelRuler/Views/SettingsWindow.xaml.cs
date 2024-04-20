@@ -1,4 +1,5 @@
-﻿using PixelRuler.Models;
+﻿using PixelRuler.Common;
+using PixelRuler.Models;
 using PixelRuler.ViewModels;
 using PixelRuler.Views;
 using System;
@@ -99,7 +100,7 @@ namespace PixelRuler
 
         private void ContentDialog_Loaded(object sender, RoutedEventArgs e)
         {
-            var border = FindChild<Border>(sender as DependencyObject, null);
+            var border = UiUtils.FindChild<Border>(sender as DependencyObject, null);
             border.MaxHeight = 200;
         }
 
@@ -198,7 +199,7 @@ namespace PixelRuler
 
         private void LimitPaddingForContentDialog(object sender, int padding)
         {
-            var border = FindChild<Border>(sender as DependencyObject, null);
+            var border = UiUtils.FindChild<Border>(sender as DependencyObject, null);
             ((sender as ContentDialog).Content as System.Windows.FrameworkElement).Measure(new Size(double.MaxValue, double.MaxValue));
             var maxHeight = ((sender as ContentDialog).Content as System.Windows.FrameworkElement).DesiredSize.Height + 180 + padding;
             border.MaxHeight = maxHeight;
@@ -206,7 +207,7 @@ namespace PixelRuler
 
         private void SetMaxWidthForContentDialog(object sender, RoutedEventArgs e)
         {
-            var border = FindChild<Border>(sender as DependencyObject, null);
+            var border = UiUtils.FindChild<Border>(sender as DependencyObject, null);
             border.MaxWidth = double.PositiveInfinity;
         }
 
@@ -251,54 +252,14 @@ namespace PixelRuler
         private void CardExpander_Loaded(object sender, RoutedEventArgs e)
         {
             var cardExpander = sender as CardExpander;
-            var res = FindChild<ToggleButton>(cardExpander, "ExpanderToggleButton");
-            BindingOperations.ClearBinding(res, ToggleButton.IsCheckedProperty);
-            res.IsChecked = true;
-            var chev = FindChild<Grid>(res, "ChevronGrid");
+            var toggleButton = UiUtils.FindChild<ToggleButton>(cardExpander, "ExpanderToggleButton");
+            _ = toggleButton ?? throw new NullReferenceException("ToggleButton not found in CardExpander");
+            BindingOperations.ClearBinding(toggleButton, ToggleButton.IsCheckedProperty);
+            toggleButton.IsChecked = true;
+            var chev = UiUtils.FindChild<Grid>(toggleButton, "ChevronGrid");
+            _ = chev ?? throw new NullReferenceException("ChevronGrid not found in CardExpander");
             chev.Visibility = Visibility.Collapsed;
         }
 
-        public static T FindChild<T>(DependencyObject parent, string childName)
-           where T : DependencyObject
-        {
-            if (parent == null) return null;
-
-            T foundChild = null;
-
-            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < childrenCount; i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                T? childType = child as T;
-
-                if (!string.IsNullOrEmpty(childName))
-                {
-                    var frameworkElement = child as FrameworkElement;
-                    if (frameworkElement != null && frameworkElement.Name == childName)
-                    {
-                        foundChild = (T)child;
-                        break;
-                    }
-                }
-                else if(childType != null)
-                {
-                    foundChild = (T)child;
-                }
-
-                if (foundChild == null)
-                {
-                    foundChild = FindChild<T>(child, childName);
-
-                    if (foundChild != null) break;
-                }
-                else
-                {
-                    foundChild = (T)child;
-                    break;
-                }
-            }
-
-            return foundChild;
-        }
     }
 }

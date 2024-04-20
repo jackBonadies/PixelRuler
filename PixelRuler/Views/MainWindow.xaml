@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:common="clr-namespace:PixelRuler.Common"
+    xmlns:custom="clr-namespace:PixelRuler.CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PixelRuler"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -524,7 +525,7 @@
                     Width="180"
                     VerticalAlignment="Center"
                     Orientation="Horizontal">
-                    <Button
+                    <custom:CopyClipboardButton
                         Padding="0"
                         Focusable="False"
                         Template="{StaticResource CopyButtonTemplate}"
@@ -564,11 +565,11 @@
                                 </TextBlock.Text>
                             </TextBlock>
                         </StackPanel>
-                    </Button>
+                    </custom:CopyClipboardButton>
                 </StackPanel>
 
                 <Separator Margin="0,0,2,0" BorderBrush="#20000000" />
-                <Button
+                <custom:CopyClipboardButton
                     Padding="0"
                     Focusable="False"
                     Template="{StaticResource CopyButtonTemplate}"
@@ -586,7 +587,7 @@
                             FontSize="14"
                             Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}, Mode=OneWay}" />
                     </StackPanel>
-                </Button>
+                </custom:CopyClipboardButton>
             </StackPanel>
             <Grid Width="100" DockPanel.Dock="Right">
                 <ComboBox
