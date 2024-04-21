@@ -78,7 +78,7 @@ namespace PixelRuler.Views
                 menuItemClose.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Cancel, null); };
 
                 var menuItemCopy = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Copy"), InputGestureText="C" };
-                menuItemCopy .SetResourceReference(Wpf.Ui.Controls.MenuItem.IconProperty, "CopyButtonPathProper");
+                menuItemCopy.SetResourceReference(Wpf.Ui.Controls.MenuItem.IconProperty, "CopyButtonPathProper");
                 menuItemCopy.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Copy, null); };
 
                 var menuItemSaveAs = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save As"), InputGestureText="Ctrl+S" };

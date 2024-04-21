@@ -400,7 +400,7 @@
                                                     VerticalContentAlignment="Center"
                                                     Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}"
                                                     CommandParameter="{Binding}"
-                                                    Template="{StaticResource SubtleButtonStyle}">
+                                                    Template="{StaticResource SubtleToggleButtonStyle}">
                                                     <Path
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
@@ -463,7 +463,7 @@
                                                     VerticalContentAlignment="Center"
                                                     Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}"
                                                     CommandParameter="{Binding}"
-                                                    Template="{StaticResource SubtleButtonStyle}">
+                                                    Template="{StaticResource SubtleToggleButtonStyle}">
                                                     <Path
                                                         Margin="0,0,0,0"
                                                         HorizontalAlignment="Center"
@@ -580,7 +580,7 @@
                                                     VerticalContentAlignment="Center"
                                                     Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}"
                                                     CommandParameter="{Binding}"
-                                                    Template="{StaticResource SubtleButtonStyle}">
+                                                    Template="{StaticResource SubtleToggleButtonStyle}">
                                                     <Path
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
@@ -642,7 +642,7 @@
                                                     VerticalContentAlignment="Center"
                                                     Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}"
                                                     CommandParameter="{Binding}"
-                                                    Template="{StaticResource SubtleButtonStyle}">
+                                                    Template="{StaticResource SubtleToggleButtonStyle}">
                                                     <Path
                                                         Margin="0,0,0,0"
                                                         HorizontalAlignment="Center"

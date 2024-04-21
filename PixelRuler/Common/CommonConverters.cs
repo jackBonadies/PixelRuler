@@ -54,6 +54,28 @@ namespace PixelRuler
         }
     }
 
+    public class QuickToolVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if(value is OverlayMode mode)
+            {
+                if(mode == OverlayMode.QuickMeasure || mode == OverlayMode.QuickColor)
+                {
+                    return Visibility.Visible;
+                }
+                return Visibility.Collapsed;
+            }
+            throw new Exception("Bad Inputs");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new Exception("One way converter");
+        }
+
+    }
+
     public class ColorFormatStringConverter : IMultiValueConverter
     {
         public object Convert(object[] value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

@@ -252,8 +252,6 @@ namespace PixelRuler
             1600,
             3200,
             6400,
-            12800,
-            25600,
         };
 
         public const string DefaultSavePath = "%USERPROFILE%\\Pictures\\Screenshots\\PixelRuler";

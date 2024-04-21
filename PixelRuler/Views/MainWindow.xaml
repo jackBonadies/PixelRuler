@@ -349,7 +349,7 @@
                     BorderBrush="Transparent"
                     Command="{Binding BoundsMeasureSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=BoundingBox}"
-                    Style="{DynamicResource SubtleButtonStyle}"
+                    Style="{DynamicResource SubtleToggleButtonStyle}"
                     ToolTipService.ToolTip="{Binding BoundsMeasureSelectedCommand.ToolTipTextFull}">
                     <TextBlock
                         FontFamily="Segoe MDL2 Assets"
@@ -365,7 +365,7 @@
                     BorderBrush="Transparent"
                     Command="{Binding RulerSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=Ruler}"
-                    Style="{DynamicResource SubtleButtonStyle}"
+                    Style="{DynamicResource SubtleToggleButtonStyle}"
                     ToolTipService.ToolTip="{Binding RulerSelectedCommand.ToolTipTextFull}">
                     <TextBlock
                         FontFamily="Segoe MDL2 Assets"
@@ -378,7 +378,7 @@
                     BorderBrush="Transparent"
                     Command="{Binding ColorPickerSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=ColorPicker}"
-                    Style="{DynamicResource SubtleButtonStyle}"
+                    Style="{DynamicResource SubtleToggleButtonStyle}"
                     ToolTipService.ToolTip="{Binding ColorPickerSelectedCommand.ToolTipTextFull}">
                     <TextBlock
                         FontFamily="Segoe MDL2 Assets"
@@ -390,7 +390,7 @@
 
                 <Button
                     Command="{Binding ClearAllMeasureElementsCommand}"
-                    Template="{StaticResource SubtleButtonButtonStyle}"
+                    Template="{StaticResource SubtleButtonTemplate}"
                     ToolTipService.ToolTip="{Binding ClearAllMeasureElementsCommand.ToolTipTextFull}"
                     Visibility="Collapsed">
                     <TextBlock
@@ -417,7 +417,7 @@
                     Width="40"
                     Margin="0,0,6,0"
                     Command="{Binding ShowSettingsCommand}"
-                    Template="{StaticResource SubtleButtonButtonStyle}">
+                    Template="{StaticResource SubtleButtonTemplate}">
                     <ui:SymbolIcon FontSize="18" Symbol="Settings32" />
                 </Button>
                 <!--<local:DropDownButtonCustom Margin="0,0,6,0" PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
@@ -611,7 +611,7 @@
                 </custom:CopyClipboardButton>
             </StackPanel>
             <StackPanel
-                Width="138"
+                Width="124"
                 HorizontalAlignment="Right"
                 DockPanel.Dock="Right"
                 Orientation="Horizontal">
@@ -621,17 +621,18 @@
                     Padding="10,0"
                     VerticalAlignment="Center"
                     Command="{Binding FitWindowCommand}"
-                    Template="{StaticResource SubtleButtonButtonStyle}"
+                    Template="{StaticResource SubtleButtonTemplate}"
                     ToolTip="{Binding FitWindowCommand.ToolTipTextFull}">
                     <ui:SymbolIcon Margin="0,2,0,0" Symbol="ZoomFit16" />
                 </Button>
                 <ComboBox
                     Height="4"
-                    MinWidth="90"
+                    MinWidth="80"
                     MinHeight="22"
+                    MaxWidth="90"
                     MaxHeight="4"
                     Margin="0,0,4,0"
-                    Padding="10,0,0,0"
+                    Padding="6,0,0,0"
                     VerticalContentAlignment="Center"
                     ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}"
                     Style="{StaticResource WpfUIModifiedComboBoxStyle}"
