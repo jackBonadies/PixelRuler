@@ -73,12 +73,14 @@ namespace PixelRuler
             return false;
         }
 
+        public event EventHandler? RawImageCopied;
+
         public void CopyRawImageToClipboard()
         {
             if(this.ImageSource != null)
             {
                 Clipboard.SetImage(this.ImageSource);
-                // event for UI feedback.
+                RawImageCopied?.Invoke(this, EventArgs.Empty);
             }
         }
 

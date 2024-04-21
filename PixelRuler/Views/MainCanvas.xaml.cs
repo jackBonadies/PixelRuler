@@ -1,5 +1,6 @@
 ﻿using PixelRuler.CanvasElements;
 using PixelRuler.Common;
+using PixelRuler.CustomControls;
 using PixelRuler.Views;
 using System;
 using System.Collections.Generic;
@@ -483,6 +484,7 @@ namespace PixelRuler
                 this.ViewModel.AllElementsSelected += AllElementsSelected;
                 this.ViewModel.ShowGridLinesChanged += ViewModel_ShowGridLinesChanged;
                 this.ViewModel.ImageUpdated += ViewModel_ImageUpdated;
+                this.ViewModel.RawImageCopied += ViewModel_RawImageCopied;
 
                 this.ViewModel.MeasurementElements.CollectionChanged += MeasurementElements_CollectionChanged;
             }
@@ -496,9 +498,16 @@ namespace PixelRuler
                 this.ViewModel.AllElementsSelected -= AllElementsSelected;
                 this.ViewModel.ShowGridLinesChanged -= ViewModel_ShowGridLinesChanged;
                 this.ViewModel.ImageUpdated -= ViewModel_ImageUpdated;
+                this.ViewModel.RawImageCopied -= ViewModel_RawImageCopied;
 
                 this.ViewModel.MeasurementElements.CollectionChanged -= MeasurementElements_CollectionChanged;
             }
+        }
+
+        private void ViewModel_RawImageCopied(object? sender, EventArgs e)
+        {
+            var toastNotifSingle = new ToastNotificationSingle() { Content = "Image Copied" };
+            toastNotifSingle.Show(this.overlayCanvas);
         }
 
         private void ViewModel_ImageUpdated(object? sender, EventArgs e)

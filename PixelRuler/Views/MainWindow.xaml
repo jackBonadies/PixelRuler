@@ -611,6 +611,7 @@
                     Padding="10,0"
                     VerticalAlignment="Center"
                     Command="{Binding FitWindowCommand}"
+                    Template="{StaticResource SubtleButtonButtonStyle}"
                     ToolTip="{Binding FitWindowCommand.ToolTipTextFull}">
                     <ui:SymbolIcon Margin="0,2,0,0" Symbol="ZoomFit16" />
                 </Button>
@@ -623,6 +624,7 @@
                     Padding="10,0,0,0"
                     VerticalContentAlignment="Center"
                     ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}"
+                    Style="{StaticResource WpfUIModifiedComboBoxStyle}"
                     Text="{Binding CurrentZoomPercent, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}" />
             </StackPanel>
         </DockPanel>
