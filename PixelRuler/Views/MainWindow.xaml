@@ -499,8 +499,14 @@
                     FontSize="15"
                     IsReadOnly="True"
                     PlaceholderText="Color"
-                    SpinButtonPlacementMode="Hidden"
-                    Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}, Mode=OneWay}" />
+                    SpinButtonPlacementMode="Hidden">
+                    <ui:NumberBox.Text>
+                        <MultiBinding Converter="{StaticResource ColorFormatStringConverter}" Mode="OneWay">
+                            <Binding Path="Color" />
+                            <Binding Path="Settings.ColorFormatMode" />
+                        </MultiBinding>
+                    </ui:NumberBox.Text>
+                </ui:NumberBox>
 
             </StackPanel>
 
@@ -593,10 +599,14 @@
                             BorderBrush="{DynamicResource ColorBorderColor}"
                             BorderThickness="1"
                             CornerRadius="3" />
-                        <TextBlock
-                            Margin="5,0,0,0"
-                            FontSize="14"
-                            Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}, Mode=OneWay}" />
+                        <TextBlock Margin="5,0,0,0" FontSize="14">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource ColorFormatStringConverter}" Mode="OneWay">
+                                    <Binding Path="Color" />
+                                    <Binding Path="Settings.ColorFormatMode" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </StackPanel>
                 </custom:CopyClipboardButton>
             </StackPanel>

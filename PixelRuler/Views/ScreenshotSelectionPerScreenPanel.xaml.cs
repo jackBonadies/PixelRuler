@@ -1,4 +1,5 @@
 ﻿using PixelRuler.Common;
+using PixelRuler.CustomControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,6 +69,13 @@ namespace PixelRuler.Views
         private void ScreenshotSelectionPerScreenPanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             ViewModel.Settings.ScreenshotSelectionViewModel.ScreenshotHelpOnChanged += ScreenshotSelectionViewModel_ScreenshotHelpOnChanged;
+            ViewModel.ColorCopied += ViewModel_ColorCopied;
+        }
+
+        private void ViewModel_ColorCopied(object? sender, EventArgs e)
+        {
+            var tns = new ToastNotificationSingle() { Content = "Color Copied" };
+            tns.Show(this.gridTopLevel);
         }
 
         private void ScreenshotSelectionViewModel_ScreenshotHelpOnChanged(object? sender, bool e)

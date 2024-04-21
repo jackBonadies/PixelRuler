@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Win32;
+using PixelRuler.CanvasElements;
+using PixelRuler.Common;
+using PixelRuler.Models;
+using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Interop;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Input;
-using PixelRuler.CanvasElements;
-using System.Drawing.Imaging;
-using PixelRuler.Models;
 using System.IO;
-using Microsoft.Win32;
-using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 
 namespace PixelRuler
 {
@@ -478,6 +471,14 @@ namespace PixelRuler
             DeleteAllSelectedCommand = null!;
             SelectAllElementsCommand = null!;
             CopyRawImageToClipboardCommand = null!;
+        }
+
+        public event EventHandler? ColorCopied;
+
+        public void CopyColorToClipboard()
+        {
+            Clipboard.SetText(UiUtils.FormatColor(this.Color, this.Settings.ColorFormatMode));
+            ColorCopied?.Invoke(this, EventArgs.Empty);
         }
 
         public event EventHandler<EventArgs> ImageUpdated;

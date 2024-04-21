@@ -163,5 +163,14 @@ namespace PixelRuler.Common
 
             return foundChild;
         }
+
+        public static string FormatColor(System.Drawing.Color color, ColorFormatMode mode)
+        {
+            if(mode == ColorFormatMode.Hex)
+            {
+                return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+            }
+            throw new NotImplementedException();
+        }
     }
 }

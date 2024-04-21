@@ -1,4 +1,5 @@
-﻿using PixelRuler.Models;
+﻿using PixelRuler.Common;
+using PixelRuler.Models;
 using PixelRuler.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -53,13 +54,13 @@ namespace PixelRuler
         }
     }
 
-    public class ColorFormatStringConverter : IValueConverter
+    public class ColorFormatStringConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object[] value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is System.Drawing.Color color)
+            if (value[0] is System.Drawing.Color color && value[1] is ColorFormatMode mode)
             {
-                return formatColor(color);
+                return UiUtils.FormatColor(color, mode);
             }
             else
             {
@@ -67,12 +68,7 @@ namespace PixelRuler
             }
         }
 
-        private string formatColor(System.Drawing.Color color)
-        {
-            return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new Exception("One way converter");
         }

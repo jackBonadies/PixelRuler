@@ -1,6 +1,7 @@
 ﻿using PixelRuler.CanvasElements;
 using PixelRuler.Common;
 using PixelRuler.CustomControls;
+using PixelRuler.ViewModels;
 using PixelRuler.Views;
 using System;
 using System.Collections.Generic;
@@ -291,11 +292,18 @@ namespace PixelRuler
 
         private void OverlayCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if(e.ChangedButton == MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left)
             {
-                if(ViewModel.SelectedTool == Tool.ColorPicker)
+                if (ViewModel.SelectedTool == Tool.ColorPicker)
                 {
                     zoomBox.Hide();
+                    if(this.ViewModel is ScreenshotWindowViewModel svm)
+                    {
+                        if (svm.Mode == OverlayMode.QuickMeasure || svm.Mode == OverlayMode.QuickColor)
+                        {
+                            ViewModel.CopyColorToClipboard();
+                        }
+                    }
                 }
             }
         }

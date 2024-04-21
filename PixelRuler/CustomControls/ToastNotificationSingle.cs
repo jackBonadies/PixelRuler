@@ -12,15 +12,26 @@ namespace PixelRuler.CustomControls
 {
     public class ToastNotificationSingle : ContentControl
     {
+        FrameworkElement? parent;
         public void Show(FrameworkElement parent)
         {
+            this.parent = parent;
             this.RenderTransform = new TranslateTransform() { Y = 10 };
+            this.Measure(new Size(double.MaxValue, double.MaxValue));
             if(parent is Canvas canvas)
             {
                 canvas.Children.Add(this);
                 canvas.SizeChanged += Canvas_SizeChanged;
                 Canvas.SetBottom(this, 18);
-                Canvas.SetLeft(this, canvas.ActualWidth / 2 - this.ActualWidth / 2);
+                Canvas.SetLeft(this, canvas.ActualWidth / 2 - this.DesiredSize.Width / 2);
+            }
+            else if(parent is Grid grid)
+            {
+                grid.Children.Add(this);
+                grid.SizeChanged += Canvas_SizeChanged;
+                this.VerticalAlignment = VerticalAlignment.Bottom;
+                this.HorizontalAlignment = HorizontalAlignment.Center;
+                this.Margin = new Thickness(0, 0, 0, 18);
             }
 
             double durationSeconds = .2;
@@ -50,7 +61,15 @@ namespace PixelRuler.CustomControls
             s.Children.Add(d2);
 
             s.Begin();
+            s.Completed += S_Completed;
+        }
 
+        private void S_Completed(object? sender, EventArgs e)
+        {
+            if (this.parent is Panel p)
+            {
+                p.Children.Remove(this);
+            }
         }
 
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)

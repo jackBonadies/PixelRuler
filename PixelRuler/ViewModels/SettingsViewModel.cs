@@ -722,6 +722,9 @@ namespace PixelRuler
         public ZoomViewModel ZoomViewModel { get; set; } = new ZoomViewModel();
         public Key PromptKey { get; private set; } = Key.LeftShift;
         public int ScreenshotDelayMs { get; private set; } = 100;
+
+        [ObservableProperty]
+        public ColorFormatMode colorFormatMode;
     }
 
     public partial class ScreenshotSelectionViewModel : ObservableObject
@@ -769,5 +772,10 @@ namespace PixelRuler
         public double ZoomLimitEffectiveZoom { get; set; } = 32;
 
         public int BorderThickness { get; set; } = 3;
+    }
+
+    public enum ColorFormatMode
+    {
+        Hex = 0,
     }
 }

@@ -124,7 +124,7 @@
                 DefaultTemplate="{StaticResource DefaultTemplate}" />
 
             <Style TargetType="{x:Type custom:ToastNotificationSingle}">
-                <Setter Property="Background" Value="#3B2B2E" />
+                <Setter Property="Background" Value="#3C4042" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type custom:ToastNotificationSingle}">
@@ -132,7 +132,8 @@
                                 Width="200"
                                 Height="50"
                                 Background="{TemplateBinding Background}"
-                                CornerRadius="6">
+                                CornerRadius="6"
+                                UseLayoutRounding="True">
                                 <ContentPresenter Content="{TemplateBinding Content}" ContentTemplateSelector="{StaticResource ToastNotifTemplateSelector}" />
                                 <Border.Effect>
                                     <DropShadowEffect

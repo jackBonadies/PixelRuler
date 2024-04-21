@@ -56,8 +56,14 @@
                         VerticalAlignment="Center"
                         FontSize="23"
                         FontWeight="SemiBold"
-                        Foreground="#303030"
-                        Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}}" />
+                        Foreground="#303030">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{StaticResource ColorFormatStringConverter}">
+                                <Binding Path="Color" />
+                                <Binding Path="Settings.ColorFormatMode" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
                 </StackPanel>
             </Border>
         </Grid>
