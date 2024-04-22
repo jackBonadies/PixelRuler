@@ -78,6 +78,10 @@ namespace PixelRuler
             ViewModel = new ScreenshotWindowViewModel(settings);
             ViewModel.FullscreenScreenshotMode = true;
             ViewModel.Mode = mode;
+            if(mode == OverlayMode.QuickColor)
+            {
+                ViewModel.SelectedTool = Tool.ColorPicker;
+            }
 
             double xOffset = -fullBounds.Left;
             double yOffset = -fullBounds.Top;
@@ -183,6 +187,10 @@ namespace PixelRuler
             if (e.Key == Key.Escape)
             {
                 this.Close();
+            }
+            else if(e.Key == Key.S)
+            {
+                this.ViewModel.Settings.QuickColorMode = EnumUtil.CycleEnum(this.ViewModel.Settings.QuickColorMode);
             }
         }
 
@@ -633,6 +641,15 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_SourceInitialized(object? sender, EventArgs e)
         {
+            this.ViewModel.ColorCopied += ViewModel_ColorCopied;
+        }
+
+        private void ViewModel_ColorCopied(object? sender, EventArgs e)
+        {
+            if(this.ViewModel.Settings.QuickColorMode == QuickColorMode.AutoCopyAndClose)
+            {
+                this.Close();
+            }
         }
 
         public double Dpi { get; private set; }

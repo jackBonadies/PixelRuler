@@ -153,7 +153,7 @@ namespace PixelRuler
             else
             {
                 DefaultPathSaveInfo = JsonSerializer.Deserialize(defaultPathInfoString, typeof(PathSaveInfo)) as PathSaveInfo;
-                _ = DefaultPathSaveInfo ?? throw new ArgumentNullException(nameof(DefaultPathSaveInfo));
+                ArgumentNullException.ThrowIfNull(DefaultPathSaveInfo);
             }
             DefaultPathSaveInfo.IsDefault = true;
         }
@@ -728,6 +728,15 @@ namespace PixelRuler
 
         [ObservableProperty]
         private QuickColorMode quickColorMode; 
+
+        public bool IsQuickColorAutoCopy
+        {
+            get
+            {
+                return QuickColorMode == QuickColorMode.AutoCopyAndClose || QuickColorMode == QuickColorMode.AutoCopyMany;
+            }
+        }
+
     }
 
     public partial class ScreenshotSelectionViewModel : ObservableObject
@@ -785,7 +794,7 @@ namespace PixelRuler
     public enum QuickColorMode
     {
         ColorTrayCopyExplicit = 0,
-        CopyAndContinue = 1,
-        CopyAndClose = 2
+        AutoCopyMany = 1,
+        AutoCopyAndClose = 2
     }
 }

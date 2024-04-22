@@ -9,6 +9,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
@@ -41,7 +43,7 @@ namespace PixelRuler
             ClearAllMeasureElementsCommand = new RelayCommandFull((object? o) => clearAllMeasureElements(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Shift, "Clear All");
             DeleteAllSelectedCommand = new RelayCommandFull((object? o) => deleteAllSelectedElements(), System.Windows.Input.Key.Delete, System.Windows.Input.ModifierKeys.None, "Delete All Selected");
             SelectAllElementsCommand = new RelayCommandFull((object? o) => selectAllElements(), System.Windows.Input.Key.A, System.Windows.Input.ModifierKeys.Control, "Select All Elements");
-            CopyRawImageToClipboardCommand = new RelayCommandFull((object? o) => CopyRawImageToClipboard(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Control, "Copy Image");
+            CopyRawImageToClipboardCommand = new RelayCommandFull(async (object? o) => await CopyRawImageToClipboard(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Control, "Copy Image");
 
             if(settingsViewModel != null)
             {
@@ -68,13 +70,41 @@ namespace PixelRuler
 
         public event EventHandler? RawImageCopied;
 
-        public void CopyRawImageToClipboard()
+        public async Task CopyRawImageToClipboard()
         {
             if(this.ImageSource != null)
             {
-                Clipboard.SetImage(this.ImageSource);
+                await CopyRawImageToClipboardImp();
                 RawImageCopied?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        private void _CopyRawImageToClipboardSyncImp()
+        {
+            Clipboard.SetImage(this.ImageSource);
+        }
+
+        private async Task CopyRawImageToClipboardImp()
+        {
+            await Task.Run(() =>
+            {
+                //System.Threading.Thread.Sleep(2000);
+                Thread thread = new Thread(() =>
+                {
+                    //System.Threading.Thread.Sleep(2000);
+                    // cannot use Clipboard.SetImage(ImageSource) as ImageSource
+                    //   can only be accessed from UI thread.
+                    DataObject dataObject = new DataObject();
+                    dataObject.SetData(DataFormats.Bitmap, this.Image, true);
+                    Clipboard.SetDataObject(dataObject, true);
+                    //System.Threading.Thread.Sleep(2000);
+                });
+                // cannot use task as Clipboard requires thread to be 
+                //   set to single thread apartment.
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                thread.Join();
+            });
         }
 
         private void zoomIn()

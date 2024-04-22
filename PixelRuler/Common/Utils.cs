@@ -88,7 +88,7 @@ namespace PixelRuler
 
         private void ShortcutInfo_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            _ = shortcutInfo ?? throw new ArgumentNullException(nameof(shortcutInfo));
+            ArgumentNullException.ThrowIfNull(shortcutInfo);
             this.Key = shortcutInfo.Key;
             this.Modifiers = shortcutInfo.Modifiers;
         }
@@ -405,6 +405,20 @@ namespace PixelRuler
 
             }
         }
+    }
+
+    public static class EnumUtil
+    {
+        public static T CycleEnum<T>(T enu) where T : Enum
+        {
+            var cnt = Enum.GetValues(typeof(T)).Length;
+            var curEnum = Convert.ToInt32(enu);
+            var nextEnum = (curEnum + 1) % cnt;
+            Enum enumValue = (Enum)Enum.ToObject(typeof(T), nextEnum);
+            return (T)enumValue;
+        }
+
+
     }
 
     public static class ImageCommon

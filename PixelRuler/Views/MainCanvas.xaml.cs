@@ -302,7 +302,10 @@ namespace PixelRuler
                     {
                         if (svm.Mode == OverlayMode.QuickMeasure || svm.Mode == OverlayMode.QuickColor)
                         {
-                            ViewModel.CopyColorToClipboard();
+                            if (svm.Settings.IsQuickColorAutoCopy)
+                            {
+                                ViewModel.CopyColorToClipboard();
+                            }
                         }
                     }
                 }

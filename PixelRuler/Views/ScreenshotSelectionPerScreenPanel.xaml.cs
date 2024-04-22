@@ -61,7 +61,7 @@ namespace PixelRuler.Views
             get
             {
                 var vm = (this.DataContext as PixelRulerViewModel);
-                _ = vm ?? throw new NullReferenceException(nameof(ViewModel));
+                ArgumentNullException.ThrowIfNull(vm);
                 return vm;
             }
         }
@@ -87,8 +87,29 @@ namespace PixelRuler.Views
 
         private void ViewModel_ColorCopied(object? sender, EventArgs e)
         {
-            var tns = new ToastNotificationSingle() { Content = "Color Copied" };
-            tns.Show(this.gridTopLevel);
+            if(this.IsMouseEnteredVirtual)
+            {
+                switch (this.ViewModel.Settings.QuickColorMode)
+                {
+                    case QuickColorMode.AutoCopyMany:
+                        {
+                            var tns = new ToastNotificationSingle() { Content = "Color Copied" };
+                            tns.Show(this.gridTopLevel);
+                        }
+                        break;
+                    case QuickColorMode.AutoCopyAndClose:
+                        {
+                            var popupHost = new PopupHost(this.Bounds);
+                            popupHost.IsOpen = true;
+                            var tns = new ToastNotificationSingle() { Content = "Color Copied" };
+                            tns.Show(popupHost.RootGrid);
+                            tns.Closed += (object? sender, EventArgs e) => { 
+                                popupHost.IsOpen = false; 
+                                };
+                        }
+                        break;
+                }
+            }
         }
 
         private void ScreenshotSelectionViewModel_ScreenshotHelpOnChanged(object? sender, bool e)

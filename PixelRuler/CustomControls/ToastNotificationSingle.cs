@@ -60,8 +60,8 @@ namespace PixelRuler.CustomControls
             Storyboard.SetTarget(d2, this);
             s.Children.Add(d2);
 
-            s.Begin();
             s.Completed += S_Completed;
+            s.Begin();
         }
 
         private void S_Completed(object? sender, EventArgs e)
@@ -70,11 +70,14 @@ namespace PixelRuler.CustomControls
             {
                 p.Children.Remove(this);
             }
+            Closed?.Invoke(this, EventArgs.Empty);
         }
 
         private void Canvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
         }
+
+        public event EventHandler? Closed;
     }
 
     public class ToastNotifTemplateSelector : DataTemplateSelector
