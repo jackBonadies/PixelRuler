@@ -87,106 +87,125 @@
     </UserControl.Resources>
     <Grid Name="gridTopLevel">
         <Grid.Resources>
-            <Storyboard x:Key="colorPanelAnimationIn">
-                <DoubleAnimation
-                    Storyboard.TargetName="colorPanelTranslateTransform"
-                    Storyboard.TargetProperty="Y"
-                    From="0"
-                    To="100"
-                    Duration="0:0:2" />
-            </Storyboard>
-            <Style x:Key="borderAnim" TargetType="Border">
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding Mode, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=QuickColor}" Value="True">
-                        <Setter Property="Background" Value="Red" />
-                        <DataTrigger.EnterActions>
-                            <BeginStoryboard Storyboard="{StaticResource colorPanelAnimationIn}" />
-                        </DataTrigger.EnterActions>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-        </Grid.Resources>
-        <Border
-            Name="colorPanel"
-            Height="44"
-            Margin="0,0,-3,-3"
-            Padding="6,3"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Bottom"
-            Background="{DynamicResource ToolPanelBackground}"
-            BorderBrush="{DynamicResource ToolPanelBorder}"
-            BorderThickness="1"
-            CornerRadius="5, 5, 0, 0"
-            Cursor="Arrow"
-            Style="{StaticResource borderAnim}"
-            Visibility="{Binding Mode, Converter={StaticResource QuickToolVisibilityConverter}}">
-            <Border.LayoutTransform>
-                <TranslateTransform x:Name="colorPanelTranslateTransform" Y="0" />
-            </Border.LayoutTransform>
-            <StackPanel Orientation="Horizontal">
+            <ControlTemplate x:Key="colorPanelTemplate" TargetType="{x:Type ContentControl}">
                 <Border
-                    Width="28"
-                    Height="28"
-                    Margin="3,0,0,0"
-                    Background="{Binding Color, Converter={StaticResource DrawingColorToWpfBrushConverter}}"
-                    BorderBrush="#90303030"
+                    Name="colorPanel"
+                    Height="44"
+                    Margin="0,0,-3,-3"
+                    Padding="6,3"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Background="{DynamicResource ToolPanelBackground}"
+                    BorderBrush="{DynamicResource ToolPanelBorder}"
                     BorderThickness="1"
-                    CornerRadius="3" />
-                <TextBlock
-                    Margin="4,0,0,0"
-                    VerticalAlignment="Center"
-                    FontSize="23"
-                    FontWeight="SemiBold"
-                    Foreground="#303030">
-                    <TextBlock.Text>
-                        <MultiBinding Converter="{StaticResource ColorFormatStringConverter}">
-                            <Binding Path="Color" />
-                            <Binding Path="Settings.ColorFormatMode" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-                <Button Margin="4,0,0,0" Template="{StaticResource SubtleButtonTemplate}">
-                    <Grid>
-                        <Path
-                            Name="copyIcon"
-                            Margin="0,2,0,0"
-                            HorizontalAlignment="Center"
-                            Style="{StaticResource CopyButtonStyle}">
-                            <Path.LayoutTransform>
-                                <TransformGroup>
-                                    <ScaleTransform ScaleX=".02" ScaleY=".02" />
-                                    <RotateTransform Angle="180" />
-                                </TransformGroup>
-                            </Path.LayoutTransform>
-                            <Path.RenderTransform>
-                                <ScaleTransform ScaleX="1" ScaleY="1" />
-                            </Path.RenderTransform>
-                            <Path.RenderTransformOrigin>
-                                <Point X=".5" Y=".5" />
-                            </Path.RenderTransformOrigin>
-                        </Path>
-                        <ui:SymbolIcon
-                            Name="checkmarkIcon"
-                            Margin="-2,3,0,0"
-                            FontSize="22"
-                            Opacity="0"
-                            Style="{StaticResource CheckMarkStyle}" />
-                    </Grid>
-                    <Button.Triggers>
-                        <EventTrigger RoutedEvent="Button.Click">
-                            <BeginStoryboard Storyboard="{StaticResource checkmarkStoryboard}" />
-                        </EventTrigger>
-                    </Button.Triggers>
-                </Button>
-                <Button Template="{StaticResource SubtleButtonTemplate}">
-                    <ContentControl Opacity="1" Template="{StaticResource CloseIconTemplate}">
-                        <ContentControl.LayoutTransform>
-                            <ScaleTransform ScaleX=".8" ScaleY=".8" />
-                        </ContentControl.LayoutTransform>
-                    </ContentControl>
-                </Button>
-            </StackPanel>
-        </Border>
+                    CornerRadius="5, 5, 0, 0"
+                    Cursor="Arrow"
+                    Visibility="{Binding Mode, Converter={StaticResource QuickToolVisibilityConverter}}">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="colorPanelTranslateTransform" X="0" Y="50" />
+                    </Border.RenderTransform>
+                    <StackPanel Orientation="Horizontal">
+                        <Border
+                            Width="28"
+                            Height="28"
+                            Margin="3,0,0,0"
+                            Background="{Binding Color, Converter={StaticResource DrawingColorToWpfBrushConverter}}"
+                            BorderBrush="#90303030"
+                            BorderThickness="1"
+                            CornerRadius="3" />
+                        <TextBlock
+                            Margin="4,0,0,0"
+                            VerticalAlignment="Center"
+                            FontSize="23"
+                            FontWeight="SemiBold"
+                            Foreground="#303030">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource ColorFormatStringConverter}">
+                                    <Binding Path="Color" />
+                                    <Binding Path="Settings.ColorFormatMode" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                        <Button
+                            Margin="4,0,0,0"
+                            Command="{Binding CopyColorToClipboardCommand}"
+                            Template="{StaticResource SubtleButtonTemplate}">
+                            <Grid>
+                                <Path
+                                    Name="copyIcon"
+                                    Margin="0,2,0,0"
+                                    HorizontalAlignment="Center"
+                                    Style="{StaticResource CopyButtonStyle}">
+                                    <Path.LayoutTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX=".02" ScaleY=".02" />
+                                            <RotateTransform Angle="180" />
+                                        </TransformGroup>
+                                    </Path.LayoutTransform>
+                                    <Path.RenderTransform>
+                                        <ScaleTransform ScaleX="1" ScaleY="1" />
+                                    </Path.RenderTransform>
+                                    <Path.RenderTransformOrigin>
+                                        <Point X=".5" Y=".5" />
+                                    </Path.RenderTransformOrigin>
+                                </Path>
+                                <ui:SymbolIcon
+                                    Name="checkmarkIcon"
+                                    Margin="-2,3,0,0"
+                                    FontSize="38"
+                                    Opacity="0"
+                                    Style="{StaticResource CheckMarkStyle}">
+                                    <ui:SymbolIcon.LayoutTransform>
+                                        <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
+                                    </ui:SymbolIcon.LayoutTransform>
+                                </ui:SymbolIcon>
+                            </Grid>
+                            <Button.Triggers>
+                                <EventTrigger RoutedEvent="Button.Click">
+                                    <BeginStoryboard Storyboard="{StaticResource checkmarkStoryboard}" />
+                                </EventTrigger>
+                            </Button.Triggers>
+                        </Button>
+                        <Button Template="{StaticResource SubtleButtonTemplate}">
+                            <ContentControl Opacity="1" Template="{StaticResource CloseIconTemplate}">
+                                <ContentControl.LayoutTransform>
+                                    <ScaleTransform ScaleX=".8" ScaleY=".8" />
+                                </ContentControl.LayoutTransform>
+                            </ContentControl>
+                        </Button>
+                    </StackPanel>
+                </Border>
+                <ControlTemplate.Resources>
+                    <Storyboard x:Key="colorPanelUpAnimation">
+                        <DoubleAnimation
+                            Storyboard.TargetName="colorPanelTranslateTransform"
+                            Storyboard.TargetProperty="Y"
+                            From="50"
+                            To="0"
+                            Duration="0:0:.1" />
+                    </Storyboard>
+                    <Storyboard x:Key="colorPanelDownAnimation">
+                        <DoubleAnimation
+                            Storyboard.TargetName="colorPanelTranslateTransform"
+                            Storyboard.TargetProperty="Y"
+                            From="0"
+                            To="50"
+                            Duration="0:0:.1" />
+                    </Storyboard>
+                </ControlTemplate.Resources>
+                <ControlTemplate.Triggers>
+                    <DataTrigger Binding="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter='ColorPicker'}" Value="True">
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard Storyboard="{StaticResource colorPanelUpAnimation}" />
+                        </DataTrigger.EnterActions>
+                        <DataTrigger.ExitActions>
+                            <BeginStoryboard Storyboard="{StaticResource colorPanelDownAnimation}" />
+                        </DataTrigger.ExitActions>
+                    </DataTrigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Grid.Resources>
+        <ContentControl Template="{StaticResource colorPanelTemplate}" />
         <Border
             Name="toolPanel"
             Margin="0,14,0,0"
@@ -237,6 +256,21 @@
                         FontFamily="Segoe MDL2 Assets"
                         FontSize="19"
                         Text="&#xED5E;" />
+                </ToggleButton>
+                <ToggleButton
+                    Width="34"
+                    Height="34"
+                    Margin="2,0,2,0"
+                    Padding="0"
+                    BorderBrush="Transparent"
+                    Command="{Binding ColorPickerSelectedCommand}"
+                    IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=ColorPicker}"
+                    Style="{DynamicResource SubtleToggleButtonStyle}"
+                    ToolTipService.ToolTip="{Binding ColorPickerSelectedCommand.ToolTipTextFull}">
+                    <TextBlock
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="19"
+                        Text="&#xEF3C;" />
                 </ToggleButton>
                 <Separator Margin="2,0,2,0" BorderBrush="#30000000" />
                 <ToggleButton

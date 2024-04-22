@@ -70,6 +70,19 @@ namespace PixelRuler.Views
         {
             ViewModel.Settings.ScreenshotSelectionViewModel.ScreenshotHelpOnChanged += ScreenshotSelectionViewModel_ScreenshotHelpOnChanged;
             ViewModel.ColorCopied += ViewModel_ColorCopied;
+            ViewModel.ColorSelected += ViewModel_ColorSelected;
+            ViewModel.ColorStartSelect += ViewModel_ColorStartSelect;
+        }
+
+        private void ViewModel_ColorStartSelect(object? sender, EventArgs e)
+        {
+            //var sb = (this.gridTopLevel.Resources["colorPanelTemplate"] as ControlTemplate).Resources["colorPanelDownAnimation"] as Storyboard;
+            //sb.Begin();
+        }
+
+        private void ViewModel_ColorSelected(object? sender, EventArgs e)
+        {
+
         }
 
         private void ViewModel_ColorCopied(object? sender, EventArgs e)
@@ -152,6 +165,7 @@ namespace PixelRuler.Views
                     storeOriginalHelpBounds(120);
                     (enterHelpAreaAnimation.Children[0] as DoubleAnimation).To = this.Height - this.helpPanel.ActualHeight - 20;
                     enterHelpAreaAnimation.Begin();
+                    this.ViewModel.Test = !this.ViewModel.Test;
                 }
             }
             else

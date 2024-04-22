@@ -297,6 +297,7 @@ namespace PixelRuler
                 if (ViewModel.SelectedTool == Tool.ColorPicker)
                 {
                     zoomBox.Hide();
+                    ViewModel.OnColorSelected();
                     if(this.ViewModel is ScreenshotWindowViewModel svm)
                     {
                         if (svm.Mode == OverlayMode.QuickMeasure || svm.Mode == OverlayMode.QuickColor)
@@ -846,6 +847,7 @@ namespace PixelRuler
         private void ColorPickerMouseDown(MouseButtonEventArgs e)
         {
             SetColorUnderMouse(e);
+            this.ViewModel.OnColorStartSelect();
         }
 
         private void SetColorUnderMouse(MouseEventArgs e)

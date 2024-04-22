@@ -724,7 +724,10 @@ namespace PixelRuler
         public int ScreenshotDelayMs { get; private set; } = 100;
 
         [ObservableProperty]
-        public ColorFormatMode colorFormatMode;
+        private ColorFormatMode colorFormatMode;
+
+        [ObservableProperty]
+        private QuickColorMode quickColorMode; 
     }
 
     public partial class ScreenshotSelectionViewModel : ObservableObject
@@ -777,5 +780,12 @@ namespace PixelRuler
     public enum ColorFormatMode
     {
         Hex = 0,
+    }
+
+    public enum QuickColorMode
+    {
+        ColorTrayCopyExplicit = 0,
+        CopyAndContinue = 1,
+        CopyAndClose = 2
     }
 }

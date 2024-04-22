@@ -475,12 +475,25 @@ namespace PixelRuler
 
         public event EventHandler? ColorCopied;
 
+        [RelayCommand]
         public void CopyColorToClipboard()
         {
             Clipboard.SetText(UiUtils.FormatColor(this.Color, this.Settings.ColorFormatMode));
             ColorCopied?.Invoke(this, EventArgs.Empty);
         }
 
+        public void OnColorSelected()
+        {
+            ColorSelected?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void OnColorStartSelect()
+        {
+            ColorStartSelect?.Invoke(this, EventArgs.Empty);
+        }
+
+        public event EventHandler<EventArgs> ColorSelected;
+        public event EventHandler<EventArgs> ColorStartSelect;
         public event EventHandler<EventArgs> ImageUpdated;
         public event EventHandler<EventArgs> ShowGridLinesChanged;
         private bool showGridlines = false;
@@ -533,6 +546,9 @@ namespace PixelRuler
                 OnPropertyChanged();
             }
         }
+
+        [ObservableProperty]
+        private bool test;
 
         public double[] AvailableZooms
         {
