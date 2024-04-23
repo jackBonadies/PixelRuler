@@ -8,6 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,
                                      Type=main:PixelRulerViewModel}"
+    d:Height="250"
+    d:Width="250"
     mc:Ignorable="d">
     <UserControl.Effect>
         <DropShadowEffect
@@ -17,6 +19,7 @@
     </UserControl.Effect>
     <Border
         x:Name="outerBorder"
+        d:BorderThickness="3"
         Background="#303030"
         BorderBrush="LightGray"
         BorderThickness="{Binding Settings.ZoomViewModel.BorderThickness}"
@@ -32,8 +35,8 @@
                 Height="100" />
             <Border
                 x:Name="colorDisplay"
-                Width="170"
-                Height="46"
+                Width="150"
+                Height="42"
                 Margin="0,0,-3,-3"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
@@ -41,8 +44,8 @@
                 CornerRadius="4, 0, 4, 0">
                 <StackPanel Orientation="Horizontal">
                     <Border
-                        Width="40"
-                        Height="40"
+                        Width="34"
+                        Height="34"
                         Margin="3,0,0,0"
                         Background="{Binding Color, Converter={StaticResource DrawingColorToWpfBrushConverter}}"
                         BorderBrush="#90303030"
@@ -51,10 +54,16 @@
                     <TextBlock
                         Margin="4,0,0,0"
                         VerticalAlignment="Center"
-                        FontSize="26"
+                        FontSize="23"
                         FontWeight="SemiBold"
-                        Foreground="#303030"
-                        Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}}" />
+                        Foreground="#303030">
+                        <TextBlock.Text>
+                            <MultiBinding Converter="{StaticResource ColorFormatStringConverter}">
+                                <Binding Path="Color" />
+                                <Binding Path="Settings.ColorFormatMode" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
                 </StackPanel>
             </Border>
         </Grid>

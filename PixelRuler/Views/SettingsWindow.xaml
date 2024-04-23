@@ -30,29 +30,6 @@
             Are you sure you want to delete this item?
         </TextBlock>
 
-        <ControlTemplate x:Key="SubtleButtonStyle" TargetType="Button">
-            <Border
-                Name="subtleButtonBorder"
-                Background="White"
-                BorderThickness="0"
-                CornerRadius="2">
-                <ContentPresenter
-                    Width="30"
-                    Height="30"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Content="{TemplateBinding Content}" />
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="subtleButtonBorder" Property="Background" Value="#10000000" />
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter TargetName="subtleButtonBorder" Property="Background" Value="#20000000" />
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-
         <!--  Nonclickable card control - the controltemplate was needed to remove Pressed and MouseOver triggers  -->
         <Style TargetType="ui:CardControl">
 
@@ -423,7 +400,7 @@
                                                     VerticalContentAlignment="Center"
                                                     Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}"
                                                     CommandParameter="{Binding}"
-                                                    Template="{StaticResource SubtleButtonStyle}">
+                                                    Template="{StaticResource SubtleToggleButtonStyle}">
                                                     <Path
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
@@ -486,7 +463,7 @@
                                                     VerticalContentAlignment="Center"
                                                     Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}"
                                                     CommandParameter="{Binding}"
-                                                    Template="{StaticResource SubtleButtonStyle}">
+                                                    Template="{StaticResource SubtleToggleButtonStyle}">
                                                     <Path
                                                         Margin="0,0,0,0"
                                                         HorizontalAlignment="Center"
@@ -603,7 +580,7 @@
                                                     VerticalContentAlignment="Center"
                                                     Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}"
                                                     CommandParameter="{Binding}"
-                                                    Template="{StaticResource SubtleButtonStyle}">
+                                                    Template="{StaticResource SubtleToggleButtonStyle}">
                                                     <Path
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
@@ -665,7 +642,7 @@
                                                     VerticalContentAlignment="Center"
                                                     Command="{Binding DataContext.EditSavePathInfoCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ThemeWindow}}"
                                                     CommandParameter="{Binding}"
-                                                    Template="{StaticResource SubtleButtonStyle}">
+                                                    Template="{StaticResource SubtleToggleButtonStyle}">
                                                     <Path
                                                         Margin="0,0,0,0"
                                                         HorizontalAlignment="Center"

@@ -18,7 +18,7 @@ namespace PixelRuler.CustomControls
         public override void OnApplyTemplate()
         {
             var inputGestureText = this.GetTemplateChild("InputGestureText") as System.Windows.Controls.TextBlock;
-            _ = inputGestureText ?? throw new ArgumentNullException(nameof(inputGestureText));
+            ArgumentNullException.ThrowIfNull(inputGestureText);
             inputGestureText.VerticalAlignment = VerticalAlignment.Center;
             inputGestureText.Opacity = .75;
             inputGestureText.FontSize = 12;

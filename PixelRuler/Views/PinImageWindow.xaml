@@ -23,7 +23,7 @@
             GlassFrameThickness="0"
             ResizeBorderThickness="0" />
     </WindowChrome.WindowChrome>
-    <Grid>
+    <Grid Margin="0">
         <Border
             x:Name="mainBorder"
             HorizontalAlignment="Center"
@@ -31,12 +31,19 @@
             d:Height="400"
             d:Width="600"
             Background="#303030"
-            BorderBrush="White"
-            BorderThickness="3"
+            BorderBrush="#0061e0"
+            BorderThickness="5"
             ClipToBounds="True"
             CornerRadius="6"
+            Loaded="mainBorder_Loaded"
+            MouseLeftButtonDown="mainBorder_MouseLeftButtonDown"
             UseLayoutRounding="True">
-
+            <Border.RenderTransformOrigin>
+                <Point X=".5" Y=".5" />
+            </Border.RenderTransformOrigin>
+            <Border.RenderTransform>
+                <ScaleTransform ScaleX="1.0" ScaleY="1.0" />
+            </Border.RenderTransform>
             <Grid>
                 <Image
                     x:Name="mainImage"

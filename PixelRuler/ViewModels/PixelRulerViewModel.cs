@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Win32;
+using PixelRuler.CanvasElements;
+using PixelRuler.Common;
+using PixelRuler.Models;
+using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Interop;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Input;
-using PixelRuler.CanvasElements;
-using System.Drawing.Imaging;
-using PixelRuler.Models;
 using System.IO;
-using Microsoft.Win32;
-using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 
 namespace PixelRuler
 {
@@ -26,7 +22,17 @@ namespace PixelRuler
     /// </summary>
     public partial class PixelRulerViewModel : ObservableObject
     {
-        public PixelRulerViewModel(SettingsViewModel? settingsViewModel = null)
+        public PixelRulerViewModel()
+        {
+            init();
+        }
+
+        public PixelRulerViewModel(SettingsViewModel settingsViewModel)
+        {
+            init(settingsViewModel);
+        }
+
+        private void init(SettingsViewModel? settingsViewModel = null)
         {
             BoundsMeasureSelectedCommand = new RelayCommandFull((object? o) => SelectedTool = Tool.BoundingBox, System.Windows.Input.Key.B, System.Windows.Input.ModifierKeys.None, "Bounds Measure");
             ColorPickerSelectedCommand = new RelayCommandFull((object? o) => SelectedTool = Tool.ColorPicker, System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.None, "Color Picker");
@@ -37,7 +43,7 @@ namespace PixelRuler
             ClearAllMeasureElementsCommand = new RelayCommandFull((object? o) => clearAllMeasureElements(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Shift, "Clear All");
             DeleteAllSelectedCommand = new RelayCommandFull((object? o) => deleteAllSelectedElements(), System.Windows.Input.Key.Delete, System.Windows.Input.ModifierKeys.None, "Delete All Selected");
             SelectAllElementsCommand = new RelayCommandFull((object? o) => selectAllElements(), System.Windows.Input.Key.A, System.Windows.Input.ModifierKeys.Control, "Select All Elements");
-            CopyRawImageToClipboardCommand = new RelayCommandFull((object? o) => CopyRawImageToClipboard(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Control, "Copy Image");
+            CopyRawImageToClipboardCommand = new RelayCommandFull(async (object? o) => await CopyRawImageToClipboard(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Control, "Copy Image");
 
             if(settingsViewModel != null)
             {
@@ -45,6 +51,12 @@ namespace PixelRuler
                 this.SelectedTool = settingsViewModel.DefaultTool;
             }
         }
+
+        #region MainCanvasElements
+
+        public ObservableCollection<MeasurementElementZoomCanvasShape> MeasurementElements { get; private set; } = new();
+
+        #endregion MainCanvasElements
 
         /// <summary>
         /// Whether in fullscreen screenshow window mode (QuickTool or Screenshot Selection)
@@ -56,13 +68,43 @@ namespace PixelRuler
             return false;
         }
 
-        public void CopyRawImageToClipboard()
+        public event EventHandler? RawImageCopied;
+
+        public async Task CopyRawImageToClipboard()
         {
             if(this.ImageSource != null)
             {
-                Clipboard.SetImage(this.ImageSource);
-                // event for UI feedback.
+                await CopyRawImageToClipboardImp();
+                RawImageCopied?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        private void _CopyRawImageToClipboardSyncImp()
+        {
+            Clipboard.SetImage(this.ImageSource);
+        }
+
+        private async Task CopyRawImageToClipboardImp()
+        {
+            await Task.Run(() =>
+            {
+                //System.Threading.Thread.Sleep(2000);
+                Thread thread = new Thread(() =>
+                {
+                    //System.Threading.Thread.Sleep(2000);
+                    // cannot use Clipboard.SetImage(ImageSource) as ImageSource
+                    //   can only be accessed from UI thread.
+                    DataObject dataObject = new DataObject();
+                    dataObject.SetData(DataFormats.Bitmap, this.Image, true);
+                    Clipboard.SetDataObject(dataObject, true);
+                    //System.Threading.Thread.Sleep(2000);
+                });
+                // cannot use task as Clipboard requires thread to be 
+                //   set to single thread apartment.
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                thread.Join();
+            });
         }
 
         private void zoomIn()
@@ -203,6 +245,12 @@ namespace PixelRuler
                     OnPropertyChanged(nameof(ShapeHeight));
                 }
             }
+        }
+
+        [RelayCommand]
+        public void ShowSettings()
+        {
+            App.ShowSettingsWindowSingleInstance(this.Settings);
         }
 
         [RelayCommand]
@@ -455,6 +503,27 @@ namespace PixelRuler
             CopyRawImageToClipboardCommand = null!;
         }
 
+        public event EventHandler? ColorCopied;
+
+        [RelayCommand]
+        public void CopyColorToClipboard()
+        {
+            Clipboard.SetText(UiUtils.FormatColor(this.Color, this.Settings.ColorFormatMode));
+            ColorCopied?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void OnColorSelected()
+        {
+            ColorSelected?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void OnColorStartSelect()
+        {
+            ColorStartSelect?.Invoke(this, EventArgs.Empty);
+        }
+
+        public event EventHandler<EventArgs> ColorSelected;
+        public event EventHandler<EventArgs> ColorStartSelect;
         public event EventHandler<EventArgs> ImageUpdated;
         public event EventHandler<EventArgs> ShowGridLinesChanged;
         private bool showGridlines = false;
@@ -507,6 +576,9 @@ namespace PixelRuler
                 OnPropertyChanged();
             }
         }
+
+        [ObservableProperty]
+        private bool test;
 
         public double[] AvailableZooms
         {

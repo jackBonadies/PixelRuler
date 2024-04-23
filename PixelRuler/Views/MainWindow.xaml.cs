@@ -37,14 +37,6 @@ namespace PixelRuler
     /// </summary>
     public partial class MainWindow : ThemeWindow
     {
-        protected override void OnClosed(EventArgs e)
-        {
-            HookUpUICommands(false);
-            this.ViewModel.Cleanup();
-            this.mainCanvas.Bind(false);
-            base.OnClosed(e);
-        }
-
         public MainWindow(PixelRulerViewModel prvm)
         {
             this.DataContext = prvm;
@@ -75,6 +67,13 @@ namespace PixelRuler
             var handle = new WindowInteropHelper(this).Handle;
 
             this.SizeChanged += MainWindow_SizeChanged;
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            HookUpUICommands(false);
+            this.ViewModel.Cleanup();
+            base.OnClosed(e);
         }
 
         private void HookUpUICommands(bool bind)
@@ -292,6 +291,12 @@ namespace PixelRuler
                 this.ViewModel.SaveAs();
                 return false;
             }
+
+            if(wsw.AfterScreenshotValue is AfterScreenshotAction.Copy)
+            {
+                this.ViewModel.CopyRawImageToClipboard();
+                return false;
+            }
             
             // string savedPath 
             if (wsw.AfterScreenshotValue is AfterScreenshotAction.Save)
@@ -345,6 +350,14 @@ namespace PixelRuler
             if (wsw.AfterScreenshotValue is AfterScreenshotAction.Pin)
             {
                 var pinWindow = new PinImageWindow();
+                this.WindowStartupLocation = WindowStartupLocation.Manual;
+                var screen = wsw.GetScreenForWpfPoint(wsw.SelectedRectWinCoordinates.TopLeft);
+                if (screen == null)
+                {
+                    screen = wsw.PerScreenPanels[0];
+                }
+                pinWindow.Left = wsw.SelectedRectWinCoordinates.Left / screen.ScaleFactor;
+                pinWindow.Top = wsw.SelectedRectWinCoordinates.Top / screen.ScaleFactor;
                 pinWindow.ViewModel = new PinViewModel(this.ViewModel);
                 pinWindow.Show();
                 return false;
@@ -414,11 +427,6 @@ namespace PixelRuler
                 this.WindowState = WindowState.Normal;
                 // it will also preserve any Maximized windows
             }
-        }
-
-        private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            App.ShowSettingsWindowSingleInstance(this.ViewModel.Settings);
         }
     }
 }

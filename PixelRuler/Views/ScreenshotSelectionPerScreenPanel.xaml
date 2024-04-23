@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:PixelRuler.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pixelruler="clr-namespace:PixelRuler"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:vm="clr-namespace:PixelRuler.ViewModels"
     HorizontalAlignment="Left"
     VerticalAlignment="Top"
@@ -17,24 +18,194 @@
         <ScaleTransform x:Name="perScreenDpiScaleTransform" ScaleX=".5" ScaleY=".5" />
     </UserControl.RenderTransform>
     <UserControl.Resources>
-        <Storyboard x:Key="enterTransform" x:Name="enterTransform">
+        <Storyboard x:Key="enterAnimationPanel">
             <DoubleAnimation
-                Storyboard.TargetName="translateTransform"
+                Storyboard.TargetName="translateTransformPanel"
                 Storyboard.TargetProperty="Y"
                 From="-56"
                 To="0"
                 Duration="0:0:.1" />
         </Storyboard>
-        <Storyboard x:Key="leaveTransform" x:Name="leaveTransform">
+        <Storyboard x:Key="leaveAnimationPanel">
             <DoubleAnimation
-                Storyboard.TargetName="translateTransform"
+                Storyboard.TargetName="translateTransformPanel"
                 Storyboard.TargetProperty="Y"
                 From="0"
-                To="-56"
+                To="-200"
                 Duration="0:0:.1" />
         </Storyboard>
+        <!--<Storyboard x:Key="enterAnimationHelp">
+            <DoubleAnimation
+                Storyboard.TargetName="translateTransformHelp"
+                Storyboard.TargetProperty="Y"
+                From="-200"
+                To="0"
+                Duration="0:0:.1" />
+        </Storyboard>
+        <Storyboard x:Key="leaveAnimationHelp">
+            <DoubleAnimation
+                Storyboard.TargetName="translateTransformHelp"
+                Storyboard.TargetProperty="Y"
+                From="0"
+                To="-200"
+                Duration="0:0:.1" />
+        </Storyboard>-->
+        <Storyboard x:Key="enterAnimationHelp">
+            <DoubleAnimation
+                Storyboard.TargetName="helpPanel"
+                Storyboard.TargetProperty="Opacity"
+                From="0"
+                To="1"
+                Duration="0:0:.1" />
+        </Storyboard>
+        <Storyboard x:Key="leaveAnimationHelp">
+            <DoubleAnimation
+                Storyboard.TargetName="helpPanel"
+                Storyboard.TargetProperty="Opacity"
+                From="1"
+                To="0"
+                Duration="0:0:.1" />
+        </Storyboard>
+
+        <Storyboard x:Key="enterHelpAreaAnimation">
+            <DoubleAnimation
+                Storyboard.TargetName="translateTransformRenderHelpPanel"
+                Storyboard.TargetProperty="Y"
+                From="0"
+                To="400"
+                Duration="0:0:.15" />
+        </Storyboard>
+        <Storyboard x:Key="leaveHelpAreaAnimation">
+            <DoubleAnimation
+                Storyboard.TargetName="translateTransformRenderHelpPanel"
+                Storyboard.TargetProperty="Y"
+                Duration="0:0:.15" />
+        </Storyboard>
+
+        <pixelruler:QuickToolVisibilityConverter x:Key="QuickToolVisibilityConverter" />
+
     </UserControl.Resources>
     <Grid Name="gridTopLevel">
+        <Grid.Resources>
+            <ControlTemplate x:Key="colorPanelTemplate" TargetType="{x:Type ContentControl}">
+                <Border
+                    Name="colorPanel"
+                    Height="44"
+                    Margin="0,0,-3,-3"
+                    Padding="6,3"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Background="{DynamicResource ToolPanelBackground}"
+                    BorderBrush="{DynamicResource ToolPanelBorder}"
+                    BorderThickness="1"
+                    CornerRadius="5, 5, 0, 0"
+                    Cursor="Arrow"
+                    Visibility="{Binding Mode, Converter={StaticResource QuickToolVisibilityConverter}}">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="colorPanelTranslateTransform" X="0" Y="50" />
+                    </Border.RenderTransform>
+                    <StackPanel Orientation="Horizontal">
+                        <Border
+                            Width="28"
+                            Height="28"
+                            Margin="3,0,0,0"
+                            Background="{Binding Color, Converter={StaticResource DrawingColorToWpfBrushConverter}}"
+                            BorderBrush="#90303030"
+                            BorderThickness="1"
+                            CornerRadius="3" />
+                        <TextBlock
+                            Margin="4,0,0,0"
+                            VerticalAlignment="Center"
+                            FontSize="23"
+                            FontWeight="SemiBold"
+                            Foreground="#303030">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource ColorFormatStringConverter}">
+                                    <Binding Path="Color" />
+                                    <Binding Path="Settings.ColorFormatMode" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                        <Button
+                            Margin="4,0,0,0"
+                            Command="{Binding CopyColorToClipboardCommand}"
+                            Template="{StaticResource SubtleButtonTemplate}">
+                            <Grid>
+                                <Path
+                                    Name="copyIcon"
+                                    Margin="0,2,0,0"
+                                    HorizontalAlignment="Center"
+                                    Style="{StaticResource CopyButtonStyle}">
+                                    <Path.LayoutTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX=".02" ScaleY=".02" />
+                                            <RotateTransform Angle="180" />
+                                        </TransformGroup>
+                                    </Path.LayoutTransform>
+                                    <Path.RenderTransform>
+                                        <ScaleTransform ScaleX="1" ScaleY="1" />
+                                    </Path.RenderTransform>
+                                    <Path.RenderTransformOrigin>
+                                        <Point X=".5" Y=".5" />
+                                    </Path.RenderTransformOrigin>
+                                </Path>
+                                <ui:SymbolIcon
+                                    Name="checkmarkIcon"
+                                    Margin="-2,3,0,0"
+                                    FontSize="38"
+                                    Opacity="0"
+                                    Style="{StaticResource CheckMarkStyle}">
+                                    <ui:SymbolIcon.LayoutTransform>
+                                        <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
+                                    </ui:SymbolIcon.LayoutTransform>
+                                </ui:SymbolIcon>
+                            </Grid>
+                            <Button.Triggers>
+                                <EventTrigger RoutedEvent="Button.Click">
+                                    <BeginStoryboard Storyboard="{StaticResource checkmarkStoryboard}" />
+                                </EventTrigger>
+                            </Button.Triggers>
+                        </Button>
+                        <Button Template="{StaticResource SubtleButtonTemplate}">
+                            <ContentControl Opacity="1" Template="{StaticResource CloseIconTemplate}">
+                                <ContentControl.LayoutTransform>
+                                    <ScaleTransform ScaleX=".8" ScaleY=".8" />
+                                </ContentControl.LayoutTransform>
+                            </ContentControl>
+                        </Button>
+                    </StackPanel>
+                </Border>
+                <ControlTemplate.Resources>
+                    <Storyboard x:Key="colorPanelUpAnimation">
+                        <DoubleAnimation
+                            Storyboard.TargetName="colorPanelTranslateTransform"
+                            Storyboard.TargetProperty="Y"
+                            From="50"
+                            To="0"
+                            Duration="0:0:.1" />
+                    </Storyboard>
+                    <Storyboard x:Key="colorPanelDownAnimation">
+                        <DoubleAnimation
+                            Storyboard.TargetName="colorPanelTranslateTransform"
+                            Storyboard.TargetProperty="Y"
+                            From="0"
+                            To="50"
+                            Duration="0:0:.1" />
+                    </Storyboard>
+                </ControlTemplate.Resources>
+                <ControlTemplate.Triggers>
+                    <DataTrigger Binding="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter='ColorPicker'}" Value="True">
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard Storyboard="{StaticResource colorPanelUpAnimation}" />
+                        </DataTrigger.EnterActions>
+                        <DataTrigger.ExitActions>
+                            <BeginStoryboard Storyboard="{StaticResource colorPanelDownAnimation}" />
+                        </DataTrigger.ExitActions>
+                    </DataTrigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Grid.Resources>
+        <ContentControl Template="{StaticResource colorPanelTemplate}" />
         <Border
             Name="toolPanel"
             Margin="0,14,0,0"
@@ -45,9 +216,10 @@
             BorderBrush="{DynamicResource ToolPanelBorder}"
             BorderThickness="1"
             CornerRadius="5"
-            Cursor="Arrow">
+            Cursor="Arrow"
+            Visibility="{Binding Mode, Converter={StaticResource QuickToolVisibilityConverter}}">
             <Border.RenderTransform>
-                <TranslateTransform x:Name="translateTransform" Y="-60" />
+                <TranslateTransform x:Name="translateTransformPanel" Y="-200" />
             </Border.RenderTransform>
 
             <!--<Border.Resources>
@@ -61,7 +233,7 @@
                     BorderBrush="Transparent"
                     Command="{Binding BoundsMeasureSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=BoundingBox}"
-                    Style="{StaticResource SubtleButtonStyle}"
+                    Style="{StaticResource SubtleToggleButtonStyle}"
                     ToolTipService.ToolTip="{Binding BoundsMeasureSelectedCommand.ToolTipTextFull}">
                     <TextBlock
                         Padding="0"
@@ -77,13 +249,28 @@
                     BorderBrush="Transparent"
                     Command="{Binding RulerSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=Ruler}"
-                    Style="{StaticResource SubtleButtonStyle}"
+                    Style="{StaticResource SubtleToggleButtonStyle}"
                     ToolTipService.ToolTip="{Binding RulerSelectedCommand.ToolTipTextFull}">
                     <TextBlock
                         Padding="0"
                         FontFamily="Segoe MDL2 Assets"
                         FontSize="19"
                         Text="&#xED5E;" />
+                </ToggleButton>
+                <ToggleButton
+                    Width="34"
+                    Height="34"
+                    Margin="2,0,2,0"
+                    Padding="0"
+                    BorderBrush="Transparent"
+                    Command="{Binding ColorPickerSelectedCommand}"
+                    IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=ColorPicker}"
+                    Style="{DynamicResource SubtleToggleButtonStyle}"
+                    ToolTipService.ToolTip="{Binding ColorPickerSelectedCommand.ToolTipTextFull}">
+                    <TextBlock
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="19"
+                        Text="&#xEF3C;" />
                 </ToggleButton>
                 <Separator Margin="2,0,2,0" BorderBrush="#30000000" />
                 <ToggleButton
@@ -92,7 +279,7 @@
                     Padding="0"
                     BorderBrush="Transparent"
                     Command="{Binding PopOutWindowCommand}"
-                    Style="{StaticResource SubtleButtonStyle}"
+                    Style="{StaticResource SubtleToggleButtonStyle}"
                     ToolTip="{Binding PopOutWindowCommand.ToolTipTextFull}">
                     <Path
                         Data="{StaticResource PopOutIconPath}"
@@ -111,7 +298,7 @@
                     Padding="0"
                     BorderBrush="Transparent"
                     Command="{Binding CloseWindowCommand}"
-                    Style="{StaticResource SubtleButtonStyle}"
+                    Style="{StaticResource SubtleToggleButtonStyle}"
                     ToolTip="{Binding CloseWindowCommand.ToolTipTextFull}">
                     <Grid
                         Width="30"
@@ -148,13 +335,17 @@
             </StackPanel>
         </Border>
         <Border
-            Name="HelpPanel"
+            Name="helpPanel"
             Margin="10"
             Padding="10"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
-            Background="#50000000"
-            CornerRadius="10">
+            Background="#C0000000"
+            CornerRadius="10"
+            Opacity="0">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="translateTransformRenderHelpPanel" Y="0" />
+            </Border.RenderTransform>
             <Border.Resources>
                 <Style TargetType="TextBlock">
                     <Setter Property="Foreground" Value="#a0ffffff" />
@@ -167,6 +358,9 @@
             </Border.Resources>
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -204,9 +398,17 @@
                 <TextBlock
                     Grid.Row="3"
                     Style="{StaticResource KeyTextBlock}"
-                    Text="H" />
+                    Text="Esc" />
                 <TextBlock
                     Grid.Row="3"
+                    Grid.Column="2"
+                    Text="Exit" />
+                <TextBlock
+                    Grid.Row="4"
+                    Style="{StaticResource KeyTextBlock}"
+                    Text="H" />
+                <TextBlock
+                    Grid.Row="4"
                     Grid.Column="2"
                     Text="Toggle Help" />
             </Grid>

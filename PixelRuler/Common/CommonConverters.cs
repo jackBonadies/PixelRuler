@@ -1,4 +1,5 @@
-﻿using PixelRuler.Models;
+﻿using PixelRuler.Common;
+using PixelRuler.Models;
 using PixelRuler.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -53,13 +54,35 @@ namespace PixelRuler
         }
     }
 
-    public class ColorFormatStringConverter : IValueConverter
+    public class QuickToolVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is System.Drawing.Color color)
+            if(value is OverlayMode mode)
             {
-                return formatColor(color);
+                if(mode == OverlayMode.QuickMeasure || mode == OverlayMode.QuickColor)
+                {
+                    return Visibility.Visible;
+                }
+                return Visibility.Collapsed;
+            }
+            throw new Exception("Bad Inputs");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new Exception("One way converter");
+        }
+
+    }
+
+    public class ColorFormatStringConverter : IMultiValueConverter
+    {
+        public object Convert(object[] value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value[0] is System.Drawing.Color color && value[1] is ColorFormatMode mode)
+            {
+                return UiUtils.FormatColor(color, mode);
             }
             else
             {
@@ -67,12 +90,7 @@ namespace PixelRuler
             }
         }
 
-        private string formatColor(System.Drawing.Color color)
-        {
-            return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new Exception("One way converter");
         }
@@ -82,6 +100,10 @@ namespace PixelRuler
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            if(values[0] == DependencyProperty.UnsetValue)
+            {
+                return 0D;
+            }
             double width = (double)values[0];
             double height = (double)values[1];
             if(height > 0 && (width <= 0 || double.IsNaN(width)))
@@ -105,6 +127,10 @@ namespace PixelRuler
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            if (values[0] == DependencyProperty.UnsetValue)
+            {
+                return null!;
+            }
             double width = (double)values[0];
             double height = (double)values[1];
             if (width > 0 && height > 0)
@@ -126,6 +152,10 @@ namespace PixelRuler
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            if (values[0] == DependencyProperty.UnsetValue)
+            {
+                return "0px";
+            }
             double width = (double)values[0];
             double height = (double)values[1];
             if (width > 0 && height > 0)

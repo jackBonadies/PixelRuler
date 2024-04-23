@@ -106,13 +106,71 @@ namespace PixelRuler.Common
             return screenshot;
         }
 
-        public static bool IsMouseWithinBounds(this FrameworkElement element, MouseEventArgs e)
+        public static bool IsMouseWithinBounds(this FrameworkElement element, MouseEventArgs e, double margin = 0)
         {
-            bool isWithin = e.GetPosition(element).X >= 0 &&
-                e.GetPosition(element).X < element.ActualWidth &&
-                e.GetPosition(element).Y >= 0 &&
-                e.GetPosition(element).Y < element.ActualHeight;
+            bool isWithin = e.GetPosition(element).X >= -margin &&
+                e.GetPosition(element).X < element.ActualWidth + margin &&
+                e.GetPosition(element).Y >= -margin &&
+                e.GetPosition(element).Y < element.ActualHeight + margin;
             return isWithin;
+        }
+
+        /// <summary>
+        /// Find Child of Type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="parent"></param>
+        /// <param name="childName">Optional: specify child name</param>
+        /// <returns></returns>
+        public static T? FindChild<T>(DependencyObject? parent, string? childName = null)
+           where T : DependencyObject
+        {
+            if (parent == null) return null;
+
+            T? foundChild = null;
+
+            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childrenCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                if (!string.IsNullOrEmpty(childName))
+                {
+                    var frameworkElement = child as FrameworkElement;
+                    if (frameworkElement != null && frameworkElement.Name == childName)
+                    {
+                        foundChild = (T)child;
+                        break;
+                    }
+                }
+                else if (child is T childType)
+                {
+                    foundChild = (T)child;
+                }
+
+                if (foundChild == null)
+                {
+                    foundChild = FindChild<T>(child, childName);
+
+                    if (foundChild != null) break;
+                }
+                else
+                {
+                    foundChild = (T)child;
+                    break;
+                }
+            }
+
+            return foundChild;
+        }
+
+        public static string FormatColor(System.Drawing.Color color, ColorFormatMode mode)
+        {
+            if(mode == ColorFormatMode.Hex)
+            {
+                return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+            }
+            throw new NotImplementedException();
         }
     }
 }

@@ -153,7 +153,7 @@ namespace PixelRuler
             else
             {
                 DefaultPathSaveInfo = JsonSerializer.Deserialize(defaultPathInfoString, typeof(PathSaveInfo)) as PathSaveInfo;
-                _ = DefaultPathSaveInfo ?? throw new ArgumentNullException(nameof(DefaultPathSaveInfo));
+                ArgumentNullException.ThrowIfNull(DefaultPathSaveInfo);
             }
             DefaultPathSaveInfo.IsDefault = true;
         }
@@ -718,9 +718,50 @@ namespace PixelRuler
             SavePathInfos();
         }
 
+        public ScreenshotSelectionViewModel ScreenshotSelectionViewModel { get; set; } = new ScreenshotSelectionViewModel();
         public ZoomViewModel ZoomViewModel { get; set; } = new ZoomViewModel();
         public Key PromptKey { get; private set; } = Key.LeftShift;
         public int ScreenshotDelayMs { get; private set; } = 100;
+
+        [ObservableProperty]
+        private ColorFormatMode colorFormatMode;
+
+        [ObservableProperty]
+        private QuickColorMode quickColorMode; 
+
+        public bool IsQuickColorAutoCopy
+        {
+            get
+            {
+                return QuickColorMode == QuickColorMode.AutoCopyAndClose || QuickColorMode == QuickColorMode.AutoCopyMany;
+            }
+        }
+
+    }
+
+    public partial class ScreenshotSelectionViewModel : ObservableObject
+    {
+        [ObservableProperty]
+        bool screenshotHelpOn;
+        [ObservableProperty]
+        bool zoomBoxLocation; // TODO
+        [ObservableProperty]
+        bool zoomBoxOn; // TODO
+
+        public ScreenshotSelectionViewModel()
+        {
+            this.PropertyChanged += ScreenshotSelectionViewModel_PropertyChanged;
+        }
+
+        private void ScreenshotSelectionViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(ScreenshotHelpOn))
+            {
+                ScreenshotHelpOnChanged?.Invoke(sender, this.ScreenshotHelpOn);
+            }
+        }
+
+        public event EventHandler<bool>? ScreenshotHelpOnChanged;
     }
 
     public enum ZoomMode
@@ -743,5 +784,17 @@ namespace PixelRuler
         public double ZoomLimitEffectiveZoom { get; set; } = 32;
 
         public int BorderThickness { get; set; } = 3;
+    }
+
+    public enum ColorFormatMode
+    {
+        Hex = 0,
+    }
+
+    public enum QuickColorMode
+    {
+        ColorTrayCopyExplicit = 0,
+        AutoCopyMany = 1,
+        AutoCopyAndClose = 2
     }
 }

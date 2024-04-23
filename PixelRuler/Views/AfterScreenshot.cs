@@ -61,11 +61,11 @@ namespace PixelRuler.Views
                 contextMenu.ContextMenuClosing += ContextMenu_ContextMenuClosing;
                 contextMenu.PreviewKeyDown += ContextMenu_PreviewKeyDown;
 
-                var menuItem1 = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("View"), InputGestureText="Enter" };
-                menuItem1.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.ViewInPixelRulerWindow, null); };
+                var menuItemPixelRuler = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("View"), InputGestureText="Enter" };
+                menuItemPixelRuler.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.ViewInPixelRulerWindow, null); };
                 var pixelRulerIcon = new System.Windows.Controls.Image() { Width = 16, Height = 16 };
                 pixelRulerIcon.SetResourceReference(System.Windows.Controls.Image.SourceProperty, "di_Layer_1");
-                menuItem1.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, pixelRulerIcon);
+                menuItemPixelRuler.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, pixelRulerIcon);
 
 
                 var menuItemPin = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Pin"), InputGestureText = "P" };
@@ -73,21 +73,29 @@ namespace PixelRuler.Views
                 var pinIcon = new SymbolIcon(SymbolRegular.Pin24);
                 menuItemPin.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, pinIcon);
 
-                var menuItem2 = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Cancel"), InputGestureText="Escape" };
-                menuItem2.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Cancel, null); };
-                var menuItem3 = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save As"), InputGestureText="Ctrl+S" };
-                menuItem3.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, UiUtils.CreateFontIcon("\xE792")); //new SymbolIcon { Symbol = SymbolRegular.Save24 });
+                var menuItemClose = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Cancel"), InputGestureText="Escape" };
+                menuItemClose.SetResourceReference(Wpf.Ui.Controls.MenuItem.IconProperty, "CloseIcon");
+                menuItemClose.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Cancel, null); };
 
-                menuItem3.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.SaveAs, null); };
-                var menuItem4 = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save"), InputGestureText="S" };
-                menuItem4.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, UiUtils.CreateFontIcon("\xE74E")); //new SymbolIcon { Symbol = SymbolRegular.Save24 });
-                menuItem4.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, settings.DefaultPathSaveInfo); };
+                var menuItemCopy = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Copy"), InputGestureText="C" };
+                menuItemCopy.SetResourceReference(Wpf.Ui.Controls.MenuItem.IconProperty, "CopyButtonPathProper");
+                menuItemCopy.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Copy, null); };
 
-                contextMenu.Items.Add(menuItem1);
+                var menuItemSaveAs = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save As"), InputGestureText="Ctrl+S" };
+                menuItemSaveAs.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, UiUtils.CreateFontIcon("\xE792")); //new SymbolIcon { Symbol = SymbolRegular.Save24 });
+                menuItemSaveAs.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.SaveAs, null); };
+
+                var menuItemSave = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save"), InputGestureText="S" };
+                menuItemSave.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, UiUtils.CreateFontIcon("\xE74E")); //new SymbolIcon { Symbol = SymbolRegular.Save24 });
+                menuItemSave.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, settings.DefaultPathSaveInfo); };
+
+
+                contextMenu.Items.Add(menuItemPixelRuler);
                 contextMenu.Items.Add(menuItemPin);
-                contextMenu.Items.Add(menuItem2);
-                contextMenu.Items.Add(menuItem3);
-                contextMenu.Items.Add(menuItem4);
+                contextMenu.Items.Add(menuItemCopy);
+                contextMenu.Items.Add(menuItemSave);
+                contextMenu.Items.Add(menuItemSaveAs);
+                contextMenu.Items.Add(menuItemClose);
 
                 int i = 0;
                 foreach(var saveDest in settings.AdditionalPathSaveInfos)
@@ -138,5 +146,6 @@ namespace PixelRuler.Views
         SaveAs = 3,
         Pin = 4,
         CommandTarget = 5,
+        Copy = 6,
     }
 }

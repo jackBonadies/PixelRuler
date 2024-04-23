@@ -78,6 +78,10 @@ namespace PixelRuler
             ViewModel = new ScreenshotWindowViewModel(settings);
             ViewModel.FullscreenScreenshotMode = true;
             ViewModel.Mode = mode;
+            if(mode == OverlayMode.QuickColor)
+            {
+                ViewModel.SelectedTool = Tool.ColorPicker;
+            }
 
             double xOffset = -fullBounds.Left;
             double yOffset = -fullBounds.Top;
@@ -108,6 +112,18 @@ namespace PixelRuler
             }
             setForMode();
             CaptureImage = UiUtils.CaptureScreen(UiUtils.GetFullBounds(WpfScreenHelper.Screen.AllScreens));
+        }
+
+        public ScreenshotSelectionPerScreenPanel? GetScreenForWpfPoint(Point pt)
+        {
+            foreach(var screen in PerScreenPanels)
+            {
+                if(screen.Bounds.Contains(pt))
+                {
+                    return screen;
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -171,6 +187,10 @@ namespace PixelRuler
             if (e.Key == Key.Escape)
             {
                 this.Close();
+            }
+            else if(e.Key == Key.S)
+            {
+                this.ViewModel.Settings.QuickColorMode = EnumUtil.CycleEnum(this.ViewModel.Settings.QuickColorMode);
             }
         }
 
@@ -359,10 +379,10 @@ namespace PixelRuler
         {
             var dpi = this.GetDpi();
             rect = new Rect(
-                (rect.Left) / 1.5,
-                (rect.Top) / 1.5,
-                (rect.Right - rect.Left) / 1.5,
-                (rect.Bottom - rect.Top) / 1.5);
+                (rect.Left) / this.Dpi,
+                (rect.Top) / this.Dpi,
+                (rect.Right - rect.Left) / this.Dpi,
+                (rect.Bottom - rect.Top) / this.Dpi);
             return rect;
         }
 
@@ -383,7 +403,6 @@ namespace PixelRuler
 
             startPoint = roundToZoomCanvasPixel(e);
             startPoint = ReverseDpi(startPoint);
-            innerRectGeometry.Rect = new Rect(startPoint, startPoint);
             horzIndicator.Visibility = Visibility.Collapsed;
             vertIndicator.Visibility = Visibility.Collapsed;
         }
@@ -424,7 +443,7 @@ namespace PixelRuler
                 this.Close();
             }
 
-            if (System.Windows.Input.Keyboard.IsKeyDown(this.ViewModel.Settings.PromptKey))
+            if (true)
             {
                 double dpiToUse = -1;
                 foreach (var screenPanel in PerScreenPanels)
@@ -456,9 +475,15 @@ namespace PixelRuler
                 this.Close();
             }
 
-            if (e.Key == (this.DataContext as PixelRulerViewModel).Settings.ZoomBoxQuickZoomKey)
+            if (e.Key == ViewModel.Settings.ZoomBoxQuickZoomKey)
             {
                 this.mainCanvas.ShowZoomBox();
+            }
+
+            if (e.Key == Key.H)
+            {
+                var helpOn = ViewModel.Settings.ScreenshotSelectionViewModel.ScreenshotHelpOn;
+                ViewModel.Settings.ScreenshotSelectionViewModel.ScreenshotHelpOn = !helpOn;
             }
         }
 
@@ -475,7 +500,7 @@ namespace PixelRuler
             var pos = e.GetPosition(this);
             foreach(var perScreenPanel in PerScreenPanels)
             {
-                perScreenPanel.HandleMouse(pos);
+                perScreenPanel.HandleMouse(e, pos);
             }
 
             if (ViewModel.Mode == OverlayMode.QuickMeasure || ViewModel.Mode == OverlayMode.QuickColor)
@@ -507,6 +532,7 @@ namespace PixelRuler
                         }
                     }
                     EnterRegionOnlyMode();
+                    //innerRectGeometry.Rect = new Rect(startPoint, startPoint);
                     var endPt = roundToZoomCanvasPixel(e);
                     endPt = ReverseDpi(endPt);
                     innerRectGeometry.Rect = new Rect(startPoint, endPt);
@@ -576,9 +602,9 @@ namespace PixelRuler
             var newHeight = rect.Height * s.ScaleY;
 
             var offsetX = t.X + 10000 * s.ScaleX;
-            offsetX /= 1.5;
+            offsetX /= this.Dpi;
             var offsetY = t.Y + 10000 * s.ScaleY;
-            offsetY /= 1.5;
+            offsetY /= this.Dpi;
 
             return new Rect(x * s.ScaleX + offsetX, y * s.ScaleY + offsetY, newWidth, newHeight);
         }
@@ -615,6 +641,15 @@ namespace PixelRuler
 
         private void WindowSelectionWindow_SourceInitialized(object? sender, EventArgs e)
         {
+            this.ViewModel.ColorCopied += ViewModel_ColorCopied;
+        }
+
+        private void ViewModel_ColorCopied(object? sender, EventArgs e)
+        {
+            if(this.ViewModel.Settings.QuickColorMode == QuickColorMode.AutoCopyAndClose)
+            {
+                this.Close();
+            }
         }
 
         public double Dpi { get; private set; }

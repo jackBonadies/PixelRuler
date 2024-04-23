@@ -6,12 +6,14 @@ using System.Drawing;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using System.Windows.Shell;
 using Wpf.Ui.Tray.Controls;
 
 namespace PixelRuler
@@ -29,6 +31,8 @@ namespace PixelRuler
         {
             System.Diagnostics.Trace.WriteLine("PixelRulerStartup");
             base.OnStartup(e);
+
+            SetJumpList();
 
             bool backgroundOnly = false;
 
@@ -53,14 +57,64 @@ namespace PixelRuler
             }
             
             settingsViewModel = new SettingsViewModel();
-            var mainViewModel = new PixelRulerViewModel(settingsViewModel);
-
             var rootWindow = new RootWindow(new RootViewModel(settingsViewModel));
             rootWindow.Show();
 
             settingsViewModel.SetState();
 
+            if(createdNew)
+            {
+                HandleArgs(string.Join(' ', e.Args), true);
+            }
         }
+
+        private void SetJumpList()
+        {
+            var jumpList = new JumpList();
+
+            var task = new JumpTask
+            {
+                Title = "New Region Screenshot",
+                Arguments = "--region",
+                IconResourcePath = AppDomain.CurrentDomain.BaseDirectory + "\\Assets\\FluentSelectObject24Regular.ico",
+            };
+            jumpList.JumpItems.Add(task);
+
+            task = new JumpTask
+            {
+                Title = "New Fullscreen Screenshot",
+                Arguments = "--fullscreen",
+                IconResourcePath = AppDomain.CurrentDomain.BaseDirectory + "\\Assets\\FluentScreenshot24Regular.ico",
+            };
+            jumpList.JumpItems.Add(task);
+
+            task = new JumpTask
+            {
+                Title = "Quick Measure",
+                Arguments = "--measure",
+                IconResourcePath = AppDomain.CurrentDomain.BaseDirectory + "\\Assets\\FluentRuler24Regular.ico",
+            };
+            jumpList.JumpItems.Add(task);
+
+            task = new JumpTask
+            {
+                Title = "Quick Color",
+                Arguments = "--color",
+                IconResourcePath = AppDomain.CurrentDomain.BaseDirectory + "\\Assets\\FluentColor24Regular.ico",
+            };
+            jumpList.JumpItems.Add(task);
+
+            task = new JumpTask
+            {
+                Title = "Settings",
+                Arguments = "--settings",
+                IconResourcePath = AppDomain.CurrentDomain.BaseDirectory + "\\Assets\\FluentSettings24Regular.ico",
+            };
+            jumpList.JumpItems.Add(task);
+
+            JumpList.SetJumpList(Current, jumpList);
+        }
+
 
         private Mutex singleProcessMutex = null!;
 
@@ -77,41 +131,51 @@ namespace PixelRuler
                         server.WaitForConnection();
                         using (var sr = new StreamReader(server))
                         {
-                            string args = sr.ReadLine();
-                            //switch (args)
-                            //{
-                            //    case "focus":
-                            //        MainWindow mainWindow = new MainWindow(mainViewModel);
-                            //        mainWindow.NewFullScreenshot(false);
-                            //        mainWindow.Show();
-                            //        break;
-                            //}
+                            string? args = sr.ReadLine();
                             Application.Current.Dispatcher.Invoke(() =>
                             {
-                                switch(args)
-                                {
-                                    case "screenshot":
-                                        App.NewFullscreenshotLogic(this.settingsViewModel, true);
-                                        break;
-                                    case "windowed":
-                                        App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.Window, true);
-                                        break;
-                                    default:
-                                        if(string.IsNullOrEmpty(args))
-                                        {
-                                            App.NewFullscreenshotLogic(this.settingsViewModel, true);
-                                        }
-                                        else
-                                        {
-                                            App.OpenFileLogic(this.settingsViewModel, true, args);
-                                        }
-                                        break;
-                                }
+                                HandleArgs(args, false);
                             });
 
                             Console.WriteLine($"Received args from second instance: {args}");
                         }
                 }
+            }
+        }
+
+        private void HandleArgs(string? args, bool startup)
+        {
+            switch(args)
+            {
+                case "--fullscreen":
+                    App.NewFullscreenshotLogic(this.settingsViewModel, true);
+                    break;
+                case "--windowed":
+                case "--region":
+                    App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.WindowAndRegionRect, true);
+                    break;
+                case "--settings":
+                    App.ShowSettingsWindowSingleInstance(this.settingsViewModel);
+                    break;
+                case "--color":
+                    App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.QuickColor, true);
+                    break;
+                case "--measure":
+                    App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.QuickMeasure, true);
+                    break;
+                default:
+                    if(string.IsNullOrEmpty(args))
+                    {
+                        if(!startup)
+                        {
+                            App.NewFullscreenshotLogic(this.settingsViewModel, true);
+                        }
+                    }
+                    else
+                    {
+                        App.OpenFileLogic(this.settingsViewModel, true, args);
+                    }
+                    break;
             }
         }
 
@@ -188,8 +252,6 @@ namespace PixelRuler
             1600,
             3200,
             6400,
-            12800,
-            25600,
         };
 
         public const string DefaultSavePath = "%USERPROFILE%\\Pictures\\Screenshots\\PixelRuler";

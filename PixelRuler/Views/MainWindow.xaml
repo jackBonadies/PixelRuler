@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:common="clr-namespace:PixelRuler.Common"
+    xmlns:custom="clr-namespace:PixelRuler.CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PixelRuler"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -137,6 +138,53 @@
         </Grid.RowDefinitions>
 
         <local:MainCanvas x:Name="mainCanvas" Grid.Row="1" />
+        <Border
+            Grid.Row="1"
+            Width="200"
+            Height="100"
+            Background="White"
+            BorderBrush="#18000000"
+            BorderThickness="1"
+            CornerRadius="4"
+            UseLayoutRounding="True"
+            Visibility="Collapsed">
+            <Border.Effect>
+                <DropShadowEffect
+                    BlurRadius="8"
+                    Direction="270"
+                    Opacity=".3"
+                    ShadowDepth="2" />
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="24" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="12" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Margin="0,0,5,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    FontSize="16">
+                    W:
+                </TextBlock>
+                <ui:NumberBox Grid.Column="1" />
+                <TextBlock
+                    Grid.Row="1"
+                    Margin="0,0,5,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    FontSize="16">
+                    H:
+                </TextBlock>
+                <ui:NumberBox Grid.Row="1" Grid.Column="1" />
+            </Grid>
+
+        </Border>
 
         <DockPanel
             x:Name="topPanel"
@@ -193,10 +241,35 @@
                         <Separator />
                         <MenuItem Command="{Binding CloseWindowCommand}" InputGestureText="Ctrl+W">
                             <MenuItem.Icon>
-                                <ui:SymbolIcon Symbol="ArrowExit20" />
+                                <Grid
+                                    Width="30"
+                                    Height="30"
+                                    Opacity="1">
+                                    <Grid.LayoutTransform>
+                                        <ScaleTransform ScaleX=".53" ScaleY=".53" />
+                                    </Grid.LayoutTransform>
+                                    <Border
+                                        Width="1.5"
+                                        Height="30"
+                                        Background="{DynamicResource TextFillColorPrimaryBrush}"
+                                        CornerRadius=".5">
+                                        <Border.LayoutTransform>
+                                            <RotateTransform Angle="45" />
+                                        </Border.LayoutTransform>
+                                    </Border>
+                                    <Border
+                                        Width="1.5"
+                                        Height="30"
+                                        Background="{DynamicResource TextFillColorPrimaryBrush}"
+                                        CornerRadius=".5">
+                                        <Border.LayoutTransform>
+                                            <RotateTransform Angle="-45" />
+                                        </Border.LayoutTransform>
+                                    </Border>
+                                </Grid>
                             </MenuItem.Icon>
                             <MenuItem.Header>
-                                <AccessText Text="Close" />
+                                <AccessText Text="Exit" />
                             </MenuItem.Header>
                         </MenuItem>
                     </ui:MenuItem>
@@ -217,6 +290,7 @@
                                 <TextBlock
                                     FontFamily="Segoe MDL2 Assets"
                                     FontSize="16"
+                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                     Style="{StaticResource GreyOutIfDisabled}"
                                     Text="&#xED62;" />
                             </MenuItem.Icon>
@@ -275,7 +349,7 @@
                     BorderBrush="Transparent"
                     Command="{Binding BoundsMeasureSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=BoundingBox}"
-                    Style="{DynamicResource SubtleButtonStyle}"
+                    Style="{DynamicResource SubtleToggleButtonStyle}"
                     ToolTipService.ToolTip="{Binding BoundsMeasureSelectedCommand.ToolTipTextFull}">
                     <TextBlock
                         FontFamily="Segoe MDL2 Assets"
@@ -291,7 +365,7 @@
                     BorderBrush="Transparent"
                     Command="{Binding RulerSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=Ruler}"
-                    Style="{DynamicResource SubtleButtonStyle}"
+                    Style="{DynamicResource SubtleToggleButtonStyle}"
                     ToolTipService.ToolTip="{Binding RulerSelectedCommand.ToolTipTextFull}">
                     <TextBlock
                         FontFamily="Segoe MDL2 Assets"
@@ -304,7 +378,7 @@
                     BorderBrush="Transparent"
                     Command="{Binding ColorPickerSelectedCommand}"
                     IsChecked="{Binding SelectedTool, Converter={StaticResource EnumToBoolCheckedStickyConverter}, ConverterParameter=ColorPicker}"
-                    Style="{DynamicResource SubtleButtonStyle}"
+                    Style="{DynamicResource SubtleToggleButtonStyle}"
                     ToolTipService.ToolTip="{Binding ColorPickerSelectedCommand.ToolTipTextFull}">
                     <TextBlock
                         FontFamily="Segoe MDL2 Assets"
@@ -316,6 +390,7 @@
 
                 <Button
                     Command="{Binding ClearAllMeasureElementsCommand}"
+                    Template="{StaticResource SubtleButtonTemplate}"
                     ToolTipService.ToolTip="{Binding ClearAllMeasureElementsCommand.ToolTipTextFull}"
                     Visibility="Collapsed">
                     <TextBlock
@@ -338,18 +413,27 @@
                     ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}"
                     Text="{Binding CurrentZoomPercent, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}"
                     Visibility="Collapsed" />
-                <local:DropDownButtonCustom Margin="0,0,6,0" PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
+                <Button
+                    Width="40"
+                    Margin="0,0,6,0"
+                    Command="{Binding ShowSettingsCommand}"
+                    Template="{StaticResource SubtleButtonTemplate}">
+                    <ui:SymbolIcon FontSize="18" Symbol="Settings32" />
+                </Button>
+                <!--<local:DropDownButtonCustom Margin="0,0,6,0" PlacementTarget="{Binding RelativeSource={RelativeSource Self}}">
                     <local:DropDownButtonCustom.Flyout>
                         <ContextMenu Width="100" Placement="Bottom">
                             <MenuItem Click="SettingsMenuItem_Click" Header="Settings" />
                         </ContextMenu>
                     </local:DropDownButtonCustom.Flyout>
-                    <!--<wpfui:SymbolIcon Symbol="MoreHorizontal48" FontSize="17.5"/>-->
+                -->
+                <!--<wpfui:SymbolIcon Symbol="MoreHorizontal48" FontSize="17.5"/>-->
+                <!--
                     <TextBlock
                         FontFamily="Segoe MDL2 Assets"
                         FontSize="20"
                         Text="&#xE712;" />
-                </local:DropDownButtonCustom>
+                </local:DropDownButtonCustom>-->
             </StackPanel>
 
             <!--  Center Panel  -->
@@ -415,8 +499,14 @@
                     FontSize="15"
                     IsReadOnly="True"
                     PlaceholderText="Color"
-                    SpinButtonPlacementMode="Hidden"
-                    Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}, Mode=OneWay}" />
+                    SpinButtonPlacementMode="Hidden">
+                    <ui:NumberBox.Text>
+                        <MultiBinding Converter="{StaticResource ColorFormatStringConverter}" Mode="OneWay">
+                            <Binding Path="Color" />
+                            <Binding Path="Settings.ColorFormatMode" />
+                        </MultiBinding>
+                    </ui:NumberBox.Text>
+                </ui:NumberBox>
 
             </StackPanel>
 
@@ -452,7 +542,7 @@
                     Width="180"
                     VerticalAlignment="Center"
                     Orientation="Horizontal">
-                    <Button
+                    <custom:CopyClipboardButton
                         Padding="0"
                         Focusable="False"
                         Template="{StaticResource CopyButtonTemplate}"
@@ -492,14 +582,15 @@
                                 </TextBlock.Text>
                             </TextBlock>
                         </StackPanel>
-                    </Button>
+                    </custom:CopyClipboardButton>
                 </StackPanel>
 
                 <Separator Margin="0,0,2,0" BorderBrush="#20000000" />
-                <Button
+                <custom:CopyClipboardButton
                     Padding="0"
                     Focusable="False"
-                    Template="{StaticResource CopyButtonTemplate}">
+                    Template="{StaticResource CopyButtonTemplate}"
+                    ToolTip="Last selected color (click to copy)">
                     <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                         <Border
                             Width="16"
@@ -508,25 +599,45 @@
                             BorderBrush="{DynamicResource ColorBorderColor}"
                             BorderThickness="1"
                             CornerRadius="3" />
-                        <TextBlock
-                            Margin="5,0,0,0"
-                            FontSize="14"
-                            Text="{Binding Color, Converter={StaticResource ColorFormatStringConverter}, Mode=OneWay}" />
+                        <TextBlock Margin="5,0,0,0" FontSize="14">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource ColorFormatStringConverter}" Mode="OneWay">
+                                    <Binding Path="Color" />
+                                    <Binding Path="Settings.ColorFormatMode" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </StackPanel>
-                </Button>
+                </custom:CopyClipboardButton>
             </StackPanel>
-            <Grid Width="100" DockPanel.Dock="Right">
+            <StackPanel
+                Width="124"
+                HorizontalAlignment="Right"
+                DockPanel.Dock="Right"
+                Orientation="Horizontal">
+                <Button
+                    Height="22"
+                    Margin="0,0,4,0"
+                    Padding="10,0"
+                    VerticalAlignment="Center"
+                    Command="{Binding FitWindowCommand}"
+                    Template="{StaticResource SubtleButtonTemplate}"
+                    ToolTip="{Binding FitWindowCommand.ToolTipTextFull}">
+                    <ui:SymbolIcon Margin="0,2,0,0" Symbol="ZoomFit16" />
+                </Button>
                 <ComboBox
                     Height="4"
                     MinWidth="80"
                     MinHeight="22"
+                    MaxWidth="90"
                     MaxHeight="4"
-                    Margin="0,0,0,0"
-                    Padding="10,0,0,0"
+                    Margin="0,0,4,0"
+                    Padding="6,0,0,0"
                     VerticalContentAlignment="Center"
                     ItemsSource="{Binding AvailableZooms, Converter={StaticResource PercentFormatStringConverter}}"
+                    Style="{StaticResource WpfUIModifiedComboBoxStyle}"
                     Text="{Binding CurrentZoomPercent, Mode=TwoWay, Converter={StaticResource PercentFormatStringConverter}}" />
-            </Grid>
+            </StackPanel>
         </DockPanel>
 
     </Grid>

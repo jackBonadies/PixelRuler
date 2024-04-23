@@ -37,6 +37,8 @@ namespace PixelRuler.CanvasElements
 
         public override void AddToOwnerCanvas()
         {
+            base.AddToOwnerCanvas();
+
             line1.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
 
             this.owningCanvas.Children.Add(line1);
