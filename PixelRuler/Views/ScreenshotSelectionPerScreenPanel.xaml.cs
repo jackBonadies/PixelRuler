@@ -1,5 +1,6 @@
 ﻿using PixelRuler.Common;
 using PixelRuler.CustomControls;
+using PixelRuler.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,25 +90,30 @@ namespace PixelRuler.Views
         {
             if(this.IsMouseEnteredVirtual)
             {
-                switch (this.ViewModel.Settings.QuickColorMode)
+                var mode = (this.ViewModel.Settings.QuickColorMode);
+                if(mode == QuickColorMode.AutoCopyMany || mode == QuickColorMode.AutoCopyAndClose)
                 {
-                    case QuickColorMode.AutoCopyMany:
-                        {
-                            var tns = new ToastNotificationSingle() { Content = "Color Copied" };
-                            tns.Show(this.gridTopLevel);
-                        }
-                        break;
-                    case QuickColorMode.AutoCopyAndClose:
-                        {
-                            var popupHost = new PopupHost(this.Bounds);
-                            popupHost.IsOpen = true;
-                            var tns = new ToastNotificationSingle() { Content = "Color Copied" };
-                            tns.Show(popupHost.RootGrid);
-                            tns.Closed += (object? sender, EventArgs e) => { 
-                                popupHost.IsOpen = false; 
-                                };
-                        }
-                        break;
+                    var tns = new ToastNotificationSingle() 
+                    { 
+                        DataContext = new ToastNotifColorViewModel(
+                            this.ViewModel.Color, 
+                            UiUtils.FormatColor(this.ViewModel.Color, this.ViewModel.Settings.ColorFormatMode)),
+                        Style = Application.Current.Resources["toastColorStyle"] as Style,
+                    };
+                    if(mode == QuickColorMode.AutoCopyMany)
+                    {
+                        tns.Show(this.gridTopLevel);
+                    }
+                    else
+                    {
+                        var popupHost = new PopupHost(this.Bounds);
+                        popupHost.IsOpen = true;
+                        tns.Show(popupHost.RootGrid);
+                        tns.Closed += (object? sender, EventArgs e) => 
+                        { 
+                            popupHost.IsOpen = false; 
+                        };
+                    }
                 }
             }
         }
