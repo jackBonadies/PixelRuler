@@ -18,11 +18,13 @@ namespace PixelRuler.CustomControls
         public override void OnApplyTemplate()
         {
             var inputGestureText = this.GetTemplateChild("InputGestureText") as System.Windows.Controls.TextBlock;
-            ArgumentNullException.ThrowIfNull(inputGestureText);
-            inputGestureText.VerticalAlignment = VerticalAlignment.Center;
-            inputGestureText.Opacity = .75;
-            inputGestureText.FontSize = 12;
-            inputGestureText.SetResourceReference(System.Windows.Controls.TextBlock.ForegroundProperty, "TextFillColorPrimaryBrush");
+            if(inputGestureText != null)
+            {
+                inputGestureText.VerticalAlignment = VerticalAlignment.Center;
+                inputGestureText.Opacity = .75;
+                inputGestureText.FontSize = 12;
+                inputGestureText.SetResourceReference(System.Windows.Controls.TextBlock.ForegroundProperty, "TextFillColorPrimaryBrush");
+            }
             base.OnApplyTemplate();
         }
     }

@@ -1,6 +1,9 @@
-﻿using PixelRuler.Common;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using PixelRuler.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,17 +19,27 @@ using System.Windows.Shapes;
 
 namespace PixelRuler.Views
 {
-    public class PinViewModel : ViewModelBase
+    public partial class PinViewModel : ObservableObject
     {
         public PinViewModel(PixelRulerViewModel prvm)
         {
             this.MainViewModel = prvm;
         }
 
+        [RelayCommand]
+        private void ToggleAlwaysOnTop()
+        {
+            AlwaysOnTop = !AlwaysOnTop;
+        }
+
+        [ObservableProperty]
+        private bool alwaysOnTop = true;
 
         public RelayCommand CloseCommand { get; set; }
 
         public PixelRulerViewModel MainViewModel { get; set; }
+
+        public static readonly Thickness PinWindowThickness = new Thickness(5);
 
     }
 
@@ -43,9 +56,15 @@ namespace PixelRuler.Views
             this.MouseLeftButtonDown += PinImageWindow_PreviewMouseDown;
             this.MouseMove += PinImageWindow_PreviewMouseMove;
             this.MouseLeftButtonUp += PinImageWindow_PreviewMouseUp;
+            this.LostFocus += PinImageWindow_LostFocus;
 
             this.MouseEnter += PinImageWindow_MouseEnter;
             this.MouseLeave += PinImageWindow_MouseLeave;
+        }
+
+        private void PinImageWindow_LostFocus(object sender, RoutedEventArgs e)
+        {
+            this.Cursor = null;
         }
 
         private void PinImageWindow_MouseLeave(object sender, MouseEventArgs e)
@@ -56,6 +75,12 @@ namespace PixelRuler.Views
             storyboard = closeButton.Resources["buttonFadeOut"] as Storyboard;
             storyboard.SetValue(Storyboard.TargetProperty, closeButton);
             storyboard.Begin();
+            if(this.IsFocused)
+            {
+
+            }
+
+            this.Cursor = null;
         }
 
         private void PinImageWindow_MouseEnter(object sender, MouseEventArgs e)
@@ -81,6 +106,7 @@ namespace PixelRuler.Views
                 isMoving = false;
                 this.ReleaseMouseCapture();
             }
+            this.Cursor = null;
         }
 
         private void PinImageWindow_SourceInitialized(object? sender, EventArgs e)
@@ -112,6 +138,7 @@ namespace PixelRuler.Views
 
         private void PinImageWindow_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            this.Cursor = Cursors.SizeAll;
             if(_useCustomMovement)
             {
                 this.CaptureMouse();

@@ -356,8 +356,8 @@ namespace PixelRuler
                 {
                     screen = wsw.PerScreenPanels[0];
                 }
-                pinWindow.Left = wsw.SelectedRectWinCoordinates.Left / screen.ScaleFactor;
-                pinWindow.Top = wsw.SelectedRectWinCoordinates.Top / screen.ScaleFactor;
+                pinWindow.Left = wsw.SelectedRectWinCoordinates.Left / screen.ScaleFactor - PinViewModel.PinWindowThickness.Left;
+                pinWindow.Top = wsw.SelectedRectWinCoordinates.Top / screen.ScaleFactor - PinViewModel.PinWindowThickness.Left;
                 pinWindow.ViewModel = new PinViewModel(this.ViewModel);
                 pinWindow.Show();
                 return false;

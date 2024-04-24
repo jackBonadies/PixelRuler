@@ -230,9 +230,18 @@
                                 <AccessText Text="Open" />
                             </MenuItem.Header>
                         </MenuItem>
+                        <MenuItem Command="{Binding CopyRawImageToClipboardCommand}" InputGestureText="Ctrl+C">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="Copy24" />
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <AccessText Text="Copy Image" />
+                            </MenuItem.Header>
+                        </MenuItem>
                         <MenuItem Command="{Binding SaveAsCommand}" InputGestureText="Ctrl+S">
                             <MenuItem.Icon>
-                                <ui:SymbolIcon Symbol="Save24" />
+                                <ui:FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Static common:UiConsts.SaveAsSegoeMDL2}" />
+
                             </MenuItem.Icon>
                             <MenuItem.Header>
                                 <AccessText Text="Save As..." />
@@ -291,7 +300,7 @@
                                     FontFamily="Segoe MDL2 Assets"
                                     FontSize="16"
                                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                    Style="{StaticResource GreyOutIfDisabled}"
+                                    Style="{StaticResource GreyOutIfMenuItemDisabled}"
                                     Text="&#xED62;" />
                             </MenuItem.Icon>
                             <MenuItem.Header>

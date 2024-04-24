@@ -82,7 +82,7 @@ namespace PixelRuler.Views
                 menuItemCopy.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Copy, null); };
 
                 var menuItemSaveAs = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save As"), InputGestureText="Ctrl+S" };
-                menuItemSaveAs.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, UiUtils.CreateFontIcon("\xE792")); //new SymbolIcon { Symbol = SymbolRegular.Save24 });
+                menuItemSaveAs.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, UiUtils.CreateFontIcon(UiConsts.SaveAsSegoeMDL2)); //new SymbolIcon { Symbol = SymbolRegular.Save24 });
                 menuItemSaveAs.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.SaveAs, null); };
 
                 var menuItemSave = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save"), InputGestureText="S" };
