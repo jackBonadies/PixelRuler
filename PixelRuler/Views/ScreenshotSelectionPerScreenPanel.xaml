@@ -377,20 +377,28 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="6" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock
+                <!--<TextBlock
                     Grid.Row="0"
                     Style="{StaticResource KeyTextBlock}"
                     Text="Shift" />
                 <TextBlock
                     Grid.Row="0"
                     Grid.Column="2"
-                    Text="Show Menu After Screenshot" />
+                    Text="Show Menu After Screenshot" />-->
                 <TextBlock
                     Grid.Row="1"
                     Style="{StaticResource KeyTextBlock}"
@@ -399,28 +407,46 @@
                     Grid.Row="1"
                     Grid.Column="2"
                     Text="Constrain Square" />
+
                 <TextBlock
-                    Grid.Row="2"
+                    Grid.Row="4"
+                    Style="{StaticResource KeyTextBlock}"
+                    Text="S" />
+                <TextBlock
+                    Grid.Row="4"
+                    Grid.Column="2"
+                    Text="Toggle Quick Color Mode" />
+
+                <TextBlock
+                    Grid.Row="7"
                     Style="{StaticResource KeyTextBlock}"
                     Text="Space" />
                 <TextBlock
-                    Grid.Row="2"
+                    Grid.Row="7"
                     Grid.Column="2"
-                    Text="Toggle Zoom Box" />
+                    Text="Toggle Zoom Box Visibility" />
                 <TextBlock
-                    Grid.Row="3"
+                    Grid.Row="9"
+                    Style="{StaticResource KeyTextBlock}"
+                    Text="Z" />
+                <TextBlock
+                    Grid.Row="9"
+                    Grid.Column="2"
+                    Text="Toggle Zoom Box Location" />
+                <TextBlock
+                    Grid.Row="12"
                     Style="{StaticResource KeyTextBlock}"
                     Text="Esc" />
                 <TextBlock
-                    Grid.Row="3"
+                    Grid.Row="12"
                     Grid.Column="2"
                     Text="Exit" />
                 <TextBlock
-                    Grid.Row="4"
+                    Grid.Row="14"
                     Style="{StaticResource KeyTextBlock}"
                     Text="H" />
                 <TextBlock
-                    Grid.Row="4"
+                    Grid.Row="14"
                     Grid.Column="2"
                     Text="Toggle Help" />
             </Grid>

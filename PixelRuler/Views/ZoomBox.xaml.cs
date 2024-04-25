@@ -27,8 +27,10 @@ namespace PixelRuler.Views
         public double ZoomFactor;
         MainCanvas owningCanvas;
         Rectangle currentPixelIndicator;
+        Rectangle currentPixelIndicatorOuter;
         Line currentLineGuideVert;
         Line currentLineGuideHorz;
+        double hvLineWidth = 2;
         readonly bool useCanvas = false;
         private ZoomViewModel zoomViewModel;
         private VisualBrush zoomboxBrush;
@@ -73,9 +75,16 @@ namespace PixelRuler.Views
                 StrokeThickness = 1,
             };
 
+            currentPixelIndicatorOuter = new Rectangle()
+            {
+                Width = TotalZoom,
+                Height = TotalZoom,
+                StrokeThickness = 1,
+            };
+
             currentLineGuideVert = new Line() 
             {
-                StrokeThickness = 1,
+                StrokeThickness = hvLineWidth,
                 Y1 = 0,
                 Y2 = ZoomWindowSize,
                 SnapsToDevicePixels = true
@@ -83,7 +92,7 @@ namespace PixelRuler.Views
 
             currentLineGuideHorz = new Line() 
             {
-                StrokeThickness = 1,
+                StrokeThickness = hvLineWidth,
                 X1 = 0,
                 X2 = ZoomWindowSize,
                 SnapsToDevicePixels = true
@@ -91,14 +100,30 @@ namespace PixelRuler.Views
 
             currentLineGuideVert.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
             currentLineGuideHorz.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
-            currentPixelIndicator.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
 
-            Canvas.SetLeft(currentPixelIndicator, ZoomWindowSize/2);
-            Canvas.SetTop(currentPixelIndicator, ZoomWindowSize/2);
+
+            currentPixelIndicator.Stroke = new SolidColorBrush(Colors.White);
+            //currentPixelIndicator.Fill = new SolidColorBrush(Colors.Green);
+            currentPixelIndicator.UseLayoutRounding = false;
+            currentPixelIndicator.SnapsToDevicePixels = false;
+
+            Canvas.SetLeft(currentPixelIndicator, ZoomWindowSize/2 - 2);
+            Canvas.SetTop(currentPixelIndicator, ZoomWindowSize/2 - 2);
+
+
+            currentPixelIndicatorOuter.Stroke = new SolidColorBrush(Color.FromArgb(0xa0, 0x00, 0x00, 0x00));
+
+            currentPixelIndicatorOuter.UseLayoutRounding = false;
+            currentPixelIndicatorOuter.SnapsToDevicePixels = false;
+
+            Canvas.SetLeft(currentPixelIndicatorOuter, ZoomWindowSize/2 - 2);
+            Canvas.SetTop(currentPixelIndicatorOuter, ZoomWindowSize/2 - 2);
+
 
             zoomCanvas.Children.Add(currentLineGuideVert);
             zoomCanvas.Children.Add(currentLineGuideHorz);
             zoomCanvas.Children.Add(currentPixelIndicator);
+            zoomCanvas.Children.Add(currentPixelIndicatorOuter);
 
             this.Visibility = Visibility.Collapsed;
             this.Loaded += ZoomBox_Loaded;
@@ -278,8 +303,8 @@ namespace PixelRuler.Views
             {
                 Canvas.SetTop(this, overlayCanvasLocation.Y + 28);// - outerBorder.ActualHeight / 2 + 156);
             }
-                Canvas.SetLeft(this, overlayCanvasLocation.X + 14);
-                Canvas.SetTop(this, overlayCanvasLocation.Y + 14);// - outerBorder.ActualHeight / 2 + 156);
+                //Canvas.SetLeft(this, overlayCanvasLocation.X + 14);
+                //Canvas.SetTop(this, overlayCanvasLocation.Y + 14);// - outerBorder.ActualHeight / 2 + 156);
             //var transform = owningCanvas.TransformToAncestor(owningCanvas);
             //var pt = owningCanvas.innerCanvas.RenderTransform.Transform(overlayCanvasLocation);
             //var offsetX = useCanvas ? 0 : owningCanvas.CanvasTranslateTransform.X / owningCanvas.CanvasScaleTransform.ScaleX;
@@ -302,16 +327,22 @@ namespace PixelRuler.Views
 
             // left have to offset by width/2
             var pixelSize = TotalZoom;
-            currentPixelIndicator.Width = pixelSize;
-            currentPixelIndicator.Height = pixelSize;
+            currentPixelIndicator.Width = pixelSize + 2;
+            currentPixelIndicator.Height = pixelSize + 2;
             var center = ZoomWindowSize / 2;// - pixelSize / 2;
             var xOffset = (int)(innerCanvasLocation.X) * pixelSize - innerCanvasLocation.X * pixelSize;
             var yOffset = (int)(innerCanvasLocation.Y) * pixelSize - innerCanvasLocation.Y * pixelSize;
             ////var xOffset = innerCanvasLocation.X - Math.Round((innerCanvasLocation.X / pixelSize)) * pixelSize;
             //var yOffset = innerCanvasLocation.Y - Math.Round((innerCanvasLocation.Y / pixelSize)) * pixelSize;
 
-            Canvas.SetLeft(currentPixelIndicator, center + xOffset);
-            Canvas.SetTop(currentPixelIndicator, center + yOffset);
+            Canvas.SetLeft(currentPixelIndicator, center + xOffset - 1);
+            Canvas.SetTop(currentPixelIndicator, center + yOffset - 1);
+
+            currentPixelIndicatorOuter.Width = pixelSize + 3;
+            currentPixelIndicatorOuter.Height = pixelSize + 3;
+            Canvas.SetLeft(currentPixelIndicatorOuter, center + xOffset - 1.5);
+            Canvas.SetTop(currentPixelIndicatorOuter, center + yOffset - 1.5);
+            //currentPixelIndicator.Fill = new SolidColorBrush((this.DataContext as PixelRulerViewModel).Color.ConvertToWpfColor());
 
             Canvas.SetLeft(currentLineGuideVert, center + xOffset);
             Canvas.SetTop(currentLineGuideVert, 0);
@@ -460,6 +491,7 @@ namespace PixelRuler.Views
                 case ZoomBoxCase.ColorPicker:
                     this.currentPixelIndicator.Visibility = Visibility.Visible;
                     zoomCanvas.Children.Add(currentPixelIndicator);
+                    zoomCanvas.Children.Add(currentPixelIndicatorOuter);
                     break;
                 case ZoomBoxCase.Resizer:
                     if (measEl.MeasEl is RulerElement r)

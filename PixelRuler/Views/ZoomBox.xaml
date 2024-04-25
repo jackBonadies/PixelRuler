@@ -35,26 +35,32 @@
                 Height="100" />
             <Border
                 x:Name="colorDisplay"
-                Width="150"
-                Height="42"
+                Width="146"
+                Height="38"
                 Margin="0,0,-3,-3"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 Background="LightGray"
                 CornerRadius="4, 0, 4, 0">
-                <StackPanel Orientation="Horizontal">
-                    <Border
-                        Width="34"
-                        Height="34"
-                        Margin="3,0,0,0"
-                        Background="{Binding Color, Converter={StaticResource DrawingColorToWpfBrushConverter}}"
-                        BorderBrush="#90303030"
-                        BorderThickness="1"
-                        CornerRadius="3" />
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                    <Grid Margin="5,0,0,0">
+                        <Border
+                            Width="28"
+                            Height="28"
+                            Background="{Binding Color, Converter={StaticResource DrawingColorToWpfBrushConverter}}"
+                            CornerRadius="6" />
+                        <Border
+                            Width="28"
+                            Height="28"
+                            Background="Transparent"
+                            BorderBrush="#40000000"
+                            BorderThickness="1.5"
+                            CornerRadius="6" />
+                    </Grid>
                     <TextBlock
                         Margin="4,0,0,0"
                         VerticalAlignment="Center"
-                        FontSize="23"
+                        FontSize="22"
                         FontWeight="SemiBold"
                         Foreground="#303030">
                         <TextBlock.Text>
