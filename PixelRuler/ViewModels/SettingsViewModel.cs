@@ -648,7 +648,7 @@ namespace PixelRuler
                 {
                     return Windows.ApplicationModel.Package.Current.Id.Version.ToString();
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
                 }

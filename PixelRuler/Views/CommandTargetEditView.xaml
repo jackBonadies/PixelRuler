@@ -17,42 +17,27 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
     <StackPanel Orientation="Vertical">
-        <Label Style="{StaticResource SmallHeader}">Display Name</Label>
-        <!--<TextBox
-            Name="DisplayName"
-            d:Text="My Cmd (1)"
-            BorderBrush="Red"
-            Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
-            Validation.ErrorTemplate="{x:Null}">
-            <TextBox.Style>
-                <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
-                    <Style.Triggers>
-                        <Trigger Property="IsFocused" Value="False">
-                            <Setter Property="BorderBrush" Value="Red" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBox.Style>
-        </TextBox>-->
-        <custom:TextBoxWithValidation Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
-        <!--<TextBlock
-            Margin="4,0,0,0"
-            FontSize="11"
-            Foreground="Red">
-            <TextBlock.Style>
-                <Style TargetType="TextBlock">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=DisplayName, Path=(Validation.HasError)}" Value="False">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=DisplayName, Path=(Validation.HasError)}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                            <Setter Property="Text" Value="{Binding ElementName=DisplayName, Path=(Validation.Errors)[0].ErrorContent}" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
-        </TextBlock>-->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Vertical">
+                <Label Style="{StaticResource SmallHeader}">Display Name</Label>
+                <custom:TextBoxWithValidation Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Orientation="Vertical">
+                <Label Style="{StaticResource SmallHeader}">Icon</Label>
+                <Grid
+                    Name="iconEdit"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                    <Control x:Name="iconShowEdit" Template="{StaticResource iconShowEdit}" />
+                </Grid>
+            </StackPanel>
+        </Grid>
+
         <Label Style="{StaticResource SmallHeader}">Command</Label>
         <StackPanel Orientation="Vertical">
             <Grid>
@@ -71,7 +56,6 @@
                         <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ElementName=ExecutablePath, Path=(Validation.HasError)}" Value="True">
-
                                     <Setter Property="BorderBrush" Value="Red" />
                                 </DataTrigger>
                             </Style.Triggers>

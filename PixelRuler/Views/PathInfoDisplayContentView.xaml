@@ -29,20 +29,53 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ui:TextBlock
-            Grid.Row="0"
-            Grid.Column="0"
-            Style="{StaticResource PropertyHeader}"
-            Text="Display Name"
-            Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityInvertConverter}}" />
-        <ui:TextBlock
-            Grid.Row="1"
-            Grid.Column="0"
-            Margin="{StaticResource Spacing}"
-            d:Text="UI_Examples"
-            FontTypography="Body"
-            Text="{Binding DisplayName}"
-            Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityInvertConverter}}" />
+        <Grid Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityInvertConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0" />
+                <ColumnDefinition Width="0" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="2" Orientation="Vertical">
+                <ui:TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Style="{StaticResource PropertyHeader}"
+                    Text="Display Name"
+                    Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityInvertConverter}}" />
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <ui:SymbolIcon Margin="0,-3,0,0" Symbol="{Binding Icon}">
+                        <ui:SymbolIcon.LayoutTransform>
+                            <ScaleTransform ScaleX="1.1" ScaleY="1.1" />
+                        </ui:SymbolIcon.LayoutTransform>
+                    </ui:SymbolIcon>
+                    <ui:TextBlock
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="{StaticResource Spacing}"
+                        Padding="2,0,0,0"
+                        d:Text="UI_Examples"
+                        FontTypography="Body"
+                        Text="{Binding DisplayName}"
+                        Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityInvertConverter}}" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="0" Orientation="Vertical">
+                <ui:TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Style="{StaticResource PropertyHeader}"
+                    Text="Icon"
+                    Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityInvertConverter}}" />
+                <!--<ui:TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="{StaticResource Spacing}"
+                    d:Text="UI_Examples"
+                    FontTypography="Body"
+                    Text="{Binding DisplayName}"
+                    Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityInvertConverter}}" />-->
+            </StackPanel>
+        </Grid>
         <ui:TextBlock
             Grid.Row="2"
             Grid.Column="0"

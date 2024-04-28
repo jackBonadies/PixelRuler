@@ -101,7 +101,7 @@ namespace PixelRuler.Views
                 foreach(var saveDest in settings.AdditionalPathSaveInfos)
                 {
                     i++;
-                    var menuItem = new MenuItemCustom() { Header = UiUtils.CreateTextBlock(saveDest.DisplayName?.SanitizeUnderscores()), InputGestureText = $"{i}" };
+                    var menuItem = new MenuItemCustom() { Header = UiUtils.CreateTextBlock(saveDest.DisplayName?.SanitizeUnderscores()), InputGestureText = $"{i}", Icon = new SymbolIcon(saveDest.Icon) };
                     menuItem.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, saveDest); };
                     contextMenu.Items.Add(menuItem);
                 }
@@ -110,7 +110,7 @@ namespace PixelRuler.Views
                 foreach(var cmdTarget in settings.CommandTargetInfos)
                 {
                     j++;
-                    var menuItem = new MenuItemCustom() { Header = UiUtils.CreateTextBlock(cmdTarget.DisplayName?.SanitizeUnderscores()), InputGestureText = $"{i}" };
+                    var menuItem = new MenuItemCustom() { Header = UiUtils.CreateTextBlock(cmdTarget.DisplayName?.SanitizeUnderscores()), InputGestureText = $"{i}", Icon = new SymbolIcon(cmdTarget.Icon) };
                     menuItem.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.CommandTarget, cmdTarget); };
                     contextMenu.Items.Add(menuItem);
                 }

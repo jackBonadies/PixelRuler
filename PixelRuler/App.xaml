@@ -4,7 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:custom="clr-namespace:PixelRuler.CustomControls"
     xmlns:local="clr-namespace:PixelRuler"
-    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:views="clr-namespace:PixelRuler.Views">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -108,6 +109,7 @@
             <Cursor x:Key="EyeDropperCursor">Assets/rasterized_segoe_colorpicker_contrast_hotspot_offset24.cur</Cursor>
 
             <local:PercentFormatStringConverter x:Key="PercentFormatStringConverter" />
+            <local:CollapseIfEmptyConverter x:Key="CollapseIfEmptyConverter" />
             <local:ColorFormatStringConverter x:Key="ColorFormatStringConverter" />
             <local:DrawingColorToWpfBrushConverter x:Key="DrawingColorToWpfBrushConverter" />
             <local:PointPositionStringConverter x:Key="PointPositionStringConverter" />
@@ -603,6 +605,127 @@
                 Margin="0"
                 Style="{StaticResource CopyButtonStyle}" />
 
+            <ControlTemplate x:Key="iconShowEdit" TargetType="Control">
+                <ToggleButton
+                    Width="35"
+                    Height="35"
+                    Padding="0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding ElementName=Popup, Path=IsOpen}">
+                    <ToggleButton.Content>
+                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <StackPanel
+                                Name="editIcon"
+                                Opacity="0"
+                                Orientation="Vertical">
+                                <ui:SymbolIcon Name="editSymbolIcon" Symbol="Edit24">
+                                    <ui:SymbolIcon.LayoutTransform>
+                                        <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+                                    </ui:SymbolIcon.LayoutTransform>
+                                </ui:SymbolIcon>
+                                <TextBlock
+                                    Name="editText"
+                                    Margin="0,-5,0,0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="10.2"
+                                    FontWeight="SemiBold"
+                                    Text="select" />
+                                <Popup
+                                    x:Name="Popup"
+                                    AllowsTransparency="True"
+                                    Focusable="False"
+                                    HorizontalOffset="-384"
+                                    Placement="Bottom"
+                                    PlacementTarget="{Binding ElementName=iconEdit}"
+                                    PopupAnimation="Fade"
+                                    StaysOpen="False"
+                                    VerticalOffset="2">
+                                    <Border
+                                        Grid.Row="1"
+                                        Margin="40"
+                                        Background="White"
+                                        BorderBrush="#18000000"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        UseLayoutRounding="True"
+                                        Visibility="Visible">
+                                        <Border.Effect>
+                                            <DropShadowEffect
+                                                BlurRadius="8"
+                                                Direction="270"
+                                                Opacity=".3"
+                                                ShadowDepth="2" />
+                                        </Border.Effect>
+                                        <views:IconSelectionControl
+                                            Width="434"
+                                            Height="332"
+                                            DataContext="{Binding IconViewModel}"
+                                            IconSelectedCommand="{Binding NewIconSelectedCommand}" />
+                                    </Border>
+                                </Popup>
+                            </StackPanel>
+                            <ui:SymbolIcon
+                                Name="symbolIcon"
+                                Opacity="1"
+                                Symbol="{Binding IconViewModel.CurrentIcon}">
+                                <ui:SymbolIcon.LayoutTransform>
+                                    <ScaleTransform ScaleX="1.6" ScaleY="1.6" />
+                                </ui:SymbolIcon.LayoutTransform>
+                            </ui:SymbolIcon>
+                        </Grid>
+                    </ToggleButton.Content>
+                    <ToggleButton.Style>
+                        <Style BasedOn="{StaticResource {x:Type ToggleButton}}" TargetType="ToggleButton">
+                            <Style.Resources>
+                                <SolidColorBrush x:Key="ToggleButtonBackground" Color="Transparent" />
+                                <SolidColorBrush x:Key="ToggleButtonBackgroundChecked" Color="Transparent" />
+                                <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPressed" Color="Transparent" />
+                            </Style.Resources>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Trigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="symbolIcon"
+                                        Storyboard.TargetProperty="Opacity"
+                                        From="1"
+                                        To="0"
+                                        Duration="0:0:.1" />
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="editIcon"
+                                        Storyboard.TargetProperty="Opacity"
+                                        From="0"
+                                        To="1"
+                                        Duration="0:0:.1" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.EnterActions>
+                        <Trigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="symbolIcon"
+                                        Storyboard.TargetProperty="Opacity"
+                                        From="0"
+                                        To="1"
+                                        Duration="0:0:.1" />
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="editIcon"
+                                        Storyboard.TargetProperty="Opacity"
+                                        From="1"
+                                        To="0"
+                                        Duration="0:0:.1" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.ExitActions>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

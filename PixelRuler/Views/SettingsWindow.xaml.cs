@@ -136,6 +136,7 @@ namespace PixelRuler
                 case ContentDialogResult.None: // cancel
                     break;
                 case ContentDialogResult.Primary:
+                    pending.Icon = pathInfoEditViewModel.IconViewModel.CurrentIcon;
                     if(commandTargetArgs.Item2)
                     {
                         (this.DataContext as SettingsViewModel).AddCommandTargetInfo(pending);
@@ -183,6 +184,7 @@ namespace PixelRuler
                 case ContentDialogResult.None: // cancel
                     break;
                 case ContentDialogResult.Primary:
+                    pending.Icon = pathInfoEditViewModel.IconViewModel.CurrentIcon;
                     if(pathInfoArgs.newPath)
                     {
                         (this.DataContext as SettingsViewModel).AddPathInfo(pending);

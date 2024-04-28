@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 using Windows.UI.Composition;
+using Wpf.Ui.Controls;
 
 namespace PixelRuler.Models
 {
@@ -45,6 +46,8 @@ namespace PixelRuler.Models
         public string? FilePattern { get; set; }
 
         public string? Extension { get; set; }
+
+        public SymbolRegular Icon { get; set; } = SymbolRegular.Save24;
 
         public string Evaluate(
             ScreenshotInfo info, 
@@ -105,6 +108,7 @@ namespace PixelRuler.Models
         {
             string fname = this.Evaluate(info, true, true);
             ImageCommon.SaveImage(fname, bmp);
+            info.LastSavedPath = fname;
             return fname;
         }
 

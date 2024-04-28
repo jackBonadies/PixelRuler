@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows.Shell;
+using Wpf.Ui.Controls;
 using Wpf.Ui.Tray.Controls;
 
 namespace PixelRuler
@@ -29,6 +30,15 @@ namespace PixelRuler
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            var icons24 = new List<SymbolRegular>();
+            foreach (var enum1 in Enum.GetValues(typeof(SymbolRegular)))
+            {
+                if(enum1.ToString().EndsWith("24"))
+                {
+                    icons24.Add((SymbolRegular)enum1);
+                }
+            }
+
             System.Diagnostics.Trace.WriteLine("PixelRulerStartup");
             base.OnStartup(e);
 
@@ -258,7 +268,7 @@ namespace PixelRuler
 
         public const double BorderSizeDpiIndependentUnits = 24;
 
-        public static readonly int ResizeSpeedFactor = 3;
+        public static readonly int ResizeSpeedFactor = 1;
         public static readonly bool FloatingZoomBoxPosAllowed = true;
 
         public static readonly double MinZoomPercent = ZoomSelections[0];

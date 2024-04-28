@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using Ookii.Dialogs.Wpf;
 using PixelRuler.Common;
@@ -49,8 +50,12 @@ namespace PixelRuler.ViewModels
             });
 
             FileNameChanged += PathInfoEditViewModel_FilePatternChanged;
+            IconViewModel = new IconViewModel();
+            IconViewModel.CurrentIcon = pathSaveInfo.Icon;
             SetEvaluatedFilePattern();
         }
+
+        public IconViewModel IconViewModel { get; init; }
 
         private string evaluatedFilePatternDisplay;
         public string EvaluatedFilePatternDisplay
@@ -193,6 +198,7 @@ namespace PixelRuler.ViewModels
         public RelayCommand TokenInsertCommand { get; private set; }
 
         public string Error => string.Empty;
+
 
         public string this[string columnName]
         {

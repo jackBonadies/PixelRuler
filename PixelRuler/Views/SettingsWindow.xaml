@@ -743,5 +743,6 @@
             </StackPanel>
         </ui:PassiveScrollViewer>
         <ContentPresenter x:Name="RootContentDialog" />
+        <ContentPresenter x:Name="RootContentSecondDialog" />
     </Grid>
 </local:ThemeWindow>

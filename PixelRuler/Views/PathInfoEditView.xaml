@@ -42,11 +42,29 @@
         </ControlTemplate>
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
-        <Label IsEnabled="{Binding PathSaveInfo.IsDefault, Converter={StaticResource InvertBoolConverter}}" Style="{StaticResource SmallHeader}">Display Name</Label>
-        <custom:TextBoxWithValidation
-            d:Text="My Folder (1)"
-            IsEnabled="{Binding PathSaveInfo.IsDefault, Converter={StaticResource InvertBoolConverter}}"
-            Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Vertical">
+                <Label IsEnabled="{Binding PathSaveInfo.IsDefault, Converter={StaticResource InvertBoolConverter}}" Style="{StaticResource SmallHeader}">Display Name</Label>
+                <custom:TextBoxWithValidation
+                    d:Text="My Folder (1)"
+                    IsEnabled="{Binding PathSaveInfo.IsDefault, Converter={StaticResource InvertBoolConverter}}"
+                    Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2" Orientation="Vertical">
+                <Label IsEnabled="{Binding PathSaveInfo.IsDefault, Converter={StaticResource InvertBoolConverter}}" Style="{StaticResource SmallHeader}">Icon</Label>
+                <Grid
+                    Name="iconEdit"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                    <Control x:Name="iconShowEdit" Template="{StaticResource iconShowEdit}" />
+                </Grid>
+            </StackPanel>
+        </Grid>
         <Label Style="{StaticResource SmallHeader}">Folder</Label>
         <Grid>
             <Grid.ColumnDefinitions>

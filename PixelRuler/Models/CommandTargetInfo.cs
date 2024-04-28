@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wpf.Ui.Controls;
 
 namespace PixelRuler.Models
 {
@@ -42,6 +43,8 @@ namespace PixelRuler.Models
                 return $"{CommandExe} {CommandArgs}";
             }
         }
+
+        public SymbolRegular Icon { get; set; } = SymbolRegular.ArrowStepOut24;
 
         private string EvaluateArgs(string filename)
         {

@@ -30,7 +30,11 @@ namespace PixelRuler.ViewModels
                     ExecutableName = ofd.FileName;
                 }
             });
+            IconViewModel = new IconViewModel();
+            IconViewModel.CurrentIcon = commandTargetInfo.Icon;
         }
+
+        public IconViewModel IconViewModel { get; set; }
 
 
         public RelayCommand SelectExecutableCommand { get; set; }

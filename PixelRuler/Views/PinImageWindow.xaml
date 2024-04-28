@@ -7,11 +7,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PixelRuler.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:PixelRuler.ViewModels"
     xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="PinImageWindow"
+    Title="PixelRuler"
     Width="800"
     Height="450"
-    d:DataContext="{d:DesignInstance Type=local:PinViewModel}"
+    d:DataContext="{d:DesignInstance Type=vm:PinViewModel}"
     AllowsTransparency="True"
     Background="Transparent"
     MouseEnter="Window_MouseEnter"
@@ -29,7 +30,7 @@
     <Window.ContextMenu>
         <ContextMenu UseLayoutRounding="True">
             <MenuItem
-                Command="{Binding MainViewModel.CopyRawImageToClipboardCommand}"
+                Command="{Binding OpenPixelRulerCommand}"
                 Header="PixelRuler"
                 InputGestureText="{Binding MainViewModel.CopyRawImageToClipboardCommand}">
                 <MenuItem.Icon>
@@ -90,55 +91,52 @@
             <custom:MenuItemCustom
                 VerticalAlignment="Bottom"
                 VerticalContentAlignment="Bottom"
-                Command="{Binding NewScreenshotFullCommand}"
-                InputGestureText="{Binding NewScreenshotFullCommand.ToolTipTextShortcut}">
+                InputGestureText="{Binding NewScreenshotFullCommand.ToolTipTextShortcut}"
+                ItemsSource="{Binding MainViewModel.Settings.AdditionalPathSaveInfos}"
+                Visibility="{Binding MainViewModel.Settings.AdditionalPathSaveInfos, Converter={StaticResource CollapseIfEmptyConverter}}">
                 <custom:MenuItemCustom.Header>
                     <TextBlock Margin="0,2,0,0" Text="Save To" />
                 </custom:MenuItemCustom.Header>
                 <custom:MenuItemCustom.Icon>
                     <wpfui:SymbolIcon Margin="-2,0,0,0" Symbol="Save24" />
                 </custom:MenuItemCustom.Icon>
-                <custom:MenuItemCustom
-                    MinWidth="130"
-                    Command="{Binding NewScreenshotFullCommand}"
-                    Header="Save To"
-                    InputGestureText="{Binding NewScreenshotFullCommand.ToolTipTextShortcut}">
-                    <custom:MenuItemCustom.Icon>
-                        <wpfui:SymbolIcon Symbol="Save24" />
-                    </custom:MenuItemCustom.Icon>
-                </custom:MenuItemCustom>
+                <custom:MenuItemCustom.ItemContainerStyle>
+                    <Style>
+                        <Setter Property="MenuItem.Header" Value="{Binding DisplayName}" />
+                        <Setter Property="MenuItem.MinWidth" Value="100" />
+                        <Setter Property="MenuItem.CommandParameter" Value="{Binding}" />
+                        <Setter Property="MenuItem.Command" Value="{Binding DataContext.MainViewModel.SaveToTargetCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
+                    </Style>
+                </custom:MenuItemCustom.ItemContainerStyle>
             </custom:MenuItemCustom>
 
 
 
             <custom:MenuItemCustom
-                Command="{Binding NewScreenshotFullCommand}"
+                Command="{Binding MainViewModel.SaveAsCommand}"
                 Header="Save As..."
-                InputGestureText="{Binding NewScreenshotFullCommand.ToolTipTextShortcut}">
+                InputGestureText="{Binding MainViewModel.SaveAsCommand.ToolTipTextShortcut}">
                 <custom:MenuItemCustom.Icon>
                     <wpfui:FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Static common:UiConsts.SaveAsSegoeMDL2}" />
                 </custom:MenuItemCustom.Icon>
             </custom:MenuItemCustom>
             <custom:MenuItemCustom
-                Command="{Binding NewScreenshotFullCommand}"
                 Header="Send To"
-                InputGestureText="{Binding NewScreenshotFullCommand.ToolTipTextShortcut}">
+                InputGestureText="{Binding NewScreenshotFullCommand.ToolTipTextShortcut}"
+                ItemsSource="{Binding MainViewModel.Settings.CommandTargetInfos}"
+                Visibility="{Binding MainViewModel.Settings.CommandTargetInfos, Converter={StaticResource CollapseIfEmptyConverter}}">
+                <custom:MenuItemCustom.ItemContainerStyle>
+                    <Style>
+                        <Setter Property="MenuItem.Header" Value="{Binding DisplayName}" />
+                        <Setter Property="MenuItem.MinWidth" Value="100" />
+                        <Setter Property="MenuItem.CommandParameter" Value="{Binding}" />
+                        <Setter Property="MenuItem.Command" Value="{Binding DataContext.MainViewModel.SendToTargetCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
+                    </Style>
+                </custom:MenuItemCustom.ItemContainerStyle>
                 <custom:MenuItemCustom.Icon>
                     <wpfui:SymbolIcon Symbol="Save24" />
                 </custom:MenuItemCustom.Icon>
-                <custom:MenuItemCustom
-                    MinWidth="130"
-                    Command="{Binding NewScreenshotFullCommand}"
-                    Header="Paint"
-                    InputGestureText="{Binding NewScreenshotFullCommand.ToolTipTextShortcut}">
-                    <custom:MenuItemCustom.Icon>
-                        <wpfui:SymbolIcon Symbol="Color24" />
-                    </custom:MenuItemCustom.Icon>
-                </custom:MenuItemCustom>
             </custom:MenuItemCustom>
-
-            <Separator />
-
             <custom:MenuItemCustom Command="{Binding ToggleAlwaysOnTopCommand}">
                 <custom:MenuItemCustom.Icon>
                     <wpfui:SymbolIcon Symbol="Checkmark24" Visibility="{Binding AlwaysOnTop, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Hidden}" />
@@ -158,7 +156,7 @@
             d:Width="600"
             Background="#303030"
             BorderBrush="#0061e0"
-            BorderThickness="{x:Static local:PinViewModel.PinWindowThickness}"
+            BorderThickness="{x:Static vm:PinViewModel.PinWindowThickness}"
             ClipToBounds="True"
             CornerRadius="6"
             Loaded="mainBorder_Loaded"

@@ -29,6 +29,7 @@ using PixelRuler.Common;
 using PixelRuler.Views;
 using Microsoft.Win32;
 using PixelRuler.Models;
+using PixelRuler.ViewModels;
 
 namespace PixelRuler
 {
@@ -313,7 +314,7 @@ namespace PixelRuler
                         throw new InvalidOperationException("Missing Image");
                     }
 
-                    fname = pathSaveInfo.SaveImage(this.ViewModel.Image, this.ViewModel.ScreenshotInfo.Value);
+                    ViewModel.SaveToTarget(pathSaveInfo);
                 }
                 else
                 {
@@ -335,8 +336,7 @@ namespace PixelRuler
                         throw new InvalidOperationException("Missing Image");
                     }
 
-                    string fname = this.ViewModel.Settings.DefaultPathSaveInfo.SaveImage(this.ViewModel.Image, this.ViewModel.ScreenshotInfo.Value);
-                    cmdTargetInfo.Execute(fname);
+                    this.ViewModel.SendToTarget(cmdTargetInfo);
                 }
                 else
                 {
@@ -369,8 +369,8 @@ namespace PixelRuler
                    wsw.SelectedRegionImageCoordinates.Height  * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height)
                 {
                     this.WindowState = WindowState.Maximized;
-                    this.Width = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width * .75;
-                    this.Height = WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height * .75;
+                    this.Width = WpfScreenHelper.Screen.PrimaryScreen.WpfBounds.Width * .75;
+                    this.Height = WpfScreenHelper.Screen.PrimaryScreen.WpfBounds.Height * .75;
                 }
                 else
                 {
@@ -383,11 +383,11 @@ namespace PixelRuler
                     Rect workArea = SystemParameters.WorkArea;
                     //WpfScreenHelper.Screen.PrimaryScreen.WorkingArea
                     var dpiScaleFactor = wsw.Dpi;
-                    this.Left = wsw.SelectedRegionImageCoordinates.Left / dpiScaleFactor - 60;
-                    this.Top = wsw.SelectedRegionImageCoordinates.Top / dpiScaleFactor - 60;
-                    this.Width = Math.Max(wsw.SelectedRegionImageCoordinates.Width / dpiScaleFactor + 120, 730);
-                    this.Height = Math.Max(wsw.SelectedRegionImageCoordinates.Height / dpiScaleFactor + 120, 515);
-                    this.WindowStartupLocation = WindowStartupLocation.Manual;
+                    //this.Left = wsw.SelectedRegionImageCoordinates.Left / dpiScaleFactor - 60;
+                    //this.Top = wsw.SelectedRegionImageCoordinates.Top / dpiScaleFactor - 60;
+                    this.Width = Math.Max(wsw.SelectedRegionImageCoordinates.Width / dpiScaleFactor + 120, WpfScreenHelper.Screen.PrimaryScreen.WpfBounds.Width * .7);
+                    this.Height = Math.Max(wsw.SelectedRegionImageCoordinates.Height / dpiScaleFactor + 120, WpfScreenHelper.Screen.PrimaryScreen.WpfBounds.Height * .7);
+                    //this.WindowStartupLocation = WindowStartupLocation.Manual;
                     this.WindowState = WindowState.Normal;
                 }
             }
