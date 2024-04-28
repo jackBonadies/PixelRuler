@@ -15,12 +15,11 @@
     <Border
         Margin="0,0,0,0"
         Padding="1,1,1,1"
-        Background="{DynamicResource AnnotationColor}"
         CornerRadius="4">
         <!--  TODO: transparency  -->
         <Border
-            Padding="1,0,1,0"
-            Background="#ffffffff"
+            Padding="1.5,0,1.5,0"
+            Background="{DynamicResource AnnotationColor}"
             CornerRadius="3">
             <StackPanel
                 HorizontalAlignment="Center"
@@ -32,14 +31,14 @@
                     HorizontalAlignment="Center"
                     d:Text="1234"
                     FontSize="15"
-                    Foreground="{DynamicResource AnnotationColorText}"
+                    Foreground="White"
                     Text="{Binding Dim1, Mode=OneWay}" />
                 <TextBlock
                     Margin="0,-1,0,-1"
                     Padding="1,0,1,0"
                     VerticalAlignment="Center"
                     FontSize="11"
-                    Foreground="{DynamicResource AnnotationColor}"
+                    Foreground="White"
                     Visibility="{Binding Has2Dim, Converter={StaticResource BoolToVisibilityConverter}}">
                     ×
                 </TextBlock>
@@ -49,7 +48,7 @@
                     HorizontalAlignment="Center"
                     d:Text="1234"
                     FontSize="15"
-                    Foreground="{DynamicResource AnnotationColorText}"
+                    Foreground="White"
                     Text="{Binding Dim2, Mode=OneWay}"
                     Visibility="{Binding Has2Dim, Converter={StaticResource BoolToVisibilityConverter}}" />
             </StackPanel>

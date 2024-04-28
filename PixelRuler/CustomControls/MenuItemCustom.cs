@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Wpf.Ui.Controls;
 
 namespace PixelRuler.CustomControls
 {
@@ -18,12 +19,20 @@ namespace PixelRuler.CustomControls
         public override void OnApplyTemplate()
         {
             var inputGestureText = this.GetTemplateChild("InputGestureText") as System.Windows.Controls.TextBlock;
-            if(inputGestureText != null)
+            if (inputGestureText != null)
             {
                 inputGestureText.VerticalAlignment = VerticalAlignment.Center;
                 inputGestureText.Opacity = .75;
                 inputGestureText.FontSize = 12;
                 inputGestureText.SetResourceReference(System.Windows.Controls.TextBlock.ForegroundProperty, "TextFillColorPrimaryBrush");
+            }
+            else
+            {
+                var chevron = this.GetTemplateChild("Chevron") as SymbolIcon;
+                if (chevron != null)
+                {
+                    chevron.Margin = new Thickness(0);
+                }
             }
             base.OnApplyTemplate();
         }

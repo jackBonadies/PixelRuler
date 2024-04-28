@@ -542,11 +542,68 @@ namespace PixelRuler
                     var maxY = Math.Max(innerRectGeometry.Rect.Top, innerRectGeometry.Rect.Bottom);
                     Canvas.SetLeft(rectSelectionOutline, minX);
                     Canvas.SetTop(rectSelectionOutline, minY);
-                    rectSelectionOutline.Width = maxX - minX + 1;
-                    rectSelectionOutline.Height = maxY - minY + 1;
+                    int selectionWidth = (int)(maxX - minX + 1);
+                    int selectionHeight = (int)(maxY - minY + 1);
+
+                    DimXY.Dim1 = selectionWidth;
+                    DimXY.Dim2 = selectionHeight;
+                    DimXY.Has2Dim = true;
+
+                    DimX.Dim1 = selectionWidth;
+                    DimY.Dim1 = selectionHeight;
+
+                    if(!this.overlayCanvas.Children.Contains(DimXY))
+                    {
+                        this.overlayCanvas.Children.Add(DimXY);
+                    }
+                    if(!this.overlayCanvas.Children.Contains(DimX))
+                    {
+                        //this.overlayCanvas.Children.Add(DimX);
+                    }
+                    if(!this.overlayCanvas.Children.Contains(DimY))
+                    {
+                        //this.overlayCanvas.Children.Add(DimY);
+                    }
+
+                    if(CornerElementTopLeft == null)
+                    {
+                        CornerElementTopLeft = new CornerOverlayElement(this.overlayCanvas, SizerEnum.TopLeft);
+                        CornerElementTopRight = new CornerOverlayElement(this.overlayCanvas, SizerEnum.TopRight);
+                        CornerElementBottomLeft = new CornerOverlayElement(this.overlayCanvas, SizerEnum.BottomLeft);
+                        CornerElementBottomRight = new CornerOverlayElement(this.overlayCanvas, SizerEnum.BottomRight);
+                    }
+
+                    CornerElementTopLeft.Point = new Point(minX, minY);
+                    CornerElementTopLeft.Update();
+                    CornerElementTopRight.Point = new Point(maxX + 1, minY);
+                    CornerElementTopRight.Update();
+                    CornerElementBottomLeft.Point = new Point(minX, maxY + 1);
+                    CornerElementBottomLeft.Update();
+                    CornerElementBottomRight.Point = new Point(maxX + 1, maxY + 1);
+                    CornerElementBottomRight.Update();
+
+                    Canvas.SetLeft(DimXY, minX);
+                    Canvas.SetTop(DimXY, minY - DimXY.ActualHeight * DimXY.ScaleOverride - 6);
+
+                    Canvas.SetLeft(DimX, minX + selectionWidth / 2 - DimX.ActualWidth / 2);
+                    Canvas.SetTop(DimX, minY - DimXY.ActualHeight * 1.25);
+
+                    Canvas.SetLeft(DimY, maxX);
+                    Canvas.SetTop(DimY, minY  + selectionHeight / 2 - DimXY.ActualHeight * 1.25 / 2.0);
+
+                    rectSelectionOutline.Width = selectionWidth;
+                    rectSelectionOutline.Height = selectionHeight;
                 }
             }
         }
+
+        private LengthLabel DimXY = new LengthLabel() { ScaleOverride = 1.1 };
+        private LengthLabel DimX = new LengthLabel();
+        private LengthLabel DimY = new LengthLabel();
+        private CornerOverlayElement CornerElementTopLeft = null;
+        private CornerOverlayElement CornerElementTopRight = null;
+        private CornerOverlayElement CornerElementBottomLeft = null;
+        private CornerOverlayElement CornerElementBottomRight = null;
 
         private bool regionOnlyMode = false;
         private void EnterRegionOnlyMode()

@@ -27,17 +27,21 @@
             ResizeBorderThickness="0" />
     </WindowChrome.WindowChrome>
     <Window.ContextMenu>
-        <ContextMenu>
-            <custom:MenuItemCustom
+        <ContextMenu UseLayoutRounding="True">
+            <MenuItem
                 Command="{Binding MainViewModel.CopyRawImageToClipboardCommand}"
                 Header="PixelRuler"
                 InputGestureText="{Binding MainViewModel.CopyRawImageToClipboardCommand}">
-                <custom:MenuItemCustom.Icon>
-                    <wpfui:SymbolIcon Symbol="Copy24" />
-                </custom:MenuItemCustom.Icon>
-            </custom:MenuItemCustom>
+                <MenuItem.Icon>
+                    <Image Width="16" Height="16">
+                        <Image.Source>
+                            <DrawingImage Drawing="{StaticResource Layer_1}" />
+                        </Image.Source>
+                    </Image>
+                </MenuItem.Icon>
+            </MenuItem>
 
-            <wpfui:MenuItem
+            <!--<wpfui:MenuItem
                 VerticalAlignment="Bottom"
                 VerticalContentAlignment="Bottom"
                 Command="{Binding NewScreenshotFullCommand}"
@@ -46,7 +50,7 @@
                     <TextBlock VerticalAlignment="Center" Background="Transparent">Save To</TextBlock>
                 </wpfui:MenuItem.Header>
                 <wpfui:MenuItem.Icon>
-                    <wpfui:SymbolIcon Symbol="Save28" />
+                    <wpfui:SymbolIcon Margin="-4,0,0,0" Symbol="Save28" />
                 </wpfui:MenuItem.Icon>
                 <wpfui:MenuItem
                     MinWidth="130"
@@ -54,35 +58,45 @@
                     Header="Save To"
                     InputGestureText="{Binding NewScreenshotFullCommand.ToolTipTextShortcut}">
                     <wpfui:MenuItem.Icon>
-                        <wpfui:SymbolIcon Symbol="Save24" />
+                        <wpfui:SymbolIcon Margin="-4,0,0,0" Symbol="Save28" />
                     </wpfui:MenuItem.Icon>
                 </wpfui:MenuItem>
-            </wpfui:MenuItem>
+            </wpfui:MenuItem>-->
 
 
 
-            <custom:MenuItemCustom
+            <MenuItem
                 Command="{Binding MainViewModel.CopyRawImageToClipboardCommand}"
                 Header="{Binding MainViewModel.CopyRawImageToClipboardCommand.ToolTipTextBase}"
                 InputGestureText="{Binding MainViewModel.CopyRawImageToClipboardCommand}">
-                <custom:MenuItemCustom.Icon>
-                    <wpfui:SymbolIcon Symbol="Copy24" />
-                </custom:MenuItemCustom.Icon>
-            </custom:MenuItemCustom>
+                <MenuItem.Icon>
+                    <Grid>
+                        <Path
+                            Name="copyIcon"
+                            Margin="0,1,0,0"
+                            Style="{StaticResource CopyButtonStyle}"
+                            Visibility="Visible" />
+                    </Grid>
+                </MenuItem.Icon>
+            </MenuItem>
             <custom:MenuItemCustom
                 Command="{Binding NewScreenshotFullCommand}"
                 Header="Save"
                 InputGestureText="{Binding NewScreenshotFullCommand.ToolTipTextShortcut}">
                 <custom:MenuItemCustom.Icon>
-                    <wpfui:SymbolIcon Symbol="Save28" />
+                    <wpfui:SymbolIcon Margin="-1,0,0,0" Symbol="Save24" />
                 </custom:MenuItemCustom.Icon>
             </custom:MenuItemCustom>
             <custom:MenuItemCustom
+                VerticalAlignment="Bottom"
+                VerticalContentAlignment="Bottom"
                 Command="{Binding NewScreenshotFullCommand}"
-                Header="Save To"
                 InputGestureText="{Binding NewScreenshotFullCommand.ToolTipTextShortcut}">
+                <custom:MenuItemCustom.Header>
+                    <TextBlock Margin="0,2,0,0" Text="Save To" />
+                </custom:MenuItemCustom.Header>
                 <custom:MenuItemCustom.Icon>
-                    <wpfui:SymbolIcon Symbol="Save24" />
+                    <wpfui:SymbolIcon Margin="-2,0,0,0" Symbol="Save24" />
                 </custom:MenuItemCustom.Icon>
                 <custom:MenuItemCustom
                     MinWidth="130"
@@ -105,7 +119,6 @@
                     <wpfui:FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Static common:UiConsts.SaveAsSegoeMDL2}" />
                 </custom:MenuItemCustom.Icon>
             </custom:MenuItemCustom>
-            <Separator />
             <custom:MenuItemCustom
                 Command="{Binding NewScreenshotFullCommand}"
                 Header="Send To"
@@ -123,6 +136,9 @@
                     </custom:MenuItemCustom.Icon>
                 </custom:MenuItemCustom>
             </custom:MenuItemCustom>
+
+            <Separator />
+
             <custom:MenuItemCustom Command="{Binding ToggleAlwaysOnTopCommand}">
                 <custom:MenuItemCustom.Icon>
                     <wpfui:SymbolIcon Symbol="Checkmark24" Visibility="{Binding AlwaysOnTop, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Hidden}" />

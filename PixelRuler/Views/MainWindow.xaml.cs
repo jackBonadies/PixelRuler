@@ -407,8 +407,8 @@ namespace PixelRuler
             if (!newWindow)
             {
                 this.Hide();
-                await Task.Delay(200);
-                await Task.Run(new Action(async () =>
+                await Task.Delay(this.ViewModel.Settings.ScreenshotDelayMs);
+                await Task.Run(new Action(() =>
                 {
                 //    await Task.Delay(1000);
                     bmp = UiUtils.CaptureScreen();

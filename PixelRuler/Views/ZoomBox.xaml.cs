@@ -277,9 +277,10 @@ namespace PixelRuler.Views
                 //Canvas.SetTop(this, overlayCanvasLocation.Y + 28);// - outerBorder.ActualHeight / 2 + 156);
             }
 
-            if(boxOffsetX is SizerPosX.Centered)
+            var colorPickerOffestX = 0;// -TotalZoom / 2.0;
+            if (boxOffsetX is SizerPosX.Centered)
             {
-                Canvas.SetLeft(this, overlayCanvasLocation.X - boxWidth / 2);
+                Canvas.SetLeft(this, overlayCanvasLocation.X - boxWidth / 2 + colorPickerOffestX);
             }
             else if(boxOffsetX is SizerPosX.Left)
             {
@@ -293,6 +294,7 @@ namespace PixelRuler.Views
 
             if (boxOffsetY is SizerPosY.Centered)
             {
+                //Canvas.SetTop(this, overlayCanvasLocation.Y - boxHeight / 2 - ZoomFactor / 2.0);
                 Canvas.SetTop(this, overlayCanvasLocation.Y - boxHeight / 2);
             }
             else if (boxOffsetY is SizerPosY.Above)

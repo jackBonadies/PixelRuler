@@ -12,7 +12,7 @@
             get; set;
         }
 
-        public int Has2Dim
+        public bool Has2Dim
         {
             get; set;
         }
