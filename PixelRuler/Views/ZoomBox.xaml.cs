@@ -244,8 +244,8 @@ namespace PixelRuler.Views
             }
 
             outerBorder.Measure(new Size(double.MaxValue, double.MaxValue));
-            var boxWidth = outerBorder.DesiredSize.Width;
-            var boxHeight = outerBorder.DesiredSize.Height;
+            var boxWidth = outerBorder.DesiredSize.Width * this.GetDpi();
+            var boxHeight = outerBorder.DesiredSize.Height * this.GetDpi();
 
             SizerPosX boxOffsetX = SizerPosX.Centered;
             SizerPosY boxOffsetY = SizerPosY.Centered;
