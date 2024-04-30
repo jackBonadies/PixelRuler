@@ -313,7 +313,7 @@ namespace PixelRuler
                         throw new InvalidOperationException("Missing Image");
                     }
 
-                    fname = pathSaveInfo.SaveImage(this.ViewModel.Image, this.ViewModel.ScreenshotInfo.Value);
+                    ViewModel.SaveToTarget(pathSaveInfo);
                 }
                 else
                 {
@@ -335,8 +335,7 @@ namespace PixelRuler
                         throw new InvalidOperationException("Missing Image");
                     }
 
-                    string fname = this.ViewModel.Settings.DefaultPathSaveInfo.SaveImage(this.ViewModel.Image, this.ViewModel.ScreenshotInfo.Value);
-                    cmdTargetInfo.Execute(fname);
+                    this.ViewModel.SendToTarget(cmdTargetInfo);
                 }
                 else
                 {

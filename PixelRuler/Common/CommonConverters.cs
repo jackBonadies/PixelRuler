@@ -2,6 +2,7 @@
 using PixelRuler.Models;
 using PixelRuler.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -280,6 +281,27 @@ namespace PixelRuler
                 return string.Empty;
             }
             return value.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new Exception("One way");
+        }
+    }
+
+    public class CollapseIfEmptyConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is IList list)
+            {
+                if(list.Count == 0)
+                {
+                    return Visibility.Collapsed;
+                }
+                return Visibility.Visible;
+            }
+            return DependencyProperty.UnsetValue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

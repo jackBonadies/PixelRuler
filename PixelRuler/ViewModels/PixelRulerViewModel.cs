@@ -206,7 +206,7 @@ namespace PixelRuler
             this.ScreenshotInfo = screenshotInfo;
         }
 
-        public ScreenshotInfo? ScreenshotInfo
+        public ScreenshotInfo ScreenshotInfo
         {
             get; set; 
         }
@@ -254,9 +254,25 @@ namespace PixelRuler
         }
 
         [RelayCommand]
+        public void SaveToTarget(PathSaveInfo pathSaveInfo)
+        {
+            pathSaveInfo.SaveImage(this.Image, this.ScreenshotInfo);
+        }
+
+        [RelayCommand]
+        public void SendToTarget(CommandTargetInfo commandTargetInfo)
+        {
+            if (string.IsNullOrEmpty(this.ScreenshotInfo.LastSavedPath))
+            {
+                this.Settings.DefaultPathSaveInfo.SaveImage(this.Image, this.ScreenshotInfo);
+            }
+            commandTargetInfo.Execute(ScreenshotInfo.LastSavedPath);
+        }
+
+        [RelayCommand]
         public void SaveAs()
         {
-            var fullFilename = this.Settings.DefaultPathSaveInfo.Evaluate(this.ScreenshotInfo.Value, true);
+            var fullFilename = this.Settings.DefaultPathSaveInfo.Evaluate(this.ScreenshotInfo, true);
             var initDir = System.IO.Path.GetDirectoryName(fullFilename);
             Directory.CreateDirectory(initDir);
 

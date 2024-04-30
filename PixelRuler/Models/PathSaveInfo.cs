@@ -105,6 +105,7 @@ namespace PixelRuler.Models
         {
             string fname = this.Evaluate(info, true, true);
             ImageCommon.SaveImage(fname, bmp);
+            info.LastSavedPath = fname;
             return fname;
         }
 

@@ -108,6 +108,7 @@
             <Cursor x:Key="EyeDropperCursor">Assets/rasterized_segoe_colorpicker_contrast_hotspot_offset24.cur</Cursor>
 
             <local:PercentFormatStringConverter x:Key="PercentFormatStringConverter" />
+            <local:CollapseIfEmptyConverter x:Key="CollapseIfEmptyConverter" />
             <local:ColorFormatStringConverter x:Key="ColorFormatStringConverter" />
             <local:DrawingColorToWpfBrushConverter x:Key="DrawingColorToWpfBrushConverter" />
             <local:PointPositionStringConverter x:Key="PointPositionStringConverter" />
