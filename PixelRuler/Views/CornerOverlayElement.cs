@@ -13,23 +13,80 @@ namespace PixelRuler.Views
 {
     public class CornerOverlayElement
     {
-        private Line horizontalLine;
-        private Line verticalLine; 
-        private Canvas owningCanvas; 
+        private Canvas owningCanvas;
+
+        private Path mainPath;
+
+        public Point StartPoint
+        {
+            set
+            {
+                pathFigure.StartPoint = value;
+            }
+        }
+
+        public Point MidPoint
+        {
+            set
+            {
+                lineSegment1.Point = value;
+            }
+        }
+
+        public Point EndPoint
+        {
+            set
+            {
+                lineSegment2.Point = value;
+            }
+        }
+
+        private PathFigure pathFigure;
+        private LineSegment lineSegment1;
+        private LineSegment lineSegment2;
+        // Function to create the Path
+        public void ConfigurePath()
+        {
+            mainPath = new Path
+            {
+                StrokeStartLineCap = PenLineCap.Round,
+                StrokeEndLineCap = PenLineCap.Round,
+                StrokeLineJoin = PenLineJoin.Round
+            };
+
+            PathGeometry pathGeometry = new PathGeometry();
+
+            pathFigure = new PathFigure
+            {
+                StartPoint = new Point(10, 10),
+                IsClosed = false
+            };
+
+            lineSegment1 = new LineSegment(new Point(10, 20), true);
+            lineSegment2 = new LineSegment(new Point(10, 20), true);
+            PathSegmentCollection pathSegments = new PathSegmentCollection()
+            {
+                lineSegment1,
+                lineSegment2,
+            };
+
+            pathFigure.Segments = pathSegments;
+
+            pathGeometry.Figures.Add(pathFigure);
+
+            mainPath.Data = pathGeometry;
+        }
+
         public CornerOverlayElement(Canvas owningCanvas, SizerEnum corner)
         {
             this.owningCanvas = owningCanvas;
+            this.ConfigurePath();
             Corner = corner;
 
-            horizontalLine = UiUtils.CreateLine();
-            horizontalLine.StrokeThickness = 3;
-            horizontalLine.Stroke = new SolidColorBrush(Colors.Red);
-            verticalLine = UiUtils.CreateLine();
-            verticalLine.StrokeThickness = 3;
-            verticalLine.Stroke = new SolidColorBrush(Colors.Red);
+            mainPath!.StrokeThickness = 3;
+            mainPath.Stroke = new SolidColorBrush(Colors.Red);
 
-            this.owningCanvas.Children.Add(horizontalLine);
-            this.owningCanvas.Children.Add(verticalLine);
+            this.owningCanvas.Children.Add(mainPath);
         }
 
         public SizerEnum Corner { get; init; }
@@ -71,15 +128,18 @@ namespace PixelRuler.Views
                     break;
             }
 
-            horizontalLine.X1 = Point.X + sizeX + offsetX;
-            horizontalLine.X2 = Point.X + offsetX + offsetX / 2.0;
-            horizontalLine.Y1 = Point.Y + offsetY;
-            horizontalLine.Y2 = Point.Y + offsetY;
+            var midX = Point.X + offsetX;
+            var midY = Point.Y + offsetY;
 
-            verticalLine.X1 = Point.X + offsetX;
-            verticalLine.X2 = Point.X + offsetX;
-            verticalLine.Y1 = Point.Y + sizeY + offsetY;
-            verticalLine.Y2 = Point.Y + offsetY + offsetY / 2.0;
+            var startX = Point.X + sizeX + offsetX;
+            var startY = midY;
+
+            var endX = midX;
+            var endY = Point.Y + sizeY + offsetY;
+
+            StartPoint = new Point(startX, startY); 
+            MidPoint = new Point(midX, midY);
+            EndPoint = new Point(endX, endY);
         }
 
     }
