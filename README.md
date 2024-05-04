@@ -33,6 +33,6 @@ Upon launching `PixelRuler` one can use it via the following:
 * Taskbar Jumplist
 * Command Line
 
-# Screenshots
+## Screenshots
 
 
