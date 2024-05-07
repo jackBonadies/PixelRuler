@@ -157,6 +157,8 @@
             <Style TargetType="{x:Type custom:ToastNotificationSingle}">
                 <Setter Property="Background" Value="#3C4042" />
                 <Setter Property="IsHitTestVisible" Value="False" />
+                <Setter Property="VerticalAlignment" Value="Bottom" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type custom:ToastNotificationSingle}">
@@ -180,7 +182,27 @@
                 </Setter>
             </Style>
 
-            <Style x:Key="toastColorStyle" TargetType="{x:Type custom:ToastNotificationSingle}">
+            <Style
+                x:Key="toastInfoStyle"
+                BasedOn="{StaticResource {x:Type custom:ToastNotificationSingle}}"
+                TargetType="{x:Type custom:ToastNotificationSingle}">
+                <Setter Property="Background" Value="#ffffff" />
+                <Setter Property="UseLayoutRounding" Value="True" />
+                <Setter Property="IsHitTestVisible" Value="False" />
+                <Setter Property="Content">
+                    <Setter.Value>
+                        <Border
+                            Width="100"
+                            Height="100"
+                            Background="Red" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style
+                x:Key="toastColorStyle"
+                BasedOn="{StaticResource {x:Type custom:ToastNotificationSingle}}"
+                TargetType="{x:Type custom:ToastNotificationSingle}">
                 <Setter Property="Background" Value="#ffffff" />
                 <Setter Property="UseLayoutRounding" Value="True" />
                 <Setter Property="IsHitTestVisible" Value="False" />

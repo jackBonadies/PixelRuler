@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Win32;
 using PixelRuler.Models;
-using PixelRuler.Properties;
-using PixelRuler.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,13 +8,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using Windows.Networking.Vpn;
-using Wpf.Ui.Controls;
 
 namespace PixelRuler
 {
@@ -72,7 +67,7 @@ namespace PixelRuler
 
             clearShortcutCommand = new RelayCommand((object? o) =>
             {
-                if(o is ShortcutInfo shortcutInfo)
+                if (o is ShortcutInfo shortcutInfo)
                 {
                     shortcutInfo.Clear();
                 }
@@ -84,7 +79,7 @@ namespace PixelRuler
 
             editShortcutCommand = new RelayCommand((object? o) =>
             {
-                if(o is ShortcutInfo shortcutInfo)
+                if (o is ShortcutInfo shortcutInfo)
                 {
                     EditShortcutCommandEvent?.Invoke(this, shortcutInfo);
                 }
@@ -96,7 +91,7 @@ namespace PixelRuler
 
             editSavePathInfoCommand = new RelayCommand((object? o) =>
             {
-                if(o is PathSaveInfo pathSaveInfo)
+                if (o is PathSaveInfo pathSaveInfo)
                 {
                     EditSavePathCommandEvent?.Invoke(this, (pathSaveInfo, false));
                 }
@@ -122,7 +117,7 @@ namespace PixelRuler
 
             editCommandTargetCommand = new RelayCommand((object? o) =>
             {
-                if(o is CommandTargetInfo cmdTargetInfo)
+                if (o is CommandTargetInfo cmdTargetInfo)
                 {
                     EditCommandTargetCommandEvent?.Invoke(this, (cmdTargetInfo, false));
                 }
@@ -146,7 +141,7 @@ namespace PixelRuler
         {
             var defaultPathInfoString = Properties.Settings.Default.DefaultPathInfo;
 
-            if(string.IsNullOrEmpty(defaultPathInfoString))
+            if (string.IsNullOrEmpty(defaultPathInfoString))
             {
                 DefaultPathSaveInfo = new PathSaveInfo("Default", App.DefaultSavePath, "Screenshot {datetime:yyyy_MM_dd_HHmmss}", "png");
             }
@@ -394,7 +389,7 @@ namespace PixelRuler
         private ColorAnnotationsBundle getColorBundle(string key)
         {
             var colorBundle = AvailableAnnotationsColors.Where(it => it.Key == Properties.Settings.Default.AnnotationColor);
-            if(colorBundle.Any())
+            if (colorBundle.Any())
             {
                 return colorBundle.First();
             }
@@ -462,7 +457,7 @@ namespace PixelRuler
             }
             set
             {
-                if(fullscreenScreenshotShortcut != value)
+                if (fullscreenScreenshotShortcut != value)
                 {
                     fullscreenScreenshotShortcut = value;
                     fullscreenScreenshotShortcut.PropertyChanged += (object o, PropertyChangedEventArgs e) => { OnPropertyChangedAndSave(nameof(FullscreenScreenshotShortcut)); };
@@ -727,7 +722,14 @@ namespace PixelRuler
         private ColorFormatMode colorFormatMode;
 
         [ObservableProperty]
-        private QuickColorMode quickColorMode; 
+        private QuickColorMode quickColorMode;
+
+        partial void OnQuickColorModeChanged(QuickColorMode value)
+        {
+            QuickColorModeChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public event EventHandler QuickColorModeChanged;
 
         public bool IsQuickColorAutoCopy
         {
@@ -755,7 +757,7 @@ namespace PixelRuler
 
         private void ScreenshotSelectionViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if(e.PropertyName == nameof(ScreenshotHelpOn))
+            if (e.PropertyName == nameof(ScreenshotHelpOn))
             {
                 ScreenshotHelpOnChanged?.Invoke(sender, this.ScreenshotHelpOn);
             }

@@ -415,7 +415,7 @@
                 <TextBlock
                     Grid.Row="4"
                     Grid.Column="2"
-                    Text="Toggle Quick Color Mode" />
+                    Text="Cycle Quick Color Mode" />
 
                 <TextBlock
                     Grid.Row="7"

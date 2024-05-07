@@ -2,21 +2,11 @@
 using PixelRuler.CustomControls;
 using PixelRuler.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PixelRuler.Views
 {
@@ -70,10 +60,12 @@ namespace PixelRuler.Views
         private void ScreenshotSelectionPerScreenPanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             ViewModel.Settings.ScreenshotSelectionViewModel.ScreenshotHelpOnChanged += ScreenshotSelectionViewModel_ScreenshotHelpOnChanged;
+            ViewModel.Settings.QuickColorModeChanged += Settings_QuickColorModeChanged;
             ViewModel.ColorCopied += ViewModel_ColorCopied;
             ViewModel.ColorSelected += ViewModel_ColorSelected;
             ViewModel.ColorStartSelect += ViewModel_ColorStartSelect;
         }
+
 
         private void ViewModel_ColorStartSelect(object? sender, EventArgs e)
         {
@@ -86,22 +78,36 @@ namespace PixelRuler.Views
 
         }
 
+        private void Settings_QuickColorModeChanged(object? sender, EventArgs e)
+        {
+            if (this.IsMouseEnteredVirtual)
+            {
+                var tns = new ToastNotificationSingle();
+                tns.Style = Application.Current.Resources["toastInfoStyle"] as Style;
+                tns.AnimationType = ToastAnimationStyle.FadeInOut;
+                tns.VerticalAlignment = VerticalAlignment.Bottom;
+                tns.HorizontalAlignment = HorizontalAlignment.Right;
+                tns.Show(this.gridTopLevel);
+            }
+        }
+
         private void ViewModel_ColorCopied(object? sender, EventArgs e)
         {
-            if(this.IsMouseEnteredVirtual)
+            if (this.IsMouseEnteredVirtual)
             {
                 var mode = (this.ViewModel.Settings.QuickColorMode);
-                if(mode == QuickColorMode.AutoCopyMany || mode == QuickColorMode.AutoCopyAndClose)
+                if (mode == QuickColorMode.AutoCopyMany || mode == QuickColorMode.AutoCopyAndClose)
                 {
-                    var tns = new ToastNotificationSingle() 
-                    { 
+                    var tns = new ToastNotificationSingle()
+                    {
                         DataContext = new ToastNotifColorViewModel(
-                            this.ViewModel.Color, 
+                            this.ViewModel.Color,
                             UiUtils.FormatColor(this.ViewModel.Color, this.ViewModel.Settings.ColorFormatMode)),
                         Style = Application.Current.Resources["toastColorStyle"] as Style,
                     };
-                    if(mode == QuickColorMode.AutoCopyMany)
+                    if (mode == QuickColorMode.AutoCopyMany)
                     {
+                        tns.AnimationType = ToastAnimationStyle.FadeInOut;
                         tns.Show(this.gridTopLevel);
                     }
                     else
@@ -109,9 +115,9 @@ namespace PixelRuler.Views
                         var popupHost = new PopupHost(this.Bounds);
                         popupHost.IsOpen = true;
                         tns.Show(popupHost.RootGrid);
-                        tns.Closed += (object? sender, EventArgs e) => 
-                        { 
-                            popupHost.IsOpen = false; 
+                        tns.Closed += (object? sender, EventArgs e) =>
+                        {
+                            popupHost.IsOpen = false;
                         };
                     }
                 }
@@ -122,7 +128,7 @@ namespace PixelRuler.Views
         {
             if (IsMouseEnteredVirtual)
             {
-                if(ViewModel.Settings.ScreenshotSelectionViewModel.ScreenshotHelpOn)
+                if (ViewModel.Settings.ScreenshotSelectionViewModel.ScreenshotHelpOn)
                 {
                     enterHelpAnimation();
                 }
@@ -212,16 +218,16 @@ namespace PixelRuler.Views
             {
                 IsMouseEnteredVirtual = true;
                 enterPanelAnimation();
-                if(ViewModel.Settings.ScreenshotSelectionViewModel.ScreenshotHelpOn)
+                if (ViewModel.Settings.ScreenshotSelectionViewModel.ScreenshotHelpOn)
                 {
                     enterHelpAnimation();
                 }
             }
-            else if(IsMouseEnteredVirtual && !inside)
+            else if (IsMouseEnteredVirtual && !inside)
             {
                 IsMouseEnteredVirtual = false;
                 leavePanelAnimation();
-                if(ViewModel.Settings.ScreenshotSelectionViewModel.ScreenshotHelpOn)
+                if (ViewModel.Settings.ScreenshotSelectionViewModel.ScreenshotHelpOn)
                 {
                     leaveHelpAnimation();
                 }
