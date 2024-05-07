@@ -1,5 +1,4 @@
-﻿using PixelRuler.CanvasElements;
-using PixelRuler.Common;
+﻿using PixelRuler.Common;
 using PixelRuler.Models;
 using PixelRuler.ViewModels;
 using PixelRuler.Views;
@@ -7,25 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Windows.Data.Text;
 
 namespace PixelRuler
 {
@@ -78,7 +66,7 @@ namespace PixelRuler
             ViewModel = new ScreenshotWindowViewModel(settings);
             ViewModel.FullscreenScreenshotMode = true;
             ViewModel.Mode = mode;
-            if(mode == OverlayMode.QuickColor)
+            if (mode == OverlayMode.QuickColor)
             {
                 ViewModel.SelectedTool = Tool.ColorPicker;
             }
@@ -86,7 +74,7 @@ namespace PixelRuler
             double xOffset = -fullBounds.Left;
             double yOffset = -fullBounds.Top;
 
-            foreach(var screen in WpfScreenHelper.Screen.AllScreens)
+            foreach (var screen in WpfScreenHelper.Screen.AllScreens)
             {
                 // cannot use WpfBounds bc it will scale for that screens DPI. 
                 // but our window will scale our DPI (which may be different than
@@ -116,9 +104,9 @@ namespace PixelRuler
 
         public ScreenshotSelectionPerScreenPanel? GetScreenForWpfPoint(Point pt)
         {
-            foreach(var screen in PerScreenPanels)
+            foreach (var screen in PerScreenPanels)
             {
-                if(screen.Bounds.Contains(pt))
+                if (screen.Bounds.Contains(pt))
                 {
                     return screen;
                 }
@@ -188,7 +176,7 @@ namespace PixelRuler
             {
                 this.Close();
             }
-            else if(e.Key == Key.S)
+            else if (e.Key == Key.S)
             {
                 this.ViewModel.Settings.QuickColorMode = EnumUtil.CycleEnum(this.ViewModel.Settings.QuickColorMode);
             }
@@ -498,7 +486,7 @@ namespace PixelRuler
         private void WindowSelectionWindow_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             var pos = e.GetPosition(this);
-            foreach(var perScreenPanel in PerScreenPanels)
+            foreach (var perScreenPanel in PerScreenPanels)
             {
                 perScreenPanel.HandleMouse(e, pos);
             }
@@ -513,7 +501,7 @@ namespace PixelRuler
                 (SelectedRegionImageCoordinates, SelectedRegionOverlayCoordinates, ProcessName, WindowTitle) = SelectWindowUnderCursor();
             }
 
-            if(ViewModel.Mode.IsSelectRegion())
+            if (ViewModel.Mode.IsSelectRegion())
             {
                 var pt = roundToZoomCanvasPixel(e);
                 SetCursorIndicator(pt);
@@ -552,20 +540,20 @@ namespace PixelRuler
                     DimX.Dim1 = selectionWidth;
                     DimY.Dim1 = selectionHeight;
 
-                    if(!this.overlayCanvas.Children.Contains(DimXY))
+                    if (!this.overlayCanvas.Children.Contains(DimXY))
                     {
                         this.overlayCanvas.Children.Add(DimXY);
                     }
-                    if(!this.overlayCanvas.Children.Contains(DimX))
+                    if (!this.overlayCanvas.Children.Contains(DimX))
                     {
                         //this.overlayCanvas.Children.Add(DimX);
                     }
-                    if(!this.overlayCanvas.Children.Contains(DimY))
+                    if (!this.overlayCanvas.Children.Contains(DimY))
                     {
                         //this.overlayCanvas.Children.Add(DimY);
                     }
 
-                    if(CornerElementTopLeft == null)
+                    if (CornerElementTopLeft == null)
                     {
                         CornerElementTopLeft = new CornerOverlayElement(this.overlayCanvas, SizerEnum.TopLeft);
                         CornerElementTopRight = new CornerOverlayElement(this.overlayCanvas, SizerEnum.TopRight);
@@ -589,7 +577,7 @@ namespace PixelRuler
                     Canvas.SetTop(DimX, minY - DimXY.ActualHeight * 1.25);
 
                     Canvas.SetLeft(DimY, maxX);
-                    Canvas.SetTop(DimY, minY  + selectionHeight / 2 - DimXY.ActualHeight * 1.25 / 2.0);
+                    Canvas.SetTop(DimY, minY + selectionHeight / 2 - DimXY.ActualHeight * 1.25 / 2.0);
 
                     rectSelectionOutline.Width = selectionWidth;
                     rectSelectionOutline.Height = selectionHeight;
@@ -608,7 +596,7 @@ namespace PixelRuler
         private bool regionOnlyMode = false;
         private void EnterRegionOnlyMode()
         {
-            if(regionOnlyMode)
+            if (regionOnlyMode)
             {
                 return;
             }
@@ -621,8 +609,8 @@ namespace PixelRuler
             point = ReverseDpi(point);
             vertIndicator.X1 = vertIndicator.X2 = (int)Math.Round(point.X);
             horzIndicator.Y1 = horzIndicator.Y2 = (int)Math.Round(point.Y);
-            horzIndicator.StrokeDashOffset = point.X; 
-            vertIndicator.StrokeDashOffset = point.Y; 
+            horzIndicator.StrokeDashOffset = point.X;
+            vertIndicator.StrokeDashOffset = point.Y;
         }
 
         /// <summary>
@@ -703,7 +691,7 @@ namespace PixelRuler
 
         private void ViewModel_ColorCopied(object? sender, EventArgs e)
         {
-            if(this.ViewModel.Settings.QuickColorMode == QuickColorMode.AutoCopyAndClose)
+            if (this.ViewModel.Settings.QuickColorMode == QuickColorMode.AutoCopyAndClose)
             {
                 this.Close();
             }

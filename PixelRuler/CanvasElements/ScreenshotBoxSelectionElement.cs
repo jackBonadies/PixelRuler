@@ -1,9 +1,5 @@
 ﻿using PixelRuler.Common;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -53,7 +49,7 @@ namespace PixelRuler.CanvasElements
                 return rect.Visibility == System.Windows.Visibility.Visible;
             }
             set
-            { 
+            {
                 var visibility = value ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
                 rect.Visibility = visibility;
             }

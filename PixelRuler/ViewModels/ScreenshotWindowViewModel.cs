@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PixelRuler.ViewModels
+﻿namespace PixelRuler.ViewModels
 {
     /// <summary>
     /// Main Window with a few extra commands (pop out, close)
@@ -25,7 +19,7 @@ namespace PixelRuler.ViewModels
             }
             set
             {
-                if(popOutWindowCommand != value)
+                if (popOutWindowCommand != value)
                 {
                     popOutWindowCommand = value;
                     OnPropertyChanged();

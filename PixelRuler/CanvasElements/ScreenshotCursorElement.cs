@@ -1,9 +1,4 @@
 ﻿using PixelRuler.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -24,7 +19,7 @@ namespace PixelRuler.CanvasElements
                 return lineHorz.Visibility == System.Windows.Visibility.Visible;
             }
             set
-            { 
+            {
                 var visibility = value ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
                 lineHorz.Visibility = visibility;
                 lineVert.Visibility = visibility;

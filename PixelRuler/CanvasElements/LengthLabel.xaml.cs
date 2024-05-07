@@ -1,21 +1,8 @@
-﻿using PixelRuler.CanvasElements;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PixelRuler
 {
@@ -36,11 +23,9 @@ namespace PixelRuler
 
         private void BoundingBoxLabel_Loaded(object sender, RoutedEventArgs e)
         {
-            var scale = ScaleOverride == -1 ? this.GetDpi() : ScaleOverride;
-            this.LayoutTransform = new ScaleTransform(scale, scale);
+            var dpi = this.GetDpi();
+            this.LayoutTransform = new ScaleTransform(dpi, dpi);
         }
-
-        public double ScaleOverride { get; set; } = -1;
 
         /// <summary>
         /// Extent
@@ -65,9 +50,9 @@ namespace PixelRuler
             }
         }
 
-        public bool Has2Dim
+        public int Has2Dim
         {
-            get { return (bool)GetValue(Has2DimProperty); }
+            get { return (int)GetValue(Has2DimProperty); }
             set
             {
                 SetValue(Has2DimProperty, value);

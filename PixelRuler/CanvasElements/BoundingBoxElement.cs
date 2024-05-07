@@ -1,18 +1,13 @@
-﻿using ABI.System.Collections.Generic;
-using PixelRuler.CanvasElements;
+﻿using PixelRuler.CanvasElements;
 using PixelRuler.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 
 namespace PixelRuler
@@ -29,7 +24,7 @@ namespace PixelRuler
         {
             this.owningCanvas = owningCanvas;
             rect1 = UiUtils.CreateRectangle();
-            //boundingBoxLabelForEndPoint = new BoundingBoxLabel();
+            boundingBoxLabelForEndPoint = new BoundingBoxLabel();
             widthLabel = new LengthLabel();
             heightLabel = new LengthLabel();
         }
@@ -38,7 +33,7 @@ namespace PixelRuler
         {
             base.AddToOwnerCanvas();
 
-            if(marching_ants)
+            if (marching_ants)
             {
                 rect1.Stroke = brush1;
             }
@@ -77,7 +72,7 @@ namespace PixelRuler
                 Canvas.SetZIndex(rect2, App.SHAPE_INDEX + 1);
             }
 
-            //boundingBoxLabelForEndPoint.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
+            boundingBoxLabelForEndPoint.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
 
             widthLabel.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
 
@@ -92,8 +87,8 @@ namespace PixelRuler
                 SetupResizer(circleSizer);
             }
 
-            //this.owningCanvas.Children.Add(boundingBoxLabelForEndPoint);
-            //Canvas.SetZIndex(boundingBoxLabelForEndPoint, App.LABEL_INDEX);
+            this.owningCanvas.Children.Add(boundingBoxLabelForEndPoint);
+            Canvas.SetZIndex(boundingBoxLabelForEndPoint, App.LABEL_INDEX);
 
             this.owningCanvas.Children.Add(widthLabel);
             Canvas.SetZIndex(widthLabel, App.LABEL_INDEX);
@@ -112,7 +107,7 @@ namespace PixelRuler
             circleSizerControl.MouseMove += StartResizeCircle_MouseMove;
             circleSizerControl.MouseLeftButtonUp += StartResizeCircle_MouseLeftButtonUp;
             Canvas.SetZIndex(circleSizerControl, App.RESIZE_INDEX);
-            switch(circleSizerControl.Tag)
+            switch (circleSizerControl.Tag)
             {
                 case SizerEnum.TopLeft:
                 case SizerEnum.BottomRight:
@@ -209,7 +204,7 @@ namespace PixelRuler
             var desiredStartX = this.StartPoint.X;
             var desiredStartY = this.StartPoint.Y;
 
-            if(movingXEnd)
+            if (movingXEnd)
             {
                 desiredEndX = MoveStartInfo.shapeEnd.X + xMove;
             }
@@ -218,7 +213,7 @@ namespace PixelRuler
                 desiredStartX = MoveStartInfo.shapeStart.X + xMove;
             }
 
-            if(movingYEnd)
+            if (movingYEnd)
             {
                 desiredEndY = MoveStartInfo.shapeEnd.Y + yMove;
             }
@@ -230,10 +225,10 @@ namespace PixelRuler
             var desiredStart = UiUtils.RoundPoint(new Point(desiredStartX, desiredStartY));
             var desiredEnd = UiUtils.RoundPoint(new Point(desiredEndX, desiredEndY));
 
-            if(movingCorner)
+            if (movingCorner)
             {
                 bool constrain = KeyUtil.IsCtrlDown();
-                if(constrain)
+                if (constrain)
                 {
                     (desiredStart, desiredEnd) = constrainToAspectRatio(movingXEnd, movingYEnd, desiredStart, desiredEnd);
                 }
@@ -242,19 +237,19 @@ namespace PixelRuler
             }
             else
             {
-                if(sizerManipulating.IsLeft())
+                if (sizerManipulating.IsLeft())
                 {
                     this.StartPoint = new Point(desiredStart.X, this.StartPoint.Y);
                 }
-                else if(sizerManipulating.IsRight())
+                else if (sizerManipulating.IsRight())
                 {
                     this.EndPoint = new Point(desiredEnd.X, this.EndPoint.Y);
                 }
-                else if(sizerManipulating.IsTop())
+                else if (sizerManipulating.IsTop())
                 {
                     this.StartPoint = new Point(this.StartPoint.X, desiredStart.Y);
                 }
-                else if(sizerManipulating.IsBottom())
+                else if (sizerManipulating.IsBottom())
                 {
                     this.EndPoint = new Point(this.EndPoint.X, desiredEnd.Y);
                 }
@@ -435,10 +430,10 @@ namespace PixelRuler
 
         private void SetLabelState()
         {
-            //Canvas.SetTop(boundingBoxLabelForEndPoint, EndPoint.Y);
-            //Canvas.SetLeft(boundingBoxLabelForEndPoint, EndPoint.X);// - BoundingBoxLabel.ActualWidth * 1.5);
-            //boundingBoxLabelForEndPoint.BoundingBoxWidth = (int)rect1.Width;
-            //boundingBoxLabelForEndPoint.BoundingBoxHeight = (int)rect1.Height;
+            Canvas.SetTop(boundingBoxLabelForEndPoint, EndPoint.Y);
+            Canvas.SetLeft(boundingBoxLabelForEndPoint, EndPoint.X);// - BoundingBoxLabel.ActualWidth * 1.5);
+            boundingBoxLabelForEndPoint.BoundingBoxWidth = (int)rect1.Width;
+            boundingBoxLabelForEndPoint.BoundingBoxHeight = (int)rect1.Height;
 
             Canvas.SetLeft(widthLabel, (StartPoint.X + EndPoint.X) / 2.0 - widthLabel.ActualWidth * getUIUnit() / 2.0);// - BoundingBoxLabel.ActualWidth * 1.5);
             Canvas.SetTop(widthLabel, StartPoint.Y - (widthLabel.ActualHeight + 2) * getUIUnit());
@@ -468,11 +463,11 @@ namespace PixelRuler
         private Rectangle rect1;
         private Rectangle? rect2;
 
-        //public BoundingBoxLabel boundingBoxLabelForEndPoint
-        //{
-        //    get;
-        //    private set;
-        //}
+        public BoundingBoxLabel boundingBoxLabelForEndPoint
+        {
+            get;
+            private set;
+        }
 
         public LengthLabel widthLabel
         {
@@ -493,11 +488,11 @@ namespace PixelRuler
             {
                 rect2.StrokeThickness = getUIUnit();
             }
-            //var st = boundingBoxLabelForEndPoint.RenderTransform as ScaleTransform;
-            //st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
-            //st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
+            var st = boundingBoxLabelForEndPoint.RenderTransform as ScaleTransform;
+            st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
+            st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
 
-            var st = widthLabel.RenderTransform as ScaleTransform;
+            st = widthLabel.RenderTransform as ScaleTransform;
             st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
             st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
 
@@ -513,16 +508,16 @@ namespace PixelRuler
             base.Clear();
             this.owningCanvas.Children.Remove(rect1);
             this.owningCanvas.Children.Remove(rect2);
-            //this.owningCanvas.Children.Remove(boundingBoxLabelForEndPoint);
+            this.owningCanvas.Children.Remove(boundingBoxLabelForEndPoint);
             this.owningCanvas.Children.Remove(widthLabel);
             this.owningCanvas.Children.Remove(heightLabel);
         }
 
         private (System.Windows.Point, System.Windows.Point) constrainToAspectRatio(
-            bool movingXEnd, 
-            bool movingYEnd, 
-            System.Windows.Point candidateStart, 
-            System.Windows.Point candidateEnd, 
+            bool movingXEnd,
+            bool movingYEnd,
+            System.Windows.Point candidateStart,
+            System.Windows.Point candidateEnd,
             double aspectRatio = 1)
         {
             var diffX = (candidateEnd.X - candidateStart.X);
@@ -539,7 +534,7 @@ namespace PixelRuler
             double newEndX = EndPoint.X;
             double newEndY = EndPoint.Y;
 
-            if(movingXEnd)
+            if (movingXEnd)
             {
                 newEndX = StartPoint.X + xAbsSign * diffAbsMin;
             }
@@ -548,7 +543,7 @@ namespace PixelRuler
                 newStartX = EndPoint.X - xAbsSign * diffAbsMin;
             }
 
-            if(movingYEnd)
+            if (movingYEnd)
             {
                 newEndY = StartPoint.Y + yAbsSign * diffAbsMin;
             }

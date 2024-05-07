@@ -1,35 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using Drawing = System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Security.Policy;
-using System.Windows.Interop;
-using System.IO;
-using System.Xml.Linq;
-using System.Globalization;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Drawing;
-using PixelRuler;
-using System.Reflection;
-using WpfScreenHelper;
-using PixelRuler.Common;
-using PixelRuler.Views;
-using Microsoft.Win32;
+﻿using PixelRuler.Common;
 using PixelRuler.Models;
 using PixelRuler.ViewModels;
+using PixelRuler.Views;
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace PixelRuler
 {
@@ -79,7 +61,7 @@ namespace PixelRuler
 
         private void HookUpUICommands(bool bind)
         {
-            if(bind)
+            if (bind)
             {
                 this.ViewModel.CloseWindowCommand = new RelayCommandFull((object? o) => { this.Close(); }, Key.W, ModifierKeys.Control, "Close Window");
                 this.ViewModel.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { NewFullScreenshot(false); }, Key.N, ModifierKeys.Control | ModifierKeys.Shift, "New Full Screenshot");
@@ -112,7 +94,7 @@ namespace PixelRuler
 
         private void CopyContents()
         {
-            if(!this.mainCanvas.CopySelectedData())
+            if (!this.mainCanvas.CopySelectedData())
             {
                 this.ViewModel.CopyRawImageToClipboard();
             }
@@ -120,7 +102,7 @@ namespace PixelRuler
 
         private void MainWindow_KeyUp(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Space)
+            if (e.Key == Key.Space)
             {
                 mainCanvas.HideZoomBox();
             }
@@ -134,12 +116,12 @@ namespace PixelRuler
                     !(mainCanvas.DataContext as PixelRulerViewModel).ShowGridLines;
             }
 #if DEBUG
-            if(e.Key == Key.D)
+            if (e.Key == Key.D)
             {
                 var el = VisualTreeHelper.HitTest(this, Mouse.GetPosition(this));
                 System.Diagnostics.Debugger.Break();
             }
-            else if(e.Key == Key.P)
+            else if (e.Key == Key.P)
             {
                 RedrawTitleBar();
                 mainCanvas.innerCanvas.Background = new SolidColorBrush(Colors.Blue);
@@ -240,7 +222,7 @@ namespace PixelRuler
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            if(Properties.Settings.Default.CloseToTray)
+            if (Properties.Settings.Default.CloseToTray)
             {
                 // only 1 instance needs to close to tray otherwise you have
                 //   several tray notification icons as you open and close 
@@ -272,7 +254,7 @@ namespace PixelRuler
             }
 
 
-            if(wsw.AfterScreenshotValue is AfterScreenshotAction.Cancel)
+            if (wsw.AfterScreenshotValue is AfterScreenshotAction.Cancel)
             {
                 return false;
             }
@@ -287,29 +269,29 @@ namespace PixelRuler
                 mainCanvas.SetImage(this.ViewModel.ImageSource);
             }
 
-            if(wsw.AfterScreenshotValue is AfterScreenshotAction.SaveAs)
+            if (wsw.AfterScreenshotValue is AfterScreenshotAction.SaveAs)
             {
                 this.ViewModel.SaveAs();
                 return false;
             }
 
-            if(wsw.AfterScreenshotValue is AfterScreenshotAction.Copy)
+            if (wsw.AfterScreenshotValue is AfterScreenshotAction.Copy)
             {
                 this.ViewModel.CopyRawImageToClipboard();
                 return false;
             }
-            
+
             // string savedPath 
             if (wsw.AfterScreenshotValue is AfterScreenshotAction.Save)
             {
                 string fname = string.Empty;
                 if (wsw.AfterScreenshotAdditionalArg is PathSaveInfo pathSaveInfo)
                 {
-                    if(this.ViewModel.ScreenshotInfo == null)
+                    if (this.ViewModel.ScreenshotInfo == null)
                     {
                         throw new InvalidOperationException("Missing Screenshot Info");
                     }
-                    if(this.ViewModel.Image == null)
+                    if (this.ViewModel.Image == null)
                     {
                         throw new InvalidOperationException("Missing Image");
                     }
@@ -327,11 +309,11 @@ namespace PixelRuler
             {
                 if (wsw.AfterScreenshotAdditionalArg is CommandTargetInfo cmdTargetInfo)
                 {
-                    if(this.ViewModel.ScreenshotInfo == null)
+                    if (this.ViewModel.ScreenshotInfo == null)
                     {
                         throw new InvalidOperationException("Missing Screenshot Info");
                     }
-                    if(this.ViewModel.Image == null)
+                    if (this.ViewModel.Image == null)
                     {
                         throw new InvalidOperationException("Missing Image");
                     }
@@ -363,10 +345,10 @@ namespace PixelRuler
                 return false;
             }
 
-            if(res is true && newWindow)
+            if (res is true && newWindow)
             {
-                if(wsw.SelectedRegionImageCoordinates.Width * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width && 
-                   wsw.SelectedRegionImageCoordinates.Height  * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height)
+                if (wsw.SelectedRegionImageCoordinates.Width * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Width &&
+                   wsw.SelectedRegionImageCoordinates.Height * 1.3 > WpfScreenHelper.Screen.PrimaryScreen.Bounds.Height)
                 {
                     this.WindowState = WindowState.Maximized;
                     this.Width = WpfScreenHelper.Screen.PrimaryScreen.WpfBounds.Width * .75;
@@ -410,7 +392,7 @@ namespace PixelRuler
                 await Task.Delay(this.ViewModel.Settings.ScreenshotDelayMs);
                 await Task.Run(new Action(() =>
                 {
-                //    await Task.Delay(1000);
+                    //    await Task.Delay(1000);
                     bmp = UiUtils.CaptureScreen();
                 })).ConfigureAwait(true);
             }

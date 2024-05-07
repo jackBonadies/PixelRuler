@@ -1,21 +1,11 @@
-﻿using PixelRuler.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace PixelRuler
 {
@@ -165,7 +155,7 @@ namespace PixelRuler
                     {
                         return "None";
                     }
-                    else if(shortcutInfo.Status == RegistrationStatus.FailedRegistration)
+                    else if (shortcutInfo.Status == RegistrationStatus.FailedRegistration)
                     {
                         return "None";
                     }
@@ -426,8 +416,8 @@ namespace PixelRuler
         public static ImageFormat GetImageFormatFromFilename(string fileName)
         {
             var extIndex = fileName.LastIndexOf('.');
-            var ext = fileName.Substring(extIndex+1).ToLower();
-            switch(ext)
+            var ext = fileName.Substring(extIndex + 1).ToLower();
+            switch (ext)
             {
                 case "jpg":
                 case "jpeg":

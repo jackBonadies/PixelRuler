@@ -3,22 +3,12 @@ using PixelRuler.Models;
 using PixelRuler.ViewModels;
 using PixelRuler.Views;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Windows.ApplicationModel;
-using Wpf.Ui;
 using Wpf.Ui.Controls;
 
 namespace PixelRuler
@@ -50,7 +40,7 @@ namespace PixelRuler
             get
             {
                 var settings = this.DataContext as SettingsViewModel;
-                if(settings == null)
+                if (settings == null)
                 {
                     throw new Exception("No View Model");
                 }
@@ -60,7 +50,7 @@ namespace PixelRuler
 
         private void BindToViewModel(bool bind)
         {
-            if(bind)
+            if (bind)
             {
                 this.ViewModel.DeleteSavePathInfoCommand = new RelayCommand(
                 async (object? o) =>
@@ -116,7 +106,7 @@ namespace PixelRuler
             diagContents.Background = new SolidColorBrush(Colors.White);
             var contentDialog = new ContentDialog(RootContentDialog)
             {
-                DialogMargin = new Thickness(60,0,60,0),
+                DialogMargin = new Thickness(60, 0, 60, 0),
                 DialogWidth = 2000,
                 Title = commandTargetArgs.Item2 ? "Add Save Path" : "Edit Save Path",
                 Content = diagContents,
@@ -137,7 +127,7 @@ namespace PixelRuler
                     break;
                 case ContentDialogResult.Primary:
                     pending.Icon = pathInfoEditViewModel.IconViewModel.CurrentIcon;
-                    if(commandTargetArgs.Item2)
+                    if (commandTargetArgs.Item2)
                     {
                         (this.DataContext as SettingsViewModel).AddCommandTargetInfo(pending);
                     }
@@ -152,7 +142,7 @@ namespace PixelRuler
         }
 
         private async void Settings_EditSavePathCommandEvent(
-            object? sender, 
+            object? sender,
             (PathSaveInfo pathSaveInfo, bool newPath) pathInfoArgs)
         {
             //new PathInfoEdit
@@ -165,7 +155,7 @@ namespace PixelRuler
             diagContents.Background = new SolidColorBrush(Colors.White);
             var contentDialog = new ContentDialog(RootContentDialog)
             {
-                DialogMargin = new Thickness(60,0,60,0),
+                DialogMargin = new Thickness(60, 0, 60, 0),
                 DialogWidth = 2000,
                 Title = pathInfoArgs.newPath ? "Add Save Path" : "Edit Save Path",
                 Content = diagContents,
@@ -185,7 +175,7 @@ namespace PixelRuler
                     break;
                 case ContentDialogResult.Primary:
                     pending.Icon = pathInfoEditViewModel.IconViewModel.CurrentIcon;
-                    if(pathInfoArgs.newPath)
+                    if (pathInfoArgs.newPath)
                     {
                         (this.DataContext as SettingsViewModel).AddPathInfo(pending);
                     }

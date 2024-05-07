@@ -1,15 +1,4 @@
-﻿using PixelRuler.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Shapes;
-
-namespace PixelRuler.Views
+﻿namespace PixelRuler.Views
 {
     public class CornerOverlayElement
     {
@@ -100,7 +89,7 @@ namespace PixelRuler.Views
             double offsetY = 0;
             double sizeX = 0;
             double sizeY = 0;
-            switch(Corner)
+            switch (Corner)
             {
                 case SizerEnum.TopLeft:
                     offsetX = -offsetExtent;
@@ -137,7 +126,7 @@ namespace PixelRuler.Views
             var endX = midX;
             var endY = Point.Y + sizeY + offsetY;
 
-            StartPoint = new Point(startX, startY); 
+            StartPoint = new Point(startX, startY);
             MidPoint = new Point(midX, midY);
             EndPoint = new Point(endX, endY);
         }

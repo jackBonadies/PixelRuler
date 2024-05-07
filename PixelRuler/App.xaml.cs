@@ -1,21 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using Wpf.Ui.Controls;
-using Wpf.Ui.Tray.Controls;
 
 namespace PixelRuler
 {
@@ -33,7 +25,7 @@ namespace PixelRuler
             var icons24 = new List<SymbolRegular>();
             foreach (var enum1 in Enum.GetValues(typeof(SymbolRegular)))
             {
-                if(enum1.ToString().EndsWith("24"))
+                if (enum1.ToString().EndsWith("24"))
                 {
                     icons24.Add((SymbolRegular)enum1);
                 }
@@ -46,17 +38,17 @@ namespace PixelRuler
 
             bool backgroundOnly = false;
 
-            if(e.Args.Length > 0)
+            if (e.Args.Length > 0)
             {
                 var cmdLineArg = e.Args[0];
-                if(cmdLineArg.Replace("-", "").ToLower() == backgroundCmdLineArg)
+                if (cmdLineArg.Replace("-", "").ToLower() == backgroundCmdLineArg)
                 {
                     backgroundOnly = true;
                 }
             }
 
             singleProcessMutex = new Mutex(true, "Global\\PixelRuler_SingleProcess_Global", out bool createdNew);
-            if(createdNew)
+            if (createdNew)
             {
                 Task.Run(() => PipeServer());
             }
@@ -65,14 +57,14 @@ namespace PixelRuler
                 PipeClient(e.Args);
                 Environment.Exit(0);
             }
-            
+
             settingsViewModel = new SettingsViewModel();
             var rootWindow = new RootWindow(new RootViewModel(settingsViewModel));
             rootWindow.Show();
 
             settingsViewModel.SetState();
 
-            if(createdNew)
+            if (createdNew)
             {
                 HandleArgs(string.Join(' ', e.Args), true);
             }
@@ -134,28 +126,28 @@ namespace PixelRuler
 
         void PipeServer()
         {
-            while(true)
+            while (true)
             {
                 using (var server = new NamedPipeServerStream(pipe_name))
                 {
-                        server.WaitForConnection();
-                        using (var sr = new StreamReader(server))
+                    server.WaitForConnection();
+                    using (var sr = new StreamReader(server))
+                    {
+                        string? args = sr.ReadLine();
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
-                            string? args = sr.ReadLine();
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                HandleArgs(args, false);
-                            });
+                            HandleArgs(args, false);
+                        });
 
-                            Console.WriteLine($"Received args from second instance: {args}");
-                        }
+                        Console.WriteLine($"Received args from second instance: {args}");
+                    }
                 }
             }
         }
 
         private void HandleArgs(string? args, bool startup)
         {
-            switch(args)
+            switch (args)
             {
                 case "--fullscreen":
                     App.NewFullscreenshotLogic(this.settingsViewModel, true);
@@ -174,9 +166,9 @@ namespace PixelRuler
                     App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.QuickMeasure, true);
                     break;
                 default:
-                    if(string.IsNullOrEmpty(args))
+                    if (string.IsNullOrEmpty(args))
                     {
-                        if(!startup)
+                        if (!startup)
                         {
                             App.NewFullscreenshotLogic(this.settingsViewModel, true);
                         }
@@ -207,7 +199,7 @@ namespace PixelRuler
         {
             MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(settingsViewModel));
             var res = await mainWindow.NewWindowedScreenshot(mode, newWindow);
-            if(res)
+            if (res)
             {
                 mainWindow.Show();
             }

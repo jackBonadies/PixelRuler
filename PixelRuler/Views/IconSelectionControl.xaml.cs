@@ -4,17 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Wpf.Ui.Controls;
 
 namespace PixelRuler.Views
@@ -33,7 +26,7 @@ namespace PixelRuler.Views
         void NewIconSelected(object? args)
         {
             CurrentIcon = (SymbolRegular)args;
-            OnNewIconSelected?.Invoke(this, EventArgs.Empty); 
+            OnNewIconSelected?.Invoke(this, EventArgs.Empty);
         }
         public event EventHandler? OnNewIconSelected;
 
@@ -73,7 +66,7 @@ namespace PixelRuler.Views
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value is string stringValue)
+            if (value is string stringValue)
             {
                 bool invert = parameter is "Invert";
                 bool shouldShow = !string.IsNullOrEmpty(stringValue);

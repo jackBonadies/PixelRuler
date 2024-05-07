@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media.Imaging;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using WpfScreenHelper;
-using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Shapes;
+using WpfScreenHelper;
 
 namespace PixelRuler.Common
 {
@@ -166,7 +162,7 @@ namespace PixelRuler.Common
 
         public static string FormatColor(System.Drawing.Color color, ColorFormatMode mode)
         {
-            if(mode == ColorFormatMode.Hex)
+            if (mode == ColorFormatMode.Hex)
             {
                 return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
             }

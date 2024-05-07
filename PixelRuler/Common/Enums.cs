@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PixelRuler
 {
@@ -78,11 +74,11 @@ namespace PixelRuler
 
         public static SizerPosX GetXFlag(this SizerEnum sizerEnum)
         {
-            if(sizerEnum.IsLeft())
+            if (sizerEnum.IsLeft())
             {
                 return SizerPosX.Left;
             }
-            else if(sizerEnum.IsRight())
+            else if (sizerEnum.IsRight())
             {
                 return SizerPosX.Right;
             }
@@ -94,11 +90,11 @@ namespace PixelRuler
 
         public static SizerPosY GetYFlag(this SizerEnum sizerEnum)
         {
-            if(sizerEnum.IsBottom())
+            if (sizerEnum.IsBottom())
             {
                 return SizerPosY.Below;
             }
-            else if(sizerEnum.IsTop())
+            else if (sizerEnum.IsTop())
             {
                 return SizerPosY.Above;
             }

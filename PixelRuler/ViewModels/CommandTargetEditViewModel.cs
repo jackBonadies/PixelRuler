@@ -1,16 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Win32;
-using Ookii.Dialogs.Wpf;
-using PixelRuler.Common;
 using PixelRuler.Models;
-using PixelRuler.Views;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PixelRuler.ViewModels
 {
@@ -25,16 +16,12 @@ namespace PixelRuler.ViewModels
                 var ofd = new OpenFileDialog();
                 ofd.Filter = "Exe|*.exe";
                 bool? res = ofd.ShowDialog();
-                if(res is true)
+                if (res is true)
                 {
                     ExecutableName = ofd.FileName;
                 }
             });
-            IconViewModel = new IconViewModel();
-            IconViewModel.CurrentIcon = commandTargetInfo.Icon;
         }
-
-        public IconViewModel IconViewModel { get; set; }
 
 
         public RelayCommand SelectExecutableCommand { get; set; }
@@ -47,7 +34,7 @@ namespace PixelRuler.ViewModels
             }
             set
             {
-                if(CommandTargetInfo.CommandExe != value)
+                if (CommandTargetInfo.CommandExe != value)
                 {
                     CommandTargetInfo.CommandExe = value;
                     OnPropertyChanged();
@@ -63,7 +50,7 @@ namespace PixelRuler.ViewModels
             }
             set
             {
-                if(CommandTargetInfo.CommandArgs != value)
+                if (CommandTargetInfo.CommandArgs != value)
                 {
                     CommandTargetInfo.CommandArgs = value;
                     OnPropertyChanged();
@@ -79,7 +66,7 @@ namespace PixelRuler.ViewModels
             }
             set
             {
-                if(CommandTargetInfo.DisplayName != value)
+                if (CommandTargetInfo.DisplayName != value)
                 {
                     CommandTargetInfo.DisplayName = value;
                     OnPropertyChanged();
@@ -87,22 +74,22 @@ namespace PixelRuler.ViewModels
             }
         }
 
-        public CommandTargetInfo CommandTargetInfo { get; set; } 
+        public CommandTargetInfo CommandTargetInfo { get; set; }
         public bool NewEntry { get; set; }
         public string this[string columnName]
         {
             get
             {
-                if(columnName == nameof(DisplayName))
+                if (columnName == nameof(DisplayName))
                 {
-                    if(string.IsNullOrWhiteSpace(DisplayName))
+                    if (string.IsNullOrWhiteSpace(DisplayName))
                     {
                         return "Display Name cannot be blank.";
                     }
                 }
-                else if(columnName == nameof(ExecutableName))
+                else if (columnName == nameof(ExecutableName))
                 {
-                    if(string.IsNullOrWhiteSpace(ExecutableName))
+                    if (string.IsNullOrWhiteSpace(ExecutableName))
                     {
                         return "Command cannot be blank.";
                     }

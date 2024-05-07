@@ -1,15 +1,7 @@
-﻿using PixelRuler.Common;
-using PixelRuler.ViewModels;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Xml.XPath;
-using Windows.UI.Composition;
 using Wpf.Ui.Controls;
 
 namespace PixelRuler.Models
@@ -18,7 +10,7 @@ namespace PixelRuler.Models
     {
         public PathSaveInfo()
         {
-            
+
         }
 
         public PathSaveInfo(string displayName, string baseDirectory, string filePattern, string extension, bool enabled = true)
@@ -50,8 +42,8 @@ namespace PixelRuler.Models
         public SymbolRegular Icon { get; set; } = SymbolRegular.Save24;
 
         public string Evaluate(
-            ScreenshotInfo info, 
-            bool withDirectory = false, 
+            ScreenshotInfo info,
+            bool withDirectory = false,
             bool withExtension = false)
         {
             string filePatternEvaluated = FilePattern.ToString();
@@ -73,7 +65,7 @@ namespace PixelRuler.Models
                     formatString = capturedValue.Substring(colonIndex + 1, capturedValue.LastIndexOf('}') - colonIndex - 1);
                 }
                 var tokenInfo = PathSaveInfoUtil.AllTokens.Where(it => it.TokenName == tokenString).FirstOrDefault();
-                
+
                 //if(Enum.TryParse(typeof(PathTokenType), capturedValue, out object? tokenType))
                 if (tokenInfo == null)
                 {
@@ -90,13 +82,13 @@ namespace PixelRuler.Models
 
             }
 
-            if(withDirectory)
+            if (withDirectory)
             {
                 var baseDirEval = Environment.ExpandEnvironmentVariables(BaseDirectory);
                 filePatternEvaluated = System.IO.Path.Combine(baseDirEval, filePatternEvaluated);
             }
 
-            if(withExtension)
+            if (withExtension)
             {
                 filePatternEvaluated = $"{filePatternEvaluated}.{Extension}";
             }
@@ -119,8 +111,8 @@ namespace PixelRuler.Models
 
     public class PathEvaluationException : Exception
     {
-        public PathEvaluationException(string message) : base(message) 
-        { 
+        public PathEvaluationException(string message) : base(message)
+        {
         }
 
         public int startIndex = -1;

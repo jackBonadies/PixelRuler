@@ -2,20 +2,11 @@
 using PixelRuler.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace PixelRuler.Views
 {
@@ -66,12 +57,12 @@ namespace PixelRuler.Views
 
         public void ShowCurrentPosIndicator()
         {
-            currentMousePosTick.tickLine.Visibility = Visibility.Visible; 
+            currentMousePosTick.tickLine.Visibility = Visibility.Visible;
         }
 
         public void HideCurrentPosIndicator()
         {
-            currentMousePosTick.tickLine.Visibility = Visibility.Collapsed; 
+            currentMousePosTick.tickLine.Visibility = Visibility.Collapsed;
         }
 
         private void SetupForDpi()
@@ -131,7 +122,7 @@ namespace PixelRuler.Views
 
         public void SetZoom(double scale)
         {
-            if(this.Scale == scale)
+            if (this.Scale == scale)
             {
                 return;
             }
@@ -161,7 +152,7 @@ namespace PixelRuler.Views
 
         private void SetGuidelineTicks()
         {
-            foreach(var tick in guideLineTicks)
+            foreach (var tick in guideLineTicks)
             {
                 tick.AddToGridline();
             }
@@ -268,7 +259,7 @@ namespace PixelRuler.Views
 
         private void UpdateTickmarks((int start, int end) newRange)
         {
-            if(startCoor == int.MaxValue || endCoor == int.MaxValue)
+            if (startCoor == int.MaxValue || endCoor == int.MaxValue)
             {
                 AddTickmarksForRange(newRange.start, newRange.end);
                 startCoor = newRange.start;
@@ -276,18 +267,18 @@ namespace PixelRuler.Views
             }
             else
             {
-                if(newRange.start < startCoor)
+                if (newRange.start < startCoor)
                 {
                     AddTickmarksForRange(newRange.start, startCoor);
                     startCoor = newRange.start;
                 }
-                if(endCoor < newRange.end)
+                if (endCoor < newRange.end)
                 {
                     AddTickmarksForRange(endCoor, newRange.end);
                     endCoor = newRange.end;
                 }
             }
- 
+
         }
 
         public (int start, int end) GetRange()
@@ -297,7 +288,7 @@ namespace PixelRuler.Views
 
             int start = (int)startPoint.X;
             int end = (int)endPont.X;
-            if(this.IsVertical)
+            if (this.IsVertical)
             {
                 start = (int)startPoint.Y;
                 end = (int)endPont.Y;

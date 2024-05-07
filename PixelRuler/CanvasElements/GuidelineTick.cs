@@ -1,12 +1,6 @@
 ﻿using PixelRuler.Common;
 using PixelRuler.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
 namespace PixelRuler.CanvasElements
@@ -27,7 +21,7 @@ namespace PixelRuler.CanvasElements
         }
 
         public GridlineTickType TickType { get; private set; }
-        
+
 
         public GuidelineTick(Gridline gridLine, GuidelineElement? guidelineElement, GridlineTickType tickType)
         {
@@ -40,7 +34,7 @@ namespace PixelRuler.CanvasElements
                 Y1 = 0,
                 StrokeThickness = 1,
                 Stroke = new SolidColorBrush(
-                    tickType == GridlineTickType.Guideline ? 
+                    tickType == GridlineTickType.Guideline ?
                     Colors.Aqua : Colors.Aqua),
                 SnapsToDevicePixels = true,
                 UseLayoutRounding = false,
@@ -67,7 +61,7 @@ namespace PixelRuler.CanvasElements
         public void UpdatePosition()
         {
             var gridLineCoor = getImageCoordinate() * this.OwningGridLine.Scale + 10000;
-            tickLine.X1 = tickLine.X2 = gridLineCoor + .5/this.OwningGridLine.GetDpi(); // TODO: Why
+            tickLine.X1 = tickLine.X2 = gridLineCoor + .5 / this.OwningGridLine.GetDpi(); // TODO: Why
             //var window = System.Windows.Window.GetWindow(tickLine);
             //var child = (window.Content as System.Windows.Controls.Grid).Children[0];
         }

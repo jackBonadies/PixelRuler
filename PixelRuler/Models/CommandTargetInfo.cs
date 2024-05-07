@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Wpf.Ui.Controls;
+﻿using System.Diagnostics;
 
 namespace PixelRuler.Models
 {
@@ -12,7 +6,7 @@ namespace PixelRuler.Models
     {
         public CommandTargetInfo()
         {
-            
+
         }
 
         public CommandTargetInfo(string displayName, string commandString, string commandArgs, bool enabled = true)
@@ -43,8 +37,6 @@ namespace PixelRuler.Models
                 return $"{CommandExe} {CommandArgs}";
             }
         }
-
-        public SymbolRegular Icon { get; set; } = SymbolRegular.ArrowStepOut24;
 
         private string EvaluateArgs(string filename)
         {

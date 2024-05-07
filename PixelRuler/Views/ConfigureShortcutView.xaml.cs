@@ -1,18 +1,8 @@
 ﻿using PixelRuler.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PixelRuler
 {
@@ -53,36 +43,36 @@ namespace PixelRuler
         /// <param name="e"></param>
         private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if(keysDown.Count == 0)
+            if (keysDown.Count == 0)
             {
                 pendingShortcutInfo.Key = Key.None;
                 pendingShortcutInfo.Modifiers = ModifierKeys.None;
             }
 
             bool relevantKey = false;
-            if(e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
             {
                 pendingShortcutInfo.Modifiers |= ModifierKeys.Control;
                 relevantKey = true;
             }
-            else if(e.Key == Key.LeftShift || e.Key == Key.RightShift)
+            else if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
             {
                 pendingShortcutInfo.Modifiers |= ModifierKeys.Shift;
                 relevantKey = true;
             }
-            else if(e.Key == Key.LWin || e.Key == Key.RWin)
+            else if (e.Key == Key.LWin || e.Key == Key.RWin)
             {
                 pendingShortcutInfo.Modifiers |= ModifierKeys.Windows;
                 relevantKey = true;
             }
-            else if(e.Key == Key.LeftAlt || e.Key == Key.RightAlt)
+            else if (e.Key == Key.LeftAlt || e.Key == Key.RightAlt)
             {
                 pendingShortcutInfo.Modifiers |= ModifierKeys.Alt;
                 relevantKey = true;
             }
-            else if(e.Key == Key.System)
+            else if (e.Key == Key.System)
             {
-                if(e.SystemKey == Key.LeftAlt || e.SystemKey == Key.RightAlt)
+                if (e.SystemKey == Key.LeftAlt || e.SystemKey == Key.RightAlt)
                 {
                     pendingShortcutInfo.Modifiers |= ModifierKeys.Alt;
                     keysDown.Add(e.SystemKey);
@@ -90,11 +80,11 @@ namespace PixelRuler
             }
             else
             {
-                pendingShortcutInfo.Key = e.Key; 
+                pendingShortcutInfo.Key = e.Key;
                 relevantKey = true;
             }
 
-            if(relevantKey)
+            if (relevantKey)
             {
                 keysDown.Add(e.Key);
             }
@@ -104,7 +94,7 @@ namespace PixelRuler
 
         private void UserControl_PreviewKeyUp(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.PrintScreen)
+            if (e.Key == Key.PrintScreen)
             {
                 // printscreen is on keyup only
                 // a low level hook is maybe too intrusive, so this hack

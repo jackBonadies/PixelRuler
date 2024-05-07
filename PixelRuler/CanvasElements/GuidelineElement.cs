@@ -1,13 +1,8 @@
 ﻿using PixelRuler.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -45,7 +40,7 @@ namespace PixelRuler.CanvasElements
             this.Coordinate = coordinate;
             this.IsHorizontal = isHorizontal;
 
- 
+
             mainLine.Stroke = new SolidColorBrush(Colors.Aqua);
             mainLine.StrokeThickness = getUIStrokeThicknessUnit();
 
@@ -53,7 +48,7 @@ namespace PixelRuler.CanvasElements
 
             hitBoxCanvas = new Canvas();
             hitBoxCanvas.Cursor = isHorizontal ? Cursors.SizeNS : Cursors.SizeWE;
-            if(isHorizontal)
+            if (isHorizontal)
             {
                 hitBoxCanvas.Width = 30000;
                 hitBoxCanvas.Height = getUIUnit() * 5;
@@ -76,7 +71,7 @@ namespace PixelRuler.CanvasElements
 
         private void HitBoxCanvas_MouseLeave(object sender, MouseEventArgs e)
         {
-            if(!closeButtonView?.IsMouseOver ?? true)
+            if (!closeButtonView?.IsMouseOver ?? true)
             {
                 this.owningCanvas.Children.Remove(closeButtonView);
             }
@@ -86,7 +81,7 @@ namespace PixelRuler.CanvasElements
         {
             var overlayCanvas = this.owningCanvas.Parent as Canvas;
             var pt = overlayCanvas.TranslatePoint(new Point(34, 34), this.owningCanvas);
-            if(closeButtonView == null)
+            if (closeButtonView == null)
             {
                 closeButtonView = new CloseButtonView();
                 closeButtonView.MouseLeave += CloseButtonView_MouseLeave;
@@ -97,12 +92,12 @@ namespace PixelRuler.CanvasElements
                 //closeButtonView.RenderTransform = st;
                 Canvas.SetZIndex(closeButtonView, 5000);
             }
-            if(!this.owningCanvas.Children.Contains(closeButtonView))
+            if (!this.owningCanvas.Children.Contains(closeButtonView))
             {
                 this.owningCanvas.Children.Add(closeButtonView);
             }
             closeButtonView.Measure(new Size(double.MaxValue, double.MaxValue));
-            if(this.IsHorizontal)
+            if (this.IsHorizontal)
             {
                 Canvas.SetLeft(closeButtonView, pt.X);
                 Canvas.SetTop(closeButtonView, this.Coordinate - closeButtonView.DesiredSize.Height / 2.0);
@@ -122,7 +117,7 @@ namespace PixelRuler.CanvasElements
 
         private void CloseButtonView_MouseLeave(object sender, MouseEventArgs e)
         {
-            if(!hitBoxCanvas.IsMouseOver)
+            if (!hitBoxCanvas.IsMouseOver)
             {
                 this.owningCanvas.Children.Remove(closeButtonView);
             }
@@ -173,7 +168,7 @@ namespace PixelRuler.CanvasElements
             MoveStartInfo.mouseStart = new Point(xMove * App.ResizeSpeedFactor, yMove * App.ResizeSpeedFactor).Add(MoveStartInfo.mouseStart);
 
             // move by xMove...
-            if(IsHorizontal)
+            if (IsHorizontal)
             {
                 this.Coordinate += yMove;
             }
@@ -248,7 +243,7 @@ namespace PixelRuler.CanvasElements
                 //st.ScaleX = st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
             }
 
-            if(IsHorizontal)
+            if (IsHorizontal)
             {
                 //hitBoxCanvas.Height = getUIUnit() * 5;
             }

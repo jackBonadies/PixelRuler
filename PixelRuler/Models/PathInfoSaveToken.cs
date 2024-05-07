@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PixelRuler.Models
 {
@@ -90,7 +87,7 @@ namespace PixelRuler.Models
                     return Guid.NewGuid().ToString();
                 case PathTokenType.RandomNum:
                     int numDigits = 10;
-                    if(int.TryParse(formatString, out int result))
+                    if (int.TryParse(formatString, out int result))
                     {
                         numDigits = result;
                     }

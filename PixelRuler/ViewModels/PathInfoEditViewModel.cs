@@ -1,17 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Win32;
 using Ookii.Dialogs.Wpf;
-using PixelRuler.Common;
 using PixelRuler.Models;
-using PixelRuler.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PixelRuler.ViewModels
 {
@@ -50,12 +42,8 @@ namespace PixelRuler.ViewModels
             });
 
             FileNameChanged += PathInfoEditViewModel_FilePatternChanged;
-            IconViewModel = new IconViewModel();
-            IconViewModel.CurrentIcon = pathSaveInfo.Icon;
             SetEvaluatedFilePattern();
         }
-
-        public IconViewModel IconViewModel { get; init; }
 
         private string evaluatedFilePatternDisplay;
         public string EvaluatedFilePatternDisplay
@@ -66,7 +54,7 @@ namespace PixelRuler.ViewModels
             }
             set
             {
-                if(evaluatedFilePatternDisplay != value)
+                if (evaluatedFilePatternDisplay != value)
                 {
                     evaluatedFilePatternDisplay = value;
                     OnPropertyChanged();
@@ -87,7 +75,7 @@ namespace PixelRuler.ViewModels
             }
             set
             {
-                if(PathSaveInfo.Extension != value)
+                if (PathSaveInfo.Extension != value)
                 {
                     PathSaveInfo.Extension = value;
                     FileNameChanged?.Invoke(this, EventArgs.Empty);
@@ -108,7 +96,7 @@ namespace PixelRuler.ViewModels
                 EvaluatedFilePatternDisplay = this.PathSaveInfo.Evaluate(new ScreenshotInfo() { DateTime = DummyDateTime, Height = 1080, Width = 1920, ProcessName = "PixelRuler", WindowTitle = "Settings" }, false, true);
                 FilePatternHasError = false;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 EvaluatedFilePatternDisplay = e.Message;
                 FilePatternHasError = true;
@@ -123,7 +111,7 @@ namespace PixelRuler.ViewModels
             }
             set
             {
-                if(PathSaveInfo.DisplayName != value)
+                if (PathSaveInfo.DisplayName != value)
                 {
                     PathSaveInfo.DisplayName = value;
                     OnPropertyChanged();
@@ -139,7 +127,7 @@ namespace PixelRuler.ViewModels
             }
             set
             {
-                if(PathSaveInfo.BaseDirectory != value)
+                if (PathSaveInfo.BaseDirectory != value)
                 {
                     PathSaveInfo.BaseDirectory = value;
                     OnPropertyChanged();
@@ -157,7 +145,7 @@ namespace PixelRuler.ViewModels
             }
             set
             {
-                if(PathSaveInfo.FilePattern != value)
+                if (PathSaveInfo.FilePattern != value)
                 {
                     PathSaveInfo.FilePattern = value;
                     FileNameChanged?.Invoke(this, EventArgs.Empty);
@@ -166,15 +154,15 @@ namespace PixelRuler.ViewModels
             }
         }
 
-        public RelayCommand TokenEnterCommand { get; set; } 
+        public RelayCommand TokenEnterCommand { get; set; }
 
         public RelayCommand TokenLeaveCommand { get; set; }
 
         [ObservableProperty]
         public string tokenHintText;
 
-        public PathSaveInfo PathSaveInfo { get; set; } 
-        public bool NewPath { get; set; } 
+        public PathSaveInfo PathSaveInfo { get; set; }
+        public bool NewPath { get; set; }
 
         public List<PathSaveInfoToken> AllTokens
         {
@@ -199,14 +187,13 @@ namespace PixelRuler.ViewModels
 
         public string Error => string.Empty;
 
-
         public string this[string columnName]
         {
             get
             {
-                if(columnName == nameof(DisplayName))
+                if (columnName == nameof(DisplayName))
                 {
-                    if(string.IsNullOrWhiteSpace(DisplayName))
+                    if (string.IsNullOrWhiteSpace(DisplayName))
                     {
                         return "Display Name cannot be blank.";
                     }

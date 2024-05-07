@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Xml.Linq;
 
 namespace PixelRuler
 {
@@ -15,7 +9,7 @@ namespace PixelRuler
         public ShortcutInfo(string name, int hotKeyID, Key key, ModifierKeys modifiers, Key defaultKey, ModifierKeys defaultModifiers)
         {
             this.CommandName = name;
-            if(key == Key.None)
+            if (key == Key.None)
             {
                 key = defaultKey;
                 modifiers = defaultModifiers;
@@ -85,7 +79,7 @@ namespace PixelRuler
             }
             set
             {
-                if(key != value)
+                if (key != value)
                 {
                     key = value;
                     OnPropertyChanged();
@@ -104,7 +98,7 @@ namespace PixelRuler
             }
             set
             {
-                if(modifiers != value)
+                if (modifiers != value)
                 {
                     modifiers = value;
                     OnPropertyChanged();
@@ -131,9 +125,9 @@ namespace PixelRuler
             }
         }
 
-        public int HotKeyId 
-        { 
-            get; private set; 
+        public int HotKeyId
+        {
+            get; private set;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

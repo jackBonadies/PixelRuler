@@ -1,13 +1,10 @@
 ﻿using PixelRuler.Common;
 using PixelRuler.Models;
-using PixelRuler.ViewModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -59,9 +56,9 @@ namespace PixelRuler
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if(value is OverlayMode mode)
+            if (value is OverlayMode mode)
             {
-                if(mode == OverlayMode.QuickMeasure || mode == OverlayMode.QuickColor)
+                if (mode == OverlayMode.QuickMeasure || mode == OverlayMode.QuickColor)
                 {
                     return Visibility.Visible;
                 }
@@ -101,13 +98,13 @@ namespace PixelRuler
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if(values[0] == DependencyProperty.UnsetValue)
+            if (values[0] == DependencyProperty.UnsetValue)
             {
                 return 0D;
             }
             double width = (double)values[0];
             double height = (double)values[1];
-            if(height > 0 && (width <= 0 || double.IsNaN(width)))
+            if (height > 0 && (width <= 0 || double.IsNaN(width)))
             {
                 return 90D;
             }
@@ -188,12 +185,12 @@ namespace PixelRuler
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var pathSaveInfoToken = value as PathSaveInfoToken;
-            if(pathSaveInfoToken == null)
+            if (pathSaveInfoToken == null)
             {
                 return DependencyProperty.UnsetValue;
             }
 
-            if(string.IsNullOrEmpty(pathSaveInfoToken.FormatSpecifierName))
+            if (string.IsNullOrEmpty(pathSaveInfoToken.FormatSpecifierName))
             {
                 return $"{{{pathSaveInfoToken.TokenName}}}";
             }
@@ -210,7 +207,7 @@ namespace PixelRuler
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if(value is bool bValue)
+            if (value is bool bValue)
             {
                 return !bValue;
             }
@@ -219,7 +216,7 @@ namespace PixelRuler
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value is bool bValue)
+            if (value is bool bValue)
             {
                 return !bValue;
             }
@@ -295,7 +292,7 @@ namespace PixelRuler
         {
             if (value is IList list)
             {
-                if(list.Count == 0)
+                if (list.Count == 0)
                 {
                     return Visibility.Collapsed;
                 }
@@ -310,7 +307,7 @@ namespace PixelRuler
         }
     }
 
-    public class DoubleShouldShowPlaceholderConverter: IValueConverter
+    public class DoubleShouldShowPlaceholderConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -349,7 +346,7 @@ namespace PixelRuler
             {
                 var factor = double.Parse(factorStr);
                 sysDrawingColor = sysDrawingColor.Times(factor);
-                
+
             }
             return new SolidColorBrush(sysDrawingColor.ConvertToWpfColor());
         }
@@ -395,7 +392,7 @@ namespace PixelRuler
         {
             if (value is bool bVal)
             {
-                if(bVal)
+                if (bVal)
                 {
                     return Visibility.Collapsed;
                 }
@@ -419,11 +416,11 @@ namespace PixelRuler
         {
             if (value is bool bVal)
             {
-                if(bVal)
+                if (bVal)
                 {
                     return Visibility.Visible;
                 }
-                else if(parameter is "Hidden")
+                else if (parameter is "Hidden")
                 {
                     return Visibility.Hidden;
                 }
@@ -503,7 +500,7 @@ namespace PixelRuler
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value is string displayName)
+            if (value is string displayName)
             {
                 foreach (var item in Enum.GetValues(targetType))
                 {

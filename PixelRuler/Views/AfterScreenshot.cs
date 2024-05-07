@@ -1,19 +1,12 @@
 ﻿using PixelRuler.Common;
 using PixelRuler.CustomControls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Resources;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using Wpf.Ui.Controls;
-using Wpf.Ui.Markup;
 using WpfScreenHelper;
 
 namespace PixelRuler.Views
@@ -21,8 +14,8 @@ namespace PixelRuler.Views
     public static class AfterScreenshot
     {
         public static void ShowOptions(
-            UIElement owner, 
-            SettingsViewModel settings, 
+            UIElement owner,
+            SettingsViewModel settings,
             Action<AfterScreenshotAction, object?> action,
             double dpiOverride = -1)
         {
@@ -37,7 +30,7 @@ namespace PixelRuler.Views
                 var contextMenu = new System.Windows.Controls.ContextMenu();
                 void ContextMenu_PreviewKeyDown(object sender, KeyEventArgs e)
                 {
-                    switch(e.Key)
+                    switch (e.Key)
                     {
                         case Key.A:
                             contextMenu.IsOpen = false;
@@ -61,7 +54,7 @@ namespace PixelRuler.Views
                 contextMenu.ContextMenuClosing += ContextMenu_ContextMenuClosing;
                 contextMenu.PreviewKeyDown += ContextMenu_PreviewKeyDown;
 
-                var menuItemPixelRuler = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("View"), InputGestureText="Enter" };
+                var menuItemPixelRuler = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("View"), InputGestureText = "Enter" };
                 menuItemPixelRuler.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.ViewInPixelRulerWindow, null); };
                 var pixelRulerIcon = new System.Windows.Controls.Image() { Width = 16, Height = 16 };
                 pixelRulerIcon.SetResourceReference(System.Windows.Controls.Image.SourceProperty, "di_Layer_1");
@@ -73,19 +66,19 @@ namespace PixelRuler.Views
                 var pinIcon = new SymbolIcon(SymbolRegular.Pin24);
                 menuItemPin.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, pinIcon);
 
-                var menuItemClose = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Cancel"), InputGestureText="Escape" };
+                var menuItemClose = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Cancel"), InputGestureText = "Escape" };
                 menuItemClose.SetResourceReference(Wpf.Ui.Controls.MenuItem.IconProperty, "CloseIcon");
                 menuItemClose.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Cancel, null); };
 
-                var menuItemCopy = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Copy"), InputGestureText="C" };
+                var menuItemCopy = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Copy"), InputGestureText = "C" };
                 menuItemCopy.SetResourceReference(Wpf.Ui.Controls.MenuItem.IconProperty, "CopyButtonPathProper");
                 menuItemCopy.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Copy, null); };
 
-                var menuItemSaveAs = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save As"), InputGestureText="Ctrl+S" };
+                var menuItemSaveAs = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save As"), InputGestureText = "Ctrl+S" };
                 menuItemSaveAs.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, UiUtils.CreateFontIcon(UiConsts.SaveAsSegoeMDL2)); //new SymbolIcon { Symbol = SymbolRegular.Save24 });
                 menuItemSaveAs.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.SaveAs, null); };
 
-                var menuItemSave = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save"), InputGestureText="S" };
+                var menuItemSave = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save"), InputGestureText = "S" };
                 menuItemSave.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, UiUtils.CreateFontIcon("\xE74E")); //new SymbolIcon { Symbol = SymbolRegular.Save24 });
                 menuItemSave.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, settings.DefaultPathSaveInfo); };
 
@@ -98,7 +91,7 @@ namespace PixelRuler.Views
                 contextMenu.Items.Add(menuItemClose);
 
                 int i = 0;
-                foreach(var saveDest in settings.AdditionalPathSaveInfos)
+                foreach (var saveDest in settings.AdditionalPathSaveInfos)
                 {
                     i++;
                     var menuItem = new MenuItemCustom() { Header = UiUtils.CreateTextBlock(saveDest.DisplayName?.SanitizeUnderscores()), InputGestureText = $"{i}", Icon = new SymbolIcon(saveDest.Icon) };
@@ -107,7 +100,7 @@ namespace PixelRuler.Views
                 }
 
                 int j = 0;
-                foreach(var cmdTarget in settings.CommandTargetInfos)
+                foreach (var cmdTarget in settings.CommandTargetInfos)
                 {
                     j++;
                     var menuItem = new MenuItemCustom() { Header = UiUtils.CreateTextBlock(cmdTarget.DisplayName?.SanitizeUnderscores()), InputGestureText = $"{i}", Icon = new SymbolIcon(cmdTarget.Icon) };
@@ -119,7 +112,7 @@ namespace PixelRuler.Views
             }
             var contextMenu = CreateContextMenu();
 
-            contextMenu.Placement = PlacementMode.MousePoint; 
+            contextMenu.Placement = PlacementMode.MousePoint;
             // if owner is set to screenshotwindow, context menu will always have the leftmost screens dpi..
             // if not set it will always have primary screen dpi
             //contextMenu.PlacementTarget = owner;

@@ -45,7 +45,7 @@ namespace PixelRuler
             SelectAllElementsCommand = new RelayCommandFull((object? o) => selectAllElements(), System.Windows.Input.Key.A, System.Windows.Input.ModifierKeys.Control, "Select All Elements");
             CopyRawImageToClipboardCommand = new RelayCommandFull(async (object? o) => await CopyRawImageToClipboard(), System.Windows.Input.Key.C, System.Windows.Input.ModifierKeys.Control, "Copy Image");
 
-            if(settingsViewModel != null)
+            if (settingsViewModel != null)
             {
                 this.Settings = settingsViewModel;
                 this.SelectedTool = settingsViewModel.DefaultTool;
@@ -72,7 +72,7 @@ namespace PixelRuler
 
         public async Task CopyRawImageToClipboard()
         {
-            if(this.ImageSource != null)
+            if (this.ImageSource != null)
             {
                 await CopyRawImageToClipboardImp();
                 RawImageCopied?.Invoke(this, EventArgs.Empty);
@@ -109,7 +109,7 @@ namespace PixelRuler
 
         private void zoomIn()
         {
-            if(CurrentZoomPercent >= App.MaxZoomPercent)
+            if (CurrentZoomPercent >= App.MaxZoomPercent)
             {
                 return;
             }
@@ -168,8 +168,8 @@ namespace PixelRuler
         public Bitmap? Image
         {
             get
-            { 
-                return mainImage; 
+            {
+                return mainImage;
             }
             set
             {
@@ -188,7 +188,7 @@ namespace PixelRuler
             }
             set
             {
-                if(imageSource != value)
+                if (imageSource != value)
                 {
                     imageSource = value;
                     OnPropertyChanged();
@@ -208,12 +208,12 @@ namespace PixelRuler
 
         public ScreenshotInfo ScreenshotInfo
         {
-            get; set; 
+            get; set;
         }
 
         public static BitmapSource? ConvertToImageSource(Bitmap? bitmap)
         {
-            if(bitmap == null)
+            if (bitmap == null)
             {
                 return null;
             }
@@ -237,7 +237,7 @@ namespace PixelRuler
                 if (activeMeasureElement != value)
                 {
                     activeMeasureElement = value;
-                    if(activeMeasureElement != null)
+                    if (activeMeasureElement != null)
                     {
                         activeMeasureElement.PropertyChanged += ActiveMeasureElement_PropertyChanged;
                     }
@@ -283,9 +283,9 @@ namespace PixelRuler
             sfd.AddExtension = true;
             sfd.Filter = "PNG|*.png|JPEG|*.jpg;*.jpeg|GIF|*.gif|BMP|*.bmp";
             var sfdres = sfd.ShowDialog();
-            if(sfdres is true)
+            if (sfdres is true)
             {
-                if(this.Image == null)
+                if (this.Image == null)
                 {
                     throw new Exception("Save As - Missing Image");
                 }
@@ -304,7 +304,7 @@ namespace PixelRuler
         {
             get
             {
-                if(activeMeasureElement != null)
+                if (activeMeasureElement != null)
                 {
                     return activeMeasureElement.ShapeWidth;
                 }
@@ -497,7 +497,7 @@ namespace PixelRuler
             var ofd = new OpenFileDialog();
             ofd.Filter = "PNG|*.png|JPEG|*.jpg;*.jpeg|GIF|*.gif|BMP|*.bmp";
             bool? res = ofd.ShowDialog();
-            if(res is true)
+            if (res is true)
             {
                 var bmp = System.Drawing.Bitmap.FromFile(ofd.FileName);
                 this.Image = bmp as System.Drawing.Bitmap;
@@ -551,7 +551,7 @@ namespace PixelRuler
             }
             set
             {
-                if(showGridlines != value)
+                if (showGridlines != value)
                 {
                     showGridlines = value;
                     OnPropertyChanged();
@@ -569,7 +569,7 @@ namespace PixelRuler
             }
             set
             {
-                if(selectedTool != value)
+                if (selectedTool != value)
                 {
                     selectedTool = value;
                     SelectedToolChanged?.Invoke(this, EventArgs.Empty);
@@ -629,8 +629,8 @@ namespace PixelRuler
         }
 
         private System.Drawing.Color color;
-        public System.Drawing.Color Color 
-        { 
+        public System.Drawing.Color Color
+        {
             get
             {
                 return color;

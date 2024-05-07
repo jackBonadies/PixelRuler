@@ -1,10 +1,5 @@
 ﻿using PixelRuler.CanvasElements;
 using PixelRuler.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -12,11 +7,11 @@ using System.Windows.Shapes;
 
 namespace PixelRuler
 {
-    class ColorPickElement : AbstractZoomCanvasShape 
+    class ColorPickElement : AbstractZoomCanvasShape
     {
         Rectangle rect;
 
-        public ColorPickElement(Canvas canvas)  : base(canvas)
+        public ColorPickElement(Canvas canvas) : base(canvas)
         {
             this.rect = UiUtils.CreateRectangle();
             this.rect.Stroke = new SolidColorBrush(Colors.Red);

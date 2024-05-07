@@ -1,22 +1,10 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using PixelRuler.Common;
-using PixelRuler.ViewModels;
+﻿using PixelRuler.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace PixelRuler.Views
 {
@@ -52,7 +40,7 @@ namespace PixelRuler.Views
             storyboard = closeButton.Resources["buttonFadeOut"] as Storyboard;
             storyboard.SetValue(Storyboard.TargetProperty, closeButton);
             storyboard.Begin();
-            if(this.IsFocused)
+            if (this.IsFocused)
             {
 
             }
@@ -78,7 +66,7 @@ namespace PixelRuler.Views
 
         private void PinImageWindow_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if(_useCustomMovement)
+            if (_useCustomMovement)
             {
                 isMoving = false;
                 this.ReleaseMouseCapture();
@@ -96,14 +84,14 @@ namespace PixelRuler.Views
 
         private void PinImageWindow_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if(_useCustomMovement)
+            if (_useCustomMovement)
             {
-                if(!isMoving)
+                if (!isMoving)
                 {
                     return;
                 }
                 var pt = e.GetPosition(this);
-                pt = this.PointToScreen(pt); 
+                pt = this.PointToScreen(pt);
 
                 var deltaX = (pt - startMovePos).X * .8;
                 var deltaY = (pt - startMovePos).Y * .8;
@@ -116,11 +104,11 @@ namespace PixelRuler.Views
         private void PinImageWindow_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             this.Cursor = Cursors.SizeAll;
-            if(_useCustomMovement)
+            if (_useCustomMovement)
             {
                 this.CaptureMouse();
                 startMovePos = e.GetPosition(this);
-                startMovePos = this.PointToScreen(startMovePos); 
+                startMovePos = this.PointToScreen(startMovePos);
                 startLeft = this.Left;
                 startTop = this.Top;
                 isMoving = true;
@@ -144,10 +132,10 @@ namespace PixelRuler.Views
             }
             set
             {
-                if(this.DataContext != value)
+                if (this.DataContext != value)
                 {
                     this.DataContext = value;
-                    if(this.ViewModel != null)
+                    if (this.ViewModel != null)
                     {
                         this.ViewModel.CloseCommand = new RelayCommand((object? o) => this.Close());
                     }
@@ -177,7 +165,7 @@ namespace PixelRuler.Views
             {
                 left = true;
             }
-            if(pt.X > border.ActualWidth - margin)
+            if (pt.X > border.ActualWidth - margin)
             {
                 left = false;
             }
@@ -195,15 +183,15 @@ namespace PixelRuler.Views
 
         private void SetCursor(Border border, bool? left, bool? top)
         {
-            if(left is null)
+            if (left is null)
             {
                 border.Cursor = Cursors.SizeNS;
             }
-            else if(top is null)
+            else if (top is null)
             {
                 border.Cursor = Cursors.SizeWE;
             }
-            else if(left == top)
+            else if (left == top)
             {
                 border.Cursor = Cursors.SizeNWSE;
             }
@@ -229,7 +217,7 @@ namespace PixelRuler.Views
 
         private void Border_MouseMove(object sender, MouseEventArgs e)
         {
-            if(isResizing)
+            if (isResizing)
             {
                 var t = System.Windows.Input.Mouse.GetPosition(this);
                 var newPoint = e.GetPosition(this);
@@ -264,7 +252,7 @@ namespace PixelRuler.Views
             this.sizeOrigWidth = this.mainImage.Width;
             this.sizeOrigLeft = this.Left;
             this.sizeOrigTop = this.Top;
-            if(!gripBorder.CaptureMouse())
+            if (!gripBorder.CaptureMouse())
             {
 
             }

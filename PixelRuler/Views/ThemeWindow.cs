@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using Wpf.Ui.Appearance;
@@ -50,7 +45,7 @@ namespace PixelRuler
             }
 
             var resourceDictionaries1 = App.Current.Resources.MergedDictionaries.OfType<Wpf.Ui.Markup.ThemesDictionary>();
-            foreach(var resource in resourceDictionaries1)
+            foreach (var resource in resourceDictionaries1)
             {
                 resource.Theme = wpfUiTheme;
             }

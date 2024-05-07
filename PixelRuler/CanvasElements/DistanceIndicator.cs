@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -28,7 +23,7 @@ namespace PixelRuler.CanvasElements
             lineEnd1 = GetLine();
             lineEnd2 = GetLine();
             lengthLabel = new SubtleLengthLabel();
-            IsHorizontal = isHorizontal; 
+            IsHorizontal = isHorizontal;
             this.UpdateForZoomChange();
         }
 
@@ -69,7 +64,7 @@ namespace PixelRuler.CanvasElements
 
             lineStart2.X1 = StartPoint.X + xPadding;
             lineStart2.Y1 = StartPoint.Y + yPadding;
-            if(IsHorizontal)
+            if (IsHorizontal)
             {
                 lineStart2.X2 = StartPoint.X + getArrowDistance() + xPadding;
                 lineStart2.Y2 = StartPoint.Y - getArrowDistance();

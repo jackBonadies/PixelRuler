@@ -8,19 +8,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Windows.Devices.PointOfService;
 
 namespace PixelRuler
 {
@@ -98,11 +90,11 @@ namespace PixelRuler
 
         private void MainCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if(e.PreviousSize == new Size(0,0))
+            if (e.PreviousSize == new Size(0, 0))
             {
                 return;
             }
-            if(this.shouldCenterImage())
+            if (this.shouldCenterImage())
             {
                 var deltaX = (e.NewSize.Width - e.PreviousSize.Width);
                 var deltaY = (e.NewSize.Height - e.PreviousSize.Height);
@@ -173,7 +165,7 @@ namespace PixelRuler
             ViewModel.MeasurementElements.Add(guideLineElement);
             guideLineElement.AddToOwnerCanvas();
             // add to gridline view.
-            if(isVertical)
+            if (isVertical)
             {
                 var guidelineTick = new GuidelineTick(gridLineLeft, guideLineElement, GuidelineTick.GridlineTickType.Guideline);
                 gridLineLeft.AddTick(guidelineTick);
@@ -204,9 +196,9 @@ namespace PixelRuler
             distanceIndicators.ForEachExt((it => it.Clear()));
             List<int> horzPoints = new List<int>();
             List<int> vertPoints = new List<int>();
-            foreach(var gridLine in this.ViewModel.MeasurementElements.OfType<GuidelineElement>())
+            foreach (var gridLine in this.ViewModel.MeasurementElements.OfType<GuidelineElement>())
             {
-                if(gridLine.IsHorizontal)
+                if (gridLine.IsHorizontal)
                 {
                     vertPoints.Add(gridLine.Coordinate);
                 }
@@ -230,7 +222,7 @@ namespace PixelRuler
                 var startPt = points[i];
                 var endPt = points[i + 1];
                 var indicator = new DistanceIndicator(this.innerCanvas, isHorizontal);
-                if(isHorizontal)
+                if (isHorizontal)
                 {
                     indicator.SetDistance(new Point(startPt, overlayEdge.Y), new Point(endPt, overlayEdge.Y));
                 }
@@ -247,7 +239,7 @@ namespace PixelRuler
 
         private void GridLine_MouseLeave(object sender, MouseEventArgs e)
         {
-            if(sender == gridLineTop)
+            if (sender == gridLineTop)
             {
                 verticalPendingLine.Visibility = Visibility.Collapsed;
             }
@@ -265,7 +257,7 @@ namespace PixelRuler
         {
             var pt = UiUtils.RoundPoint(e.GetPosition(this.innerCanvas));
 
-            if(sender == gridLineTop)
+            if (sender == gridLineTop)
             {
                 verticalPendingLine.X1 = pt.X;
                 verticalPendingLine.X2 = pt.X;
@@ -281,9 +273,9 @@ namespace PixelRuler
 
         private void OverlayCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(e.ChangedButton == MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left)
             {
-                if(ViewModel.SelectedTool == Tool.ColorPicker)
+                if (ViewModel.SelectedTool == Tool.ColorPicker)
                 {
                     zoomBox.Show(null, e, ZoomBoxCase.ColorPicker);
                 }
@@ -298,7 +290,7 @@ namespace PixelRuler
                 {
                     zoomBox.Hide();
                     ViewModel.OnColorSelected();
-                    if(this.ViewModel is ScreenshotWindowViewModel svm)
+                    if (this.ViewModel is ScreenshotWindowViewModel svm)
                     {
                         if (svm.Mode == OverlayMode.QuickMeasure || svm.Mode == OverlayMode.QuickColor)
                         {
@@ -331,7 +323,7 @@ namespace PixelRuler
             {
                 this.EndShape();
             }
-            else if(isPanning)
+            else if (isPanning)
             {
                 this.EndPan();
             }
@@ -371,7 +363,7 @@ namespace PixelRuler
 
         public bool CopySelectedData()
         {
-            if(this.SelectedMeasureElements.Any())
+            if (this.SelectedMeasureElements.Any())
             {
                 var copiedMeasElData = new List<MeasureElementData>();
                 foreach (var el in SelectedMeasureElements)
@@ -389,38 +381,38 @@ namespace PixelRuler
 
         public bool PasteCopiedData()
         {
-                if(copyCanvasData != null && copyCanvasData.CopiedData.Any())
+            if (copyCanvasData != null && copyCanvasData.CopiedData.Any())
+            {
+                var wasSelected = this.SelectedMeasureElements.ToList();
+                foreach (var item in wasSelected)
                 {
-                    var wasSelected = this.SelectedMeasureElements.ToList();
-                    foreach (var item in wasSelected) 
-                    {
-                        item.Selected = false;
-                    }
-
-                    try
-                    {
-                        selectAll = true;
-                        copyCanvasData.NumTimesPasted++;
-                        Point offset = new Point(30 * copyCanvasData.NumTimesPasted, 30 * copyCanvasData.NumTimesPasted); //may want shape to provide whether its vert or horz
-                        foreach (var data in copyCanvasData.CopiedData)
-                        {
-                            var newEl = MeasurementElementZoomCanvasShape.FromMeasureElementData(data, innerCanvas);
-                            newEl.StartPoint = newEl.StartPoint.Add(offset);
-                            newEl.EndPoint = newEl.EndPoint.Add(offset);
-                            newEl.FinishedDrawing = true;
-                            AddToCanvas(newEl);
-                            newEl.SetState();
-                            newEl.UpdateForZoomChange();
-                            newEl.Selected = true;
-                            newEl.SetState();
-                        }
-                    }
-                    finally
-                    {
-                        selectAll = false;
-                    }
-                return true;
+                    item.Selected = false;
                 }
+
+                try
+                {
+                    selectAll = true;
+                    copyCanvasData.NumTimesPasted++;
+                    Point offset = new Point(30 * copyCanvasData.NumTimesPasted, 30 * copyCanvasData.NumTimesPasted); //may want shape to provide whether its vert or horz
+                    foreach (var data in copyCanvasData.CopiedData)
+                    {
+                        var newEl = MeasurementElementZoomCanvasShape.FromMeasureElementData(data, innerCanvas);
+                        newEl.StartPoint = newEl.StartPoint.Add(offset);
+                        newEl.EndPoint = newEl.EndPoint.Add(offset);
+                        newEl.FinishedDrawing = true;
+                        AddToCanvas(newEl);
+                        newEl.SetState();
+                        newEl.UpdateForZoomChange();
+                        newEl.Selected = true;
+                        newEl.SetState();
+                    }
+                }
+                finally
+                {
+                    selectAll = false;
+                }
+                return true;
+            }
             return false;
         }
 
@@ -486,7 +478,7 @@ namespace PixelRuler
 
         public void Bind(bool bind)
         {
-            if(bind)
+            if (bind)
             {
                 this.ViewModel.ImageSourceChanged += ViewModel_ImageSourceChanged;
                 this.ViewModel.ZoomChanged += SelectedZoomChanged;
@@ -534,7 +526,7 @@ namespace PixelRuler
 
         private void SetCursor()
         {
-            switch(ViewModel.SelectedTool)
+            switch (ViewModel.SelectedTool)
             {
                 case Tool.BoundingBox:
                 case Tool.Ruler:
@@ -550,7 +542,7 @@ namespace PixelRuler
 
         private void SetShowGridLineState()
         {
-            if(this.ViewModel.ShowGridLines)
+            if (this.ViewModel.ShowGridLines)
             {
                 Canvas.SetLeft(this.innerCanvas, UiUtils.GetBorderPixelSize(this.GetDpi())); //TODO dpi changed
                 Canvas.SetTop(this.innerCanvas, UiUtils.GetBorderPixelSize(this.GetDpi()));
@@ -588,7 +580,7 @@ namespace PixelRuler
             try
             {
                 selectAll = true;
-                foreach(var measEl in ViewModel.MeasurementElements)
+                foreach (var measEl in ViewModel.MeasurementElements)
                 {
                     measEl.Selected = true;
                 }
@@ -601,7 +593,7 @@ namespace PixelRuler
 
         private void ClearAllMeasureElements(object? sender, EventArgs e)
         {
-            foreach(var measEl in ViewModel.MeasurementElements)
+            foreach (var measEl in ViewModel.MeasurementElements)
             {
                 measEl.Clear();
             }
@@ -611,7 +603,7 @@ namespace PixelRuler
         private void DeleteAllSelectedMeasureElements(object? sender, EventArgs e)
         {
             var selectedItems = ViewModel.MeasurementElements.Where(it => it.Selected).ToList();
-            if(selectedItems.Contains(ViewModel.ActiveMeasureElement))
+            if (selectedItems.Contains(ViewModel.ActiveMeasureElement))
             {
                 ViewModel.ActiveMeasureElement = null;
             }
@@ -627,7 +619,7 @@ namespace PixelRuler
             bool anyNonEmpty = false;
             foreach (var measEl in ViewModel.MeasurementElements)
             {
-                if(!measEl.IsEmpty && measEl.FinishedDrawing)
+                if (!measEl.IsEmpty && measEl.FinishedDrawing)
                 {
                     anyNonEmpty = true;
                     break;
@@ -637,12 +629,12 @@ namespace PixelRuler
 
         private bool shouldCenterImage()
         {
-            if(this.ViewModel?.Image == null)
+            if (this.ViewModel?.Image == null)
             {
                 return false;
             }
             // dont need dpi scaled here. already reverse scaled.
-            if(this.ActualHeight <= this.ViewModel.Image.Height)
+            if (this.ActualHeight <= this.ViewModel.Image.Height)
             {
                 return false;
             }
@@ -655,7 +647,7 @@ namespace PixelRuler
             double x = -Canvas.GetLeft(image);
             double y = -Canvas.GetTop(image);
 
-            if(this.IsLoaded)
+            if (this.IsLoaded)
             {
                 if (shouldCenterImage())
                 {
@@ -670,7 +662,7 @@ namespace PixelRuler
         private void ViewModel_ImageSourceChanged(object? sender, EventArgs e)
         {
             // happens before Loaded... cant get this.ActualHeight...
-            SetImageLocation(innerCanvas, mainImage);    
+            SetImageLocation(innerCanvas, mainImage);
         }
 
 
@@ -707,16 +699,16 @@ namespace PixelRuler
             if (keepMousePositionAtLocation)
             {
                 var mousePos = Mouse.GetPosition(this);
-                if(mousePos.X < 0 || 
-                   mousePos.Y < 0 || 
-                   mousePos.X >= this.ActualWidth || 
+                if (mousePos.X < 0 ||
+                   mousePos.Y < 0 ||
+                   mousePos.X >= this.ActualWidth ||
                    mousePos.Y >= this.ActualHeight)
                 {
                     isWithinBounds = false;
                 }
             }
 
-            if(keepMousePositionAtLocation && isWithinBounds)
+            if (keepMousePositionAtLocation && isWithinBounds)
             {
                 return Mouse.GetPosition(this.innerCanvas);
             }
@@ -754,11 +746,11 @@ namespace PixelRuler
 
         private void MainCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if(e.ChangedButton == MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left)
             {
                 this.EndShape();
             }
-            else if(e.ChangedButton == MouseButton.Middle || e.ChangedButton == MouseButton.Right)
+            else if (e.ChangedButton == MouseButton.Middle || e.ChangedButton == MouseButton.Right)
             {
                 this.EndPan();
             }
@@ -776,10 +768,10 @@ namespace PixelRuler
             innerCanvas.Cursor = cursorOld;
             innerCanvas.ReleaseMouseCapture();
 
-            if(currentMeasurementElement != null)
+            if (currentMeasurementElement != null)
             {
                 currentMeasurementElement.FinishedDrawing = true;
-                if(currentMeasurementElement.IsEmpty)
+                if (currentMeasurementElement.IsEmpty)
                 {
                     currentMeasurementElement.Clear();
                     ViewModel.MeasurementElements.Remove(currentMeasurementElement);
@@ -790,7 +782,7 @@ namespace PixelRuler
 
         private void ToolDown(MouseButtonEventArgs e)
         {
-            switch(ViewModel.SelectedTool)
+            switch (ViewModel.SelectedTool)
             {
                 case Tool.BoundingBox:
                 case Tool.Ruler:
@@ -875,7 +867,7 @@ namespace PixelRuler
 
         private void UnselectAll()
         {
-            foreach(var measEl in ViewModel.MeasurementElements)
+            foreach (var measEl in ViewModel.MeasurementElements)
             {
                 measEl.Selected = false;
             }
@@ -893,12 +885,12 @@ namespace PixelRuler
 
             var roundedPoint = UiUtils.RoundPoint(e.GetPosition(innerCanvas));
 
-            if(!isSticky)
+            if (!isSticky)
             {
                 currentMeasurementElement?.Clear();
             }
 
-            if(ViewModel.SelectedTool == Tool.BoundingBox)
+            if (ViewModel.SelectedTool == Tool.BoundingBox)
             {
                 currentMeasurementElement = new BoundingBoxElement(this.innerCanvas);
             }
@@ -951,17 +943,17 @@ namespace PixelRuler
 
         private void CurrentMeasurementElement_SelectedChanged(object? sender, EventArgs e)
         {
-            if(sender is MeasurementElementZoomCanvasShape measEl)
+            if (sender is MeasurementElementZoomCanvasShape measEl)
             {
-                if(measEl.Selected)
+                if (measEl.Selected)
                 {
                     ViewModel.ActiveMeasureElement = measEl;
-                    if(KeyUtil.IsMultiSelect() || selectAll)
+                    if (KeyUtil.IsMultiSelect() || selectAll)
                     {
                         return;
                     }
                     var toDeselect = ViewModel.MeasurementElements.Where(it => it != measEl && it.Selected);
-                    foreach(var measElToDeselect in toDeselect)
+                    foreach (var measElToDeselect in toDeselect)
                     {
                         measElToDeselect.Selected = false;
                     }
@@ -985,13 +977,13 @@ namespace PixelRuler
 
             if (ViewModel.SelectedTool == Tool.ColorPicker)
             {
-                if(colorPickBox == null)
+                if (colorPickBox == null)
                 {
                     colorPickBox = new ColorPickElement(this.innerCanvas);
                 }
                 var truncatedPoint = UiUtils.TruncatePoint(e.GetPosition(innerCanvas));
                 colorPickBox.SetPosition(truncatedPoint);
-                if(System.Windows.Input.Mouse.LeftButton == MouseButtonState.Pressed)
+                if (System.Windows.Input.Mouse.LeftButton == MouseButtonState.Pressed)
                 {
                     SetColorUnderMouse(e);
                 }
@@ -1020,7 +1012,7 @@ namespace PixelRuler
                 var ocp = e.GetPosition(this.overlayCanvas);
                 var overlayPt = mainImage.TranslatePoint(ocp, this.overlayCanvas);
 
-                if(ViewModel.ShowGridLines)
+                if (ViewModel.ShowGridLines)
                 {
                     gridLineTop.UpdateTranslation();
                     gridLineTop.UpdateTickmarks();
@@ -1030,12 +1022,12 @@ namespace PixelRuler
                 }
 
 
-                foreach(var overlayElement in OverlayCanvasElements)
+                foreach (var overlayElement in OverlayCanvasElements)
                 {
                     overlayElement.UpdateForCoordinatesChanged();
                 }
 
-                
+
                 distanceIndicators.ForEachExt(updateDistanceIndicatorsPosition);
 
                 //var leftCanvasSpace = new Point(Canvas.GetLeft(mainImage), Canvas.GetTop(mainImage));
@@ -1074,7 +1066,7 @@ namespace PixelRuler
 
         private void applyConstraints()
         {
-            if(!this.ViewModel.FullscreenScreenshotMode)
+            if (!this.ViewModel.FullscreenScreenshotMode)
             {
                 return;
             }
@@ -1133,7 +1125,7 @@ namespace PixelRuler
             var mousePos = System.Windows.Input.Mouse.GetPosition(canvas);
             var pointToKeepAtLocation = constrainToImage(mousePos);
 
-            if((mouseWheelAmountAccum > 0 && e.Delta < 0) ||
+            if ((mouseWheelAmountAccum > 0 && e.Delta < 0) ||
                (mouseWheelAmountAccum < 0 && e.Delta > 0))
             {
                 mouseWheelAmountAccum = 0;
@@ -1141,11 +1133,11 @@ namespace PixelRuler
             mouseWheelAmountAccum += e.Delta;
 
             int thresholdAmount = 30;
-            if(mouseWheelAmountAccum >= thresholdAmount)
+            if (mouseWheelAmountAccum >= thresholdAmount)
             {
                 mouseWheelAmountAccum %= thresholdAmount;
             }
-            else if(mouseWheelAmountAccum <= -thresholdAmount)
+            else if (mouseWheelAmountAccum <= -thresholdAmount)
             {
                 mouseWheelAmountAccum %= thresholdAmount;
             }
@@ -1161,7 +1153,7 @@ namespace PixelRuler
 
             Zoom(oldScale, newScale, pointToKeepAtLocation);
 
-            foreach(var overlayElement in OverlayCanvasElements)
+            foreach (var overlayElement in OverlayCanvasElements)
             {
                 overlayElement.UpdateForCoordinatesChanged();
             }
@@ -1178,7 +1170,7 @@ namespace PixelRuler
             st.ScaleX = newScale;
             st.ScaleY = newScale;
 
-            if(zoomBehavior == ZoomBehavior.ResetWindow)
+            if (zoomBehavior == ZoomBehavior.ResetWindow)
             {
                 SetImageLocation(this.innerCanvas, this.mainImage);
             }
@@ -1202,7 +1194,7 @@ namespace PixelRuler
                 tt.Y = (int)Math.Round(tt.Y);
             }
 
-            if(this.ViewModel.ShowGridLines)
+            if (this.ViewModel.ShowGridLines)
             {
                 gridLineTop.SetZoom(st.ScaleX);
                 gridLineTop.UpdateTranslation();
@@ -1247,12 +1239,12 @@ namespace PixelRuler
         {
             colorPickBox?.UpdateForZoomChange();
 
-            foreach(var measEl in ViewModel.MeasurementElements)
+            foreach (var measEl in ViewModel.MeasurementElements)
             {
                 measEl.UpdateForZoomChange();
             }
 
-            foreach(var measEl in distanceIndicators)
+            foreach (var measEl in distanceIndicators)
             {
                 measEl.UpdateForZoomChange();
             }

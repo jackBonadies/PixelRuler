@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace PixelRuler.Models
@@ -12,7 +7,7 @@ namespace PixelRuler.Models
     public class PendingShortcutInfo : INotifyPropertyChanged
     {
         private Key key;
-        public Key Key 
+        public Key Key
         {
             get
             {
@@ -20,7 +15,7 @@ namespace PixelRuler.Models
             }
             set
             {
-                if(key != value)
+                if (key != value)
                 {
                     key = value;
                     OnPropertyChanged();
@@ -31,7 +26,7 @@ namespace PixelRuler.Models
         }
 
         private ModifierKeys modifiers;
-        public ModifierKeys Modifiers 
+        public ModifierKeys Modifiers
         {
             get
             {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Transactions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -85,7 +84,7 @@ namespace PixelRuler.CanvasElements
 
         private void HitBoxManipulate_LostMouseCapture(object sender, MouseEventArgs e)
         {
-            if(isManipulating)
+            if (isManipulating)
             {
                 EndManipulate(false);
             }
@@ -149,7 +148,7 @@ namespace PixelRuler.CanvasElements
                 return;
             }
 
-            if(select_on_mouse_down)
+            if (select_on_mouse_down)
             {
                 this.Selected = true;
             }
@@ -216,7 +215,7 @@ namespace PixelRuler.CanvasElements
             }
             set
             {
-                if(endPoint != value)
+                if (endPoint != value)
                 {
                     endPoint = value;
                     ShapeSizeChanged();
@@ -229,7 +228,7 @@ namespace PixelRuler.CanvasElements
             OnPropertyChanged("ShapeWidth");
             OnPropertyChanged("ShapeHeight");
         }
-        
+
         public virtual double ShapeWidth
         {
             get
@@ -237,7 +236,7 @@ namespace PixelRuler.CanvasElements
                 return Math.Abs(this.endPoint.X - this.startPoint.X);
             }
         }
-        
+
         public virtual double ShapeHeight
         {
             get
@@ -278,7 +277,7 @@ namespace PixelRuler.CanvasElements
 
         public override void UpdateForZoomChange()
         {
-            foreach(var circleSizer in circleSizerControls)
+            foreach (var circleSizer in circleSizerControls)
             {
                 var st = circleSizer.LayoutTransform as ScaleTransform;
                 st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;

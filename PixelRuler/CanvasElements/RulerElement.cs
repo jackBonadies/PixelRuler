@@ -1,16 +1,11 @@
-﻿using System;
+﻿using PixelRuler.Common;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows;
-using System.Security.Policy;
-using System.Windows.Input;
-using PixelRuler.Common;
 
 namespace PixelRuler.CanvasElements
 {
@@ -252,7 +247,7 @@ namespace PixelRuler.CanvasElements
         {
             get
             {
-                if(!IsHorizontal())
+                if (!IsHorizontal())
                 {
                     return double.NaN;
                 }
@@ -264,7 +259,7 @@ namespace PixelRuler.CanvasElements
         {
             get
             {
-                if(IsHorizontal())
+                if (IsHorizontal())
                 {
                     return double.NaN;
                 }
@@ -274,7 +269,7 @@ namespace PixelRuler.CanvasElements
 
         private void SetShapeState()
         {
-            if(double.IsNaN(EndPoint.X))
+            if (double.IsNaN(EndPoint.X))
             {
                 return;
             }
@@ -283,7 +278,7 @@ namespace PixelRuler.CanvasElements
             line1.Y1 = StartPoint.Y;
 
 
-            if(IsHorizontal())
+            if (IsHorizontal())
             {
                 line1.X2 = EndPoint.X;
                 line1.Y2 = line1.Y1;
@@ -319,7 +314,7 @@ namespace PixelRuler.CanvasElements
             hitBoxManipulate.Height = maxY - minY + padding * 2;
 
 
-            if(IsHorizontal())
+            if (IsHorizontal())
             {
                 Canvas.SetTop(startResizeCircle, hitBoxManipulate.Height / 2 - startResizeCircle.ActualHeight / 2 * getUIUnit() / owningCanvas.GetDpi());
                 Canvas.SetTop(endResizeCircle, hitBoxManipulate.Height / 2 - startResizeCircle.ActualHeight / 2 * getUIUnit() / owningCanvas.GetDpi());
@@ -348,19 +343,19 @@ namespace PixelRuler.CanvasElements
             if (IsHorizontal())
             {
                 Canvas.SetTop(rulerLengthLabel, line1.Y1 - (rulerLengthLabel.ActualHeight + 2) * getUIUnit());
-                Canvas.SetLeft(rulerLengthLabel, (line1.X1 + line1.X2) / 2.0 - rulerLengthLabel.ActualWidth * getUIUnit() / 2.0  );// - BoundingBoxLabel.ActualWidth * 1.5);
+                Canvas.SetLeft(rulerLengthLabel, (line1.X1 + line1.X2) / 2.0 - rulerLengthLabel.ActualWidth * getUIUnit() / 2.0);// - BoundingBoxLabel.ActualWidth * 1.5);
             }
             else
             {
-                Canvas.SetLeft(rulerLengthLabel, line1.X1 +  2 * getUIUnit());
-                Canvas.SetTop(rulerLengthLabel, (line1.Y1 + line1.Y2) / 2.0 - rulerLengthLabel.ActualHeight * getUIUnit() / 2.0  );// - BoundingBoxLabel.ActualWidth * 1.5);
+                Canvas.SetLeft(rulerLengthLabel, line1.X1 + 2 * getUIUnit());
+                Canvas.SetTop(rulerLengthLabel, (line1.Y1 + line1.Y2) / 2.0 - rulerLengthLabel.ActualHeight * getUIUnit() / 2.0);// - BoundingBoxLabel.ActualWidth * 1.5);
             }
             rulerLengthLabel.Dim1 = (int)Extent;
         }
 
         private double getEndCapsSize()
         {
-            if(endcapsInUIUnits)
+            if (endcapsInUIUnits)
             {
                 return 8 * getUIUnit();
             }
@@ -450,11 +445,11 @@ namespace PixelRuler.CanvasElements
             }
             set
             {
-                if(finishedDrawing != value)
+                if (finishedDrawing != value)
                 {
                     finishedDrawing = value;
                     isHorizontalState = IsHorizontal();
-                    foreach(var sizer in circleSizerControls)
+                    foreach (var sizer in circleSizerControls)
                     {
                         sizer.Cursor = IsHorizontal() ? Cursors.SizeWE : Cursors.SizeNS;
                     }

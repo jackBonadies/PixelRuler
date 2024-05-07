@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using static PixelRuler.NativeMethods;
 
 namespace PixelRuler
@@ -133,28 +130,28 @@ namespace PixelRuler
         /// <returns></returns>
         public static IntPtr GetWindowUnderPointExcludingOwn(NativeMethods.POINT point, IntPtr ownWindowHandle)
         {
-                IntPtr foundWindow = NativeMethods.WindowFromPoint(point);
-                if (foundWindow == ownWindowHandle)
+            IntPtr foundWindow = NativeMethods.WindowFromPoint(point);
+            if (foundWindow == ownWindowHandle)
+            {
+                foundWindow = NativeMethods.GetWindow(foundWindow, NativeMethods.GW_HWNDNEXT);
+            }
+            while (true)
+            {
+                foundWindow = NativeMethods.GetWindow(foundWindow, NativeMethods.GW_HWNDNEXT);
+                NativeMethods.GetWindowRect(foundWindow, out RECT rect);
+                if (PtInRect(ref rect, point))
                 {
-                    foundWindow = NativeMethods.GetWindow(foundWindow, NativeMethods.GW_HWNDNEXT);
-                }
-                while (true)
-                {
-                    foundWindow = NativeMethods.GetWindow(foundWindow, NativeMethods.GW_HWNDNEXT);
-                    NativeMethods.GetWindowRect(foundWindow, out RECT rect);
-                    if (PtInRect(ref rect, point))
+                    if (IsIconic(foundWindow) || !IsWindowVisible(foundWindow))
                     {
-                        if (IsIconic(foundWindow) || !IsWindowVisible(foundWindow))
-                        {
-                            continue;
-                        }
-                        if(!VirtualDesktopHelper.IsWindowOnCurrentVirtualDesktop(foundWindow))
-                        {
-                            continue;
-                        }
-                        return foundWindow; 
+                        continue;
                     }
+                    if (!VirtualDesktopHelper.IsWindowOnCurrentVirtualDesktop(foundWindow))
+                    {
+                        continue;
+                    }
+                    return foundWindow;
                 }
+            }
             return IntPtr.Zero;
         }
 
@@ -227,10 +224,10 @@ namespace PixelRuler
         static VirtualDesktopHelper()
         {
             var virtualDesktopManagerType = Type.GetTypeFromCLSID(new Guid("aa509086-5ca9-4c25-8f95-589d3c07b48a"));
-            if(virtualDesktopManagerType != null)
+            if (virtualDesktopManagerType != null)
             {
                 var instance = Activator.CreateInstance(virtualDesktopManagerType);
-                if(instance is IVirtualDesktopManager virtualDesktopManagerInstance)
+                if (instance is IVirtualDesktopManager virtualDesktopManagerInstance)
                 {
                     desktopManager = virtualDesktopManagerInstance;
                 }
@@ -239,7 +236,7 @@ namespace PixelRuler
 
         public static bool IsWindowOnCurrentVirtualDesktop(IntPtr windowHandle)
         {
-            if(desktopManager == null)
+            if (desktopManager == null)
             {
                 return true; // better to be safe
             }

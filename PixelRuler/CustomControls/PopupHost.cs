@@ -1,20 +1,4 @@
-﻿#region Copyright (c) Zygo Corporation
-//'****************************************************************************
-//'
-//' THIS PROGRAM IS AN UNPUBLISHED WORK FULLY PROTECTED BY THE UNITED
-//' STATES COPYRIGHT LAWS AND IS CONSIDERED A TRADE SECRET BELONGING TO
-//' THE COPYRIGHT HOLDER. COPYRIGHT ?ZYGO CORPORATION.
-//'
-//'****************************************************************************/
-#endregion
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
+﻿using System.Windows.Controls.Primitives;
 
 namespace PixelRuler.CustomControls
 {

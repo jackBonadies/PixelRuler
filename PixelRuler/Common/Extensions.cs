@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -35,7 +33,7 @@ namespace PixelRuler
 
         public static string SanitizeUnderscores(this string uiString)
         {
-            if(uiString.Contains('_'))
+            if (uiString.Contains('_'))
             {
                 return uiString.Replace("_", "__");
             }
@@ -84,7 +82,7 @@ namespace PixelRuler
             hexColor = hexColor.Replace("#", string.Empty);
 
             byte a = 255;
-            if(hexColor.Length == 8)
+            if (hexColor.Length == 8)
             {
                 a = (byte)(Convert.ToUInt32(hexColor.Substring(0, 2), 16));
                 hexColor = hexColor.Substring(2);
