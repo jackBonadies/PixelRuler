@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PixelRuler", "PixelRuler\Pi
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "WapProjTemplate2", "WapProjTemplate2\WapProjTemplate2.wapproj", "{CEE4FE68-3674-4286-B312-B3467C218BF6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfSampleAppDemo", "WpfSampleAppDemo\WpfSampleAppDemo.csproj", "{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,26 @@ Global
 		{CEE4FE68-3674-4286-B312-B3467C218BF6}.Release|x86.ActiveCfg = Release|x86
 		{CEE4FE68-3674-4286-B312-B3467C218BF6}.Release|x86.Build.0 = Release|x86
 		{CEE4FE68-3674-4286-B312-B3467C218BF6}.Release|x86.Deploy.0 = Release|x86
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Debug|ARM.Build.0 = Debug|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Debug|x64.Build.0 = Debug|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Debug|x86.Build.0 = Debug|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Release|ARM.ActiveCfg = Release|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Release|ARM.Build.0 = Release|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Release|ARM64.Build.0 = Release|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Release|x64.ActiveCfg = Release|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Release|x64.Build.0 = Release|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Release|x86.ActiveCfg = Release|Any CPU
+		{50385DC2-4FDF-4D5A-A208-2B4C2C89A17D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
