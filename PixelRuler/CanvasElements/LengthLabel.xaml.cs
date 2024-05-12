@@ -23,9 +23,11 @@ namespace PixelRuler
 
         private void BoundingBoxLabel_Loaded(object sender, RoutedEventArgs e)
         {
-            var dpi = this.GetDpi();
-            this.LayoutTransform = new ScaleTransform(dpi, dpi);
+            var scale = ScaleOverride == -1 ? this.GetDpi() : ScaleOverride;
+            this.LayoutTransform = new ScaleTransform(scale, scale);
         }
+
+        public double ScaleOverride { get; set; } = -1;
 
         /// <summary>
         /// Extent
@@ -50,9 +52,9 @@ namespace PixelRuler
             }
         }
 
-        public int Has2Dim
+        public bool Has2Dim
         {
-            get { return (int)GetValue(Has2DimProperty); }
+            get { return (bool)GetValue(Has2DimProperty); }
             set
             {
                 SetValue(Has2DimProperty, value);

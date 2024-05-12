@@ -1,4 +1,14 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿#region Copyright (c) Zygo Corporation
+//'****************************************************************************
+//'
+//' THIS PROGRAM IS AN UNPUBLISHED WORK FULLY PROTECTED BY THE UNITED
+//' STATES COPYRIGHT LAWS AND IS CONSIDERED A TRADE SECRET BELONGING TO
+//' THE COPYRIGHT HOLDER. COPYRIGHT ?ZYGO CORPORATION.
+//'
+//'****************************************************************************/
+#endregion
+
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows;
 

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Win32;
 using PixelRuler.Models;
+using PixelRuler.Views;
 using System.ComponentModel;
 
 namespace PixelRuler.ViewModels
@@ -21,7 +22,11 @@ namespace PixelRuler.ViewModels
                     ExecutableName = ofd.FileName;
                 }
             });
+            IconViewModel = new IconViewModel();
+            IconViewModel.CurrentIcon = commandTargetInfo.Icon;
         }
+
+        public IconViewModel IconViewModel { get; set; }
 
 
         public RelayCommand SelectExecutableCommand { get; set; }

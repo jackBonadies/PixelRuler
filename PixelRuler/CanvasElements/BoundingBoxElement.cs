@@ -24,7 +24,7 @@ namespace PixelRuler
         {
             this.owningCanvas = owningCanvas;
             rect1 = UiUtils.CreateRectangle();
-            boundingBoxLabelForEndPoint = new BoundingBoxLabel();
+            //boundingBoxLabelForEndPoint = new BoundingBoxLabel();
             widthLabel = new LengthLabel();
             heightLabel = new LengthLabel();
         }
@@ -72,7 +72,7 @@ namespace PixelRuler
                 Canvas.SetZIndex(rect2, App.SHAPE_INDEX + 1);
             }
 
-            boundingBoxLabelForEndPoint.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
+            //boundingBoxLabelForEndPoint.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
 
             widthLabel.RenderTransform = new ScaleTransform() { ScaleX = 1.0, ScaleY = 1.0 };
 
@@ -87,8 +87,8 @@ namespace PixelRuler
                 SetupResizer(circleSizer);
             }
 
-            this.owningCanvas.Children.Add(boundingBoxLabelForEndPoint);
-            Canvas.SetZIndex(boundingBoxLabelForEndPoint, App.LABEL_INDEX);
+            //this.owningCanvas.Children.Add(boundingBoxLabelForEndPoint);
+            //Canvas.SetZIndex(boundingBoxLabelForEndPoint, App.LABEL_INDEX);
 
             this.owningCanvas.Children.Add(widthLabel);
             Canvas.SetZIndex(widthLabel, App.LABEL_INDEX);
@@ -430,10 +430,10 @@ namespace PixelRuler
 
         private void SetLabelState()
         {
-            Canvas.SetTop(boundingBoxLabelForEndPoint, EndPoint.Y);
-            Canvas.SetLeft(boundingBoxLabelForEndPoint, EndPoint.X);// - BoundingBoxLabel.ActualWidth * 1.5);
-            boundingBoxLabelForEndPoint.BoundingBoxWidth = (int)rect1.Width;
-            boundingBoxLabelForEndPoint.BoundingBoxHeight = (int)rect1.Height;
+            //Canvas.SetTop(boundingBoxLabelForEndPoint, EndPoint.Y);
+            //Canvas.SetLeft(boundingBoxLabelForEndPoint, EndPoint.X);// - BoundingBoxLabel.ActualWidth * 1.5);
+            //boundingBoxLabelForEndPoint.BoundingBoxWidth = (int)rect1.Width;
+            //boundingBoxLabelForEndPoint.BoundingBoxHeight = (int)rect1.Height;
 
             Canvas.SetLeft(widthLabel, (StartPoint.X + EndPoint.X) / 2.0 - widthLabel.ActualWidth * getUIUnit() / 2.0);// - BoundingBoxLabel.ActualWidth * 1.5);
             Canvas.SetTop(widthLabel, StartPoint.Y - (widthLabel.ActualHeight + 2) * getUIUnit());
@@ -463,11 +463,11 @@ namespace PixelRuler
         private Rectangle rect1;
         private Rectangle? rect2;
 
-        public BoundingBoxLabel boundingBoxLabelForEndPoint
-        {
-            get;
-            private set;
-        }
+        //public BoundingBoxLabel boundingBoxLabelForEndPoint
+        //{
+        //    get;
+        //    private set;
+        //}
 
         public LengthLabel widthLabel
         {
@@ -488,11 +488,11 @@ namespace PixelRuler
             {
                 rect2.StrokeThickness = getUIUnit();
             }
-            var st = boundingBoxLabelForEndPoint.RenderTransform as ScaleTransform;
-            st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
-            st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
+            //var st = boundingBoxLabelForEndPoint.RenderTransform as ScaleTransform;
+            //st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
+            //st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
 
-            st = widthLabel.RenderTransform as ScaleTransform;
+            var st = widthLabel.RenderTransform as ScaleTransform;
             st.ScaleX = 1.0 / this.owningCanvas.GetScaleTransform().ScaleX;
             st.ScaleY = 1.0 / this.owningCanvas.GetScaleTransform().ScaleY;
 
@@ -508,7 +508,7 @@ namespace PixelRuler
             base.Clear();
             this.owningCanvas.Children.Remove(rect1);
             this.owningCanvas.Children.Remove(rect2);
-            this.owningCanvas.Children.Remove(boundingBoxLabelForEndPoint);
+            //this.owningCanvas.Children.Remove(boundingBoxLabelForEndPoint);
             this.owningCanvas.Children.Remove(widthLabel);
             this.owningCanvas.Children.Remove(heightLabel);
         }

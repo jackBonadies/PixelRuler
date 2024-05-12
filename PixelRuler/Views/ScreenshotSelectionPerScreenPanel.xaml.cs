@@ -60,12 +60,10 @@ namespace PixelRuler.Views
         private void ScreenshotSelectionPerScreenPanel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             ViewModel.Settings.ScreenshotSelectionViewModel.ScreenshotHelpOnChanged += ScreenshotSelectionViewModel_ScreenshotHelpOnChanged;
-            ViewModel.Settings.QuickColorModeChanged += Settings_QuickColorModeChanged;
             ViewModel.ColorCopied += ViewModel_ColorCopied;
             ViewModel.ColorSelected += ViewModel_ColorSelected;
             ViewModel.ColorStartSelect += ViewModel_ColorStartSelect;
         }
-
 
         private void ViewModel_ColorStartSelect(object? sender, EventArgs e)
         {
@@ -76,19 +74,6 @@ namespace PixelRuler.Views
         private void ViewModel_ColorSelected(object? sender, EventArgs e)
         {
 
-        }
-
-        private void Settings_QuickColorModeChanged(object? sender, EventArgs e)
-        {
-            if (this.IsMouseEnteredVirtual)
-            {
-                var tns = new ToastNotificationSingle();
-                tns.Style = Application.Current.Resources["toastInfoStyle"] as Style;
-                tns.AnimationType = ToastAnimationStyle.FadeInOut;
-                tns.VerticalAlignment = VerticalAlignment.Bottom;
-                tns.HorizontalAlignment = HorizontalAlignment.Right;
-                tns.Show(this.gridTopLevel);
-            }
         }
 
         private void ViewModel_ColorCopied(object? sender, EventArgs e)
@@ -107,7 +92,6 @@ namespace PixelRuler.Views
                     };
                     if (mode == QuickColorMode.AutoCopyMany)
                     {
-                        tns.AnimationType = ToastAnimationStyle.FadeInOut;
                         tns.Show(this.gridTopLevel);
                     }
                     else
