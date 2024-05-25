@@ -1,6 +1,7 @@
 ﻿using PixelRuler.Common;
 using PixelRuler.CustomControls;
 using System;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -82,12 +83,19 @@ namespace PixelRuler.Views
                 menuItemSave.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, UiUtils.CreateFontIcon("\xE74E")); //new SymbolIcon { Symbol = SymbolRegular.Save24 });
                 menuItemSave.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, settings.DefaultPathSaveInfo); };
 
+                var menuItemSaveTo = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Save To") };
+                menuItemSaveTo.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, UiUtils.CreateFontIcon("\xE74E")); 
+
+                var menuItemSendTo = new MenuItemCustom() { Header = UiUtils.CreateTextBlock("Send To") };
+                menuItemSendTo.SetValue(Wpf.Ui.Controls.MenuItem.IconProperty, new SymbolIcon(SymbolRegular.ArrowStepOut24));
 
                 contextMenu.Items.Add(menuItemPixelRuler);
                 contextMenu.Items.Add(menuItemPin);
                 contextMenu.Items.Add(menuItemCopy);
                 contextMenu.Items.Add(menuItemSave);
+                contextMenu.Items.Add(menuItemSaveTo);
                 contextMenu.Items.Add(menuItemSaveAs);
+                contextMenu.Items.Add(menuItemSendTo);
                 contextMenu.Items.Add(menuItemClose);
 
                 int i = 0;
@@ -96,16 +104,18 @@ namespace PixelRuler.Views
                     i++;
                     var menuItem = new MenuItemCustom() { Header = UiUtils.CreateTextBlock(saveDest.DisplayName?.SanitizeUnderscores()), InputGestureText = $"{i}", Icon = new SymbolIcon(saveDest.Icon) };
                     menuItem.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.Save, saveDest); };
-                    contextMenu.Items.Add(menuItem);
+                    menuItemSaveTo.Items.Add(menuItem);
+                    //contextMenu.Items.Add(menuItem);
                 }
 
                 int j = 0;
                 foreach (var cmdTarget in settings.CommandTargetInfos)
                 {
                     j++;
-                    var menuItem = new MenuItemCustom() { Header = UiUtils.CreateTextBlock(cmdTarget.DisplayName?.SanitizeUnderscores()), InputGestureText = $"{i}", Icon = new SymbolIcon(cmdTarget.Icon) };
+                    var menuItem = new MenuItemCustom() { Header = UiUtils.CreateTextBlock(cmdTarget.DisplayName?.SanitizeUnderscores()), InputGestureText = $"{j}", Icon = new SymbolIcon(cmdTarget.Icon) };
                     menuItem.Click += (object sender, RoutedEventArgs e) => { action(AfterScreenshotAction.CommandTarget, cmdTarget); };
-                    contextMenu.Items.Add(menuItem);
+                    menuItemSendTo.Items.Add(menuItem);
+                    //contextMenu.Items.Add(menuItem);
                 }
 
                 return contextMenu;
