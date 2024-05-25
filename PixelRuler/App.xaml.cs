@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shell;
+using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 
 namespace PixelRuler
@@ -54,6 +55,7 @@ namespace PixelRuler
             singleProcessMutex = new Mutex(true, "Global\\PixelRuler_SingleProcess_Global", out bool createdNew);
             if (createdNew)
             {
+                ApplicationAccentColorManager.ApplySystemAccent();
                 ConfigureServices();
                 // configure host
                 Task.Run(() => PipeServer());
@@ -87,11 +89,11 @@ namespace PixelRuler
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<SettingsViewModel>();
-            services.AddSingleton<SettingsWindow>();
 
             services.AddTransient<RootViewModel>();
             services.AddTransient<PixelRulerViewModel>();
 
+            services.AddTransient<SettingsWindow>();
             services.AddTransient<RootWindow>();
             services.AddTransient<MainWindow>();
 

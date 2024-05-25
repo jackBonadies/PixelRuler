@@ -18,16 +18,16 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <ui:PassiveScrollViewer Padding="24,0,24,0" FocusVisualStyle="{x:Null}">
-        <StackPanel Margin="0,24,0,12">
+        <StackPanel Margin="0,12,0,12">
             <ui:CardExpander
                 Margin="0,0,0,12"
-                main:CardUtils.ExpandOnMouseUp="True"
                 main:CardUtils.RemoveChevron="True"
+                main:CardUtils.SuppressMouseUp="True"
                 ContentPadding="0"
                 Icon="{x:Null}">
 
                 <ui:CardExpander.Header>
-                    <Grid Background="{x:Null}">
+                    <Grid main:CardUtils.SuppressMouseUp="True" Background="{x:Null}">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />

@@ -22,12 +22,12 @@
     </UserControl.Resources>
 
     <ui:PassiveScrollViewer Padding="24,0,24,0" FocusVisualStyle="{x:Null}">
-        <StackPanel Margin="0,24,0,12">
+        <StackPanel Margin="0,12,0,12">
             <ui:TextBlock
                 Margin="0,0,0,8"
                 FontTypography="BodyStrong"
                 Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                Text="Appearance &amp; behavior" />
+                Text="Appearance" />
             <ui:CardControl Margin="0,0,0,12" Icon="{ui:SymbolIcon Color24}">
                 <ui:CardControl.Header>
                     <Grid>
@@ -64,45 +64,6 @@
                 </ComboBox>
             </ui:CardControl>
 
-            <ui:CardControl Margin="0,0,0,12">
-                <ui:CardControl.Header>
-                    <ui:TextBlock
-                        Grid.Row="0"
-                        FontTypography="Body"
-                        Text="Start Behavior" />
-                </ui:CardControl.Header>
-                <ComboBox
-                    Grid.Column="1"
-                    MinWidth="150"
-                    ItemsSource="{Binding Path=LaunchStartupAction, Converter={StaticResource EnumToOptionsCollectionConverter}}"
-                    SelectedItem="{Binding Path=LaunchStartupAction, Converter={StaticResource EnumToOptionConverter}}" />
-            </ui:CardControl>
-
-
-
-            <ui:CardControl Margin="0,0,0,12">
-                <ui:CardControl.Header>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <ui:TextBlock
-                            Grid.Row="0"
-                            FontTypography="Body"
-                            Text="Default Tool" />
-                        <ui:TextBlock
-                            Grid.Row="1"
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Text="Default tool selected at startup." />
-                    </Grid>
-                </ui:CardControl.Header>
-                <ComboBox
-                    Grid.Column="1"
-                    MinWidth="150"
-                    ItemsSource="{Binding Path=DefaultTool, Converter={StaticResource EnumToOptionsCollectionConverter}}"
-                    SelectedItem="{Binding Path=DefaultTool, Converter={StaticResource EnumToOptionConverter}}" />
-            </ui:CardControl>
 
             <ui:CardControl Margin="0,0,0,12">
                 <ui:CardControl.Header>
@@ -130,6 +91,53 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </ui:CardControl>
+
+
+            <ui:TextBlock
+                Margin="0,0,0,8"
+                FontTypography="BodyStrong"
+                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                Text="Behavior" />
+
+
+            <ui:CardControl Margin="0,0,0,12">
+                <ui:CardControl.Header>
+                    <ui:TextBlock
+                        Grid.Row="0"
+                        FontTypography="Body"
+                        Text="Startup Behavior" />
+                </ui:CardControl.Header>
+                <ComboBox
+                    Grid.Column="1"
+                    MinWidth="150"
+                    ItemsSource="{Binding Path=LaunchStartupAction, Converter={StaticResource EnumToOptionsCollectionConverter}}"
+                    SelectedItem="{Binding Path=LaunchStartupAction, Converter={StaticResource EnumToOptionConverter}}" />
+            </ui:CardControl>
+
+            <ui:CardControl Margin="0,0,0,12">
+                <ui:CardControl.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ui:TextBlock
+                            Grid.Row="0"
+                            FontTypography="Body"
+                            Text="Default Tool" />
+                        <ui:TextBlock
+                            Grid.Row="1"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="Default tool selected at startup." />
+                    </Grid>
+                </ui:CardControl.Header>
+                <ComboBox
+                    Grid.Column="1"
+                    MinWidth="150"
+                    ItemsSource="{Binding Path=DefaultTool, Converter={StaticResource EnumToOptionsCollectionConverter}}"
+                    SelectedItem="{Binding Path=DefaultTool, Converter={StaticResource EnumToOptionConverter}}" />
+            </ui:CardControl>
+
 
             <ui:CardControl Margin="0,0,0,12">
                 <ui:CardControl.Header>
