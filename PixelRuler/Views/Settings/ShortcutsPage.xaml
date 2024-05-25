@@ -1,0 +1,88 @@
+﻿<UserControl
+    x:Class="PixelRuler.Views.Settings.ShortcutsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PixelRuler.Views.Settings"
+    xmlns:main="clr-namespace:PixelRuler"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="./SettingsResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ui:PassiveScrollViewer Padding="24,0,24,0" FocusVisualStyle="{x:Null}">
+        <StackPanel Margin="0,24,0,12">
+            <ui:CardExpander
+                Margin="0,0,0,12"
+                main:CardUtils.ExpandOnMouseUp="True"
+                main:CardUtils.RemoveChevron="True"
+                ContentPadding="0"
+                Icon="{x:Null}">
+
+                <ui:CardExpander.Header>
+                    <Grid Background="{x:Null}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <ui:TextBlock
+                                Grid.Row="0"
+                                FontTypography="Body"
+                                Text="Global Shortcuts" />
+                            <ui:TextBlock
+                                Grid.Row="1"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="System-wide hotkeys." />
+                        </Grid>
+                        <ui:ToggleSwitch
+                            Margin="0,0,10,0"
+                            HorizontalAlignment="Right"
+                            IsChecked="{Binding GlobalShortcutsEnabled, Mode=TwoWay}" />
+                    </Grid>
+                </ui:CardExpander.Header>
+                <ItemsControl
+                    Margin="0,0,0,0"
+                    HorizontalAlignment="Stretch"
+                    main:CardUtils.SuppressMouseUp="True"
+                    Background="Transparent"
+                    ItemsSource="{Binding GlobalShortcuts}">
+                    <ItemsControl.Style>
+                        <Style TargetType="ItemsControl">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding GlobalShortcutsEnabled}" Value="False">
+                                    <Setter Property="Opacity" Value=".5" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ItemsControl.Style>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical">
+                                <main:ShortcutInfoView DataContext="{Binding}" IsEnabled="{Binding DataContext.GlobalShortcutsEnabled, RelativeSource={RelativeSource AncestorType=local:ISettingsViewModelProvider}}" />
+                                <Rectangle
+                                    Height="1"
+                                    HorizontalAlignment="Stretch"
+                                    Fill="{DynamicResource CardBorderBrush}"
+                                    SnapsToDevicePixels="True"
+                                    Visibility="{Binding IsLastItem, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverted}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ui:CardExpander>
+        </StackPanel>
+    </ui:PassiveScrollViewer>
+</UserControl>

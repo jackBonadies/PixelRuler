@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Win32;
 using PixelRuler.Models;
+using PixelRuler.Views.Settings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,6 +13,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Wpf.Ui.Controls;
 
 namespace PixelRuler
 {
@@ -130,6 +132,15 @@ namespace PixelRuler
             RestorePathInfos();
             RestoreCommandTargets();
         }
+
+        [ObservableProperty]
+        private ObservableCollection<NavigationViewItem> settingsSideBarMenuItems = new ObservableCollection<NavigationViewItem>()
+        {
+             new NavigationViewItem("Appearance & Behavior", SymbolRegular.PaintBrush24, typeof(AppearanceAndBehaviorPage)),
+             new NavigationViewItem("Shortcuts", SymbolRegular.Home24, typeof(ShortcutsPage)),
+             new NavigationViewItem("Save Destinations", SymbolRegular.Home24, typeof(SaveDestinationsPage)),
+             new NavigationViewItem("Command Targets", SymbolRegular.Home24, typeof(CommandTargetsPage)),
+        };
 
         public void DeletePathItem(PathSaveInfo pathSaveInfo)
         {

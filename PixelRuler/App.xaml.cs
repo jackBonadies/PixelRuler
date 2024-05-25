@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -82,6 +83,7 @@ namespace PixelRuler
             serviceProvider = serviceCollection.BuildServiceProvider();
         }
 
+
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<SettingsViewModel>();
@@ -92,6 +94,8 @@ namespace PixelRuler
 
             services.AddTransient<RootWindow>();
             services.AddTransient<MainWindow>();
+
+            services.AddTransientFromNamespace("PixelRuler.Views.Settings", Assembly.GetCallingAssembly());
         }
 
         private void SetJumpList()

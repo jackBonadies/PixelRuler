@@ -27,6 +27,7 @@ namespace PixelRuler
             InitializeComponent();
 
             this.BindToViewModel(true);
+            NavigationView.SetServiceProvider(App.ServiceProvider);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -230,28 +231,7 @@ namespace PixelRuler
             }
         }
 
-        private void CardExpander_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            (sender as Expander).IsExpanded = !(sender as Expander).IsExpanded;
-        }
 
-        private void CardExpanderContent_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            // do not close on mouse up
-            e.Handled = true;
-        }
-
-        private void CardExpander_Loaded(object sender, RoutedEventArgs e)
-        {
-            var cardExpander = sender as CardExpander;
-            var toggleButton = UiUtils.FindChild<ToggleButton>(cardExpander, "ExpanderToggleButton");
-            _ = toggleButton ?? throw new NullReferenceException("ToggleButton not found in CardExpander");
-            BindingOperations.ClearBinding(toggleButton, ToggleButton.IsCheckedProperty);
-            toggleButton.IsChecked = true;
-            var chev = UiUtils.FindChild<Grid>(toggleButton, "ChevronGrid");
-            _ = chev ?? throw new NullReferenceException("ChevronGrid not found in CardExpander");
-            chev.Visibility = Visibility.Collapsed;
-        }
 
     }
 }
