@@ -533,8 +533,13 @@ namespace PixelRuler
                     int selectionWidth = (int)(maxX - minX + 1);
                     int selectionHeight = (int)(maxY - minY + 1);
 
-                    DimXY.Dim1 = selectionWidth;
-                    DimXY.Dim2 = selectionHeight;
+                    var startPointInner = this.mainCanvas.TranslatePoint(startPoint, this.mainCanvas.innerCanvas);
+                    var endPtInner = this.mainCanvas.TranslatePoint(endPt, this.mainCanvas.innerCanvas);
+
+                    int imageSelectionWidth = (int)Math.Abs(Math.Round(((endPtInner.X - startPointInner.X) * this.Dpi)));
+                    int imageSelectionHeight = (int)Math.Abs(Math.Round(((endPtInner.Y - startPointInner.Y) * this.Dpi)));
+                    DimXY.Dim1 = imageSelectionWidth;
+                    DimXY.Dim2 = imageSelectionHeight;
                     DimXY.Has2Dim = true;
 
                     DimX.Dim1 = selectionWidth;
@@ -574,10 +579,10 @@ namespace PixelRuler
                     Canvas.SetTop(DimXY, minY - DimXY.ActualHeight * DimXY.ScaleOverride - 6);
 
                     Canvas.SetLeft(DimX, minX + selectionWidth / 2 - DimX.ActualWidth / 2);
-                    Canvas.SetTop(DimX, minY - DimXY.ActualHeight * 1.25);
+                    Canvas.SetTop(DimX, minY - DimXY.ActualHeight * 1.25); // 1.25 ???
 
                     Canvas.SetLeft(DimY, maxX);
-                    Canvas.SetTop(DimY, minY + selectionHeight / 2 - DimXY.ActualHeight * 1.25 / 2.0);
+                    Canvas.SetTop(DimY, minY + selectionHeight / 2 - DimXY.ActualHeight * 1.25 / 2.0); // 1.25 ???
 
                     rectSelectionOutline.Width = selectionWidth;
                     rectSelectionOutline.Height = selectionHeight;
