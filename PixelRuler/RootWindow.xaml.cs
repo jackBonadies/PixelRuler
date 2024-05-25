@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using PixelRuler.ViewModels;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -7,61 +9,7 @@ using System.Windows.Interop;
 
 namespace PixelRuler
 {
-    public static class OverlayModeExt
-    {
-        public static bool IsSelectRegion(this OverlayMode mode)
-        {
-            return mode == OverlayMode.RegionRect || mode == OverlayMode.WindowAndRegionRect;
-        }
 
-        public static bool IsSelectWindow(this OverlayMode mode)
-        {
-            return mode == OverlayMode.Window || mode == OverlayMode.WindowAndRegionRect;
-        }
-    }
-
-
-    public enum OverlayMode
-    {
-        None = -1,
-        Window = 0,
-        RegionRect = 1,
-        QuickMeasure = 2,
-        QuickColor = 3,
-        WindowAndRegionRect = 4,
-    }
-
-    // TODO own class
-    public class RootViewModel : INotifyPropertyChanged
-    {
-        public RootViewModel(SettingsViewModel? settingsViewModel = null)
-        {
-            Settings = settingsViewModel;
-            this.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { App.NewFullscreenshotLogic(this.Settings, true); }, Settings.FullscreenScreenshotShortcut, "New Full Screenshot");
-            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.Window, true); }, Settings.WindowedScreenshotShortcut, "New Windowed Screenshot");
-            this.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.WindowAndRegionRect, true); }, Settings.WindowedRegionScreenshotShortcut, "New Region Screenshot");
-            this.QuickMeasureCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.QuickMeasure, true); }, Settings.QuickMeasureShortcut, "Quick Measure");
-            this.QuickColorCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(this.Settings, OverlayMode.QuickColor, true); }, Settings.QuickColorShortcut, "Quick Color");
-            this.SettingsCommand = new RelayCommandFull((object? o) => { App.ShowSettingsWindowSingleInstance(this.Settings); }, Key.None, ModifierKeys.None, "Settings");
-        }
-
-
-        public RelayCommandFull QuickMeasureCommand { get; init; }
-        public RelayCommandFull QuickColorCommand { get; init; }
-        public RelayCommandFull NewScreenshotRegionCommand { get; init; }
-        public RelayCommandFull NewScreenshotWindowedCommand { get; init; }
-        public RelayCommandFull NewScreenshotFullCommand { get; init; }
-        public RelayCommandFull SettingsCommand { get; init; }
-        public SettingsViewModel Settings { get; set; }
-
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string? name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-    }
 
 
     /// <summary>
@@ -219,23 +167,23 @@ namespace PixelRuler
                 switch (wParam.ToInt32())
                 {
                     case App.FULLSCREEN_HOTKEY_ID:
-                        App.NewFullscreenshotLogic(this.RootViewModel.Settings, true);
+                        App.NewFullscreenshotLogic(true);
                         handled = true;
                         break;
                     case App.WINDOWED_HOTKEY_ID:
-                        App.EnterScreenshotTool(this.RootViewModel.Settings, OverlayMode.Window, true);
+                        App.EnterScreenshotTool(OverlayMode.Window, true);
                         handled = true;
                         break;
                     case App.REGION_WINDOWED_HOTKEY_ID:
-                        App.EnterScreenshotTool(this.RootViewModel.Settings, OverlayMode.WindowAndRegionRect, true);
+                        App.EnterScreenshotTool(OverlayMode.WindowAndRegionRect, true);
                         handled = true;
                         break;
                     case App.QUICK_MEASURE_HOTKEY_ID:
-                        App.EnterScreenshotTool(this.RootViewModel.Settings, OverlayMode.QuickMeasure, true);
+                        App.EnterScreenshotTool(OverlayMode.QuickMeasure, true);
                         handled = true;
                         break;
                     case App.QUICK_COLOR_HOTKEY_ID:
-                        App.EnterScreenshotTool(this.RootViewModel.Settings, OverlayMode.QuickColor, true);
+                        App.EnterScreenshotTool(OverlayMode.QuickColor, true);
                         handled = true;
                         break;
                 }

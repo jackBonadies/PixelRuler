@@ -1,5 +1,6 @@
 ﻿using PixelRuler.Common;
 using PixelRuler.Models;
+using PixelRuler.ViewModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;

@@ -250,7 +250,7 @@ namespace PixelRuler
         [RelayCommand]
         public void ShowSettings()
         {
-            App.ShowSettingsWindowSingleInstance(this.Settings);
+            App.ShowSettingsWindowSingleInstance();
         }
 
         [RelayCommand]

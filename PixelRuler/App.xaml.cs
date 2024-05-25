@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using PixelRuler.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
@@ -17,21 +19,22 @@ namespace PixelRuler
     public partial class App : Application
     {
         //public class CommandLineArg
+        private static ServiceProvider? serviceProvider;
+
+        public static ServiceProvider ServiceProvider
+        {
+            get
+            {
+                return serviceProvider!;
+            }
+        }
 
         private const string backgroundCmdLineArg = "background";
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            var icons24 = new List<SymbolRegular>();
-            foreach (var enum1 in Enum.GetValues(typeof(SymbolRegular)))
-            {
-                if (enum1.ToString().EndsWith("24"))
-                {
-                    icons24.Add((SymbolRegular)enum1);
-                }
-            }
-
             System.Diagnostics.Trace.WriteLine("PixelRulerStartup");
+
             base.OnStartup(e);
 
             SetJumpList();
@@ -50,6 +53,8 @@ namespace PixelRuler
             singleProcessMutex = new Mutex(true, "Global\\PixelRuler_SingleProcess_Global", out bool createdNew);
             if (createdNew)
             {
+                ConfigureServices();
+                // configure host
                 Task.Run(() => PipeServer());
             }
             else
@@ -58,8 +63,8 @@ namespace PixelRuler
                 Environment.Exit(0);
             }
 
-            settingsViewModel = new SettingsViewModel();
-            var rootWindow = new RootWindow(new RootViewModel(settingsViewModel));
+            var settingsViewModel = ServiceProvider.GetRequiredService<SettingsViewModel>();
+            var rootWindow = ServiceProvider.GetRequiredService<RootWindow>();
             rootWindow.Show();
 
             settingsViewModel.SetState();
@@ -68,6 +73,25 @@ namespace PixelRuler
             {
                 HandleArgs(string.Join(' ', e.Args), true);
             }
+        }
+
+        private void ConfigureServices()
+        {
+            var serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection);
+            serviceProvider = serviceCollection.BuildServiceProvider();
+        }
+
+        private void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton<SettingsViewModel>();
+            services.AddSingleton<SettingsWindow>();
+
+            services.AddTransient<RootViewModel>();
+            services.AddTransient<PixelRulerViewModel>();
+
+            services.AddTransient<RootWindow>();
+            services.AddTransient<MainWindow>();
         }
 
         private void SetJumpList()
@@ -120,8 +144,6 @@ namespace PixelRuler
 
         private Mutex singleProcessMutex = null!;
 
-        private SettingsViewModel settingsViewModel = null!;
-
         private const string pipe_name = "PixelRuler_0c87c02590af41bda768a872ddd91ee3";
 
         void PipeServer()
@@ -150,54 +172,54 @@ namespace PixelRuler
             switch (args)
             {
                 case "--fullscreen":
-                    App.NewFullscreenshotLogic(this.settingsViewModel, true);
+                    App.NewFullscreenshotLogic(true);
                     break;
                 case "--windowed":
                 case "--region":
-                    App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.WindowAndRegionRect, true);
+                    App.EnterScreenshotTool(OverlayMode.WindowAndRegionRect, true);
                     break;
                 case "--settings":
-                    App.ShowSettingsWindowSingleInstance(this.settingsViewModel);
+                    App.ShowSettingsWindowSingleInstance();
                     break;
                 case "--color":
-                    App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.QuickColor, true);
+                    App.EnterScreenshotTool(OverlayMode.QuickColor, true);
                     break;
                 case "--measure":
-                    App.EnterScreenshotTool(this.settingsViewModel, OverlayMode.QuickMeasure, true);
+                    App.EnterScreenshotTool(OverlayMode.QuickMeasure, true);
                     break;
                 default:
                     if (string.IsNullOrEmpty(args))
                     {
                         if (!startup)
                         {
-                            App.NewFullscreenshotLogic(this.settingsViewModel, true);
+                            App.NewFullscreenshotLogic(true);
                         }
                     }
                     else
                     {
-                        App.OpenFileLogic(this.settingsViewModel, true, args);
+                        App.OpenFileLogic(true, args);
                     }
                     break;
             }
         }
 
-        public static void OpenFileLogic(SettingsViewModel settingsViewModel, bool newWindow, string filePath)
+        public static void OpenFileLogic(bool newWindow, string filePath)
         {
-            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(settingsViewModel));
+            MainWindow mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
             mainWindow.SetImage(filePath);
             mainWindow.Show();
         }
 
-        public static void NewFullscreenshotLogic(SettingsViewModel settingsViewModel, bool newWindow)
+        public static void NewFullscreenshotLogic(bool newWindow)
         {
-            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(settingsViewModel));
+            MainWindow mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
             mainWindow.NewFullScreenshot(newWindow);
             mainWindow.Show();
         }
 
-        public static async Task EnterScreenshotTool(SettingsViewModel settingsViewModel, OverlayMode mode, bool newWindow)
+        public static async Task EnterScreenshotTool(OverlayMode mode, bool newWindow)
         {
-            MainWindow mainWindow = new MainWindow(new PixelRulerViewModel(settingsViewModel));
+            MainWindow mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
             var res = await mainWindow.NewWindowedScreenshot(mode, newWindow);
             if (res)
             {
@@ -233,7 +255,7 @@ namespace PixelRuler
 
         }
 
-        public static void ShowSettingsWindowSingleInstance(SettingsViewModel settings)
+        public static void ShowSettingsWindowSingleInstance()
         {
             var settingsWindow = App.Current.Windows.OfType<SettingsWindow>().FirstOrDefault();
             if (settingsWindow != null)
@@ -241,7 +263,8 @@ namespace PixelRuler
                 settingsWindow.Activate();
                 return;
             }
-            new SettingsWindow(settings).Show();
+            var settings = ServiceProvider.GetRequiredService<SettingsWindow>();
+            settings.Show();
         }
 
         public static readonly double[] ZoomSelections = new double[]
