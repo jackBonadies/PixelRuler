@@ -256,6 +256,8 @@ namespace PixelRuler
 
             if (wsw.AfterScreenshotValue is AfterScreenshotAction.Cancel)
             {
+                this.Close();
+                wsw.Close();
                 return false;
             }
 

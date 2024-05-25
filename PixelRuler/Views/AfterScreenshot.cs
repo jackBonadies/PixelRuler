@@ -2,6 +2,7 @@
 using PixelRuler.CustomControls;
 using System;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -48,6 +49,10 @@ namespace PixelRuler.Views
                         case Key.D1:
                             contextMenu.IsOpen = false;
                             action(AfterScreenshotAction.ViewInPixelRulerWindow, null);
+                            break;
+                        case Key.Escape:
+                            contextMenu.IsOpen = false;
+                            action(AfterScreenshotAction.Cancel, null);
                             break;
                     }
                 }
