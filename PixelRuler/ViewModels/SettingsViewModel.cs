@@ -137,9 +137,15 @@ namespace PixelRuler
         private ObservableCollection<NavigationViewItem> settingsSideBarMenuItems = new ObservableCollection<NavigationViewItem>()
         {
              new NavigationViewItem("Appearance & Behavior", SymbolRegular.PaintBrush24, typeof(AppearanceAndBehaviorPage)),
-             new NavigationViewItem("Shortcuts", SymbolRegular.Home24, typeof(ShortcutsPage)),
-             new NavigationViewItem("Save Destinations", SymbolRegular.Home24, typeof(SaveDestinationsPage)),
-             new NavigationViewItem("Command Targets", SymbolRegular.Home24, typeof(CommandTargetsPage)),
+             new NavigationViewItem("Shortcuts", SymbolRegular.Keyboard24, typeof(ShortcutsPage)),
+             new NavigationViewItem("Save Destinations", SymbolRegular.Save24, typeof(SaveDestinationsPage)),
+             new NavigationViewItem("Command Targets", SymbolRegular.ArrowStepOut24, typeof(CommandTargetsPage)),
+        };
+
+        [ObservableProperty]
+        private ObservableCollection<NavigationViewItem> settingsFooterMenuItems = new ObservableCollection<NavigationViewItem>()
+        {
+             new NavigationViewItem("About", SymbolRegular.Info24, typeof(AboutPage)),
         };
 
         public void DeletePathItem(PathSaveInfo pathSaveInfo)

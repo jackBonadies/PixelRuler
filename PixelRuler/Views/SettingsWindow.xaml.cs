@@ -2,6 +2,7 @@
 using PixelRuler.Models;
 using PixelRuler.ViewModels;
 using PixelRuler.Views;
+using PixelRuler.Views.Settings;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,6 +29,12 @@ namespace PixelRuler
 
             this.BindToViewModel(true);
             NavigationView.SetServiceProvider(App.ServiceProvider);
+            this.Loaded += SettingsWindow_Loaded;
+        }
+
+        private void SettingsWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            NavigationView.Navigate(typeof(AppearanceAndBehaviorPage));
         }
 
         protected override void OnClosed(EventArgs e)

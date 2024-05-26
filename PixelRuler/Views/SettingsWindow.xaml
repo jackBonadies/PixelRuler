@@ -19,9 +19,10 @@
     <Grid>
         <ui:NavigationView
             x:Name="NavigationView"
-            Padding="2,0,2,0"
+            Margin="0,6"
             BreadcrumbBar="{Binding ElementName=BreadcrumbBar}"
-            FrameMargin="0"
+            FooterMenuItemsSource="{Binding SettingsFooterMenuItems, Mode=OneWay}"
+            FrameMargin="0,0"
             IsBackButtonVisible="Collapsed"
             IsPaneToggleVisible="False"
             MenuItemsSource="{Binding SettingsSideBarMenuItems, Mode=OneWay}"
@@ -38,12 +39,6 @@
                     <ui:SnackbarPresenter x:Name="SnackbarPresenter" />
                 </Grid>
             </ui:NavigationView.ContentOverlay>
-            <!--<ui:NavigationView.PaneFooter>
-            <Border
-                Width="100"
-                Height="100"
-                Background="Red" />
-        </ui:NavigationView.PaneFooter>-->
         </ui:NavigationView>
         <ContentPresenter x:Name="RootContentDialog" />
         <ContentPresenter x:Name="RootContentSecondDialog" />
