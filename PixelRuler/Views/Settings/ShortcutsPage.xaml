@@ -73,12 +73,25 @@
                             <StackPanel Orientation="Vertical">
                                 <main:ShortcutInfoView DataContext="{Binding}" IsEnabled="{Binding DataContext.GlobalShortcutsEnabled, RelativeSource={RelativeSource AncestorType=local:ISettingsViewModelProvider}}" />
                                 <Rectangle
+                                    Name="separator"
                                     Height="1"
                                     HorizontalAlignment="Stretch"
                                     Fill="{DynamicResource CardBorderBrush}"
-                                    SnapsToDevicePixels="True"
-                                    Visibility="{Binding IsLastItem, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Inverted}" />
+                                    SnapsToDevicePixels="True" />
                             </StackPanel>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Value="True">
+                                    <DataTrigger.Binding>
+                                        <MultiBinding Converter="{StaticResource IsLastItemMultiConverter}">
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}" />
+                                            <Binding />
+                                        </MultiBinding>
+                                    </DataTrigger.Binding>
+                                    <DataTrigger.Setters>
+                                        <Setter TargetName="separator" Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

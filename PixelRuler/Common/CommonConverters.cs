@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -245,6 +246,24 @@ namespace PixelRuler
             ModifierKeys modifierKeys = (ModifierKeys)values[1];
             bool pendingCase = values.Length > 2 && values[2] is PendingShortcutInfo;
             return DisplayKeysHelper.GetDisplayKeys(key, modifierKeys, pendingCase);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new Exception("One way converter");
+        }
+    }
+
+    public class IsLastItemMultiConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if(values[0] is ItemsControl itemsControl)
+            {
+                var index = itemsControl.Items.IndexOf(values[1]);
+                return (itemsControl.Items.Count - 1) == index;
+            }
+            throw new Exception($"Unexpected type for {nameof(IsLastItemMultiConverter)}");
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

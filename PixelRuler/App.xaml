@@ -124,6 +124,7 @@
             <local:DoubleShouldShowPlaceholderConverter x:Key="DoubleShouldShowPlaceholderConverter" />
             <local:DisplayKeysConverter x:Key="DisplayKeysConverter" />
             <local:DisplayKeysMultiConverter x:Key="DisplayKeysMultiConverter" />
+            <local:IsLastItemMultiConverter x:Key="IsLastItemMultiConverter" />
             <local:DebugConverter x:Key="DebugConverter" />
 
             <Style
