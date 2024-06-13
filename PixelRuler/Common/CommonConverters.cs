@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -532,6 +533,28 @@ namespace PixelRuler
                 throw new Exception("Enum not found");
             }
             throw new Exception("Unexpected Type");
+        }
+    }
+
+    public class RightAlignPopupConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] is Popup popup)
+            {
+                if (popup.Child is FrameworkElement child && 
+                    popup.PlacementTarget is FrameworkElement placementTarget)
+                {
+                    return -child.ActualWidth + placementTarget.ActualWidth;
+                }
+                return DependencyProperty.UnsetValue;
+            }
+            throw new InvalidOperationException();
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

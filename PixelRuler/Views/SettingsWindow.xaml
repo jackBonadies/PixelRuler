@@ -10,7 +10,7 @@
     xmlns:views="clr-namespace:PixelRuler.Views"
     Title="Settings"
     Width="1000"
-    Height="1000"
+    Height="760"
     Padding="0,0,0,0"
     d:DataContext="{d:DesignInstance Type=local:SettingsViewModel,
                                      IsDesignTimeCreatable=True}"

@@ -628,6 +628,8 @@
                 Margin="0"
                 Style="{StaticResource CopyButtonStyle}" />
 
+            <local:RightAlignPopupConverter x:Key="RightAlignPopupConverter" />
+
             <ControlTemplate x:Key="iconShowEdit" TargetType="Control">
                 <ToggleButton
                     Width="35"
@@ -658,17 +660,23 @@
                                     x:Name="Popup"
                                     AllowsTransparency="True"
                                     Focusable="False"
-                                    HorizontalOffset="-384"
                                     Placement="Bottom"
                                     PlacementTarget="{Binding ElementName=iconEdit}"
                                     PopupAnimation="Fade"
                                     StaysOpen="False"
                                     VerticalOffset="2">
+                                    <Popup.HorizontalOffset>
+                                        <MultiBinding Converter="{StaticResource RightAlignPopupConverter}">
+                                            <Binding RelativeSource="{RelativeSource Mode=Self}" />
+                                            <Binding Path="Child.ActualWidth" RelativeSource="{RelativeSource Mode=Self}" />
+                                        </MultiBinding>
+                                    </Popup.HorizontalOffset>
+
                                     <Border
                                         Grid.Row="1"
                                         Margin="40"
-                                        Background="White"
-                                        BorderBrush="#18000000"
+                                        Background="{DynamicResource PopupBackgroundColor}"
+                                        BorderBrush="{DynamicResource PopupBorderColor}"
                                         BorderThickness="1"
                                         CornerRadius="4"
                                         UseLayoutRounding="True"
@@ -682,7 +690,7 @@
                                         </Border.Effect>
                                         <views:IconSelectionControl
                                             Width="434"
-                                            Height="332"
+                                            Height="350"
                                             DataContext="{Binding IconViewModel}"
                                             IconSelectedCommand="{Binding NewIconSelectedCommand}" />
                                     </Border>

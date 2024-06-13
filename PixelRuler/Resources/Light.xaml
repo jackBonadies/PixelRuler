@@ -9,6 +9,14 @@
     <SolidColorBrush x:Key="ColorBorderColor">#aa303030</SolidColorBrush>
     <SolidColorBrush x:Key="GreenSuccess" Color="#187A35" />
 
+    <SolidColorBrush x:Key="Tint1" Color="#08000000" />
+    <SolidColorBrush x:Key="Tint2" Color="#1C000000" />
+    <SolidColorBrush x:Key="Tint3" Color="#2C000000" />
+
+    <SolidColorBrush x:Key="PopupBackgroundColor" Color="White" />
+    <SolidColorBrush x:Key="PopupBorderColor" Color="#18000000" />
+
+    <SolidColorBrush x:Key="TextBoxTextColor" Color="Black" />
 
     <Color x:Key="StrongErrorColor">#FF0000</Color>
     <SolidColorBrush x:Key="StrongErrorBrush" Color="{DynamicResource StrongErrorColor}" />

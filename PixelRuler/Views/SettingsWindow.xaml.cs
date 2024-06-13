@@ -111,7 +111,6 @@ namespace PixelRuler
 
             var diagContents = new CommandTargetEditView();
             diagContents.DataContext = pathInfoEditViewModel;
-            diagContents.Background = new SolidColorBrush(Colors.White);
             var contentDialog = new ContentDialog(RootContentDialog)
             {
                 DialogMargin = new Thickness(60, 0, 60, 0),
@@ -160,7 +159,6 @@ namespace PixelRuler
 
             var diagContents = new PathInfoEditView();
             diagContents.DataContext = pathInfoEditViewModel;
-            diagContents.Background = new SolidColorBrush(Colors.White);
             var contentDialog = new ContentDialog(RootContentDialog)
             {
                 DialogMargin = new Thickness(60, 0, 60, 0),

@@ -22,7 +22,7 @@
             <Border
                 Name="border"
                 Padding="4,3,4,3"
-                Background="#08000000"
+                Background="{DynamicResource Tint1}"
                 BorderBrush="#5d556C94"
                 BorderThickness="1"
                 CornerRadius="4"
@@ -31,11 +31,11 @@
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="border" Property="Background" Value="#1C000000" />
+                    <Setter TargetName="border" Property="Background" Value="{DynamicResource Tint2}" />
                     <Setter TargetName="border" Property="BorderBrush" Value="#559CE4" />
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter TargetName="border" Property="Background" Value="#2C000000" />
+                    <Setter TargetName="border" Property="Background" Value="{DynamicResource Tint3}" />
                     <Setter TargetName="border" Property="BorderBrush" Value="#559CE4" />
                 </Trigger>
             </ControlTemplate.Triggers>
