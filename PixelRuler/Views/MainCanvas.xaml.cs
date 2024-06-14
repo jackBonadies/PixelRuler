@@ -634,7 +634,8 @@ namespace PixelRuler
                 return false;
             }
             // dont need dpi scaled here. already reverse scaled.
-            if (this.ActualHeight <= this.ViewModel.Image.Height)
+            if (this.ActualHeight <= this.ViewModel.Image.Height &&
+                this.ActualWidth <= this.ViewModel.Image.Width)
             {
                 return false;
             }

@@ -41,8 +41,8 @@ namespace PixelRuler
 
             this.Top = fullBounds.Top / scaleFactor;
             this.Left = fullBounds.Left / scaleFactor;
-            this.Width = fullBounds.Width / scaleFactor / 1;
-            this.Height = fullBounds.Height / scaleFactor / 1;
+            this.Width = fullBounds.Width / scaleFactor;
+            this.Height = fullBounds.Height / scaleFactor;
             this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
             this.AllowsTransparency = true;
@@ -444,6 +444,8 @@ namespace PixelRuler
 
                 Debug.Assert(dpiToUse != -1, "Failed to get DPI");
 
+                // freeze selection before showing options, else mousemove will change window selection
+                freezeSelection = true;
                 Views.AfterScreenshot.ShowOptions(this.overlayCanvas, this.ViewModel.Settings, AfterScreenshot, dpiToUse);
             }
             else
@@ -451,6 +453,8 @@ namespace PixelRuler
                 AfterScreenshot(AfterScreenshotAction.ViewInPixelRulerWindow, null);
             }
         }
+
+        private bool freezeSelection { get; set; }
 
         public AfterScreenshotAction AfterScreenshotValue { get; set; }
         public object? AfterScreenshotAdditionalArg { get; set; }
@@ -498,7 +502,10 @@ namespace PixelRuler
 
             if (ViewModel.Mode.IsSelectWindow() && !regionOnlyMode)
             {
-                (SelectedRegionImageCoordinates, SelectedRegionOverlayCoordinates, ProcessName, WindowTitle) = SelectWindowUnderCursor();
+                if (!freezeSelection)
+                {
+                    (SelectedRegionImageCoordinates, SelectedRegionOverlayCoordinates, ProcessName, WindowTitle) = SelectWindowUnderCursor();
+                }
             }
 
             if (ViewModel.Mode.IsSelectRegion())

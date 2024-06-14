@@ -209,6 +209,7 @@ namespace PixelRuler
         {
             SetupForDpi();
             mainCanvas.Panning += MainCanvas_Panning;
+            this.EnsureWithinBounds();
         }
 
         private void MainCanvas_Panning(object? sender, EventArgs e)

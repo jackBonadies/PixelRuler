@@ -32,9 +32,49 @@ namespace PixelRuler
             this.Loaded += SettingsWindow_Loaded;
         }
 
+        private Type getTypeToNavigateToOrDefault()
+        {
+            Type typeToNavigateTo = typeof(AppearanceAndBehaviorPage);
+            var items = NavigationView.MenuItems;
+            foreach(var item in items)
+            {
+                if (item is NavigationViewItem navItem && navItem.IsActive)
+                {
+                    if (navItem.TargetPageType is null)
+                    {
+                        throw new NullReferenceException("Nav Item Missing Target Type");
+                    }
+                    else
+                    {
+                        typeToNavigateTo = navItem.TargetPageType;
+                    }
+
+                }
+            }
+            var fitems = NavigationView.FooterMenuItems;
+            foreach(var item in fitems)
+            {
+                if (item is NavigationViewItem navItem && navItem.IsActive)
+                {
+                    if (navItem.TargetPageType is null)
+                    {
+                        throw new NullReferenceException("Nav Item Missing Target Type");
+                    }
+                    else
+                    {
+                        typeToNavigateTo = navItem.TargetPageType;
+                    }
+
+                }
+            }
+            return typeToNavigateTo;
+        }
+
         private void SettingsWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            NavigationView.Navigate(typeof(AppearanceAndBehaviorPage));
+            this.EnsureWithinBounds();
+            var typeToNavigateTo = getTypeToNavigateToOrDefault();
+            NavigationView.Navigate(typeToNavigateTo);
         }
 
         protected override void OnClosed(EventArgs e)

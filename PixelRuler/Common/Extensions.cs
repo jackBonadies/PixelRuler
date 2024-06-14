@@ -171,6 +171,30 @@ namespace PixelRuler
         }
     }
 
+    public static class WindowExt
+    {
+        public static void EnsureWithinBounds(this System.Windows.Window window)
+        {
+            if (window.WindowState == System.Windows.WindowState.Normal)
+            {
+                var xCenter = window.Left + window.ActualWidth / 2;
+                var yCenter = window.Top + window.ActualHeight / 2;
+                // todo: Use non scaled point?
+                var relevantScreen = WpfScreenHelper.Screen.FromPoint(new(xCenter, yCenter));
+                if (window.ActualHeight > relevantScreen.WpfWorkingArea.Height)
+                {
+                    window.Height = relevantScreen.WpfWorkingArea.Height;
+                }
+
+                var bottomWpf = window.ActualHeight + window.Top;
+                if (bottomWpf > relevantScreen.WpfWorkingArea.Height)
+                {
+                    var availableSpace = relevantScreen.WpfWorkingArea.Height;
+                    window.Top -= (bottomWpf - availableSpace);
+                }
+            }
+        }
+    }
 
     public static class ServicesExt
     {
