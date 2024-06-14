@@ -25,8 +25,8 @@
                 Background="Transparent"
                 BorderBrush="Transparent"
                 BorderThickness="0"
-                CaretBrush="{DynamicResource TextBoxTextColorWhite}"
-                Foreground="{DynamicResource TextBoxTextColorWhite}"
+                CaretBrush="{DynamicResource TextControlForeground}"
+                Foreground="{DynamicResource TextControlForeground}"
                 Style="{x:Null}"
                 Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock
