@@ -32,7 +32,31 @@ namespace PixelRuler
             this.DataContextChanged += RootWindow_DataContextChanged;
             this.notifyIcon.Menu.DataContext = rootViewModel;
             this.notifyIcon.Menu.IsVisibleChanged += Menu_IsVisibleChanged;
+            this.notifyIcon.FocusOnLeftClick = true;
+            this.notifyIcon.LeftClick += NotifyIcon_LeftClick;
+            this.notifyIcon.LeftDoubleClick += NotifyIcon_LeftDoubleClick;
             this.Loaded += RootWindow_Loaded;
+        }
+
+        private void NotifyIcon_LeftDoubleClick([System.Diagnostics.CodeAnalysis.NotNull] Wpf.Ui.Tray.Controls.NotifyIcon sender, RoutedEventArgs e)
+        {
+            this.notifyIcon.Menu.IsOpen = true;
+        }
+
+        private void NotifyIcon_LeftClick([System.Diagnostics.CodeAnalysis.NotNull] Wpf.Ui.Tray.Controls.NotifyIcon sender, RoutedEventArgs e)
+        {
+            bringAllWindowsToFront();
+        }
+
+        private void bringAllWindowsToFront()
+        {
+            foreach (var window in Application.Current.Windows)
+            {
+                if (window is Window win)
+                {
+                    win.Activate();
+                }
+            }
         }
 
         private void RootWindow_Loaded(object sender, RoutedEventArgs e)
