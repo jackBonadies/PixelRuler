@@ -139,6 +139,45 @@
                 </Style.Resources>
             </Style>
 
+            <Style TargetType="{x:Type TextBlock}" x:Key="ColorDisplayTextBlockStyle">
+                <Setter Property="Margin" Value="4,0,0,0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="23" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Foreground" Value="#303030" />
+                <Setter Property="Text">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource ColorFormatStringConverter}">
+                            <Binding Path="Color" />
+                            <Binding Path="Settings.ColorFormatMode" />
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="{x:Type custom:ColorDisplayControl}">
+                <Setter Property="Height" Value="28" />
+                <Setter Property="Width" Value="28" />
+                <Setter Property="BorderThickness" Value="1.5" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type custom:ColorDisplayControl}">
+                            <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                                <Border
+                                    Background="{TemplateBinding Color, Converter={StaticResource DrawingColorToWpfBrushConverter}}"
+                                    CornerRadius="{TemplateBinding CornerRadius}" />
+                                <Border
+                                    Background="Transparent"
+                                    BorderBrush="#40000000"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="{TemplateBinding CornerRadius}" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <DataTemplate x:Key="DefaultTemplate">
                 <ContentPresenter Content="{Binding}" />
             </DataTemplate>

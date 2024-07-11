@@ -16,11 +16,19 @@ namespace PixelRuler.CustomControls
             }
             try
             {
-                Clipboard.SetText(txtBlock.Text);
+                // OpenClipboard Failed (CLIPBRD_E_CANT_OPEN)
+                //var proc = NativeHelpers.GetProcessHoldingClipboard();
+                //if (proc == null)
+                //{
+                    Clipboard.SetText(txtBlock.Text);
+                //}
             }
             catch (Exception)
             {
+                //var proc = NativeHelpers.GetProcessHoldingClipboard();
+                //Clipboard.SetDataObject(txtBlock.Text);
                 // occurs if Copy is spammed
+                // or if another process is holding the clipboard (android emulator open)
             }
             base.OnClick(); // otherwise triggers wont fire.
         }

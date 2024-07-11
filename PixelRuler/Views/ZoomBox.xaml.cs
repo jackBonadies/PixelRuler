@@ -456,17 +456,17 @@ namespace PixelRuler.Views
         MeasureElementResizeData? currentZoomBoxInfo;
         ZoomBoxCase currentZoomBoxCase = ZoomBoxCase.None;
 
-        public void Show(MeasureElementResizeData? measEl, MouseEventArgs? e, ZoomBoxCase zoomBoxCase)
+        public bool Show(MeasureElementResizeData? measEl, MouseEventArgs? e, ZoomBoxCase zoomBoxCase)
         {
             if (currentZoomBoxCase == zoomBoxCase)
             {
                 // since keydown fires repeatedly..
-                return;
+                return true;
             }
 
             if (TotalZoom <= owningCanvas.EffectiveZoom)
             {
-                return;
+                return false;
             }
 
             currentZoomBoxCase = zoomBoxCase;
@@ -543,6 +543,7 @@ namespace PixelRuler.Views
             }
 
             SetPositions();
+            return true;
         }
 
         private void ZoomBox_Loaded(object sender, RoutedEventArgs e)
