@@ -27,7 +27,7 @@ namespace PixelRuler
                 (Key)Properties.Settings.Default.GlobalShortcutFullscreenKey,
                 (ModifierKeys)Properties.Settings.Default.GlobalShortcutFullscreenModifiers,
                 Key.PrintScreen,
-                ModifierKeys.Control | ModifierKeys.Shift);
+                ModifierKeys.Control);
 
             WindowedScreenshotShortcut = new ShortcutInfo(
                 "Window Screenshot",
@@ -35,7 +35,7 @@ namespace PixelRuler
                 (Key)Properties.Settings.Default.GlobalShortcutWindowKey,
                 (ModifierKeys)Properties.Settings.Default.GlobalShortcutWindowModifiers,
                 Key.PrintScreen,
-                ModifierKeys.Shift);
+                ModifierKeys.None);
 
             WindowedRegionScreenshotShortcut = new ShortcutInfo(
                 "Region Screenshot",
@@ -50,8 +50,9 @@ namespace PixelRuler
                 App.QUICK_MEASURE_HOTKEY_ID,
                 (Key)Properties.Settings.Default.GlobalShortcutQuickMeasureKey,
                 (ModifierKeys)Properties.Settings.Default.GlobalShortcutQuickMeasureModifiers,
+                // both Win+Shift+M (undoes Win+M) and Win+Control+M (magnifier) are taken by windows
                 Key.M,
-                ModifierKeys.Windows | ModifierKeys.Shift);
+                ModifierKeys.Windows | ModifierKeys.Shift | ModifierKeys.Control);
 
             QuickColorShortcut = new ShortcutInfo(
                 "Quick Color",
