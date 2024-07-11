@@ -209,6 +209,7 @@ namespace PixelRuler
         {
             SetupForDpi();
             mainCanvas.Panning += MainCanvas_Panning;
+            this.EnsureWithinBounds();
         }
 
         private void MainCanvas_Panning(object? sender, EventArgs e)
@@ -256,6 +257,8 @@ namespace PixelRuler
 
             if (wsw.AfterScreenshotValue is AfterScreenshotAction.Cancel)
             {
+                this.Close();
+                wsw.Close();
                 return false;
             }
 
@@ -272,12 +275,14 @@ namespace PixelRuler
             if (wsw.AfterScreenshotValue is AfterScreenshotAction.SaveAs)
             {
                 this.ViewModel.SaveAs();
+                this.ViewModel.ShowToastIfApplicable(wsw.AfterScreenshotValue, wsw.AfterScreenshotAdditionalArg);
                 return false;
             }
 
             if (wsw.AfterScreenshotValue is AfterScreenshotAction.Copy)
             {
                 this.ViewModel.CopyRawImageToClipboard();
+                this.ViewModel.ShowToastIfApplicable(wsw.AfterScreenshotValue, wsw.AfterScreenshotAdditionalArg);
                 return false;
             }
 
@@ -297,6 +302,7 @@ namespace PixelRuler
                     }
 
                     ViewModel.SaveToTarget(pathSaveInfo);
+                    ViewModel.ShowToastIfApplicable(wsw.AfterScreenshotValue, wsw.AfterScreenshotAdditionalArg);
                 }
                 else
                 {
@@ -318,7 +324,8 @@ namespace PixelRuler
                         throw new InvalidOperationException("Missing Image");
                     }
 
-                    this.ViewModel.SendToTarget(cmdTargetInfo);
+                    ViewModel.SendToTarget(cmdTargetInfo);
+                    ViewModel.ShowToastIfApplicable(wsw.AfterScreenshotValue, wsw.AfterScreenshotAdditionalArg);
                 }
                 else
                 {
@@ -342,6 +349,7 @@ namespace PixelRuler
                 pinWindow.Top = wsw.SelectedRectWinCoordinates.Top / screen.ScaleFactor - PinViewModel.PinWindowThickness.Left;
                 pinWindow.ViewModel = new PinViewModel(this.ViewModel);
                 pinWindow.Show();
+                ViewModel.ShowToastIfApplicable(wsw.AfterScreenshotValue, wsw.AfterScreenshotAdditionalArg);
                 return false;
             }
 

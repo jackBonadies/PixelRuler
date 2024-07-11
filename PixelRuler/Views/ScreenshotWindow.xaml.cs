@@ -41,8 +41,8 @@ namespace PixelRuler
 
             this.Top = fullBounds.Top / scaleFactor;
             this.Left = fullBounds.Left / scaleFactor;
-            this.Width = fullBounds.Width / scaleFactor / 1;
-            this.Height = fullBounds.Height / scaleFactor / 1;
+            this.Width = fullBounds.Width / scaleFactor;
+            this.Height = fullBounds.Height / scaleFactor;
             this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
             this.AllowsTransparency = true;
@@ -444,6 +444,8 @@ namespace PixelRuler
 
                 Debug.Assert(dpiToUse != -1, "Failed to get DPI");
 
+                // freeze selection before showing options, else mousemove will change window selection
+                freezeSelection = true;
                 Views.AfterScreenshot.ShowOptions(this.overlayCanvas, this.ViewModel.Settings, AfterScreenshot, dpiToUse);
             }
             else
@@ -451,6 +453,8 @@ namespace PixelRuler
                 AfterScreenshot(AfterScreenshotAction.ViewInPixelRulerWindow, null);
             }
         }
+
+        private bool freezeSelection { get; set; }
 
         public AfterScreenshotAction AfterScreenshotValue { get; set; }
         public object? AfterScreenshotAdditionalArg { get; set; }
@@ -498,7 +502,10 @@ namespace PixelRuler
 
             if (ViewModel.Mode.IsSelectWindow() && !regionOnlyMode)
             {
-                (SelectedRegionImageCoordinates, SelectedRegionOverlayCoordinates, ProcessName, WindowTitle) = SelectWindowUnderCursor();
+                if (!freezeSelection)
+                {
+                    (SelectedRegionImageCoordinates, SelectedRegionOverlayCoordinates, ProcessName, WindowTitle) = SelectWindowUnderCursor();
+                }
             }
 
             if (ViewModel.Mode.IsSelectRegion())
@@ -533,8 +540,13 @@ namespace PixelRuler
                     int selectionWidth = (int)(maxX - minX + 1);
                     int selectionHeight = (int)(maxY - minY + 1);
 
-                    DimXY.Dim1 = selectionWidth;
-                    DimXY.Dim2 = selectionHeight;
+                    var startPointInner = this.mainCanvas.TranslatePoint(startPoint, this.mainCanvas.innerCanvas);
+                    var endPtInner = this.mainCanvas.TranslatePoint(endPt, this.mainCanvas.innerCanvas);
+
+                    int imageSelectionWidth = (int)Math.Abs(Math.Round(((endPtInner.X - startPointInner.X) * this.Dpi)));
+                    int imageSelectionHeight = (int)Math.Abs(Math.Round(((endPtInner.Y - startPointInner.Y) * this.Dpi)));
+                    DimXY.Dim1 = imageSelectionWidth;
+                    DimXY.Dim2 = imageSelectionHeight;
                     DimXY.Has2Dim = true;
 
                     DimX.Dim1 = selectionWidth;
@@ -574,10 +586,10 @@ namespace PixelRuler
                     Canvas.SetTop(DimXY, minY - DimXY.ActualHeight * DimXY.ScaleOverride - 6);
 
                     Canvas.SetLeft(DimX, minX + selectionWidth / 2 - DimX.ActualWidth / 2);
-                    Canvas.SetTop(DimX, minY - DimXY.ActualHeight * 1.25);
+                    Canvas.SetTop(DimX, minY - DimXY.ActualHeight * 1.25); // 1.25 ???
 
                     Canvas.SetLeft(DimY, maxX);
-                    Canvas.SetTop(DimY, minY + selectionHeight / 2 - DimXY.ActualHeight * 1.25 / 2.0);
+                    Canvas.SetTop(DimY, minY + selectionHeight / 2 - DimXY.ActualHeight * 1.25 / 2.0); // 1.25 ???
 
                     rectSelectionOutline.Width = selectionWidth;
                     rectSelectionOutline.Height = selectionHeight;

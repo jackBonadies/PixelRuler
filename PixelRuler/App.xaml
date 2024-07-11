@@ -124,6 +124,7 @@
             <local:DoubleShouldShowPlaceholderConverter x:Key="DoubleShouldShowPlaceholderConverter" />
             <local:DisplayKeysConverter x:Key="DisplayKeysConverter" />
             <local:DisplayKeysMultiConverter x:Key="DisplayKeysMultiConverter" />
+            <local:IsLastItemMultiConverter x:Key="IsLastItemMultiConverter" />
             <local:DebugConverter x:Key="DebugConverter" />
 
             <Style
@@ -136,6 +137,45 @@
                     <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="{DynamicResource SubtleMousePressedColor}" />
                     <SolidColorBrush x:Key="ToggleButtonBackground" Color="#00000000" />
                 </Style.Resources>
+            </Style>
+
+            <Style TargetType="{x:Type TextBlock}" x:Key="ColorDisplayTextBlockStyle">
+                <Setter Property="Margin" Value="4,0,0,0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="23" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Foreground" Value="#303030" />
+                <Setter Property="Text">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource ColorFormatStringConverter}">
+                            <Binding Path="Color" />
+                            <Binding Path="Settings.ColorFormatMode" />
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="{x:Type custom:ColorDisplayControl}">
+                <Setter Property="Height" Value="28" />
+                <Setter Property="Width" Value="28" />
+                <Setter Property="BorderThickness" Value="1.5" />
+                <Setter Property="CornerRadius" Value="6" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type custom:ColorDisplayControl}">
+                            <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                                <Border
+                                    Background="{TemplateBinding Color, Converter={StaticResource DrawingColorToWpfBrushConverter}}"
+                                    CornerRadius="{TemplateBinding CornerRadius}" />
+                                <Border
+                                    Background="Transparent"
+                                    BorderBrush="#40000000"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="{TemplateBinding CornerRadius}" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <DataTemplate x:Key="DefaultTemplate">
@@ -627,6 +667,8 @@
                 Margin="0"
                 Style="{StaticResource CopyButtonStyle}" />
 
+            <local:RightAlignPopupConverter x:Key="RightAlignPopupConverter" />
+
             <ControlTemplate x:Key="iconShowEdit" TargetType="Control">
                 <ToggleButton
                     Width="35"
@@ -657,17 +699,23 @@
                                     x:Name="Popup"
                                     AllowsTransparency="True"
                                     Focusable="False"
-                                    HorizontalOffset="-384"
                                     Placement="Bottom"
                                     PlacementTarget="{Binding ElementName=iconEdit}"
                                     PopupAnimation="Fade"
                                     StaysOpen="False"
                                     VerticalOffset="2">
+                                    <Popup.HorizontalOffset>
+                                        <MultiBinding Converter="{StaticResource RightAlignPopupConverter}">
+                                            <Binding RelativeSource="{RelativeSource Mode=Self}" />
+                                            <Binding Path="Child.ActualWidth" RelativeSource="{RelativeSource Mode=Self}" />
+                                        </MultiBinding>
+                                    </Popup.HorizontalOffset>
+
                                     <Border
                                         Grid.Row="1"
                                         Margin="40"
-                                        Background="White"
-                                        BorderBrush="#18000000"
+                                        Background="{DynamicResource PopupBackgroundColor}"
+                                        BorderBrush="{DynamicResource PopupBorderColor}"
                                         BorderThickness="1"
                                         CornerRadius="4"
                                         UseLayoutRounding="True"
@@ -681,7 +729,7 @@
                                         </Border.Effect>
                                         <views:IconSelectionControl
                                             Width="434"
-                                            Height="332"
+                                            Height="350"
                                             DataContext="{Binding IconViewModel}"
                                             IconSelectedCommand="{Binding NewIconSelectedCommand}" />
                                     </Border>

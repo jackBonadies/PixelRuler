@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PixelRuler"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:settings="clr-namespace:PixelRuler.Views.Settings"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     d:DataContext="{d:DesignInstance Type=local:DesignTimeShortcutInfo,
                                      IsDesignTimeCreatable=True}"
@@ -89,7 +90,7 @@
                 Height="30"
                 Margin="2,0,2,0"
                 Padding="0"
-                Command="{Binding DataContext.EditShortcutCommand, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                Command="{Binding DataContext.EditShortcutCommand, RelativeSource={RelativeSource AncestorType=settings:ISettingsViewModelProvider, Mode=FindAncestor}}"
                 CommandParameter="{Binding}"
                 ToolTipService.ToolTip="Edit Shortcut">
                 <TextBlock
@@ -102,7 +103,7 @@
                 Height="30"
                 Margin="2,0,2,0"
                 Padding="0"
-                Command="{Binding DataContext.ClearShortcutCommand, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                Command="{Binding DataContext.ClearShortcutCommand, RelativeSource={RelativeSource AncestorType=settings:ISettingsViewModelProvider, Mode=FindAncestor}}"
                 CommandParameter="{Binding}"
                 IsEnabled="{Binding IsValid}"
                 ToolTipService.ToolTip="Unbind Shortcut">

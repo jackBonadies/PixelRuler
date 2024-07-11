@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Win32;
 using PixelRuler.Models;
+using PixelRuler.Views.Settings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,6 +13,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Wpf.Ui.Controls;
 
 namespace PixelRuler
 {
@@ -25,7 +27,7 @@ namespace PixelRuler
                 (Key)Properties.Settings.Default.GlobalShortcutFullscreenKey,
                 (ModifierKeys)Properties.Settings.Default.GlobalShortcutFullscreenModifiers,
                 Key.PrintScreen,
-                ModifierKeys.Control | ModifierKeys.Shift);
+                ModifierKeys.Control);
 
             WindowedScreenshotShortcut = new ShortcutInfo(
                 "Window Screenshot",
@@ -33,7 +35,7 @@ namespace PixelRuler
                 (Key)Properties.Settings.Default.GlobalShortcutWindowKey,
                 (ModifierKeys)Properties.Settings.Default.GlobalShortcutWindowModifiers,
                 Key.PrintScreen,
-                ModifierKeys.Shift);
+                ModifierKeys.None);
 
             WindowedRegionScreenshotShortcut = new ShortcutInfo(
                 "Region Screenshot",
@@ -48,8 +50,9 @@ namespace PixelRuler
                 App.QUICK_MEASURE_HOTKEY_ID,
                 (Key)Properties.Settings.Default.GlobalShortcutQuickMeasureKey,
                 (ModifierKeys)Properties.Settings.Default.GlobalShortcutQuickMeasureModifiers,
+                // both Win+Shift+M (undoes Win+M) and Win+Control+M (magnifier) are taken by windows
                 Key.M,
-                ModifierKeys.Windows | ModifierKeys.Shift);
+                ModifierKeys.Windows | ModifierKeys.Shift | ModifierKeys.Control);
 
             QuickColorShortcut = new ShortcutInfo(
                 "Quick Color",
@@ -130,6 +133,21 @@ namespace PixelRuler
             RestorePathInfos();
             RestoreCommandTargets();
         }
+
+        [ObservableProperty]
+        private ObservableCollection<NavigationViewItem> settingsSideBarMenuItems = new ObservableCollection<NavigationViewItem>()
+        {
+             new NavigationViewItem("Appearance & Behavior", SymbolRegular.PaintBrush24, typeof(AppearanceAndBehaviorPage)),
+             new NavigationViewItem("Shortcuts", SymbolRegular.Keyboard24, typeof(ShortcutsPage)),
+             new NavigationViewItem("Save Destinations", SymbolRegular.Save24, typeof(SaveDestinationsPage)),
+             new NavigationViewItem("Command Targets", SymbolRegular.ArrowStepOut24, typeof(CommandTargetsPage)),
+        };
+
+        [ObservableProperty]
+        private ObservableCollection<NavigationViewItem> settingsFooterMenuItems = new ObservableCollection<NavigationViewItem>()
+        {
+             new NavigationViewItem("About", SymbolRegular.Info24, typeof(AboutPage)),
+        };
 
         public void DeletePathItem(PathSaveInfo pathSaveInfo)
         {
@@ -724,6 +742,9 @@ namespace PixelRuler
         [ObservableProperty]
         private QuickColorMode quickColorMode;
 
+        [ObservableProperty]
+        private ShowToastAfter showToastAfter = ShowToastAfter.DefaultSave;
+
         partial void OnQuickColorModeChanged(QuickColorMode value)
         {
             QuickColorModeChanged?.Invoke(this, EventArgs.Empty);
@@ -798,5 +819,13 @@ namespace PixelRuler
         ColorTrayCopyExplicit = 0,
         AutoCopyMany = 1,
         AutoCopyAndClose = 2
+    }
+
+    public enum ShowToastAfter
+    {
+        Never = 0,
+        DefaultSave = 1,
+        AnySave = 2,
+        AnyAction = 3,
     }
 }

@@ -1,11 +1,14 @@
 ﻿using PixelRuler.Common;
 using PixelRuler.Models;
+using PixelRuler.ViewModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -244,6 +247,24 @@ namespace PixelRuler
             ModifierKeys modifierKeys = (ModifierKeys)values[1];
             bool pendingCase = values.Length > 2 && values[2] is PendingShortcutInfo;
             return DisplayKeysHelper.GetDisplayKeys(key, modifierKeys, pendingCase);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new Exception("One way converter");
+        }
+    }
+
+    public class IsLastItemMultiConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if(values[0] is ItemsControl itemsControl)
+            {
+                var index = itemsControl.Items.IndexOf(values[1]);
+                return (itemsControl.Items.Count - 1) == index;
+            }
+            throw new Exception($"Unexpected type for {nameof(IsLastItemMultiConverter)}");
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -512,6 +533,28 @@ namespace PixelRuler
                 throw new Exception("Enum not found");
             }
             throw new Exception("Unexpected Type");
+        }
+    }
+
+    public class RightAlignPopupConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] is Popup popup)
+            {
+                if (popup.Child is FrameworkElement child && 
+                    popup.PlacementTarget is FrameworkElement placementTarget)
+                {
+                    return -child.ActualWidth + placementTarget.ActualWidth;
+                }
+                return DependencyProperty.UnsetValue;
+            }
+            throw new InvalidOperationException();
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

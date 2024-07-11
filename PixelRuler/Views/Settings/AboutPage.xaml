@@ -1,0 +1,46 @@
+﻿<UserControl
+    x:Class="PixelRuler.Views.Settings.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PixelRuler.Views.Settings"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:views="clr-namespace:PixelRuler.Views"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="./SettingsResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ui:PassiveScrollViewer Padding="24,0,24,0" FocusVisualStyle="{x:Null}">
+        <StackPanel Margin="0,4,0,12">
+            <ui:TextBlock
+                Margin="0,4,0,8"
+                FontTypography="BodyStrong"
+                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                Text="PixelRuler" />
+            <StackPanel Orientation="Vertical">
+                <ui:TextBlock Margin="0,0,0,0" FontTypography="Body">
+                    <Run Text="Version: " />
+                    <Run Text="{Binding VersionDisplayName, Mode=OneWay}" />
+                </ui:TextBlock>
+                <ui:HyperlinkButton
+                    Margin="0,4,0,0"
+                    Padding="6"
+                    Icon="{ui:SymbolIcon Link24}"
+                    NavigateUri="https://github.com/jackBonadies/PixelRuler"
+                    ToolTip="https://github.com/jackBonadies/PixelRuler">
+                    <ui:TextBlock FontSize="14" FontTypography="Body">
+                        Source Code
+                    </ui:TextBlock>
+                </ui:HyperlinkButton>
+            </StackPanel>
+        </StackPanel>
+    </ui:PassiveScrollViewer>
+</UserControl>

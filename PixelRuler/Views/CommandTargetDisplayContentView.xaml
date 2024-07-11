@@ -50,8 +50,7 @@
                 Padding="2,0,0,0"
                 d:Text="UI_Examples"
                 FontTypography="Body"
-                Text="{Binding DisplayName}"
-                Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityInvertConverter}}" />
+                Text="{Binding DisplayName}" />
         </StackPanel>
         <ui:TextBlock
             Grid.Row="2"

@@ -2,6 +2,7 @@
 using PixelRuler.Models;
 using PixelRuler.ViewModels;
 using PixelRuler.Views;
+using PixelRuler.Views.Settings;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,6 +28,53 @@ namespace PixelRuler
             InitializeComponent();
 
             this.BindToViewModel(true);
+            NavigationView.SetServiceProvider(App.ServiceProvider);
+            this.Loaded += SettingsWindow_Loaded;
+        }
+
+        private Type getTypeToNavigateToOrDefault()
+        {
+            Type typeToNavigateTo = typeof(AppearanceAndBehaviorPage);
+            var items = NavigationView.MenuItems;
+            foreach(var item in items)
+            {
+                if (item is NavigationViewItem navItem && navItem.IsActive)
+                {
+                    if (navItem.TargetPageType is null)
+                    {
+                        throw new NullReferenceException("Nav Item Missing Target Type");
+                    }
+                    else
+                    {
+                        typeToNavigateTo = navItem.TargetPageType;
+                    }
+
+                }
+            }
+            var fitems = NavigationView.FooterMenuItems;
+            foreach(var item in fitems)
+            {
+                if (item is NavigationViewItem navItem && navItem.IsActive)
+                {
+                    if (navItem.TargetPageType is null)
+                    {
+                        throw new NullReferenceException("Nav Item Missing Target Type");
+                    }
+                    else
+                    {
+                        typeToNavigateTo = navItem.TargetPageType;
+                    }
+
+                }
+            }
+            return typeToNavigateTo;
+        }
+
+        private void SettingsWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.EnsureWithinBounds();
+            var typeToNavigateTo = getTypeToNavigateToOrDefault();
+            NavigationView.Navigate(typeToNavigateTo);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -103,7 +151,6 @@ namespace PixelRuler
 
             var diagContents = new CommandTargetEditView();
             diagContents.DataContext = pathInfoEditViewModel;
-            diagContents.Background = new SolidColorBrush(Colors.White);
             var contentDialog = new ContentDialog(RootContentDialog)
             {
                 DialogMargin = new Thickness(60, 0, 60, 0),
@@ -152,7 +199,6 @@ namespace PixelRuler
 
             var diagContents = new PathInfoEditView();
             diagContents.DataContext = pathInfoEditViewModel;
-            diagContents.Background = new SolidColorBrush(Colors.White);
             var contentDialog = new ContentDialog(RootContentDialog)
             {
                 DialogMargin = new Thickness(60, 0, 60, 0),
@@ -230,28 +276,7 @@ namespace PixelRuler
             }
         }
 
-        private void CardExpander_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            (sender as Expander).IsExpanded = !(sender as Expander).IsExpanded;
-        }
 
-        private void CardExpanderContent_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            // do not close on mouse up
-            e.Handled = true;
-        }
-
-        private void CardExpander_Loaded(object sender, RoutedEventArgs e)
-        {
-            var cardExpander = sender as CardExpander;
-            var toggleButton = UiUtils.FindChild<ToggleButton>(cardExpander, "ExpanderToggleButton");
-            _ = toggleButton ?? throw new NullReferenceException("ToggleButton not found in CardExpander");
-            BindingOperations.ClearBinding(toggleButton, ToggleButton.IsCheckedProperty);
-            toggleButton.IsChecked = true;
-            var chev = UiUtils.FindChild<Grid>(toggleButton, "ChevronGrid");
-            _ = chev ?? throw new NullReferenceException("ChevronGrid not found in CardExpander");
-            chev.Visibility = Visibility.Collapsed;
-        }
 
     }
 }

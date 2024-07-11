@@ -18,13 +18,15 @@
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
         <Grid Margin="10,2,10,0">
-            <TextBox
+            <wpfui:TextBox
                 Height="42"
                 Padding="16,10"
                 VerticalContentAlignment="Center"
                 Background="Transparent"
                 BorderBrush="Transparent"
                 BorderThickness="0"
+                CaretBrush="{DynamicResource TextControlForeground}"
+                Foreground="{DynamicResource TextControlForeground}"
                 Style="{x:Null}"
                 Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock
@@ -99,7 +101,7 @@
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="border" Property="Background" Value="LightGray" />
+                                        <Setter TargetName="border" Property="Background" Value="{DynamicResource Tint2}" />
                                     </Trigger>
                                     <Trigger Property="IsPressed" Value="True">
                                         <Setter TargetName="border" Property="Background" Value="#4CC2FF" />

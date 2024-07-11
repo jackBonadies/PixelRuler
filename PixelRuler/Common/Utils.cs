@@ -1,11 +1,17 @@
-﻿using System;
+﻿using PixelRuler.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls.Primitives;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
+using Wpf.Ui.Controls;
 
 namespace PixelRuler
 {
@@ -13,7 +19,7 @@ namespace PixelRuler
     {
         public static List<string> GetDisplayKeys(Key key, ModifierKeys modifierKeys, bool pendingCase = false)
         {
-            if (!pendingCase && (key == Key.None || modifierKeys == ModifierKeys.None))
+            if (!pendingCase && (key == Key.None || (modifierKeys == ModifierKeys.None && key != Key.PrintScreen)))
             {
                 return new List<string>() { "Not Set" };
             }
@@ -137,9 +143,8 @@ namespace PixelRuler
             {
                 if (key != Key.None)
                 {
-                    var modifiersText = KeyboardHelper.GetModifierKeyName(modifiers);
-                    var keyName = KeyboardHelper.GetFriendlyName(key);
-                    return $"{toolTipTextBase} ({modifiersText}{keyName})";
+                    var shortcut = KeyboardHelper.GetShortcutLabel(modifiers, key);
+                    return $"{toolTipTextBase} ({shortcut})";
                 }
                 return toolTipTextBase;
             }
@@ -162,9 +167,8 @@ namespace PixelRuler
                 }
                 if (key != Key.None)
                 {
-                    var modifiersText = KeyboardHelper.GetModifierKeyName(modifiers);
-                    var keyName = KeyboardHelper.GetFriendlyName(key);
-                    return $"{modifiersText}{keyName}";
+                    var shortcut = KeyboardHelper.GetShortcutLabel(modifiers, key);
+                    return shortcut;
                 }
                 return string.Empty;
             }
@@ -228,51 +232,120 @@ namespace PixelRuler
         }
     }
 
-    //public static class ImageBehavior
-    //{
-    //    public static readonly DependencyProperty UpdatePositioningOnSourceChangeProperty = DependencyProperty.RegisterAttached(
-    //        "UpdatePositioningOnSourceChange",
-    //        typeof(bool),
-    //        typeof(ImageBehavior),
-    //        new PropertyMetadata(false, OnUpdatePositioningOnSourceChanged_Changed));
+    public static class CardUtils
+    {
+        public static readonly DependencyProperty SupressMouseUpProperty = DependencyProperty.RegisterAttached(
+            "SupressMouseUp",
+            typeof(bool),
+            typeof(CardUtils),
+            new PropertyMetadata(false, SuppressMouseUp_Changed));
 
-    //    public static bool GetUpdatePositioningOnSourceChange(DependencyObject obj) => (bool)obj.GetValue(UpdatePositioningOnSourceChangeProperty);
-    //    public static void SetUpdatePositioningOnSourceChange(DependencyObject obj, bool value) => obj.SetValue(UpdatePositioningOnSourceChangeProperty, value);
+        public static bool GetSuppressMouseUp(DependencyObject obj) => (bool)obj.GetValue(SupressMouseUpProperty);
+        public static void SetSuppressMouseUp(DependencyObject obj, bool value) => obj.SetValue(SupressMouseUpProperty, value);
 
-    //    private static void OnUpdatePositioningOnSourceChanged_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    //    {
-    //        if (d is Image image)
-    //        {
-    //            if ((bool)e.NewValue)
-    //            {
-    //                image.SourceUpdated += OnImageSourceUpdated;
-    //            }
-    //            else
-    //            {
-    //                image.SourceUpdated -= OnImageSourceUpdated;
-    //            }
-    //        }
-    //    }
+        private static void SuppressMouseUp_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is CardExpander cardExpander)
+            {
+                if ((bool)e.NewValue)
+                {
+                    cardExpander.MouseUp += CardExpanderContent_MouseUp;
+                }
+                else
+                {
+                    cardExpander.MouseUp -= CardExpanderContent_MouseUp;
+                }
+            }
+        }
 
-    //    private static void OnImageSourceUpdated(object sender, DataTransferEventArgs e)
-    //    {
-    //        if (sender is Image image && image.Source != null)
-    //        {
-    //            SetImageLocation(image.Parent as Canvas, image);
-    //        }
-    //    }
+        private static void CardExpanderContent_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            // do not close on mouse up
+            e.Handled = true;
+        }
 
+        public static readonly DependencyProperty ExpandOnMouseUpProperty = DependencyProperty.RegisterAttached(
+            "ExpandOnMouseUp",
+            typeof(bool),
+            typeof(CardUtils),
+            new PropertyMetadata(false, ExpandOnMouseUp_Changed));
 
+        public static bool GetExpandOnMouseUp(DependencyObject obj) => (bool)obj.GetValue(ExpandOnMouseUpProperty);
+        public static void SetExpandOnMouseUp(DependencyObject obj, bool value) => obj.SetValue(ExpandOnMouseUpProperty, value);
 
-    //}
+        private static void ExpandOnMouseUp_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is CardExpander cardExpander)
+            {
+                if ((bool)e.NewValue)
+                {
+                    cardExpander.MouseLeftButtonUp += CardExpander_MouseLeftButtonUp;
+                }
+                else
+                {
+                    cardExpander.MouseLeftButtonUp -= CardExpander_MouseLeftButtonUp;
+                }
+            }
+        }
+
+        private static void CardExpander_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            (sender as Expander).IsExpanded = !(sender as Expander).IsExpanded;
+        }
+
+        public static readonly DependencyProperty RemoveChevronProperty = DependencyProperty.RegisterAttached(
+            "RemoveChevron",
+            typeof(bool),
+            typeof(CardUtils),
+            new PropertyMetadata(false, RemoveChevron_Changed));
+
+        public static bool GetRemoveChevron(DependencyObject obj) => (bool)obj.GetValue(RemoveChevronProperty);
+        public static void SetRemoveChevron(DependencyObject obj, bool value) => obj.SetValue(RemoveChevronProperty, value);
+
+        private static void RemoveChevron_Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is CardExpander cardExpander)
+            {
+                if ((bool)e.NewValue)
+                {
+                    cardExpander.Loaded += CardExpander_Loaded;
+                }
+                else
+                {
+                    cardExpander.Loaded -= CardExpander_Loaded;
+                }
+            }
+        }
+
+        private static void CardExpander_Loaded(object sender, RoutedEventArgs e)
+        {
+            var cardExpander = sender as CardExpander;
+            var toggleButton = UiUtils.FindChild<ToggleButton>(cardExpander, "ExpanderToggleButton");
+            _ = toggleButton ?? throw new NullReferenceException("ToggleButton not found in CardExpander");
+            BindingOperations.ClearBinding(toggleButton, ToggleButton.IsCheckedProperty);
+            toggleButton.IsChecked = true;
+            var chev = UiUtils.FindChild<Grid>(toggleButton, "ChevronGrid");
+            _ = chev ?? throw new NullReferenceException("ChevronGrid not found in CardExpander");
+            chev.Visibility = Visibility.Collapsed;
+        }
+    }
 
     public static class KeyboardHelper
     {
         public static bool IsShortcutValid(Key key, ModifierKeys modifiers)
         {
-            // todo may want to make non modifierkeys valid too such as just "PrtScn"
-            //   in case someone really loves this program.
+            if (key == Key.PrintScreen)
+            {
+                return true;
+            }
             return key != Key.None && modifiers != ModifierKeys.None;
+        }
+
+        public static string GetShortcutLabel(ModifierKeys modifiers, Key key)
+        {
+            var modifiersText = KeyboardHelper.GetModifierKeyName(modifiers);
+            var keyName = KeyboardHelper.GetFriendlyName(key);
+            return $"{modifiersText}{keyName}";
         }
 
         public static string GetModifierKeyName(ModifierKeys modifiers)

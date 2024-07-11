@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -166,6 +168,62 @@ namespace PixelRuler
             byte b = (byte)(Convert.ToUInt32(hexColor.Substring(4, 2), 16));
 
             return System.Windows.Media.Color.FromArgb(255, r, g, b);
+        }
+    }
+
+    public static class WindowExt
+    {
+        public static void EnsureWithinBounds(this System.Windows.Window window)
+        {
+            if (window.WindowState == System.Windows.WindowState.Normal)
+            {
+                var xCenter = window.Left + window.ActualWidth / 2;
+                var yCenter = window.Top + window.ActualHeight / 2;
+                // todo: Use non scaled point?
+                var relevantScreen = WpfScreenHelper.Screen.FromPoint(new(xCenter, yCenter));
+                if (window.ActualHeight > relevantScreen.WpfWorkingArea.Height)
+                {
+                    window.Height = relevantScreen.WpfWorkingArea.Height;
+                }
+
+                var bottomWpf = window.ActualHeight + window.Top;
+                if (bottomWpf > relevantScreen.WpfWorkingArea.Height)
+                {
+                    var availableSpace = relevantScreen.WpfWorkingArea.Height;
+                    window.Top -= (bottomWpf - availableSpace);
+                }
+            }
+        }
+    }
+
+    public static class ServicesExt
+    {
+        public static IServiceCollection AddTransientFromNamespace(
+            this IServiceCollection services,
+            string namespaceName,
+            params Assembly[] assemblies)
+        {
+            foreach (Assembly assembly in assemblies)
+            {
+                IEnumerable<Type> types = assembly
+                    .GetTypes()
+                    .Where(
+                        x =>
+                            x.IsClass
+                            && x.Namespace != null
+                            && x.Namespace.StartsWith(namespaceName, StringComparison.InvariantCultureIgnoreCase)
+                    );
+
+                foreach (Type? type in types)
+                {
+                    if (services.All(x => x.ServiceType != type))
+                    {
+                        _ = services.AddTransient(type);
+                    }
+                }
+            }
+
+            return services;
         }
     }
 }

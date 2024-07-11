@@ -11,6 +11,15 @@
     <Color x:Key="StrongErrorColor">#FF5555</Color>
     <SolidColorBrush x:Key="StrongErrorBrush" Color="{DynamicResource StrongErrorColor}" />
 
+    <SolidColorBrush x:Key="Tint1" Color="#08ffffff" />
+    <SolidColorBrush x:Key="Tint2" Color="#1Cffffff" />
+    <SolidColorBrush x:Key="Tint3" Color="#2Cffffff" />
+
+    <SolidColorBrush x:Key="PopupBackgroundColor" Color="#303030" />
+    <SolidColorBrush x:Key="PopupBorderColor" Color="#18ffffff" />
+
+    <SolidColorBrush x:Key="TextBoxTextColor" Color="White" />
+
     <Color x:Key="SubtleMouseOverColor">#10ffffff</Color>
     <Color x:Key="SubtleMousePressedColor">#20ffffff</Color>
     <SolidColorBrush x:Key="SubtleMouseOverBrush" Color="{StaticResource SubtleMouseOverColor}" />
