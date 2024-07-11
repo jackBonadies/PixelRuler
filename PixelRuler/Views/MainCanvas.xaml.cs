@@ -30,6 +30,7 @@ namespace PixelRuler
         public EventHandler<double> EffectiveZoomChanged;
 
         ZoomBox zoomBox;
+        CompactCurrentColorView? compactColorView;
 
         private IntBucket resizeXbucket = new IntBucket();
         private IntBucket resizeYbucket = new IntBucket();
@@ -140,6 +141,7 @@ namespace PixelRuler
         private void OverlayCanvas_MouseLeave(object sender, MouseEventArgs e)
         {
             zoomBox.Hide();
+            compactColorView?.Hide();
         }
 
         private void OverlayCanvas_MouseEnter(object sender, MouseEventArgs e)
@@ -277,7 +279,10 @@ namespace PixelRuler
             {
                 if (ViewModel.SelectedTool == Tool.ColorPicker)
                 {
-                    zoomBox.Show(null, e, ZoomBoxCase.ColorPicker);
+                    if (!zoomBox.Show(null, e, ZoomBoxCase.ColorPicker))
+                    {
+                        compactColorView?.Show(e);
+                    }
                 }
             }
         }
@@ -289,6 +294,7 @@ namespace PixelRuler
                 if (ViewModel.SelectedTool == Tool.ColorPicker)
                 {
                     zoomBox.Hide();
+                    compactColorView?.Hide();
                     ViewModel.OnColorSelected();
                     if (this.ViewModel is ScreenshotWindowViewModel svm)
                     {
@@ -307,6 +313,7 @@ namespace PixelRuler
         private void OverlayCanvas_MouseMove(object sender, MouseEventArgs e)
         {
             zoomBox.OnOverlayCanvasMouseMove();
+            compactColorView?.OnOverlayCanvasMouseMove();
             //(zoomBox.Fill as VisualBrush).Viewbox.X = e.GetPosition(innerCanvas).X;
             if (this.ViewModel.ShowGridLines)
             {
@@ -473,6 +480,12 @@ namespace PixelRuler
             zoomBox = new ZoomBox(this, 192, this.ViewModel);
             Canvas.SetZIndex(zoomBox, 1200);
             this.overlayCanvas.Children.Add(zoomBox);
+
+            compactColorView = new CompactCurrentColorView(this, this.ViewModel);
+            Canvas.SetZIndex(compactColorView, 1200);
+            this.overlayCanvas.Children.Add(compactColorView);
+            compactColorView.Hide();
+
             this.SetCursor();
         }
 
@@ -737,12 +750,22 @@ namespace PixelRuler
         {
             gridLineLeft.HideCurrentPosIndicator();
             gridLineTop.HideCurrentPosIndicator();
+            colorPickBox?.Clear();
         }
 
         private void MainCanvas_MouseEnter(object sender, MouseEventArgs e)
         {
             gridLineLeft.ShowCurrentPosIndicator();
             gridLineTop.ShowCurrentPosIndicator();
+            showColorPickerCanvasIndicatorIfApplicable();
+        }
+
+        private void showColorPickerCanvasIndicatorIfApplicable()
+        {
+            if (this.IsMouseOver && this.ViewModel.SelectedTool == Tool.ColorPicker)
+            {
+                colorPickBox?.AddToOwnerCanvas();
+            }
         }
 
         private void MainCanvas_MouseUp(object sender, MouseButtonEventArgs e)
@@ -1294,7 +1317,5 @@ namespace PixelRuler
         {
             this.zoomBox.Hide();
         }
-
-
     }
 }
