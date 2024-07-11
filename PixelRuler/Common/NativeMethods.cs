@@ -77,6 +77,17 @@ namespace PixelRuler
         [DllImport("user32.dll", SetLastError = true)]
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
+#if DEBUG
+
+        /// <summary>
+        /// This is to debug CLIPBRD_E_CANT_OPEN
+        /// </summary>
+        /// <returns></returns>
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern IntPtr GetOpenClipboardWindow();
+
+#endif
+
 
         [DllImport("dwmapi.dll")]
         public static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out RECT pvAttribute, int cbAttribute);
@@ -193,6 +204,40 @@ namespace PixelRuler
                 return sb.ToString();
             }
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Gets the process holding the clipboard
+        /// </summary>
+        /// <returns></returns>
+        public static Process? GetProcessHoldingClipboard()
+        {
+            Process? theProc = null;
+
+            IntPtr hwnd = GetOpenClipboardWindow();
+
+            if (hwnd != IntPtr.Zero)
+            {
+                int processId;
+                uint threadId = GetWindowThreadProcessId(hwnd, out processId);
+
+                Process[] procs = Process.GetProcesses();
+                foreach (Process proc in procs)
+                {
+                    IntPtr handle = proc.MainWindowHandle;
+
+                    if (handle == hwnd)
+                    {
+                        theProc = proc;
+                    }
+                    else if (processId == proc.Id)
+                    {
+                        theProc = proc;
+                    }
+                }
+            }
+
+            return theProc;
         }
     }
 

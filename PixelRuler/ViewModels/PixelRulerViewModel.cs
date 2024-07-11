@@ -1,12 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.Win32;
 using PixelRuler.CanvasElements;
 using PixelRuler.Common;
 using PixelRuler.Models;
+using PixelRuler.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
@@ -536,6 +539,50 @@ namespace PixelRuler
         public void OnColorStartSelect()
         {
             ColorStartSelect?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void ShowToastIfApplicable(AfterScreenshotAction saveAs, object additionalArgs)
+        {
+            ShowToastAfter ourCase = ShowToastAfter.AnyAction;
+            switch (saveAs)
+            {
+                case AfterScreenshotAction.Save:
+                    if (additionalArgs is PathSaveInfo psinfo)
+                    {
+                        if (psinfo.IsDefault)
+                        {
+                            ourCase = ShowToastAfter.DefaultSave;
+                        }
+                        else
+                        {
+                            ourCase = ShowToastAfter.AnySave;
+                        }
+                    }
+                    else
+                    {
+                        ourCase = ShowToastAfter.DefaultSave;
+                    }
+                    break;
+                case AfterScreenshotAction.SaveAs:
+                    ourCase = ShowToastAfter.AnySave;
+                    break;
+            }
+            if (ourCase <= this.Settings.ShowToastAfter)
+            {
+                new ToastContentBuilder()
+                    .AddText("Pixel Ruler", AdaptiveTextStyle.Header)
+                    .AddText($"Image Saved to: {this.ScreenshotInfo.LastSavedPath}")
+                    .SetToastDuration(ToastDuration.Short)
+                    .Show(toast =>
+                    {
+                        toast.ExpirationTime = DateTime.Now.AddDays(1);
+                        toast.ExpiresOnReboot = true;
+                        ToastHelper.ConfigureToast(toast, true, (ToastArguments args) =>
+                        {
+                            Process.Start("explorer", $"/select, {this.ScreenshotInfo.LastSavedPath}");
+                        });
+                    });
+            }
         }
 
         public event EventHandler<EventArgs> ColorSelected;

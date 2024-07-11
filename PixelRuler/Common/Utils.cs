@@ -19,7 +19,7 @@ namespace PixelRuler
     {
         public static List<string> GetDisplayKeys(Key key, ModifierKeys modifierKeys, bool pendingCase = false)
         {
-            if (!pendingCase && (key == Key.None || modifierKeys == ModifierKeys.None))
+            if (!pendingCase && (key == Key.None || (modifierKeys == ModifierKeys.None && key != Key.PrintScreen)))
             {
                 return new List<string>() { "Not Set" };
             }
@@ -143,9 +143,8 @@ namespace PixelRuler
             {
                 if (key != Key.None)
                 {
-                    var modifiersText = KeyboardHelper.GetModifierKeyName(modifiers);
-                    var keyName = KeyboardHelper.GetFriendlyName(key);
-                    return $"{toolTipTextBase} ({modifiersText}{keyName})";
+                    var shortcut = KeyboardHelper.GetShortcutLabel(modifiers, key);
+                    return $"{toolTipTextBase} ({shortcut})";
                 }
                 return toolTipTextBase;
             }
@@ -168,9 +167,8 @@ namespace PixelRuler
                 }
                 if (key != Key.None)
                 {
-                    var modifiersText = KeyboardHelper.GetModifierKeyName(modifiers);
-                    var keyName = KeyboardHelper.GetFriendlyName(key);
-                    return $"{modifiersText}{keyName}";
+                    var shortcut = KeyboardHelper.GetShortcutLabel(modifiers, key);
+                    return shortcut;
                 }
                 return string.Empty;
             }
@@ -336,9 +334,18 @@ namespace PixelRuler
     {
         public static bool IsShortcutValid(Key key, ModifierKeys modifiers)
         {
-            // todo may want to make non modifierkeys valid too such as just "PrtScn"
-            //   in case someone really loves this program.
+            if (key == Key.PrintScreen)
+            {
+                return true;
+            }
             return key != Key.None && modifiers != ModifierKeys.None;
+        }
+
+        public static string GetShortcutLabel(ModifierKeys modifiers, Key key)
+        {
+            var modifiersText = KeyboardHelper.GetModifierKeyName(modifiers);
+            var keyName = KeyboardHelper.GetFriendlyName(key);
+            return $"{modifiersText}{keyName}";
         }
 
         public static string GetModifierKeyName(ModifierKeys modifiers)

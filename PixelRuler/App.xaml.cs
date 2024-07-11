@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Toolkit.Uwp.Notifications;
 using PixelRuler.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,11 @@ namespace PixelRuler
 
         private const string backgroundCmdLineArg = "background";
 
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             System.Diagnostics.Trace.WriteLine("PixelRulerStartup");
@@ -55,7 +61,9 @@ namespace PixelRuler
             singleProcessMutex = new Mutex(true, "Global\\PixelRuler_SingleProcess_Global", out bool createdNew);
             if (createdNew)
             {
-                ApplicationAccentColorManager.ApplySystemAccent();
+                // weird color side effects
+                //ApplicationAccentColorManager.ApplySystemAccent();
+
                 ConfigureServices();
                 // configure host
                 Task.Run(() => PipeServer());
@@ -71,6 +79,9 @@ namespace PixelRuler
             rootWindow.Show();
 
             settingsViewModel.SetState();
+
+            var rootViewModel = ServiceProvider.GetRequiredService<RootViewModel>();
+            rootViewModel.ShowStartupToast();
 
             if (createdNew)
             {

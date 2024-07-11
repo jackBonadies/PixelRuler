@@ -1,10 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Uwp.Notifications;
+using PixelRuler.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.UI.Notifications;
 
 namespace PixelRuler.ViewModels
 {
@@ -29,6 +32,52 @@ namespace PixelRuler.ViewModels
         public RelayCommandFull NewScreenshotFullCommand { get; init; }
         public RelayCommandFull SettingsCommand { get; init; }
         public SettingsViewModel Settings { get; set; }
+
+        public void ShowStartupToast()
+        {
+
+            bool shortcutAvailable = false;
+            string shortcutText = string.Empty;
+            ShortcutInfo[] shortcutsInPreferedOrder = new ShortcutInfo[]
+            {
+                this.Settings.WindowedRegionScreenshotShortcut,
+                this.Settings.FullscreenScreenshotShortcut,
+                this.Settings.QuickMeasureShortcut,
+                this.Settings.QuickColorShortcut,
+            };
+
+            foreach(var shortcutIt in shortcutsInPreferedOrder)
+            {
+                if (shortcutIt.Status == RegistrationStatus.SuccessfulRegistration)
+                {
+                    shortcutAvailable = true;
+                    shortcutText = KeyboardHelper.GetShortcutLabel(
+                        shortcutIt.Modifiers,
+                        shortcutIt.Key);
+                    break;
+                }
+            }
+
+            string toGetStarted = "Right click tray icon to get started";
+            if (shortcutAvailable)
+            {
+                toGetStarted = $"Right click tray icon or press {shortcutText} to get started.";
+            }
+
+            new ToastContentBuilder()
+                .AddText("Pixel Ruler is Running", AdaptiveTextStyle.Header)
+                .AddText(toGetStarted)
+                .SetToastDuration(ToastDuration.Short)
+                .Show(toast => 
+                {
+                    //toast.ExpirationTime = DateTime.Now;
+                    toast.ExpiresOnReboot = true;
+                    ToastHelper.ConfigureToast(toast, true, (ToastArguments args) =>
+                    {
+                        NewScreenshotRegionCommand.Execute(null);
+                    });
+                });
+        }
     }
 
     public static class OverlayModeExt

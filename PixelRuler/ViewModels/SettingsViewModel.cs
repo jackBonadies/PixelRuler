@@ -741,6 +741,9 @@ namespace PixelRuler
         [ObservableProperty]
         private QuickColorMode quickColorMode;
 
+        [ObservableProperty]
+        private ShowToastAfter showToastAfter = ShowToastAfter.DefaultSave;
+
         partial void OnQuickColorModeChanged(QuickColorMode value)
         {
             QuickColorModeChanged?.Invoke(this, EventArgs.Empty);
@@ -815,5 +818,13 @@ namespace PixelRuler
         ColorTrayCopyExplicit = 0,
         AutoCopyMany = 1,
         AutoCopyAndClose = 2
+    }
+
+    public enum ShowToastAfter
+    {
+        Never = 0,
+        DefaultSave = 1,
+        AnySave = 2,
+        AnyAction = 3,
     }
 }
