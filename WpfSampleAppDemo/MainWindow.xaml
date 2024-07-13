@@ -9,162 +9,202 @@
     Width="800"
     Height="450"
     mc:Ignorable="d">
-    <Canvas>
-        <StackPanel Orientation="Horizontal">
-            <Label
-                Margin="18,0,0,0"
-                Content="Sample Application"
-                FontSize="30" />
-            <Label
-                Margin="0,4,0,0"
-                Content="&#xEB3C;"
-                FontFamily="Segoe MDL2 Assets"
-                FontSize="30" />
-        </StackPanel>
-        <Border
-            Canvas.Left="20"
-            Canvas.Top="50"
-            Padding="6,10,10,2"
-            Background="#efefef"
-            CornerRadius="6">
-            <Grid
-                Width="344"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="8" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="6" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="9" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="1" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="8" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="8" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <!--  First row: Label and TextBox  -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Canvas>
+            <StackPanel Orientation="Horizontal">
                 <Label
-                    Grid.Row="0"
-                    VerticalAlignment="Center"
-                    Content="First Label:" />
-                <TextBox Grid.Row="0" Margin="100,0,0,0" />
-
-                <!--  Second row: Label and TextBox  -->
+                    Margin="18,0,0,0"
+                    Content="Sample Application"
+                    FontSize="30" />
                 <Label
-                    Grid.Row="2"
-                    VerticalAlignment="Center"
-                    Content="Second Label:" />
-                <TextBox Grid.Row="2" Margin="100,0,0,0" />
-
-                <!--  Third row: Label, TextBox and Button  -->
-                <Label
-                    Grid.Row="4"
-                    VerticalAlignment="Center"
-                    Content="Third Label:" />
-                <TextBox
-                    Grid.Row="4"
-                    Grid.RowSpan="2"
-                    Margin="100,0,90,8" />
-                <Button
-                    Grid.Row="4"
-                    Width="75"
-                    Margin="0,0,2,0"
-                    HorizontalAlignment="Right"
-                    Content="Click Me" />
-
-                <!--  Fourth row: Radio Buttons with Label  -->
-                <StackPanel Grid.Row="8" Orientation="Horizontal">
-                    <Label VerticalAlignment="Center" Content="Choose One:" />
-                    <RadioButton
-                        Margin="10,0,0,0"
-                        VerticalAlignment="Center"
-                        Content="Option 1"
-                        GroupName="Options" />
-                    <RadioButton
-                        Margin="10,0,0,0"
-                        VerticalAlignment="Center"
-                        Content="Option 2"
-                        GroupName="Options" />
-                    <RadioButton
-                        Margin="12,0,0,0"
-                        VerticalAlignment="Center"
-                        Content="Option 3"
-                        GroupName="Options" />
-                </StackPanel>
-
-                <!--  Fifth row: Checkbox with Label  -->
-                <StackPanel Grid.Row="10" Orientation="Horizontal">
-                    <CheckBox
-                        Margin="0,0,0,0"
-                        VerticalAlignment="Center"
-                        Content="Check Me" />
-                    <Label
-                        Margin="5,0,0,0"
-                        VerticalAlignment="Center"
-                        Content="Enable Option" />
-                </StackPanel>
-            </Grid>
-        </Border>
-        <StackPanel
-            Grid.Column="0"
-            Canvas.Top="500"
-            Width="150"
-            VerticalAlignment="Top">
-            <Button Margin="10" Content="Select" />
-            <Button Margin="10" Content="Move" />
-            <Button Margin="10" Content="Line" />
-            <Button Margin="10" Content="Delete" />
-        </StackPanel>
-        <Border
-            Canvas.Left="400"
-            Canvas.Top="11"
-            BorderBrush="Gray"
-            BorderThickness="1">
-            <StackPanel
-                Grid.Column="2"
-                Canvas.Left="529"
-                Canvas.Top="11"
-                Width="200"
-                VerticalAlignment="Center">
-                <Label
-                    Margin="8,0"
-                    Content="Info"
-                    FontWeight="Bold" />
-                <!--  Properties fields  -->
-                <Label Margin="10,0" Content="Length:" />
-                <TextBox Margin="9,0" />
-                <Label Margin="10,0" Content="Angle:" />
-                <TextBox Margin="10,0" />
-                <Label Margin="10,0" Content="Offset X:" />
-                <TextBox Margin="10,0" />
-                <Label Margin="11,1" Content="Offset Y:" />
-                <TextBox Margin="10,0,9,10" />
+                    Margin="0,4,0,0"
+                    Content="&#xEB3C;"
+                    FontFamily="Segoe MDL2 Assets"
+                    FontSize="30" />
             </StackPanel>
-        </Border>
-        <StatusBar Grid.ColumnSpan="3" VerticalAlignment="Bottom">
-            <StatusBarItem Content="Ready" />
-            <!--  Additional status information  -->
+            <Border
+                Canvas.Left="20"
+                Canvas.Top="50"
+                Padding="6,10,10,2"
+                Background="#efefef"
+                CornerRadius="6">
+                <Grid
+                    Width="344"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="6" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="9" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="1" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!--  First row: Label and TextBox  -->
+                    <Label
+                        Grid.Row="0"
+                        VerticalAlignment="Center"
+                        Content="First Label:" />
+                    <TextBox Grid.Row="0" Margin="100,0,0,0" />
+
+                    <!--  Second row: Label and TextBox  -->
+                    <Label
+                        Grid.Row="2"
+                        VerticalAlignment="Center"
+                        Content="Second Label:" />
+                    <TextBox Grid.Row="2" Margin="100,0,0,0" />
+
+                    <!--  Third row: Label, TextBox and Button  -->
+                    <Label
+                        Grid.Row="4"
+                        VerticalAlignment="Center"
+                        Content="Third Label:" />
+                    <TextBox
+                        Grid.Row="4"
+                        Grid.RowSpan="2"
+                        Margin="100,0,90,8" />
+                    <Button
+                        Grid.Row="4"
+                        Width="75"
+                        Margin="0,0,2,0"
+                        HorizontalAlignment="Right"
+                        Content="Click Me" />
+
+                    <!--  Fourth row: Radio Buttons with Label  -->
+                    <StackPanel Grid.Row="8" Orientation="Horizontal">
+                        <Label VerticalAlignment="Center" Content="Choose One:" />
+                        <RadioButton
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="Option 1"
+                            GroupName="Options" />
+                        <RadioButton
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="Option 2"
+                            GroupName="Options" />
+                        <RadioButton
+                            Margin="12,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="Option 3"
+                            GroupName="Options" />
+                    </StackPanel>
+
+                    <!--  Fifth row: Checkbox with Label  -->
+                    <StackPanel Grid.Row="10" Orientation="Horizontal">
+                        <CheckBox
+                            Margin="0,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="Check Me" />
+                        <Label
+                            Margin="5,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="Enable Option" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <StackPanel
+                Grid.Column="0"
+                Canvas.Top="500"
+                Width="150"
+                VerticalAlignment="Top">
+                <Button Margin="10" Content="Select" />
+                <Button Margin="10" Content="Move" />
+                <Button Margin="10" Content="Line" />
+                <Button Margin="10" Content="Delete" />
+            </StackPanel>
+            <Border
+                Canvas.Left="400"
+                Canvas.Top="11"
+                BorderBrush="Gray"
+                BorderThickness="1">
+                <StackPanel
+                    Grid.Column="2"
+                    Canvas.Left="529"
+                    Canvas.Top="11"
+                    Width="200"
+                    VerticalAlignment="Center">
+                    <Label
+                        Margin="8,0"
+                        Content="Info"
+                        FontWeight="Bold" />
+                    <!--  Properties fields  -->
+                    <Label Margin="10,0" Content="Length:" />
+                    <TextBox Margin="9,0" />
+                    <Label Margin="10,0" Content="Angle:" />
+                    <TextBox Margin="10,0" />
+                    <Label Margin="10,0" Content="Offset X:" />
+                    <TextBox Margin="10,0" />
+                    <Label Margin="11,1" Content="Offset Y:" />
+                    <TextBox Margin="10,0,9,10" />
+                </StackPanel>
+            </Border>
+
+            <Line
+                StrokeThickness="1"
+                Visibility="Collapsed"
+                X1="100"
+                X2="200"
+                Y1="100"
+                Y2="100">
+                <Line.Stroke>
+                    <LinearGradientBrush>
+                        <GradientStop Offset="0" Color="Red" />
+                        <GradientStop Offset=".5" Color="Blue" />
+                        <GradientStop Offset="1" Color="Red" />
+                    </LinearGradientBrush>
+                </Line.Stroke>
+            </Line>
+        </Canvas>
+        <StatusBar Grid.Row="1">
+            <StatusBarItem>
+                <StatusBarItem.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,2,5,0"
+                            FontFamily="Segoe MDL2 Assets"
+                            Text="&#xE895;" />
+                        <TextBlock Text="status" />
+                    </StackPanel>
+                </StatusBarItem.Content>
+            </StatusBarItem>
+            <ProgressBar
+                Name="progressBar1"
+                Width="100"
+                Height="20"
+                Value="40" />
+            <Button>
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border Padding="4,0" Background="#d0d0d0">
+                            <TextBlock Text="Retry" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <StatusBarItem>
+                <StatusBarItem.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,2,5,0"
+                            FontFamily="Segoe MDL2 Assets"
+                            Text="&#xE707;" />
+                        <TextBlock Text="test" />
+                    </StackPanel>
+                </StatusBarItem.Content>
+            </StatusBarItem>
         </StatusBar>
-
-        <Line
-            StrokeThickness="1"
-            X1="100"
-            X2="200"
-            Y1="100"
-            Y2="100">
-            <Line.Stroke>
-                <LinearGradientBrush>
-                    <GradientStop Offset="0" Color="Red" />
-                    <GradientStop Offset=".5" Color="Blue" />
-                    <GradientStop Offset="1" Color="Red" />
-                </LinearGradientBrush>
-            </Line.Stroke>
-        </Line>
-
-    </Canvas>
+    </Grid>
 </Window>
