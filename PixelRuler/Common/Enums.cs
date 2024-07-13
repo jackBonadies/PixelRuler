@@ -34,6 +34,18 @@ namespace PixelRuler
         ColorPicker = 2,
     }
 
+    public enum DefaultTool
+    {
+        [DisplayLabel("Last Selected", 0)]
+        LastSelectedTool = -1,
+        [DisplayLabel("Bounding Box", 1)]
+        BoundingBox = Tool.BoundingBox,
+        [DisplayLabel("Ruler", 2)]
+        Ruler = Tool.Ruler,
+        [DisplayLabel("Color Picker", 3)]
+        ColorPicker = Tool.ColorPicker,
+    }
+
     public static class EnumExtensions
     {
         public static string GetDisplayLabel(this Enum enumValue)

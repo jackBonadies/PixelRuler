@@ -113,6 +113,7 @@ namespace PixelRuler
             {
                 return;
             }
+            SetShowGridLineState();
             if (this.ViewModel.ShowGridLines)
             {
                 this.gridLineTop.SetZoom(1);
@@ -475,7 +476,6 @@ namespace PixelRuler
             Bind(true);
 
             SetClearAllMeasurementsEnabledState();
-            SetShowGridLineState();
 
             zoomBox = new ZoomBox(this, 192, this.ViewModel);
             Canvas.SetZIndex(zoomBox, 1200);

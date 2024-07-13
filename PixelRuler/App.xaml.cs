@@ -81,7 +81,10 @@ namespace PixelRuler
             settingsViewModel.SetState();
 
             var rootViewModel = ServiceProvider.GetRequiredService<RootViewModel>();
-            rootViewModel.ShowStartupToast();
+            if (settingsViewModel.FirstTimeRunning)
+            {
+                rootViewModel.ShowStartupToast();
+            }
 
             if (createdNew)
             {

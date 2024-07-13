@@ -12,7 +12,7 @@ namespace PixelRuler.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.8.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.10.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -32,18 +32,6 @@ namespace PixelRuler.Properties {
             }
             set {
                 this["AnnotationColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool CloseToTray {
-            get {
-                return ((bool)(this["CloseToTray"]));
-            }
-            set {
-                this["CloseToTray"] = value;
             }
         }
         
@@ -109,18 +97,6 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool StartAtWindowsStartup {
-            get {
-                return ((bool)(this["StartAtWindowsStartup"]));
-            }
-            set {
-                this["StartAtWindowsStartup"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int LaunchStartupAction {
             get {
@@ -133,7 +109,7 @@ namespace PixelRuler.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
         public int DefaultTool {
             get {
                 return ((int)(this["DefaultTool"]));
@@ -272,6 +248,54 @@ namespace PixelRuler.Properties {
             }
             set {
                 this["CommandTargets"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool FirstTimeRunning {
+            get {
+                return ((bool)(this["FirstTimeRunning"]));
+            }
+            set {
+                this["FirstTimeRunning"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CloseToTray {
+            get {
+                return ((bool)(this["CloseToTray"]));
+            }
+            set {
+                this["CloseToTray"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool StartAtWindowsStartup {
+            get {
+                return ((bool)(this["StartAtWindowsStartup"]));
+            }
+            set {
+                this["StartAtWindowsStartup"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int ShowToastAfter {
+            get {
+                return ((int)(this["ShowToastAfter"]));
+            }
+            set {
+                this["ShowToastAfter"] = value;
             }
         }
     }

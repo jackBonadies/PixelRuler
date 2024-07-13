@@ -51,7 +51,16 @@ namespace PixelRuler
             if (settingsViewModel != null)
             {
                 this.Settings = settingsViewModel;
-                this.SelectedTool = settingsViewModel.DefaultTool;
+                if (settingsViewModel.DefaultTool == DefaultTool.LastSelectedTool)
+                {
+                    this.SelectedTool = (Tool)Properties.Recents.Default.SelectedTool;
+                }
+                else
+                {
+                    this.SelectedTool = (Tool)settingsViewModel.DefaultTool;
+                }
+
+                this.ShowGridLines = Properties.Recents.Default.ShowGridLines;
             }
         }
 
@@ -603,6 +612,12 @@ namespace PixelRuler
                     showGridlines = value;
                     OnPropertyChanged();
                     ShowGridLinesChanged?.Invoke(this, EventArgs.Empty);
+
+                    if (Properties.Recents.Default.ShowGridLines != value)
+                    {
+                        Properties.Recents.Default.ShowGridLines = value;
+                        Properties.Recents.Default.Save();
+                    }
                 }
             }
         }
@@ -621,6 +636,12 @@ namespace PixelRuler
                     selectedTool = value;
                     SelectedToolChanged?.Invoke(this, EventArgs.Empty);
                     OnPropertyChanged();
+
+                    if (Properties.Recents.Default.SelectedTool != (int)value)
+                    {
+                        Properties.Recents.Default.SelectedTool = (int)value;
+                        Properties.Recents.Default.Save();
+                    }
                 }
             }
         }

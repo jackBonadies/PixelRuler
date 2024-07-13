@@ -6,6 +6,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PixelRuler.Views"
              mc:Ignorable="d">
+    <UserControl.Effect>
+        <DropShadowEffect
+            BlurRadius="14"
+            Direction="0"
+            ShadowDepth="0" />
+    </UserControl.Effect>
     <Border Background="LightGray" CornerRadius="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="3,2,4,2">
         <StackPanel Orientation="Horizontal">
             <custom:ColorDisplayControl Color="{Binding Color}"/>

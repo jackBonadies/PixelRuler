@@ -68,6 +68,10 @@ namespace PixelRuler
             GlobalShortcuts.Add(QuickMeasureShortcut);
             GlobalShortcuts.Add(QuickColorShortcut);
 
+            this.FirstTimeRunning = Properties.Settings.Default.FirstTimeRunning;
+            Properties.Settings.Default.FirstTimeRunning = false;
+            Properties.Settings.Default.Save();
+
             clearShortcutCommand = new RelayCommand((object? o) =>
             {
                 if (o is ShortcutInfo shortcutInfo)
@@ -336,11 +340,11 @@ namespace PixelRuler
             }
         }
 
-        public Tool DefaultTool
+        public DefaultTool DefaultTool
         {
             get
             {
-                return (Tool)Properties.Settings.Default.DefaultTool;
+                return (DefaultTool)Properties.Settings.Default.DefaultTool;
             }
             set
             {
@@ -608,8 +612,8 @@ namespace PixelRuler
 
         private void QuickColorShortcutShortcut_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            Properties.Settings.Default.GlobalShortcutRegionKey = (int)WindowedRegionScreenshotShortcut.Key;
-            Properties.Settings.Default.GlobalShortcutRegionModifiers = (int)WindowedRegionScreenshotShortcut.Modifiers;
+            Properties.Settings.Default.GlobalShortcutQuickColorKey = (int)QuickColorShortcut.Key;
+            Properties.Settings.Default.GlobalShortcutQuickColorModifiers = (int)QuickColorShortcut.Modifiers;
             Properties.Settings.Default.Save();
             ShortcutChanged_Invoke(sender);
         }
@@ -664,6 +668,8 @@ namespace PixelRuler
         //        }
         //    }
         //}
+
+        public bool FirstTimeRunning { get; set; }
 
         public string VersionDisplayName
         {
@@ -755,7 +761,34 @@ namespace PixelRuler
         private QuickColorMode quickColorMode;
 
         [ObservableProperty]
-        private ShowToastAfter showToastAfter = ShowToastAfter.DefaultSave;
+        private ShowToastAfter showToastAfter = (ShowToastAfter)Properties.Settings.Default.ShowToastAfter;
+
+        /// <summary>
+        /// UI Property for <see cref="ShowToastAfter"/>
+        /// </summary>
+        /// <remarks>
+        /// Less granularity in the UI for user friendliness.
+        /// </remarks>
+        public bool ShowNotificationOnSave
+        {
+            get
+            {
+                return ShowToastAfter != ShowToastAfter.Never;
+            }
+            set
+            {
+                if (value)
+                {
+                    ShowToastAfter = ShowToastAfter.AnySave;
+                }
+                else
+                {
+                    ShowToastAfter = ShowToastAfter.Never;
+                }
+                Properties.Settings.Default.ShowToastAfter = (int)ShowToastAfter;
+                Properties.Settings.Default.Save();
+            }
+        }
 
         partial void OnQuickColorModeChanged(QuickColorMode value)
         {

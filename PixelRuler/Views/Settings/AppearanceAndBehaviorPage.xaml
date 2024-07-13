@@ -100,7 +100,7 @@
                 Text="Behavior" />
 
 
-            <ui:CardControl Margin="0,0,0,12">
+            <!--<ui:CardControl Margin="0,0,0,12">
                 <ui:CardControl.Header>
                     <ui:TextBlock
                         Grid.Row="0"
@@ -112,7 +112,7 @@
                     MinWidth="150"
                     ItemsSource="{Binding Path=LaunchStartupAction, Converter={StaticResource EnumToOptionsCollectionConverter}}"
                     SelectedItem="{Binding Path=LaunchStartupAction, Converter={StaticResource EnumToOptionConverter}}" />
-            </ui:CardControl>
+            </ui:CardControl>-->
 
             <ui:CardControl Margin="0,0,0,12">
                 <ui:CardControl.Header>
@@ -139,7 +139,7 @@
             </ui:CardControl>
 
 
-            <ui:CardControl Margin="0,0,0,12">
+            <!--<ui:CardControl Margin="0,0,0,12">
                 <ui:CardControl.Header>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -157,7 +157,7 @@
                     </Grid>
                 </ui:CardControl.Header>
                 <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding CloseToTray, Mode=TwoWay}" />
-            </ui:CardControl>
+            </ui:CardControl>-->
 
             <ui:CardControl Margin="0,0,0,12">
                 <ui:CardControl.Header>
@@ -179,8 +179,31 @@
                 <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding StartAtSystemStartup, Mode=TwoWay}" />
             </ui:CardControl>
 
- 
+            <ui:TextBlock
+                Margin="0,0,0,8"
+                FontTypography="BodyStrong"
+                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                Text="Notifications" />
 
+            <ui:CardControl Margin="0,0,0,12">
+                <ui:CardControl.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ui:TextBlock
+                            Grid.Row="0"
+                            FontTypography="Body"
+                            Text="Show Notification on Save" />
+                        <ui:TextBlock
+                            Grid.Row="1"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="Show Toast Notification whenever Screenshot is Saved" />
+                    </Grid>
+                </ui:CardControl.Header>
+                <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding ShowNotificationOnSave, Mode=TwoWay}" />
+            </ui:CardControl>
 
             <!--  UI element size  -->
             <!--  close to system tray  -->
