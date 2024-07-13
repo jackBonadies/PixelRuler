@@ -497,12 +497,14 @@ namespace PixelRuler
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            List<string> enumDisplayLabels = new List<string>();
+            List<(int, string)> enumDisplayLabelsIndex = new List<(int, string)>();
             foreach (var item in Enum.GetValues(value.GetType()))
             {
-                enumDisplayLabels.Add(((Enum)item).GetDisplayLabel());
-
+                string label = ((Enum)item).GetDisplayLabel();
+                int order = ((Enum)item).GetOrder();
+                enumDisplayLabelsIndex.Add((order, label));
             }
+            var enumDisplayLabels = enumDisplayLabelsIndex.OrderBy(it => it.Item1).Select(it => it.Item2).ToList();
             return enumDisplayLabels;
         }
 
