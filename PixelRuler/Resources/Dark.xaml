@@ -2,6 +2,7 @@
     <SolidColorBrush x:Key="SeperatorColor">#2D2D2D</SolidColorBrush>
     <SolidColorBrush x:Key="PanelColor">#202020</SolidColorBrush>
     <SolidColorBrush x:Key="TextFillColorStrongBrush">#ffffffff</SolidColorBrush>
+    <SolidColorBrush x:Key="TextFillColorMedium">#ffe0e0e0</SolidColorBrush>
     <SolidColorBrush x:Key="HoverOverLight">#18ffffff</SolidColorBrush>
     <SolidColorBrush x:Key="PressedLight">#30ffffff</SolidColorBrush>
     <SolidColorBrush x:Key="ColorBorderColor">#33ffffff</SolidColorBrush>

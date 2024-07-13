@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <SolidColorBrush x:Key="SeperatorColor">#22000000</SolidColorBrush>
     <SolidColorBrush x:Key="TextFillColorStrongBrush">#ff000000</SolidColorBrush>
+    <SolidColorBrush x:Key="TextFillColorMedium">#ff303030</SolidColorBrush>
     <SolidColorBrush x:Key="HoverOverLight">#18000000</SolidColorBrush>
     <SolidColorBrush x:Key="PressedLight">#40000000</SolidColorBrush>
     <SolidColorBrush x:Key="PanelColor">#EFF4F9</SolidColorBrush>

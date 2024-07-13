@@ -2,9 +2,9 @@
     x:Class="PixelRuler.Views.ScreenshotSelectionPerScreenPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:custom="clr-namespace:PixelRuler.CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:PixelRuler.Views"
-    xmlns:custom="clr-namespace:PixelRuler.CustomControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pixelruler="clr-namespace:PixelRuler"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
@@ -106,8 +106,8 @@
                         <TranslateTransform x:Name="colorPanelTranslateTransform" X="0" Y="50" />
                     </Border.RenderTransform>
                     <StackPanel Orientation="Horizontal">
-                        <custom:ColorDisplayControl Margin="3,0,0,0" Color="{Binding Color}"/>
-                        <TextBlock Style="{StaticResource ColorDisplayTextBlockStyle}" />
+                        <custom:ColorDisplayControl Margin="3,0,0,0" Color="{Binding Color}" />
+                        <TextBlock Foreground="{DynamicResource TextFillColorMedium}" Style="{StaticResource ColorDisplayTextBlockStyle}" />
                         <Button
                             Margin="4,0,0,0"
                             Command="{Binding CopyColorToClipboardCommand}"
