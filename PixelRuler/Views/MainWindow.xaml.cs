@@ -246,6 +246,7 @@ namespace PixelRuler
             this.Hide();
             await Task.Delay(this.ViewModel.Settings.ScreenshotDelayMs);
             var wsw = new WindowSelectionWindow(mode, this.ViewModel.Settings);
+            wsw.Activate();
             var res = wsw.ShowDialog();
             Bitmap bmp = null;
 
