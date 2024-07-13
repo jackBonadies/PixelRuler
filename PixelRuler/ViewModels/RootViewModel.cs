@@ -17,7 +17,7 @@ namespace PixelRuler.ViewModels
         {
             Settings = settingsViewModel;
             this.NewScreenshotFullCommand = new RelayCommandFull((object? o) => { App.NewFullscreenshotLogic(true); }, Settings.FullscreenScreenshotShortcut, "New Full Screenshot");
-            this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(OverlayMode.Window, true); }, Settings.WindowedScreenshotShortcut, "New Windowed Screenshot");
+            //this.NewScreenshotWindowedCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(OverlayMode.Window, true); }, Settings.WindowedScreenshotShortcut, "New Windowed Screenshot");
             this.NewScreenshotRegionCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(OverlayMode.WindowAndRegionRect, true); }, Settings.WindowedRegionScreenshotShortcut, "New Region Screenshot");
             this.QuickMeasureCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(OverlayMode.QuickMeasure, true); }, Settings.QuickMeasureShortcut, "Quick Measure");
             this.QuickColorCommand = new RelayCommandFull((object? o) => { App.EnterScreenshotTool(OverlayMode.QuickColor, true); }, Settings.QuickColorShortcut, "Quick Color");
@@ -28,14 +28,13 @@ namespace PixelRuler.ViewModels
         public RelayCommandFull QuickMeasureCommand { get; init; }
         public RelayCommandFull QuickColorCommand { get; init; }
         public RelayCommandFull NewScreenshotRegionCommand { get; init; }
-        public RelayCommandFull NewScreenshotWindowedCommand { get; init; }
+        //public RelayCommandFull NewScreenshotWindowedCommand { get; init; }
         public RelayCommandFull NewScreenshotFullCommand { get; init; }
         public RelayCommandFull SettingsCommand { get; init; }
         public SettingsViewModel Settings { get; set; }
 
         public void ShowStartupToast()
         {
-
             bool shortcutAvailable = false;
             string shortcutText = string.Empty;
             ShortcutInfo[] shortcutsInPreferedOrder = new ShortcutInfo[]

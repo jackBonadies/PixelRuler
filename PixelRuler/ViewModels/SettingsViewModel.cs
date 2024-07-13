@@ -29,13 +29,13 @@ namespace PixelRuler
                 Key.PrintScreen,
                 ModifierKeys.Control);
 
-            WindowedScreenshotShortcut = new ShortcutInfo(
-                "Window Screenshot",
-                App.WINDOWED_HOTKEY_ID,
-                (Key)Properties.Settings.Default.GlobalShortcutWindowKey,
-                (ModifierKeys)Properties.Settings.Default.GlobalShortcutWindowModifiers,
-                Key.PrintScreen,
-                ModifierKeys.None);
+            //WindowedScreenshotShortcut = new ShortcutInfo(
+            //    "Window Screenshot",
+            //    App.WINDOWED_HOTKEY_ID,
+            //    (Key)Properties.Settings.Default.GlobalShortcutWindowKey,
+            //    (ModifierKeys)Properties.Settings.Default.GlobalShortcutWindowModifiers,
+            //    Key.PrintScreen,
+            //    getDefaultModifierKeyForWindowed());
 
             WindowedRegionScreenshotShortcut = new ShortcutInfo(
                 "Region Screenshot",
@@ -43,7 +43,7 @@ namespace PixelRuler
                 (Key)Properties.Settings.Default.GlobalShortcutRegionKey,
                 (ModifierKeys)Properties.Settings.Default.GlobalShortcutRegionModifiers,
                 Key.PrintScreen,
-                ModifierKeys.Shift);
+                getDefaultModifierKeyForWindowed());
 
             QuickMeasureShortcut = new ShortcutInfo(
                 "Quick Measure",
@@ -132,6 +132,18 @@ namespace PixelRuler
 
             RestorePathInfos();
             RestoreCommandTargets();
+        }
+
+        private ModifierKeys getDefaultModifierKeyForWindowed()
+        {
+            if (WinHelper.IsPrntScreenBoundToWindowsSnippingTool())
+            {
+                return ModifierKeys.Shift;
+            }
+            else
+            {
+                return ModifierKeys.None;
+            }
         }
 
         [ObservableProperty]

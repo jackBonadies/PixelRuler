@@ -55,27 +55,6 @@
             </TextBlock>
         </Grid>
 
-        <!--<Grid VerticalAlignment="Center">
-            <TextBlock
-                Grid.Column="0"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontFamily="Arial"
-                FontSize="16"
-                FontWeight="Bold"
-                Foreground="Red"
-                Text="!"
-                TextAlignment="Center" />
-            <TextBlock
-                Grid.Column="0"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontFamily="Segoe MDL2 Assets"
-                FontSize="20"
-                Foreground="Red"
-                Text="&#xF138;" />
-
-        </Grid>-->
         <TextBlock
             Grid.Column="1"
             VerticalAlignment="Center"

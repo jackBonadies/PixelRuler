@@ -12,6 +12,9 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Wpf.Ui.Controls;
+using Microsoft.Win32;
+using System.Diagnostics;
+using System.Security.Principal;
 
 namespace PixelRuler
 {
@@ -512,5 +515,99 @@ namespace PixelRuler
             image.Save(fileName, GetImageFormatFromFilename(fileName));
         }
     }
+
+    public static class WinHelper
+    {
+        public static bool IsWin11()
+        {
+            var osVersion = Environment.OSVersion;
+            return true;
+        }
+
+        private const string KeyboardRegistryPath = @"Control Panel\Keyboard";
+        private const string PrintScreenRegistryValue = @"PrintScreenKeyForSnippingEnabled";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>true if succeeded</returns>
+        public static bool DisableWindowsHandlingOfPrntScreen()
+        {
+            using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(KeyboardRegistryPath, true))
+            {
+                if (key != null)
+                {
+                    key.SetValue(PrintScreenRegistryValue, 0, RegistryValueKind.DWord);
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        public static bool IsPrntScreenBoundToWindowsSnippingTool()
+        {
+            using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(KeyboardRegistryPath))
+            {
+                if (key != null)
+                {
+                    object? printScreenValue = key.GetValue(PrintScreenRegistryValue);
+                    if (printScreenValue != null)
+                    {
+                        if (printScreenValue is int printScreenInt)
+                        {
+                            if (printScreenInt == 0)
+                            {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        // we havent disabled it, so its probably bound.
+                        return true;
+                    }
+                }
+                else
+                {
+                    // we havent disabled it, so its probably bound.
+                    return true;
+                }
+            }
+        }
+
+        public static bool IsPrntScreenAvailable()
+        {
+            if (!IsWin11())
+            {
+                return true;
+            }
+            else
+            {
+                return IsPrntScreenBoundToWindowsSnippingTool();
+            }
+        }
+
+        private static bool isAdmin()
+        {
+            try
+            {
+                WindowsIdentity identity = WindowsIdentity.GetCurrent();
+                WindowsPrincipal principal = new WindowsPrincipal(identity);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine($"UnauthorizedAccessException: {ex.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                return false;
+            }
+        }
+    }
+
 }
 

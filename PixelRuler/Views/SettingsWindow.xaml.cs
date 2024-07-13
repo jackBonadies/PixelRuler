@@ -266,6 +266,28 @@ namespace PixelRuler
 
             var result = await contentDialog.ShowAsync();
 
+            if (result == ContentDialogResult.Primary && 
+                WinHelper.IsPrntScreenBoundToWindowsSnippingTool() &&
+                pendingShortcutInfo.Key == Key.PrintScreen && 
+                pendingShortcutInfo.Modifiers == ModifierKeys.None)
+            {
+                var warningDiagContents = new Wpf.Ui.Controls.TextBlock() { Text = "The PrintScreen key is currently bound to snipping tool.  Would you like to override this?" };
+                contentDialog = new ContentDialog(RootContentDialog)
+                {
+                    Title = "Warning",
+                    Content = warningDiagContents,
+                    CloseButtonText = "Cancel",
+                    PrimaryButtonText = "Override",
+                    Height = 280,
+                    HorizontalAlignment = HorizontalAlignment.Stretch
+                };
+                var overrideResult = await contentDialog.ShowAsync();
+                if (overrideResult == ContentDialogResult.Primary)
+                {
+                    WinHelper.DisableWindowsHandlingOfPrntScreen();
+                }
+            }
+
             switch (result)
             {
                 case ContentDialogResult.None: // cancel
@@ -275,8 +297,5 @@ namespace PixelRuler
                     break;
             }
         }
-
-
-
     }
 }
