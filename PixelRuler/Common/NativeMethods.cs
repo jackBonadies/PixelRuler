@@ -206,6 +206,7 @@ namespace PixelRuler
             return string.Empty;
         }
 
+#if DEBUG
         /// <summary>
         /// Gets the process holding the clipboard
         /// </summary>
@@ -239,6 +240,7 @@ namespace PixelRuler
 
             return theProc;
         }
+#endif
     }
 
     [ComImport]

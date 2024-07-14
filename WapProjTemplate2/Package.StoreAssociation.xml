@@ -369,5 +369,5 @@
   <AccountPackageIdentityNames>
     <MainPackageIdentityName>39644ShinjiIndustrial.PixelRuler-UIUXDesign5</MainPackageIdentityName>
   </AccountPackageIdentityNames>
-  <PackageInfoList LandingUrl="https://developer.microsoft.com/dashboard/Application?appId=9NFFVGQF0DJX" />
+  <PackageInfoList LandingUrl="https://devcenterapi.dce.mp.microsoft.com/dashboard/Application?appId=9NFFVGQF0DJX" />
 </StoreAssociation>

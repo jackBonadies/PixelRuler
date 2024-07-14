@@ -124,6 +124,8 @@ namespace PixelRuler.Views
             this.Scale = scale;
 
             UpdateAll();
+
+            currentMousePosTick?.UpdateForZoomChanged();
         }
 
         private void UpdateAll()

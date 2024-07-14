@@ -77,5 +77,10 @@ namespace PixelRuler.CanvasElements
                 return this.ImageCoordinate;
             }
         }
+
+        internal void UpdateForZoomChanged()
+        {
+            this.GuidelineElement?.UpdateForZoomChange();
+        }
     }
 }

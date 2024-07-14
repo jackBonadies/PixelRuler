@@ -1291,6 +1291,9 @@ namespace PixelRuler
             {
                 measEl.UpdateForZoomChange();
             }
+
+            horizontalPendingLine.StrokeThickness = 2 / this.CanvasScaleTransform.ScaleX;
+            verticalPendingLine.StrokeThickness = 2 / this.CanvasScaleTransform.ScaleX;
         }
 
         internal void SetImage(BitmapSource? img)
