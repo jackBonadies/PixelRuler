@@ -2,6 +2,7 @@
 using PixelRuler.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -29,17 +30,7 @@ namespace PixelRuler.Views
         {
             get;
             set;
-            //get { return (bool)GetValue(IsVerticalProperty); }
-            //set { SetValue(IsVerticalProperty, value); }
         }
-
-        //public static readonly DependencyProperty IsVerticalProperty
-        //    = DependencyProperty.Register(
-        //          "IsVertical",
-        //          typeof(bool),
-        //          typeof(Gridline),
-        //          new PropertyMetadata(false)
-        //      );
 
         public MainCanvas MainCanvas { get; set; }
         private GuidelineTick currentMousePosTick;
@@ -65,7 +56,7 @@ namespace PixelRuler.Views
             currentMousePosTick.tickLine.Visibility = Visibility.Collapsed;
         }
 
-        private void SetupForDpi()
+        public void SetupForDpi()
         {
             borderSizePixels = UiUtils.GetBorderPixelSize(this.GetDpi());
 
@@ -137,6 +128,7 @@ namespace PixelRuler.Views
 
         private void UpdateAll()
         {
+            var lines = canvas.Children.OfType<Line>();
 
             ClearCanvas();
             SetBorder();

@@ -575,7 +575,9 @@ namespace PixelRuler
                 this.gridLineTop.Visibility = Visibility.Visible;
                 this.gridLineLeft.Visibility = Visibility.Visible;
 
+                this.gridLineLeft.SetupForDpi();
                 this.gridLineLeft.SetZoom(this.EffectiveZoom);
+                this.gridLineTop.SetupForDpi();
                 this.gridLineTop.SetZoom(this.EffectiveZoom);
 
                 gridLineTop.UpdateTranslation();
