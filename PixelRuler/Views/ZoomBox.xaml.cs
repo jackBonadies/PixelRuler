@@ -1,4 +1,5 @@
 ﻿using PixelRuler.CanvasElements;
+using PixelRuler.Common;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -93,7 +94,7 @@ namespace PixelRuler.Views
             currentLineGuideHorz.SetResourceReference(Line.StrokeProperty, App.AnnotationColorKey);
 
 
-            currentPixelIndicator.Stroke = new SolidColorBrush(Colors.White);
+            currentPixelIndicator.Stroke = new SolidColorBrush(UiConsts.CurrentPixelInnerStroke);
             //currentPixelIndicator.Fill = new SolidColorBrush(Colors.Green);
             currentPixelIndicator.UseLayoutRounding = false;
             currentPixelIndicator.SnapsToDevicePixels = false;
@@ -102,7 +103,7 @@ namespace PixelRuler.Views
             Canvas.SetTop(currentPixelIndicator, ZoomWindowSize / 2 - 2);
 
 
-            currentPixelIndicatorOuter.Stroke = new SolidColorBrush(Color.FromArgb(0xa0, 0x00, 0x00, 0x00));
+            currentPixelIndicatorOuter.Stroke = new SolidColorBrush(UiConsts.CurrentPixelOuterStroke);
 
             currentPixelIndicatorOuter.UseLayoutRounding = false;
             currentPixelIndicatorOuter.SnapsToDevicePixels = false;

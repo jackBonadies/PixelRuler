@@ -1007,6 +1007,7 @@ namespace PixelRuler
                 }
                 var truncatedPoint = UiUtils.TruncatePoint(e.GetPosition(innerCanvas));
                 colorPickBox.SetPosition(truncatedPoint);
+                colorPickBox.SetState();
                 if (System.Windows.Input.Mouse.LeftButton == MouseButtonState.Pressed)
                 {
                     SetColorUnderMouse(e);
@@ -1261,7 +1262,7 @@ namespace PixelRuler
 
         private void UpdateForZoomChange()
         {
-            colorPickBox?.UpdateForZoomChange();
+            colorPickBox?.SetState();
 
             foreach (var measEl in ViewModel.MeasurementElements)
             {
