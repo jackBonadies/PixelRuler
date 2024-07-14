@@ -46,7 +46,7 @@
             return IsScreenshotMode();
         }
 
-        public bool IsScreenshotMode()
+        public override bool IsScreenshotMode()
         {
             return Mode == OverlayMode.Window || Mode == OverlayMode.RegionRect || Mode == OverlayMode.WindowAndRegionRect;
         }

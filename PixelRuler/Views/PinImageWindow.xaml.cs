@@ -315,18 +315,7 @@ namespace PixelRuler.Views
             Storyboard.SetTarget(d2, mainBorder);
             s.Children.Add(d2);
 
-            //var finalVal = rect.StrokeDashOffset;
-            //rect.BeginAnimation(Rectangle.StrokeDashOffsetProperty, null);
-            //rect.StrokeDashOffset = finalVal;
-
             s.Begin();
-            //var s = new Storyboard();
-            //new DoubleAnimation()
-            //{
-
-            //}
-
-
         }
 
         private void mainBorder_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

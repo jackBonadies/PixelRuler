@@ -276,6 +276,11 @@ namespace PixelRuler
 
         private void OverlayCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (ViewModel.IsScreenshotMode())
+            {
+                return;
+            }
+
             if (e.ChangedButton == MouseButton.Left)
             {
                 if (ViewModel.SelectedTool == Tool.ColorPicker)
@@ -539,17 +544,24 @@ namespace PixelRuler
 
         private void SetCursor()
         {
-            switch (ViewModel.SelectedTool)
+            if (ViewModel.IsScreenshotMode())
             {
-                case Tool.BoundingBox:
-                case Tool.Ruler:
-                    this.Cursor = Cursors.Cross;
-                    break;
-                case Tool.ColorPicker:
-                    this.Cursor = this.FindResource("EyeDropperCursor") as Cursor;
-                    break;
-                default:
-                    throw new Exception("Unknown Tool");
+                this.Cursor = Cursors.Cross;
+            }
+            else
+            {
+                switch (ViewModel.SelectedTool)
+                {
+                    case Tool.BoundingBox:
+                    case Tool.Ruler:
+                        this.Cursor = Cursors.Cross;
+                        break;
+                    case Tool.ColorPicker:
+                        this.Cursor = this.FindResource("EyeDropperCursor") as Cursor;
+                        break;
+                    default:
+                        throw new Exception("Unknown Tool");
+                }
             }
         }
 
@@ -806,6 +818,10 @@ namespace PixelRuler
 
         private void ToolDown(MouseButtonEventArgs e)
         {
+            if (ViewModel.IsScreenshotMode())
+            {
+                return;
+            }
             switch (ViewModel.SelectedTool)
             {
                 case Tool.BoundingBox:

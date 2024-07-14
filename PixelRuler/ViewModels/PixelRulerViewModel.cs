@@ -144,6 +144,11 @@ namespace PixelRuler
             SetZoomSpecial(100, ZoomBehavior.ResetWindow);
         }
 
+        public virtual bool IsScreenshotMode()
+        {
+            return false;
+        }
+
         private void clearAllMeasureElements()
         {
             ClearAllMeasureElements?.Invoke(this, EventArgs.Empty);
