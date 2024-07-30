@@ -18,9 +18,9 @@ namespace PixelRuler.Views
             InitializeComponent();
             this.SourceInitialized += PinImageWindow_SourceInitialized;
             this.DataContextChanged += PinImageWindow_DataContextChanged;
-            this.MouseLeftButtonDown += PinImageWindow_PreviewMouseDown;
+            this.MouseDown += PinImageWindow_PreviewMouseDown;
             this.MouseMove += PinImageWindow_PreviewMouseMove;
-            this.MouseLeftButtonUp += PinImageWindow_PreviewMouseUp;
+            this.MouseUp += PinImageWindow_PreviewMouseUp;
             this.LostFocus += PinImageWindow_LostFocus;
 
             this.MouseEnter += PinImageWindow_MouseEnter;
@@ -37,8 +37,8 @@ namespace PixelRuler.Views
             var storyboard = gripNotch.Resources["MoveBorderStoryboard"] as Storyboard;
             storyboard.Stop();
 
-            storyboard = closeButton.Resources["buttonFadeOut"] as Storyboard;
-            storyboard.SetValue(Storyboard.TargetProperty, closeButton);
+            storyboard = buttonPanel.Resources["buttonPanelFadeOut"] as Storyboard;
+            storyboard.SetValue(Storyboard.TargetProperty, buttonPanel);
             storyboard.Begin();
             if (this.IsFocused)
             {
@@ -53,8 +53,8 @@ namespace PixelRuler.Views
             var storyboard = gripNotch.Resources["MoveBorderStoryboard"] as Storyboard;
             storyboard.Begin();
 
-            storyboard = closeButton.Resources["buttonFadeIn"] as Storyboard;
-            storyboard.SetValue(Storyboard.TargetProperty, closeButton);
+            storyboard = buttonPanel.Resources["buttonPanelFadeIn"] as Storyboard;
+            storyboard.SetValue(Storyboard.TargetProperty, buttonPanel);
             storyboard.Begin();
         }
 
@@ -66,7 +66,11 @@ namespace PixelRuler.Views
 
         private void PinImageWindow_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (_useCustomMovement)
+            if (!isMoveKey(e.ChangedButton))
+            {
+                return;
+            }
+            if (useCustomMovement(e.ChangedButton))
             {
                 isMoving = false;
                 this.ReleaseMouseCapture();
@@ -101,10 +105,25 @@ namespace PixelRuler.Views
             }
         }
 
+        private bool isMoveKey(MouseButton mouseButton)
+        {
+            return mouseButton == MouseButton.Left || mouseButton == MouseButton.Middle;
+        }
+
+        private bool useCustomMovement(MouseButton mouseButton)
+        {
+            return mouseButton != MouseButton.Left;
+        }
+
         private void PinImageWindow_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (!isMoveKey(e.ChangedButton))
+            {
+                return;
+            }
+
             this.Cursor = Cursors.SizeAll;
-            if (_useCustomMovement)
+            if (useCustomMovement(e.ChangedButton))
             {
                 this.CaptureMouse();
                 startMovePos = e.GetPosition(this);
@@ -138,6 +157,7 @@ namespace PixelRuler.Views
                     if (this.ViewModel != null)
                     {
                         this.ViewModel.CloseCommand = new RelayCommand((object? o) => this.Close());
+                        this.ViewModel.MinimizeCommand = new RelayCommand((object? o) => this.WindowState = WindowState.Minimized);
                     }
                 }
             }

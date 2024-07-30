@@ -9,7 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:PixelRuler.ViewModels"
     xmlns:wpfui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="PixelRuler"
+    Title="{Binding MainViewModel.ScreenshotInfo.WindowTitle, StringFormat='Pin - {0}'}"
     Width="800"
     Height="450"
     d:DataContext="{d:DesignInstance Type=vm:PinViewModel}"
@@ -263,71 +263,113 @@
             MouseLeftButtonUp="Border_MouseLeftButtonUp"
             MouseMove="Border_MouseMove"
             Visibility="Collapsed" />
-        <Button
-            x:Name="closeButton"
-            Margin="0,8,8,0"
+        <StackPanel
+            x:Name="buttonPanel"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
-            Command="{Binding CloseCommand}"
-            Cursor="Hand"
             Opacity="0"
-            ToolTip="Close">
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <Border
-                        Name="closeBorder"
-                        Background="#C0ffffff"
-                        CornerRadius="4">
-                        <Grid
-                            Width="30"
-                            Height="29"
-                            Opacity="1">
-                            <Border
-                                Width="1.3"
-                                Height="24"
-                                Background="Black"
-                                CornerRadius=".5">
-                                <Border.LayoutTransform>
-                                    <RotateTransform Angle="45" />
-                                </Border.LayoutTransform>
-                            </Border>
-                            <Border
-                                Width="1.3"
-                                Height="24"
-                                Background="Black"
-                                CornerRadius=".5">
-                                <Border.LayoutTransform>
-                                    <RotateTransform Angle="-45" />
-                                </Border.LayoutTransform>
-                            </Border>
-                        </Grid>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="closeBorder" Property="Background" Value="#d0ff2222" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="closeBorder" Property="Background" Value="#d0ff4444" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Button.Template>
-            <Button.Resources>
-                <Storyboard x:Key="buttonFadeIn">
+            Orientation="Horizontal">
+            <StackPanel.Resources>
+                <Storyboard x:Key="buttonPanelFadeIn">
                     <DoubleAnimation
                         Storyboard.TargetProperty="Opacity"
                         From="0"
                         To="1"
                         Duration="0:0:.15" />
                 </Storyboard>
-                <Storyboard x:Key="buttonFadeOut">
+                <Storyboard x:Key="buttonPanelFadeOut">
                     <DoubleAnimation
                         Storyboard.TargetProperty="Opacity"
                         From="1"
                         To="0"
                         Duration="0:0:.15" />
                 </Storyboard>
-            </Button.Resources>
-        </Button>
+            </StackPanel.Resources>
+            <Button
+                x:Name="minimizeButton"
+                Margin="0,8,4,0"
+                Command="{Binding MinimizeCommand}"
+                Cursor="Hand"
+                ToolTip="Minimize">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Name="closeBorder"
+                            Background="#C0ffffff"
+                            CornerRadius="4">
+                            <Grid
+                                Width="30"
+                                Height="29"
+                                Opacity="1">
+                                <Border
+                                    Width="18"
+                                    Height="2"
+                                    Background="Black"
+                                    CornerRadius="1">
+                                    <Border.LayoutTransform>
+                                        <RotateTransform Angle="0" />
+                                    </Border.LayoutTransform>
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="closeBorder" Property="Background" Value="#d022aaff" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="closeBorder" Property="Background" Value="#d055aaff" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button
+                x:Name="closeButton"
+                Margin="0,8,8,0"
+                Command="{Binding CloseCommand}"
+                Cursor="Hand"
+                ToolTip="Close">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Name="closeBorder"
+                            Background="#C0ffffff"
+                            CornerRadius="4">
+                            <Grid
+                                Width="30"
+                                Height="29"
+                                Opacity="1">
+                                <Border
+                                    Width="1.3"
+                                    Height="24"
+                                    Background="Black"
+                                    CornerRadius=".5">
+                                    <Border.LayoutTransform>
+                                        <RotateTransform Angle="45" />
+                                    </Border.LayoutTransform>
+                                </Border>
+                                <Border
+                                    Width="1.3"
+                                    Height="24"
+                                    Background="Black"
+                                    CornerRadius=".5">
+                                    <Border.LayoutTransform>
+                                        <RotateTransform Angle="-45" />
+                                    </Border.LayoutTransform>
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="closeBorder" Property="Background" Value="#d0ff2222" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="closeBorder" Property="Background" Value="#d0ff4444" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>

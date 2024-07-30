@@ -38,6 +38,7 @@ namespace PixelRuler.ViewModels
         private bool alwaysOnTop = true;
 
         public RelayCommand CloseCommand { get; set; }
+        public RelayCommand MinimizeCommand { get; set; }
 
         public PixelRulerViewModel MainViewModel { get; set; }
 
