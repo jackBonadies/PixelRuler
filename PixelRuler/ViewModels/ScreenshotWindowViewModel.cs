@@ -51,7 +51,7 @@
             return Mode == OverlayMode.Window || Mode == OverlayMode.RegionRect || Mode == OverlayMode.WindowAndRegionRect;
         }
 
-        public bool IsToolMode()
+        public override bool IsToolMode()
         {
             return Mode == OverlayMode.QuickMeasure || Mode == OverlayMode.QuickColor;
         }

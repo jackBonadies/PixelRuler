@@ -144,6 +144,11 @@ namespace PixelRuler
             SetZoomSpecial(100, ZoomBehavior.ResetWindow);
         }
 
+        public virtual bool IsToolMode()
+        {
+            return false;
+        }
+
         public virtual bool IsScreenshotMode()
         {
             return false;

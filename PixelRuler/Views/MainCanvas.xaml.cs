@@ -567,7 +567,7 @@ namespace PixelRuler
 
         private void SetShowGridLineState()
         {
-            if (this.ViewModel.ShowGridLines)
+            if (this.ViewModel.ShowGridLines && !ViewModel.IsScreenshotMode() && !ViewModel.IsToolMode())
             {
                 Canvas.SetLeft(this.innerCanvas, UiUtils.GetBorderPixelSize(this.GetDpi())); //TODO dpi changed
                 Canvas.SetTop(this.innerCanvas, UiUtils.GetBorderPixelSize(this.GetDpi()));
@@ -1158,7 +1158,7 @@ namespace PixelRuler
 
         Point lastPos;
 
-        int mouseWheelAmountAccum = 0;
+        MouseWheelAccumulator mouseWheelAccum = new();
 
         private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
@@ -1168,28 +1168,11 @@ namespace PixelRuler
             var mousePos = System.Windows.Input.Mouse.GetPosition(canvas);
             var pointToKeepAtLocation = constrainToImage(mousePos);
 
-            if ((mouseWheelAmountAccum > 0 && e.Delta < 0) ||
-               (mouseWheelAmountAccum < 0 && e.Delta > 0))
-            {
-                mouseWheelAmountAccum = 0;
-            }
-            mouseWheelAmountAccum += e.Delta;
-
-            int thresholdAmount = 30;
-            if (mouseWheelAmountAccum >= thresholdAmount)
-            {
-                mouseWheelAmountAccum %= thresholdAmount;
-            }
-            else if (mouseWheelAmountAccum <= -thresholdAmount)
-            {
-                mouseWheelAmountAccum %= thresholdAmount;
-            }
-            else
+            double zoomExpDelta = mouseWheelAccum.Zoom(e.Delta);
+            if (zoomExpDelta == 0)
             {
                 return;
             }
-
-            double zoomExpDelta = e.Delta > 0 ? 2 : .5;
 
             var oldScale = st.ScaleX;
             var newScale = zoomExpDelta * oldScale;
