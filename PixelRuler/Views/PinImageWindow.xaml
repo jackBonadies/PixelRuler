@@ -161,6 +161,7 @@
             CornerRadius="6"
             Loaded="mainBorder_Loaded"
             MouseLeftButtonDown="mainBorder_MouseLeftButtonDown"
+            MouseWheel="mainBorder_MouseWheel"
             UseLayoutRounding="True">
             <Border.RenderTransformOrigin>
                 <Point X=".5" Y=".5" />

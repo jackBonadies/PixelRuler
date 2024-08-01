@@ -177,10 +177,7 @@ namespace PixelRuler
         {
             if (window.WindowState == System.Windows.WindowState.Normal)
             {
-                var xCenter = window.Left + window.ActualWidth / 2;
-                var yCenter = window.Top + window.ActualHeight / 2;
-                // todo: Use non scaled point?
-                var relevantScreen = WpfScreenHelper.Screen.FromPoint(new(xCenter, yCenter));
+                var relevantScreen = window.GetRelevantScreen();
                 if (window.ActualHeight > relevantScreen.WpfWorkingArea.Height)
                 {
                     window.Height = relevantScreen.WpfWorkingArea.Height;
@@ -193,6 +190,14 @@ namespace PixelRuler
                     window.Top -= (bottomWpf - availableSpace);
                 }
             }
+        }
+
+        public static WpfScreenHelper.Screen GetRelevantScreen(this System.Windows.Window window)
+        {
+            var xCenter = window.Left + window.ActualWidth / 2;
+            var yCenter = window.Top + window.ActualHeight / 2;
+            // todo: Use non scaled point?
+            return WpfScreenHelper.Screen.FromPoint(new(xCenter, yCenter));
         }
     }
 

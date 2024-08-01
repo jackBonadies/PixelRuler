@@ -1,4 +1,5 @@
-﻿using PixelRuler.ViewModels;
+﻿using PixelRuler.Common;
+using PixelRuler.ViewModels;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,6 +23,7 @@ namespace PixelRuler.Views
             this.MouseMove += PinImageWindow_PreviewMouseMove;
             this.MouseUp += PinImageWindow_PreviewMouseUp;
             this.LostFocus += PinImageWindow_LostFocus;
+            this.PreviewKeyUp += PinImageWindow_PreviewKeyUp;
 
             this.MouseEnter += PinImageWindow_MouseEnter;
             this.MouseLeave += PinImageWindow_MouseLeave;
@@ -170,6 +172,19 @@ namespace PixelRuler.Views
             mainImage.Height = img.Height;
             rectGeom.Rect = new Rect(0, 0, img.Width, img.Height);
         }
+
+        private void PinImageWindow_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.OemPlus)
+            {
+                zoom(2);
+            }
+            else if (e.Key == Key.OemMinus)
+            {
+                zoom(.5);
+            }
+        }
+
 
         private void Window_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -346,6 +361,61 @@ namespace PixelRuler.Views
         private void mainBorder_Loaded(object sender, RoutedEventArgs e)
         {
             doAnimation();
+        }
+
+        private void zoom(double zoomAmount)
+        {
+            var newWidth = mainImage.Width * zoomAmount;
+            var newHeight = mainImage.Height * zoomAmount;
+
+            // todo limits?
+            var screen = this.GetRelevantScreen();
+            if ((newWidth < minPinWidth && newWidth < this.ViewModel.MainViewModel.Image.Width) || 
+                (newWidth > screen.Bounds.Width && newWidth > this.ViewModel.MainViewModel.Image.Width) ||
+                (newHeight < minPinHeight && newHeight < this.ViewModel.MainViewModel.Image.Height) || 
+                (newHeight > screen.Bounds.Height && newHeight > this.ViewModel.MainViewModel.Image.Height))
+            {
+                return;
+            }
+
+
+            mainImage.Width = newWidth;
+            mainImage.Height = newHeight;
+            rectGeom.Rect = new Rect(0, 0, newWidth, newHeight);
+
+            var pointToKeepAtLocation = System.Windows.Input.Mouse.GetPosition(this);
+
+            var newX = zoomAmount * pointToKeepAtLocation.X;
+            var oldX = pointToKeepAtLocation.X;
+
+            var newY = zoomAmount * pointToKeepAtLocation.Y;
+            var oldY = pointToKeepAtLocation.Y;
+
+            var diffToCorrectX = newX - oldX;
+            var diffToCorrectY = newY - oldY;
+
+            // too much flicker...
+            //this.Left -= diffToCorrectX;
+            //this.Top -= diffToCorrectY;
+
+            // resize window 
+            // WPF uses DirectX and effectively doouble buffers for all its rendering
+            //   but when you resize a window DX requires recreating the device context 
+
+        }
+
+        private int minPinWidth = 100;
+        private int minPinHeight = 70;
+
+        MouseWheelAccumulator mouseWheelAccumulator = new();
+        private void mainBorder_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var zoomAmount = mouseWheelAccumulator.Zoom(e.Delta);
+            if (zoomAmount == 0)
+            {
+                return;
+            }
+            zoom(zoomAmount);
         }
     }
 }
