@@ -60,11 +60,6 @@ namespace PixelRuler.Views
             storyboard.Begin();
         }
 
-        /// <summary>
-        /// Native DragMove kicks off windows MoveWindow loop which is lower latency then handling
-        ///   at our level.  But also does not allow one to move the top of the window offscreen.
-        /// </summary>
-        private bool _useCustomMovement = false;
 
         private void PinImageWindow_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -74,7 +69,7 @@ namespace PixelRuler.Views
             }
             if (useCustomMovement(e.ChangedButton))
             {
-                isMoving = false;
+                isCustomMoving = false;
                 this.ReleaseMouseCapture();
             }
             this.Cursor = null;
@@ -90,21 +85,20 @@ namespace PixelRuler.Views
 
         private void PinImageWindow_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (_useCustomMovement)
+            if (!isCustomMoving)
             {
-                if (!isMoving)
-                {
-                    return;
-                }
-                var pt = e.GetPosition(this);
-                pt = this.PointToScreen(pt);
-
-                var deltaX = (pt - startMovePos).X * .8;
-                var deltaY = (pt - startMovePos).Y * .8;
-                //startMovePos = new Point(startMovePos.X + deltaX , startMovePos.Y + deltaY);
-                this.Left = startLeft + deltaX;
-                this.Top = startTop + deltaY;
+                return;
             }
+            var pt = e.GetPosition(this);
+            pt = this.PointToScreen(pt);
+
+            var deltaX = (pt - startMovePos).X;
+            var deltaY = (pt - startMovePos).Y;
+
+            //startMovePos = new Point(startMovePos.X + deltaX , startMovePos.Y + deltaY);
+            var dpi = this.GetDpi();
+            this.Left = startLeft + deltaX / dpi;
+            this.Top = startTop + deltaY / dpi;
         }
 
         private bool isMoveKey(MouseButton mouseButton)
@@ -132,7 +126,7 @@ namespace PixelRuler.Views
                 startMovePos = this.PointToScreen(startMovePos);
                 startLeft = this.Left;
                 startTop = this.Top;
-                isMoving = true;
+                isCustomMoving = true;
             }
             else
             {
@@ -142,7 +136,11 @@ namespace PixelRuler.Views
 
         double startLeft;
         double startTop;
-        bool isMoving = false;
+        /// <summary>
+        /// Native DragMove kicks off windows MoveWindow loop which is lower latency then handling
+        ///   at our level.  But also does not allow one to move the top of the window offscreen.
+        /// </summary>
+        bool isCustomMoving = false;
         Point startMovePos;
 
         public PinViewModel? ViewModel
@@ -177,11 +175,11 @@ namespace PixelRuler.Views
         {
             if (e.Key == Key.OemPlus)
             {
-                zoom(2);
+                set_zoom(2);
             }
             else if (e.Key == Key.OemMinus)
             {
-                zoom(.5);
+                set_zoom(.5);
             }
         }
 
@@ -340,6 +338,13 @@ namespace PixelRuler.Views
             }
         }
 
+        private void setPinWindowSize(double newWidth, double newHeight)
+        {
+            mainImage.Width = newWidth;
+            mainImage.Height = newHeight;
+            rectGeom.Rect = new Rect(0, 0, newWidth, newHeight);
+        }
+
         bool isResizing = false;
         SizerEnum sizingFrom;
         double sizeOrigLeft;
@@ -434,10 +439,12 @@ namespace PixelRuler.Views
             doAnimation();
         }
 
-        private void zoom(double zoomAmount)
+        private double current_zoom = 1;
+
+        private void set_zoom(double new_zoom)
         {
-            var newWidth = mainImage.Width * zoomAmount;
-            var newHeight = mainImage.Height * zoomAmount;
+            var newWidth = this.ViewModel.MainViewModel.Image.Width * new_zoom;
+            var newHeight = this.ViewModel.MainViewModel.Image.Height * new_zoom;
 
             var screen = this.GetRelevantScreen();
             if ((newWidth < minPinWidth && newWidth < this.ViewModel.MainViewModel.Image.Width) || 
@@ -448,7 +455,12 @@ namespace PixelRuler.Views
                 return;
             }
 
-            setPinWindowSize(newWidth, newHeight);
+            var zoomAmount = new_zoom / current_zoom;
+            current_zoom = new_zoom;
+
+            mainImage.Width = newWidth;
+            mainImage.Height = newHeight;
+            rectGeom.Rect = new Rect(0, 0, newWidth, newHeight);
 
             var pointToKeepAtLocation = System.Windows.Input.Mouse.GetPosition(this);
 
@@ -462,20 +474,18 @@ namespace PixelRuler.Views
             var diffToCorrectY = newY - oldY;
 
             // too much flicker...
-            //this.Left -= diffToCorrectX;
-            //this.Top -= diffToCorrectY;
+            this.Left -= diffToCorrectX;
+            this.Top -= diffToCorrectY;
 
             // resize window 
-            // WPF uses DirectX and effectively doouble buffers for all its rendering
+            // WPF uses DirectX and effectively double buffers for all its rendering
             //   but when you resize a window DX requires recreating the device context 
-
-        }
-
-        private void setPinWindowSize(double newWidth, double newHeight)
-        {
-            mainImage.Width = newWidth;
-            mainImage.Height = newHeight;
-            rectGeom.Rect = new Rect(0, 0, newWidth, newHeight);
+            //zoomAmountText.
+            var size = Math.Min(mainImage.Width, mainImage.Height);
+            var ratio = Math.Max(size / 250, 1);
+            zoomAmountBlurb.LayoutTransform = new ScaleTransform(ratio, ratio);
+            zoomAmountText.Text = $"{current_zoom * 100}%";
+            (zoomAmountBlurb.Resources["fadeInOutStory"] as Storyboard).Begin();
         }
 
         private int minPinWidth = 100;
@@ -489,7 +499,16 @@ namespace PixelRuler.Views
             {
                 return;
             }
-            zoom(zoomAmount);
+
+            if (zoomAmount < 1)
+            {
+                set_zoom(current_zoom / 2);
+            }
+            else
+            {
+                set_zoom(current_zoom * 2);
+            }
+
         }
     }
 }

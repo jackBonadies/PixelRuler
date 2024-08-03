@@ -147,7 +147,7 @@
             </custom:MenuItemCustom>
         </ContextMenu>
     </Window.ContextMenu>
-    <Grid Margin="0" Background="Green">
+    <Grid Margin="0">
         <Border
             x:Name="mainBorder"
             HorizontalAlignment="Center"
@@ -241,13 +241,6 @@
                             <LinearDoubleKeyFrame KeyTime="0:0:3" Value="1" />
                             <LinearDoubleKeyFrame KeyTime="0:0:4" Value="0" />
                         </DoubleAnimationUsingKeyFrames>
-                        <!--<DoubleAnimation
-                        BeginTime="0:0:2"
-                        Storyboard.TargetName="border"
-                        Storyboard.TargetProperty="Opacity"
-                        From="1"
-                        To="0"
-                        Duration="0:0:1" />-->
                     </Storyboard>
                 </BeginStoryboard>
             </Border.Resources>
@@ -256,7 +249,7 @@
             x:Name="gripBorder"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            BorderBrush="Red"
+            BorderBrush="Transparent"
             BorderThickness="10"
             Cursor="Cross"
             MouseEnter="Border_MouseEnter"
@@ -264,6 +257,24 @@
             MouseLeftButtonUp="Border_MouseLeftButtonUp"
             MouseMove="Border_MouseMove"
             Visibility="Visible" />
+        <Grid HorizontalAlignment="Right" x:Name="zoomAmountBlurb" VerticalAlignment="Bottom" Width="120" Height="40" Margin="0,0,7,7">
+            <Border HorizontalAlignment="Right" VerticalAlignment="Bottom"  Height="30" Background="#90ffffff"  CornerRadius="6" Margin="0,0,3,3">
+                <TextBlock Text="100%" x:Name="zoomAmountText" FontSize="24" FontWeight="DemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" FontFamily="Segoe UI Black" Margin="10,0"/>
+            </Border>
+            <Grid.Resources>
+                    <Storyboard x:Name="fadeInOutStory" x:Key="fadeInOutStory">
+                        <DoubleAnimationUsingKeyFrames
+                            Storyboard.TargetName="zoomAmountBlurb"
+                            Storyboard.TargetProperty="Opacity"
+                            Duration="0:0:5">
+                            <LinearDoubleKeyFrame KeyTime="0" Value="0" />
+                            <LinearDoubleKeyFrame KeyTime="0:0:.2" Value="1" />
+                            <LinearDoubleKeyFrame KeyTime="0:0:1.4" Value="1" />
+                            <LinearDoubleKeyFrame KeyTime="0:0:1.6" Value="0" />
+                        </DoubleAnimationUsingKeyFrames>
+                    </Storyboard>
+            </Grid.Resources>
+        </Grid>
         <StackPanel
             x:Name="buttonPanel"
             HorizontalAlignment="Right"
