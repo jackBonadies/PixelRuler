@@ -257,22 +257,40 @@
             MouseLeftButtonUp="Border_MouseLeftButtonUp"
             MouseMove="Border_MouseMove"
             Visibility="Visible" />
-        <Grid HorizontalAlignment="Right" x:Name="zoomAmountBlurb" VerticalAlignment="Bottom" Width="120" Height="40" Margin="0,0,7,7">
+        <Grid IsHitTestVisible="False" Opacity="0" HorizontalAlignment="Right" x:Name="zoomAmountBlurb" VerticalAlignment="Bottom" Width="120" Height="40" Margin="0,0,7,7">
             <Border HorizontalAlignment="Right" VerticalAlignment="Bottom"  Height="30" Background="#90ffffff"  CornerRadius="6" Margin="0,0,3,3">
                 <TextBlock Text="100%" x:Name="zoomAmountText" FontSize="24" FontWeight="DemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" FontFamily="Segoe UI Black" Margin="10,0"/>
             </Border>
             <Grid.Resources>
-                    <Storyboard x:Name="fadeInOutStory" x:Key="fadeInOutStory">
-                        <DoubleAnimationUsingKeyFrames
-                            Storyboard.TargetName="zoomAmountBlurb"
-                            Storyboard.TargetProperty="Opacity"
-                            Duration="0:0:5">
-                            <LinearDoubleKeyFrame KeyTime="0" Value="0" />
-                            <LinearDoubleKeyFrame KeyTime="0:0:.2" Value="1" />
-                            <LinearDoubleKeyFrame KeyTime="0:0:1.4" Value="1" />
-                            <LinearDoubleKeyFrame KeyTime="0:0:1.6" Value="0" />
-                        </DoubleAnimationUsingKeyFrames>
-                    </Storyboard>
+                <Storyboard x:Name="fadeInOutStory" x:Key="fadeInOutStory">
+                    <DoubleAnimationUsingKeyFrames
+                        Storyboard.TargetName="zoomAmountBlurb"
+                        Storyboard.TargetProperty="Opacity"
+                        Duration="0:0:5">
+                        <LinearDoubleKeyFrame KeyTime="0" Value="0" />
+                        <LinearDoubleKeyFrame KeyTime="0:0:.2" Value="1" />
+                        <LinearDoubleKeyFrame KeyTime="0:0:1.4" Value="1" />
+                        <LinearDoubleKeyFrame KeyTime="0:0:1.6" Value="0" />
+                    </DoubleAnimationUsingKeyFrames>
+                </Storyboard>
+                <Storyboard x:Key="fadeInStory">
+                    <DoubleAnimationUsingKeyFrames
+                        Storyboard.TargetName="zoomAmountBlurb"
+                        Storyboard.TargetProperty="Opacity"
+                        Duration="0:0:5">
+                        <LinearDoubleKeyFrame KeyTime="0" Value="0" />
+                        <LinearDoubleKeyFrame KeyTime="0:0:.2" Value="1" />
+                    </DoubleAnimationUsingKeyFrames>
+                </Storyboard>
+                <Storyboard x:Key="fadeOutStory">
+                    <DoubleAnimationUsingKeyFrames
+                        Storyboard.TargetName="zoomAmountBlurb"
+                        Storyboard.TargetProperty="Opacity"
+                        Duration="0:0:5">
+                        <LinearDoubleKeyFrame KeyTime="0" Value="1" />
+                        <LinearDoubleKeyFrame KeyTime="0:0:.6" Value="0" />
+                    </DoubleAnimationUsingKeyFrames>
+                </Storyboard>
             </Grid.Resources>
         </Grid>
         <StackPanel

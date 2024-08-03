@@ -173,13 +173,13 @@ namespace PixelRuler.Views
 
         private void PinImageWindow_PreviewKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.OemPlus)
+            if (e.Key == Key.OemPlus || e.Key == Key.Add)
             {
-                set_zoom(2);
+                set_zoom(getNextZoom());
             }
-            else if (e.Key == Key.OemMinus)
+            else if (e.Key == Key.OemMinus || e.Key == Key.Subtract)
             {
-                set_zoom(.5);
+                set_zoom(getPrevZoom());
             }
         }
 
@@ -262,10 +262,18 @@ namespace PixelRuler.Views
             SetBorderCursor(border, e);
         }
 
+        private bool showingResizeBlurb = false;
+
         private void Border_MouseMove(object sender, MouseEventArgs e)
         {
             if (isResizing)
             {
+                if (!showingResizeBlurb)
+                {
+                    showingResizeBlurb = true;
+                    (this.zoomAmountBlurb.Resources["fadeInStory"] as Storyboard).Begin();
+                }
+
                 var t = System.Windows.Input.Mouse.GetPosition(this);
                 var newPoint = e.GetPosition(this);
                 newPoint = this.PointToScreen(newPoint);
@@ -318,6 +326,12 @@ namespace PixelRuler.Views
                 }
 
                 deltaPoint = new Vector(ratio * sizeOrigWidth, ratio * sizeOrigHeight); 
+                var (newWidth, newHeight) = (sizeOrigWidth + deltaPoint.X, sizeOrigHeight + deltaPoint.Y);
+
+                if (!isReasonableSize(newWidth, newHeight))
+                {
+                    return;
+                }
 
                 if (sizingFrom.IsLeft())
                 {
@@ -330,7 +344,7 @@ namespace PixelRuler.Views
                     this.Top = sizeOrigTop - deltaPoint.Y / this.GetDpi();
                 }
                 
-                setPinWindowSize(sizeOrigWidth + deltaPoint.X, sizeOrigHeight + deltaPoint.Y);
+                setPinWindowSize(newWidth, newHeight);
             }
             else
             {
@@ -343,6 +357,8 @@ namespace PixelRuler.Views
             mainImage.Width = newWidth;
             mainImage.Height = newHeight;
             rectGeom.Rect = new Rect(0, 0, newWidth, newHeight);
+            setZoomBlurbSize();
+            zoomAmountText.Text = $"{mainImage.Width * 100.0 / this.ViewModel.MainViewModel.Image.Width:00}%";
         }
 
         bool isResizing = false;
@@ -373,6 +389,11 @@ namespace PixelRuler.Views
         private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             isResizing = false;
+            if (showingResizeBlurb)
+            {
+                showingResizeBlurb = false;
+                (this.zoomAmountBlurb.Resources["fadeOutStory"] as Storyboard).Begin();
+            }
             gripBorder.ReleaseMouseCapture();
         }
 
@@ -439,24 +460,45 @@ namespace PixelRuler.Views
             doAnimation();
         }
 
-        private double current_zoom = 1;
-
-        private void set_zoom(double new_zoom)
+        private double getCurrentZoom()
         {
-            var newWidth = this.ViewModel.MainViewModel.Image.Width * new_zoom;
-            var newHeight = this.ViewModel.MainViewModel.Image.Height * new_zoom;
+            return mainImage.Width / this.ViewModel.MainViewModel.Image.Width;
+        }
+        
+        private double getNextZoom()
+        {
+            return MathUtils.NextPowerOf2(getCurrentZoom());
+        }
 
+        private double getPrevZoom()
+        {
+            return MathUtils.PrevPowerOf2(getCurrentZoom());
+        }
+
+        private bool isReasonableSize(double newWidth, double newHeight)
+        {
             var screen = this.GetRelevantScreen();
             if ((newWidth < minPinWidth && newWidth < this.ViewModel.MainViewModel.Image.Width) || 
                 (newWidth > screen.Bounds.Width && newWidth > this.ViewModel.MainViewModel.Image.Width) ||
                 (newHeight < minPinHeight && newHeight < this.ViewModel.MainViewModel.Image.Height) || 
                 (newHeight > screen.Bounds.Height && newHeight > this.ViewModel.MainViewModel.Image.Height))
             {
+                return false;
+            }
+            return true;
+        }
+
+        private void set_zoom(double new_zoom)
+        {
+            var newWidth = this.ViewModel.MainViewModel.Image.Width * new_zoom;
+            var newHeight = this.ViewModel.MainViewModel.Image.Height * new_zoom;
+
+            if (!isReasonableSize(newWidth, newHeight))
+            {
                 return;
             }
 
-            var zoomAmount = new_zoom / current_zoom;
-            current_zoom = new_zoom;
+            var zoomAmount = new_zoom / getCurrentZoom();
 
             mainImage.Width = newWidth;
             mainImage.Height = newHeight;
@@ -481,11 +523,16 @@ namespace PixelRuler.Views
             // WPF uses DirectX and effectively double buffers for all its rendering
             //   but when you resize a window DX requires recreating the device context 
             //zoomAmountText.
+            setZoomBlurbSize();
+            zoomAmountText.Text = $"{new_zoom * 100}%";
+            (zoomAmountBlurb.Resources["fadeInOutStory"] as Storyboard).Begin();
+        }
+
+        private void setZoomBlurbSize()
+        {
             var size = Math.Min(mainImage.Width, mainImage.Height);
             var ratio = Math.Max(size / 250, 1);
             zoomAmountBlurb.LayoutTransform = new ScaleTransform(ratio, ratio);
-            zoomAmountText.Text = $"{current_zoom * 100}%";
-            (zoomAmountBlurb.Resources["fadeInOutStory"] as Storyboard).Begin();
         }
 
         private int minPinWidth = 100;
@@ -502,11 +549,11 @@ namespace PixelRuler.Views
 
             if (zoomAmount < 1)
             {
-                set_zoom(current_zoom / 2);
+                set_zoom(getPrevZoom());
             }
             else
             {
-                set_zoom(current_zoom * 2);
+                set_zoom(getNextZoom());
             }
 
         }
