@@ -30,7 +30,7 @@ namespace PixelRuler.ViewModels
         [RelayCommand]
         private void OpenPixelRuler()
         {
-            var mainWindow = new MainWindow(this.MainViewModel);
+            var mainWindow = new MainWindow(this.MainViewModel.Clone());
             mainWindow.Show();
         }
 

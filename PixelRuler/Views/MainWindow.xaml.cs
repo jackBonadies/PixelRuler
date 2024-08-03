@@ -223,14 +223,6 @@ namespace PixelRuler
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            if (Properties.Settings.Default.CloseToTray)
-            {
-                // only 1 instance needs to close to tray otherwise you have
-                //   several tray notification icons as you open and close 
-                //   instances.
-                this.Hide(); // i.e. so taskbar stays up
-                e.Cancel = true;
-            }
             base.OnClosing(e);
         }
 

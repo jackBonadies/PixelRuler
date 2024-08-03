@@ -81,7 +81,7 @@
                 </MenuItem.Icon>
             </MenuItem>
             <custom:MenuItemCustom
-                Command="{Binding NewScreenshotFullCommand}"
+                Command="{Binding MainViewModel.SaveToTargetWithOptionalToastCommand}"
                 Header="Save"
                 InputGestureText="{Binding NewScreenshotFullCommand.ToolTipTextShortcut}">
                 <custom:MenuItemCustom.Icon>
@@ -105,7 +105,7 @@
                         <Setter Property="MenuItem.Header" Value="{Binding DisplayName}" />
                         <Setter Property="MenuItem.MinWidth" Value="100" />
                         <Setter Property="MenuItem.CommandParameter" Value="{Binding}" />
-                        <Setter Property="MenuItem.Command" Value="{Binding DataContext.MainViewModel.SaveToTargetCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
+                        <Setter Property="MenuItem.Command" Value="{Binding DataContext.MainViewModel.SaveToTargetWithOptionalToastCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
                     </Style>
                 </custom:MenuItemCustom.ItemContainerStyle>
             </custom:MenuItemCustom>

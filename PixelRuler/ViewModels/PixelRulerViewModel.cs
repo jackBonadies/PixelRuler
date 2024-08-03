@@ -64,6 +64,14 @@ namespace PixelRuler
             }
         }
 
+        public PixelRulerViewModel Clone()
+        {
+            var prvm = new PixelRulerViewModel(this.Settings);
+            prvm.Image = this.Image;
+            prvm.ScreenshotInfo = this.ScreenshotInfo;
+            return prvm;
+        }
+
         #region MainCanvasElements
 
         public ObservableCollection<MeasurementElementZoomCanvasShape> MeasurementElements { get; private set; } = new();
@@ -278,7 +286,21 @@ namespace PixelRuler
         [RelayCommand]
         public void SaveToTarget(PathSaveInfo pathSaveInfo)
         {
-            pathSaveInfo.SaveImage(this.Image, this.ScreenshotInfo);
+            if (pathSaveInfo == null)
+            {
+                this.Settings.DefaultPathSaveInfo.SaveImage(this.Image, this.ScreenshotInfo);
+            }
+            else
+            {
+                pathSaveInfo.SaveImage(this.Image, this.ScreenshotInfo);
+            }
+        }
+
+        [RelayCommand]
+        public void SaveToTargetWithOptionalToast(PathSaveInfo pathSaveInfo)
+        {
+            this.SaveToTarget(pathSaveInfo);
+            this.ShowToastIfApplicable(AfterScreenshotAction.Save, pathSaveInfo);
         }
 
         [RelayCommand]
@@ -539,6 +561,8 @@ namespace PixelRuler
             DeleteAllSelectedCommand = null!;
             SelectAllElementsCommand = null!;
             CopyRawImageToClipboardCommand = null!;
+            ZoomChanged = null;
+            RawImageCopied = null;
         }
 
         public event EventHandler? ColorCopied;
