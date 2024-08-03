@@ -147,7 +147,7 @@
             </custom:MenuItemCustom>
         </ContextMenu>
     </Window.ContextMenu>
-    <Grid Margin="0">
+    <Grid Margin="0" Background="Green">
         <Border
             x:Name="mainBorder"
             HorizontalAlignment="Center"
@@ -263,7 +263,7 @@
             MouseLeftButtonDown="Border_MouseLeftButtonDown"
             MouseLeftButtonUp="Border_MouseLeftButtonUp"
             MouseMove="Border_MouseMove"
-            Visibility="Collapsed" />
+            Visibility="Visible" />
         <StackPanel
             x:Name="buttonPanel"
             HorizontalAlignment="Right"

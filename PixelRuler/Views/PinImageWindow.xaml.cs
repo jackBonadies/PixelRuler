@@ -191,7 +191,7 @@ namespace PixelRuler.Views
 
         }
 
-        private (bool? left, bool? top) getSides(Border border, Point pt)
+        private SizerEnum getSides(Border border, Point pt)
         {
             bool? left = null;
             bool? top = null;
@@ -213,34 +213,48 @@ namespace PixelRuler.Views
             {
                 top = false;
             }
-            return (left, top);
+
+            return (left, top) switch
+            {
+                (null, true) => SizerEnum.TopCenter,
+                (null, false) => SizerEnum.BottomCenter,
+                (true, null) => SizerEnum.CenterLeft,
+                (false, null) => SizerEnum.CenterRight,
+                (false, true) => SizerEnum.TopRight,
+                (false, false) => SizerEnum.BottomRight,
+                (true, true) => SizerEnum.TopLeft,
+                (true, false) => SizerEnum.BottomLeft,
+                _ => throw new Exception("Unexpected Case")
+            };
         }
 
-        private void SetCursor(Border border, bool? left, bool? top)
+        private void SetCursor(Border border, SizerEnum sizer)
         {
-            if (left is null)
+            var x = sizer.GetXFlag();
+            var y = sizer.GetYFlag();
+            if (x == SizerPosX.Centered)
             {
                 border.Cursor = Cursors.SizeNS;
             }
-            else if (top is null)
+            else if (y == SizerPosY.Centered)
             {
                 border.Cursor = Cursors.SizeWE;
             }
-            else if (left == top)
+            else if ((int)x == (int)y)
             {
-                border.Cursor = Cursors.SizeNWSE;
+                border.Cursor = Cursors.SizeNESW;
             }
             else
             {
-                border.Cursor = Cursors.SizeNESW;
+                border.Cursor = Cursors.SizeNWSE;
             }
         }
 
         private void SetBorderCursor(Border border, MouseEventArgs e)
         {
             var pt = e.GetPosition(border);
-            var (left, top) = getSides(border, pt);
-            SetCursor(border, left, top);
+            SizerEnum sizer = getSides(border, pt);
+            SetCursor(border, sizer);
         }
 
         private void Border_MouseEnter(object sender, MouseEventArgs e)
@@ -258,9 +272,67 @@ namespace PixelRuler.Views
                 var newPoint = e.GetPosition(this);
                 newPoint = this.PointToScreen(newPoint);
                 var deltaPoint = newPoint - sizeStartPoint;
-                this.mainImage.Width = sizeOrigWidth + deltaPoint.X;
-                this.mainImage.Height = sizeOrigHeight + deltaPoint.Y;
-                this.Background = new SolidColorBrush(Colors.Red);
+
+                var ratioX = deltaPoint.X / sizeOrigWidth;
+                var ratioY = deltaPoint.Y / sizeOrigHeight;
+                var ratio = Math.Max(Math.Abs(ratioX), Math.Abs(ratioY));
+
+                bool useX = false;
+                if (sizingFrom.IsCorner())
+                {
+                    if (Math.Abs(ratioX) > Math.Abs(ratioY))
+                    {
+                        useX = true;
+                    }
+                    else
+                    {
+                        useX = false;
+                    }
+                }
+                else if (sizingFrom.GetXFlag() == SizerPosX.Centered)
+                {
+                    useX = false;
+                }
+                else if (sizingFrom.GetYFlag() == SizerPosY.Centered)
+                {
+                    useX = true;
+                }
+                else
+                {
+                    throw new Exception();
+                }
+
+                if (!useX && sizingFrom.IsTop())
+                {
+                    ratio = -ratioY;
+                }
+                else if (useX && sizingFrom.IsLeft())
+                {
+                    ratio = -ratioX;
+                }
+                else if (useX)
+                {
+                    ratio = ratioX;
+                }
+                else
+                {
+                    ratio = ratioY;
+                }
+
+                deltaPoint = new Vector(ratio * sizeOrigWidth, ratio * sizeOrigHeight); 
+
+                if (sizingFrom.IsLeft())
+                {
+                    //deltaPoint = new Vector(deltaPoint.X, deltaPoint.Y);
+                    this.Left = sizeOrigLeft - deltaPoint.X / this.GetDpi();
+                }
+                if (sizingFrom.IsTop())
+                {
+                    //deltaPoint = new Vector(deltaPoint.X, -deltaPoint.Y);
+                    this.Top = sizeOrigTop - deltaPoint.Y / this.GetDpi();
+                }
+                
+                setPinWindowSize(sizeOrigWidth + deltaPoint.X, sizeOrigHeight + deltaPoint.Y);
             }
             else
             {
@@ -269,8 +341,7 @@ namespace PixelRuler.Views
         }
 
         bool isResizing = false;
-        bool? sizeFromLeft = null;
-        bool? sizeFromTop = null;
+        SizerEnum sizingFrom;
         double sizeOrigLeft;
         double sizeOrigTop;
         double sizeOrigWidth;
@@ -279,7 +350,7 @@ namespace PixelRuler.Views
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var pt = e.GetPosition(gripBorder);
-            (sizeFromLeft, sizeFromTop) = getSides(gripBorder, pt);
+            sizingFrom = getSides(gripBorder, pt);
             isResizing = true;
             var startPoint = e.GetPosition(this);
             sizeStartPoint = this.PointToScreen(startPoint);
@@ -297,7 +368,7 @@ namespace PixelRuler.Views
         private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             isResizing = false;
-
+            gripBorder.ReleaseMouseCapture();
         }
 
         private void doAnimation()
@@ -368,7 +439,6 @@ namespace PixelRuler.Views
             var newWidth = mainImage.Width * zoomAmount;
             var newHeight = mainImage.Height * zoomAmount;
 
-            // todo limits?
             var screen = this.GetRelevantScreen();
             if ((newWidth < minPinWidth && newWidth < this.ViewModel.MainViewModel.Image.Width) || 
                 (newWidth > screen.Bounds.Width && newWidth > this.ViewModel.MainViewModel.Image.Width) ||
@@ -378,10 +448,7 @@ namespace PixelRuler.Views
                 return;
             }
 
-
-            mainImage.Width = newWidth;
-            mainImage.Height = newHeight;
-            rectGeom.Rect = new Rect(0, 0, newWidth, newHeight);
+            setPinWindowSize(newWidth, newHeight);
 
             var pointToKeepAtLocation = System.Windows.Input.Mouse.GetPosition(this);
 
@@ -402,6 +469,13 @@ namespace PixelRuler.Views
             // WPF uses DirectX and effectively doouble buffers for all its rendering
             //   but when you resize a window DX requires recreating the device context 
 
+        }
+
+        private void setPinWindowSize(double newWidth, double newHeight)
+        {
+            mainImage.Width = newWidth;
+            mainImage.Height = newHeight;
+            rectGeom.Rect = new Rect(0, 0, newWidth, newHeight);
         }
 
         private int minPinWidth = 100;

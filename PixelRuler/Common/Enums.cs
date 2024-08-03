@@ -69,6 +69,11 @@ namespace PixelRuler
             return sizerEnum == SizerEnum.TopLeft || sizerEnum == SizerEnum.BottomLeft || sizerEnum == SizerEnum.CenterLeft;
         }
 
+        public static bool IsCorner(this SizerEnum sizerEnum)
+        {
+            return sizerEnum == SizerEnum.TopLeft || sizerEnum == SizerEnum.BottomLeft || sizerEnum == SizerEnum.TopRight || sizerEnum == SizerEnum.BottomRight;
+        }
+
         public static bool IsRight(this SizerEnum sizerEnum)
         {
             return sizerEnum == SizerEnum.TopRight || sizerEnum == SizerEnum.BottomRight || sizerEnum == SizerEnum.CenterRight;
