@@ -173,6 +173,8 @@ namespace PixelRuler.Views
 
         private void AddTickmarksForRange(int start, int end)
         {
+            int offsetQ = 1;
+
             int majorTickSpacing = getMajorTickSpacing();
 
             int minorTickInterval = 5;
@@ -186,8 +188,8 @@ namespace PixelRuler.Views
                     var curValLoc = curVal * Scale;
                     var line = new Line()
                     {
-                        X1 = curValLoc + 10000,
-                        X2 = curValLoc + 10000,
+                        X1 = curValLoc + 10000 + offsetQ,
+                        X2 = curValLoc + 10000 + offsetQ,
                         Stroke = new SolidColorBrush(Color.FromRgb(0x90, 0x90, 0x90)),
                         StrokeThickness = 1,
                         SnapsToDevicePixels = true,
@@ -216,7 +218,7 @@ namespace PixelRuler.Views
                         }
                         canvas.Children.Add(txtBlock);
                         textBlocks.Add(txtBlock);
-                        Canvas.SetLeft(txtBlock, curValLoc + 5 + 10000);
+                        Canvas.SetLeft(txtBlock, curValLoc + offsetQ + 5 + 10000);
                         Canvas.SetTop(txtBlock, 0);
                         line.Y1 = 0;
                         line.Y2 = UiUtils.GetBorderPixelSize(this.GetDpi());
