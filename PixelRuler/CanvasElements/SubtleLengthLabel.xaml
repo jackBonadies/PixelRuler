@@ -20,7 +20,7 @@
     </UserControl.RenderTransform>
     <Border
         Padding="1,0,1,0"
-        Background="#303030"
+        Background="Transparent"
         CornerRadius="3">
         <StackPanel
             HorizontalAlignment="Center"

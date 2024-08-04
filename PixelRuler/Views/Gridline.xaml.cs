@@ -136,10 +136,12 @@ namespace PixelRuler.Views
             SetBorder();
             UpdateTickmarks();
             SetGuidelineTicks();
+            HidePartiallyOccludedText(); //too soon???
         }
 
         private void ClearCanvas()
         {
+            this.textBlocks.Clear();
             this.canvas.Children.Clear();
             currentMousePosTick.AddToGridline();
         }
@@ -152,7 +154,7 @@ namespace PixelRuler.Views
             }
         }
 
-        private void AddTickmarksForRange(int start, int end)
+        private int getMajorTickSpacing()
         {
             int majorTickSpacing = (int)(100 / Scale);
             if (Scale == 8)
@@ -164,10 +166,16 @@ namespace PixelRuler.Views
                 // cant do 4 (since 50 / 4)
                 majorTickSpacing = 5;
             }
+
+            return Math.Max(majorTickSpacing, 5);
+
+        }
+
+        private void AddTickmarksForRange(int start, int end)
+        {
+            int majorTickSpacing = getMajorTickSpacing();
+
             int minorTickInterval = 5;
-
-
-            majorTickSpacing = Math.Max(majorTickSpacing, 5);
             int minorTickSpacing = Math.Max(majorTickSpacing / minorTickInterval, 1);
 
             int curVal = start;
@@ -207,6 +215,7 @@ namespace PixelRuler.Views
                             };
                         }
                         canvas.Children.Add(txtBlock);
+                        textBlocks.Add(txtBlock);
                         Canvas.SetLeft(txtBlock, curValLoc + 5 + 10000);
                         Canvas.SetTop(txtBlock, 0);
                         line.Y1 = 0;
@@ -290,7 +299,23 @@ namespace PixelRuler.Views
             return (start - 1, end + 1);
         }
 
+        public double GetGridlineStart()
+        {
+            var startPoint = MainCanvas.overlayCanvas.TranslatePoint(new Point(this.ActualHeight, this.ActualHeight), MainCanvas.mainImage);
+            if (this.IsVertical)
+            {
+                return startPoint.Y;
+            }
+            else
+            {
+                return startPoint.X;
+            }
+        }
+
+
         private List<GuidelineTick> guideLineTicks = new List<GuidelineTick>();
+        private List<TextBlock> textBlocks = new List<TextBlock>();
+
         internal void AddTick(GuidelineTick gridLineTick)
         {
             guideLineTicks.Add(gridLineTick);
@@ -311,6 +336,47 @@ namespace PixelRuler.Views
                 currentMousePosTick.ImageCoordinate = (int)roundedPoint.X;
             }
             currentMousePosTick.UpdatePosition();
+        }
+
+        public void HidePartiallyOccludedText()
+        {
+            double begin = GetGridlineStart();
+            var major = getMajorTickSpacing();
+
+            int leftMostTick = ((int)(begin / major)) * major;
+            if (begin < 0)
+            {
+                leftMostTick -= major;
+            }
+
+            // get left most textblock..
+            var textBlock = textBlocks.Where(it => it.Text == leftMostTick.ToString()).FirstOrDefault();
+            foreach(var textBlockIt in textBlocks)
+            {
+                textBlockIt.Visibility = Visibility.Visible;
+            }
+            if (textBlock != null)
+            {
+                var textBlockStart = Canvas.GetLeft(textBlock);
+                // rel to start of gridline
+                var distPoint = this.canvas.TranslatePoint(new Point(textBlockStart, textBlockStart), MainCanvas.overlayCanvas);
+                double dist = distPoint.X;
+                if (this.IsVertical)
+                {
+                    dist = distPoint.Y;
+                }
+                if (dist < (28 - 4))
+                {
+                    textBlock.Visibility = Visibility.Hidden;
+                }
+            }
+        }
+
+        public void UpdateForPan()
+        {
+            this.UpdateTranslation();
+            this.UpdateTickmarks();
+            this.HidePartiallyOccludedText();
         }
     }
 }

@@ -5,9 +5,13 @@ using System.Windows.Shapes;
 
 namespace PixelRuler.CanvasElements
 {
+    /// <summary>
+    /// Drawn between guideline elements
+    /// </summary>
     public class DistanceIndicator : AbstractZoomCanvasShape
     {
-        Line lineBody;
+        Line lineBodyBegin;
+        Line lineBodyEnd;
         Line lineStart1;
         Line lineStart2;
         Line lineEnd1;
@@ -16,8 +20,10 @@ namespace PixelRuler.CanvasElements
 
         public DistanceIndicator(Canvas owningCanvas, bool isHorizontal) : base(owningCanvas)
         {
-            lineBody = GetLine();
-            lineBody.StrokeDashArray = new DoubleCollection(new double[] { 2, 4 });
+            lineBodyBegin = GetLine();
+            lineBodyBegin.StrokeDashArray = new DoubleCollection(new double[] { 2, 4 });
+            lineBodyEnd = GetLine();
+            lineBodyEnd.StrokeDashArray = new DoubleCollection(new double[] { 2, 4 });
             lineStart1 = GetLine();
             lineStart2 = GetLine();
             lineEnd1 = GetLine();
@@ -44,10 +50,15 @@ namespace PixelRuler.CanvasElements
             double xPadding = IsHorizontal ? getPadding() : 0;
             double yPadding = IsHorizontal ? 0 : getPadding();
 
-            lineBody.X1 = StartPoint.X + xPadding;
-            lineBody.Y1 = StartPoint.Y + yPadding;
-            lineBody.X2 = EndPoint.X - xPadding;
-            lineBody.Y2 = EndPoint.Y - yPadding;
+            lineBodyBegin.X1 = StartPoint.X + xPadding;
+            lineBodyBegin.Y1 = StartPoint.Y + yPadding;
+            lineBodyBegin.X2 = EndPoint.X - xPadding;
+            lineBodyBegin.Y2 = EndPoint.Y - yPadding;
+
+            lineBodyEnd.X1 = StartPoint.X + xPadding;
+            lineBodyEnd.Y1 = StartPoint.Y + yPadding;
+            lineBodyEnd.X2 = EndPoint.X - xPadding;
+            lineBodyEnd.Y2 = EndPoint.Y - yPadding;
 
             lineStart1.X1 = StartPoint.X + xPadding;
             lineStart1.Y1 = StartPoint.Y + yPadding;
@@ -95,11 +106,11 @@ namespace PixelRuler.CanvasElements
 
             if (IsHorizontal)
             {
-                lengthLabel.Length = (int)(lineBody.X2 - lineBody.X1);
+                lengthLabel.Length = (int)(EndPoint.X - StartPoint.X);
             }
             else
             {
-                lengthLabel.Length = (int)(lineBody.Y2 - lineBody.Y1);
+                lengthLabel.Length = (int)(EndPoint.Y - StartPoint.Y);
             }
 
             lengthLabel.Measure(new Size(double.MaxValue, double.MaxValue)); // TODO UiUtils readonly MaxSize
@@ -107,13 +118,25 @@ namespace PixelRuler.CanvasElements
             double desiredHeight = lengthLabel.DesiredSize.Height;
             if (IsHorizontal)
             {
-                Canvas.SetLeft(lengthLabel, (lineBody.X1 + lineBody.X2) / 2.0 - desiredWidth / 2.0);
-                Canvas.SetTop(lengthLabel, lineBody.Y1 - desiredHeight / 2.0);
+                Canvas.SetLeft(lengthLabel, (lineBodyBegin.X1 + lineBodyBegin.X2) / 2.0 - desiredWidth / 2.0);
+                Canvas.SetTop(lengthLabel, lineBodyBegin.Y1 - desiredHeight / 2.0);
+
+                lineBodyBegin.X1 = StartPoint.X + xPadding;
+                lineBodyBegin.X2 = StartPoint.X + (EndPoint.X - StartPoint.X) / 2 - desiredWidth / 2.0;
+
+                lineBodyEnd.X2 = StartPoint.X + (EndPoint.X - StartPoint.X) / 2 + desiredWidth / 2.0;
+                lineBodyEnd.X1 = EndPoint.X - xPadding;
             }
             else
             {
-                Canvas.SetTop(lengthLabel, (lineBody.Y1 + lineBody.Y2) / 2.0 - desiredHeight / 2.0);
-                Canvas.SetLeft(lengthLabel, lineBody.X1 - desiredWidth / 2.0);
+                Canvas.SetTop(lengthLabel, (lineBodyBegin.Y1 + lineBodyBegin.Y2) / 2.0 - desiredHeight / 2.0);
+                Canvas.SetLeft(lengthLabel, lineBodyBegin.X1 - desiredWidth / 2.0);
+
+                lineBodyBegin.Y1 = StartPoint.Y + yPadding;
+                lineBodyBegin.Y2 = StartPoint.Y + (EndPoint.Y - StartPoint.Y) / 2 - desiredHeight / 2.0;
+
+                lineBodyEnd.Y2 = StartPoint.Y + (EndPoint.Y - StartPoint.Y) / 2 + desiredHeight / 2.0;
+                lineBodyEnd.Y1 = EndPoint.Y - yPadding;
             }
         }
 
@@ -141,7 +164,8 @@ namespace PixelRuler.CanvasElements
 
         public override void AddToOwnerCanvas()
         {
-            this.owningCanvas.Children.Add(lineBody);
+            this.owningCanvas.Children.Add(lineBodyBegin);
+            this.owningCanvas.Children.Add(lineBodyEnd);
             this.owningCanvas.Children.Add(lineStart1);
             this.owningCanvas.Children.Add(lineStart2);
             this.owningCanvas.Children.Add(lineEnd1);
@@ -152,7 +176,8 @@ namespace PixelRuler.CanvasElements
 
         public override void Clear()
         {
-            this.owningCanvas.Children.Remove(lineBody);
+            this.owningCanvas.Children.Remove(lineBodyBegin);
+            this.owningCanvas.Children.Remove(lineBodyEnd);
             this.owningCanvas.Children.Remove(lineStart1);
             this.owningCanvas.Children.Remove(lineStart2);
             this.owningCanvas.Children.Remove(lineEnd1);
@@ -163,7 +188,7 @@ namespace PixelRuler.CanvasElements
 
         public override void UpdateForZoomChange()
         {
-            lineBody.StrokeThickness = this.getUIStrokeThicknessUnit();
+            lineBodyBegin.StrokeThickness = this.getUIStrokeThicknessUnit();
             lineStart1.StrokeThickness = this.getUIStrokeThicknessUnit();
             lineStart2.StrokeThickness = this.getUIStrokeThicknessUnit();
             lineEnd1.StrokeThickness = this.getUIStrokeThicknessUnit();

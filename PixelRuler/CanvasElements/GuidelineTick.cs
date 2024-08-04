@@ -1,10 +1,14 @@
 ﻿using PixelRuler.Common;
 using PixelRuler.Views;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace PixelRuler.CanvasElements
 {
+    /// <summary>
+    /// Tick on the gridline + the zoomcanvas GuidelineElement
+    /// </summary>
     public class GuidelineTick
     {
         public GuidelineElement? GuidelineElement { get; init; }
@@ -26,6 +30,10 @@ namespace PixelRuler.CanvasElements
         public GuidelineTick(Gridline gridLine, GuidelineElement? guidelineElement, GridlineTickType tickType)
         {
             GuidelineElement = guidelineElement;
+            if (GuidelineElement != null)
+            {
+                GuidelineElement.Moved += GuidelineElement_Moved;
+            }
             OwningGridLine = gridLine;
             TickType = tickType;
             tickLine = new Line
@@ -43,9 +51,13 @@ namespace PixelRuler.CanvasElements
             //RenderOptions.SetEdgeMode(tickLine, EdgeMode.Aliased);
         }
 
+        private void GuidelineElement_Moved(object? sender, System.EventArgs e)
+        {
+            this.UpdatePosition();
+        }
+
         private void TickLine_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            tickLine.X2 = UiUtils.GetBorderPixelSize(tickLine.GetDpi());
             tickLine.Y2 = UiUtils.GetBorderPixelSize(tickLine.GetDpi());
         }
 
@@ -54,6 +66,7 @@ namespace PixelRuler.CanvasElements
             UpdatePosition();
             if (!OwningGridLine.canvas.Children.Contains(tickLine))
             {
+                Canvas.SetZIndex(tickLine, App.GRIDLINE_TICK_INDEX);
                 OwningGridLine.canvas.Children.Add(tickLine);
             }
         }
@@ -62,8 +75,6 @@ namespace PixelRuler.CanvasElements
         {
             var gridLineCoor = getImageCoordinate() * this.OwningGridLine.Scale + 10000;
             tickLine.X1 = tickLine.X2 = gridLineCoor + .5 / this.OwningGridLine.GetDpi(); // TODO: Why
-            //var window = System.Windows.Window.GetWindow(tickLine);
-            //var child = (window.Content as System.Windows.Controls.Grid).Children[0];
         }
 
         private int getImageCoordinate()

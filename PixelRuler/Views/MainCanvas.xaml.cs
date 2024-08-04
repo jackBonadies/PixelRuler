@@ -1057,11 +1057,8 @@ namespace PixelRuler
 
                 if (ViewModel.ShowGridLines)
                 {
-                    gridLineTop.UpdateTranslation();
-                    gridLineTop.UpdateTickmarks();
-
-                    gridLineLeft.UpdateTranslation();
-                    gridLineLeft.UpdateTickmarks();
+                    gridLineTop.UpdateForPan();
+                    gridLineLeft.UpdateForPan();
                 }
 
 
